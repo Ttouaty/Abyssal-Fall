@@ -10,9 +10,18 @@ public class GameObjectPool : MonoBehaviour
 	[System.Serializable]
 	private struct Pool
 	{
-		public string name;
-		public GameObject prefab;
-		public uint quantity;
+		public string Name;
+		public GameObject Prefab;
+		public int Quantity;
+
+		[HideInInspector]
+		public int QuantityLoaded;
+
+		[HideInInspector]
+		public GameObject Root;
+
+		[HideInInspector]
+		public List<GameObject> Reserve;
 	}
 
 	/*********
@@ -22,15 +31,18 @@ public class GameObjectPool : MonoBehaviour
 
 	public static GameObject GetAvailableObject (string poolName)
 	{
-		List<GameObject> pool = instance._reserve[poolName];
-
-		if(pool != null)
+		for(var i = 0; i < instance._pools.Length; ++i)
 		{
-			if(pool.Count > 0)
+			Pool pool = instance._pools[i];
+			if(pool.Name.CompareTo(poolName) == 0 && pool.Reserve.Count > 0)
 			{
-				GameObject go = pool[0];
-				pool[0] = null;
-				pool.RemoveAt(0);
+				GameObject go = pool.Reserve[0];
+				go.transform.parent = null;
+				go.SetActive(true);
+
+				pool.Reserve.RemoveAt(0);
+
+				return go;
 			}
 		}
 
@@ -39,12 +51,16 @@ public class GameObjectPool : MonoBehaviour
 
 	public static void AddObjectIntoPool (string poolName, GameObject go)
 	{
-		List<GameObject> pool = instance._reserve[poolName];
-
-		if(pool != null)
+		for (var i = 0; i < instance._pools.Length; ++i)
 		{
-			pool.Add(go);
-			go.SetActive(false);
+			Pool pool = instance._pools[i];
+			if (pool.Name.CompareTo(poolName) == 0 && pool.Reserve.Count > 0)
+			{
+				pool.Reserve.Add(go);
+				go.transform.position = new Vector3(-9999.0f, -9999.0f, -9999.0f);
+				go.SetActive(false);
+				go.transform.parent = pool.Root.transform;
+			}
 		}
 	}
 
@@ -53,32 +69,56 @@ public class GameObjectPool : MonoBehaviour
 	***********/
 	[SerializeField]
 	private Pool[] _pools;
-	private Dictionary<string, List<GameObject>> _reserve;
-	private Vector3 _poolPosition;
 
 	public void Awake ()
 	{
 		instance = this;
-		_poolPosition = new Vector3(-9999.0f, -9999.0f, -9999.0f);
 	}
 
 	public void Start ()
 	{
-		_reserve = new Dictionary<string, List<GameObject>>();
+		StartCoroutine(LoadPoolAsync(0));
+	}
 
-		for (int i = 0; i < _pools.Length; ++i)
+	private IEnumerator LoadPoolAsync (int index)
+	{
+		Vector3 position = new Vector3(-9999.0f, -9999.0f, -9999.0f);
+
+		if(index == _pools.Length)
 		{
-			Pool pool = _pools[i];
-			List<GameObject> arr = new List<GameObject>();
-
-			for(int q = 0; q < pool.quantity; ++q)
-			{
-				GameObject go = (GameObject)Instantiate(pool.prefab, _poolPosition, Quaternion.identity);
-				go.SetActive(false);
-				arr.Add(go);
-			}
-
-			_reserve[pool.name] = arr;
+			GameObject go = GetAvailableObject("Test");
+			go.transform.position = Vector3.zero;
+			yield break;
 		}
+		else
+		{
+			Pool pool = _pools[index];
+			pool.QuantityLoaded = 0;
+			pool.Root = new GameObject(pool.Name);
+			pool.Root.transform.parent = transform;
+			pool.Reserve = new List<GameObject>();
+
+			while(pool.QuantityLoaded < pool.Quantity)
+			{
+				int diff = Mathf.Min(pool.Quantity - pool.QuantityLoaded, 1000);
+				for(int i = 0; i < diff; ++i)
+				{
+					GameObject go = (GameObject) Instantiate(pool.Prefab, position, Quaternion.identity);
+					go.transform.parent = pool.Root.transform;
+					go.SetActive(false);
+					go.name = pool.Name + "_" + pool.QuantityLoaded.ToString();
+
+					pool.Reserve.Add(go);
+
+					++pool.QuantityLoaded;
+				}
+				yield return null;
+			}
+			_pools[index] = pool;
+
+			StartCoroutine(LoadPoolAsync(++index));
+		}
+
+		yield return null;
 	}
 }
