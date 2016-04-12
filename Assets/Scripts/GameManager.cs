@@ -5,41 +5,50 @@ using System.Collections;
 public class GameManager : MonoBehaviour
 {
 	private Text _loadingType;
+	private int _index;
+	private Loadable[] _loadables;
+	private Camera _camera;
 
-	public DynamicFieldGenerator DynamicFieldGenerator;
 	public GameObject LoadingScreen;
+	public Arena Arena;
+
+	void Awake ()
+	{
+		if(Arena == null)
+		{
+			Debug.LogError("Arena reference is missing");
+			Debug.Break();
+		}
+
+		_camera = Camera.main;
+		_loadables = GameObject.FindObjectsOfType<Loadable>();
+	}
 
 	// Use this for initialization
 	void Start ()
 	{
-		/* Check if the required members are set */
-		if (DynamicFieldGenerator == null)
-		{
-			Debug.LogError("The needed reference to the DynamicFieldGenerator is missing. Please correct this and restart !");
-			Debug.Break();
-		}
+		OpenLoadingScreen();
+		AddEvents();
 
-		if (LoadingScreen == null)
-		{
-			Debug.LogError("The needed reference to the LoadingScreen is missing. Please correct this and restart !");
-			Debug.Break();
-		}
-
-		_loadingType = LoadingScreen.transform.FindChild("LoadingType").GetComponent<Text>();
-
-		LoadingScreen.SetActive(true);
-
-		/* Add events */
-		GameObjectPool.instance.OnStartLoad.AddListener(OnChangeLoadingMessage);
-		GameObjectPool.instance.OnLoadComplete.AddListener(OnGameObjectPoolLoaded);
-
-		DynamicFieldGenerator.OnStartLoad.AddListener(OnChangeLoadingMessage);
-		DynamicFieldGenerator.OnLoadComplete.AddListener(OnDynamicFieldGeneratorLoaded);
+		_index = 0;
+		_loadables[_index].Init();
 	}
-	
-	// Update is called once per frame
-	void Update () {
 
+	void OpenLoadingScreen ()
+	{
+		_loadingType = LoadingScreen.transform.FindChild("LoadingType").GetComponent<Text>();
+		_loadingType.text = "Init core";
+		LoadingScreen.SetActive(true);
+	}
+
+	void AddEvents ()
+	{
+		for (var i = 0; i < _loadables.Length; ++i)
+		{
+			Loadable loadable = _loadables[i];
+			loadable.OnMessage.AddListener(OnChangeLoadingMessage);
+			loadable.OnLoadComplete.AddListener(OnLoadableComplete);
+		}
 	}
 
 	void OnChangeLoadingMessage(string msg)
@@ -47,14 +56,22 @@ public class GameManager : MonoBehaviour
 		_loadingType.text = msg;
 	}
 
-	void OnGameObjectPoolLoaded(string msg)
+	void OnLoadableComplete()
 	{
-		DynamicFieldGenerator.Init();
+		++_index;
+		if(_index < _loadables.Length)
+		{
+			_loadables[_index].Init();
+		}
+		else
+		{
+			OnAllLoadablesLoaded();
+		}
 	}
 
-	void OnDynamicFieldGeneratorLoaded(string msg)
+	void OnAllLoadablesLoaded()
 	{
-		_loadingType.text = "";
-		LoadingScreen.SetActive(false);
+		_loadingType.text = "Building Arena";
+		Arena.Init();
 	}
 }

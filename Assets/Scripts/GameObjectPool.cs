@@ -3,7 +3,6 @@ using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 
-
 [System.Serializable]
 public struct Pool
 {
@@ -21,10 +20,7 @@ public struct Pool
 	public List<GameObject> Reserve;
 }
 
-[System.Serializable]
-public class GameObjectPoolEvent : UnityEvent<string> { }
-
-public class GameObjectPool : MonoBehaviour
+public class GameObjectPool : Loadable
 {
 	/*********
 	* Static *
@@ -97,17 +93,15 @@ public class GameObjectPool : MonoBehaviour
 
 	public int NumberOfInstancesPerFrame = 1000;
 
-	public GameObjectPoolEvent OnStartLoad;
-	public GameObjectPoolEvent OnLoadComplete;
-
 	public void Awake ()
 	{
 		instance = this;
 	}
 
-	public void Start ()
+	override public void Init ()
 	{
-		OnStartLoad.Invoke("Instanciate Pools");
+		base.Init();
+		OnMessage.Invoke("Loading pools");
 		StartCoroutine(LoadPoolAsync(0));
 	}
 
@@ -117,7 +111,7 @@ public class GameObjectPool : MonoBehaviour
 
 		if(index == _pools.Length)
 		{
-			OnLoadComplete.Invoke("");
+			OnLoadComplete.Invoke();
 			yield break;
 		}
 		else

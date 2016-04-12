@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class TestPool : MonoBehaviour {
-
+public class DefaultGround : MonoBehaviour
+{
 	// Use this for initialization
 	void Start () {
 	
