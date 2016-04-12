@@ -13,13 +13,13 @@ public class CustomEditorGameObjectPool : Editor
 		GameObjectPool myTarget = (GameObjectPool)target;
 		List<Pool> poolsToRemove = new List<Pool>();
 
+		Debug.Log(_scrollPosition);
+
 		EditorGUILayout.BeginVertical("box");
 		{
 			EditorGUILayout.BeginVertical("box");
 			{
 				EditorGUILayout.LabelField("Pools availables", EditorStyles.boldLabel);
-				// int height = myTarget.Pools.Count > 3 ? 350 : 
-
 				_scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition, GUILayout.Height(330));
 				{
 					for (var p = 0; p < myTarget.Pools.Count; ++p)

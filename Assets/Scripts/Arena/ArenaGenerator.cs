@@ -10,13 +10,15 @@ public class ArenaGenerator : MonoBehaviour
 	private GameObject _playersRoot;
 	private GameObject[] _tiles;
 
+	private Vector2[] _spawnPositions;
+
 	[Header("ArenaGenerator References")]
 	[Tooltip("References to players meshes")]
-	public GameObject[] PlayerRef;
+	public GameObject[] PlayerRef = new GameObject[4];
 	[Tooltip("References to players meshes")]
-	public Material[] SpritesIDMaterialRef;
+	public Material[] SpritesIDMaterialRef = new Material[4];
 	[Tooltip("Names of the pools required to build the level")]
-	public string[] RequiredPools;
+	public List<string> RequiredPools = new List<string>();
 
 	[Header("ArenaGenerator Options")]
 	[Tooltip("Size of the level")]
@@ -31,10 +33,6 @@ public class ArenaGenerator : MonoBehaviour
 	public int ObstaclesQuantity = 10;
 	[Tooltip("Obstacles probability decrease")]
 	public int ObstaclesDecrease = 10;
-
-	[Header("ArenaGenerator Debug")]
-	public Material DebugMaterialSpawn;
-	public Material DebugMaterialObstacle;
 
 	[HideInInspector]
 	public Spawn[] Spawns;
@@ -53,7 +51,7 @@ public class ArenaGenerator : MonoBehaviour
 	}
 
 	public void CreateArena () {
-		for (var r = 0; r < RequiredPools.Length; ++r)
+		for (var r = 0; r < RequiredPools.Count; ++r)
 		{
 			if (!GameObjectPool.PoolExists(RequiredPools[r]))
 			{
@@ -106,30 +104,28 @@ public class ArenaGenerator : MonoBehaviour
 	{
 		int dist = SpawnDistanceFromBorder;
 
-		Vector2[] spawnPositions = new Vector2[4];
-		spawnPositions[0] = new Vector2(dist, dist);
-		spawnPositions[1] = new Vector2(dist, Size - dist);
-		spawnPositions[2] = new Vector2(Size - dist, dist);
-		spawnPositions[3] = new Vector2(Size - dist, Size - dist);
+		_spawnPositions = new Vector2[4];
+		_spawnPositions[0] = new Vector2(dist, dist);
+		_spawnPositions[1] = new Vector2(dist, Size - dist - 1);
+		_spawnPositions[2] = new Vector2(Size - dist - 1, dist);
+		_spawnPositions[3] = new Vector2(Size - dist - 1, Size - dist - 1);
 
 		Spawns = new Spawn[4];
 		for (var s = 0; s < Spawns.Length; ++s)
 		{
-			int target = Mathf.FloorToInt(spawnPositions[s].x + spawnPositions[s].y * Size);
+			int target = Mathf.FloorToInt(_spawnPositions[s].x + _spawnPositions[s].y * Size);
 			GameObject tile = _tiles[target];
-			tile.GetComponent<MeshRenderer>().material = DebugMaterialSpawn;
 			Spawns[s] = tile.AddComponent<Spawn>();
 		}
 	}
 
 	public void CreateObstacles ()
 	{
-		Collider[] hitColliders = Physics.OverlapSphere(transform.position, Size * 0.5f * TileScale);
+		Collider[] hitColliders = Physics.OverlapSphere(transform.position, Size * 0.5f * TileScale, LayerMask.GetMask("Ground"));
 		List<GameObject> tiles = new List<GameObject>();
 		for (var c = 0; c < hitColliders.Length; ++c)
 		{
 			tiles.Add(hitColliders[c].gameObject);
-			hitColliders[c].gameObject.GetComponent<MeshRenderer>().material = DebugMaterialObstacle;
 		}
 		// Faire pop des patterns d'obstacles (des rangées de 1 à 4 obstacles)
 
@@ -218,6 +214,46 @@ public class ArenaGenerator : MonoBehaviour
 			if (Spawns[s] != null)
 			{
 				Spawns[s].ActivatePlayer();
+			}
+		}
+	}
+
+	void OnDrawGizmos ()
+	{
+		int dist = SpawnDistanceFromBorder;
+
+		Vector2[] spawnPositions = new Vector2[4];
+		spawnPositions[0] = new Vector2(dist, dist);
+		spawnPositions[1] = new Vector2(dist, Size - dist - 1);
+		spawnPositions[2] = new Vector2(Size - dist - 1, dist);
+		spawnPositions[3] = new Vector2(Size - dist - 1, Size - dist - 1);
+
+		Gizmos.color = Color.green;
+		Gizmos.DrawWireCube(transform.position + new Vector3(-0.5f * TileScale, 0, -0.5f * TileScale), new Vector3(Size * TileScale + 0.1f, TileScale + 0.2f, Size * TileScale + 0.1f));
+
+		for (var i = 0; i < Size * Size; ++i)
+		{
+			int x = i % Size;
+			int z = Mathf.FloorToInt(i / Size);
+
+			bool spawn = false;
+			for(var s = 0; s < spawnPositions.Length; ++s)
+			{
+				if(x == spawnPositions[s].x && z == spawnPositions[s].y)
+				{
+					spawn = true;
+					break;
+				}
+			}
+			if(spawn)
+			{
+				Gizmos.color = Color.red;
+				Gizmos.DrawCube(new Vector3(-Size * 0.5f * TileScale + x * TileScale, 0, -Size * 0.5f * TileScale + z * TileScale), new Vector3(TileScale, TileScale, TileScale));
+			}
+			else
+			{
+				Gizmos.color = Color.yellow;
+				Gizmos.DrawWireCube(new Vector3(-Size * 0.5f * TileScale + x * TileScale, 0, -Size * 0.5f * TileScale + z * TileScale), new Vector3(TileScale, TileScale, TileScale));
 			}
 		}
 	}
