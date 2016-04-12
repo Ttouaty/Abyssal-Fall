@@ -4,16 +4,22 @@ using System.Collections;
 
 public class GameManager : MonoBehaviour
 {
+	public static GameManager instance;
+
 	private Text _loadingType;
 	private int _index;
 	private Loadable[] _loadables;
 	private Camera _camera;
 
 	public GameObject LoadingScreen;
+	public GameObject CountdownScreen;
 	public Arena Arena;
+	public GameObject[] PlayersRefs;
 
 	void Awake ()
 	{
+		instance = this;
+
 		if(Arena == null)
 		{
 			Debug.LogError("Arena reference is missing");
@@ -73,5 +79,7 @@ public class GameManager : MonoBehaviour
 	{
 		_loadingType.text = "Building Arena";
 		Arena.Init();
+		Arena.StartGame();
+		LoadingScreen.SetActive(false);
 	}
 }

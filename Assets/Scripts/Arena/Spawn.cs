@@ -1,15 +1,23 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Spawn : MonoBehaviour {
+public class Spawn : MonoBehaviour
+{
+	private GameObject _player;
 
-	// Use this for initialization
-	void Start () {
-	
+	void Start ()
+	{
+		GetComponent<MeshRenderer>().material.color = Color.red;
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+
+	public void SpawnPlayer (int playerId)
+	{
+		_player = (GameObject) Instantiate(GameManager.instance.PlayersRefs[playerId], transform.position + Vector3.up, Quaternion.identity);
+		_player.GetComponent<PlayerController>().enabled = false;
+	}
+
+	public void ActivatePlayer ()
+	{
+		_player.GetComponent<PlayerController>().enabled = true;
 	}
 }
