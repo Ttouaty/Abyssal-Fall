@@ -172,7 +172,7 @@ public class PlayerController : MonoBehaviour
 				{
 					if (_hit.transform.gameObject.layer == LayerMask.NameToLayer("Ground"))
 					{
-						_hit.transform.GetComponent<Tile>().ReduceTime();
+						_hit.transform.GetComponent<Tile>().ActivateFall();
 					}
 				}
 			}
@@ -197,5 +197,14 @@ public class PlayerController : MonoBehaviour
 	{
 		_rigidB.velocity = new Vector3(_activeSpeed.x, _activeSpeed.y, _activeSpeed.z);
 	}
+
+
 	#endregion
+
+
+	public void Kill()
+	{
+		Debug.Log("Player is DED!");
+	}
+
 }

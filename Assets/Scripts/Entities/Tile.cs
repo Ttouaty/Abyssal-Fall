@@ -8,6 +8,7 @@ public class Tile : MonoBehaviour {
 	private float _timeLeft = 0.5f;
 
 	private Rigidbody _rigidB;
+	private bool _isTouched = false;
 
 	void Start () 
 	{
@@ -20,18 +21,38 @@ public class Tile : MonoBehaviour {
 	
 	}
 
-	public void ReduceTime()
+
+	public void ActivateFall()
 	{
-		_timeLeft -= Time.deltaTime;
-		if (_timeLeft <= 0)
-		{
-			Fall();
-		}
+		if (_isTouched)
+			return;
+
+		_isTouched = true;
+		StartCoroutine(FallCoroutine());
 	}
+
+	IEnumerator FallCoroutine()
+	{
+		while (_timeLeft > 0)
+		{
+			_timeLeft -= Time.deltaTime;
+			yield return new WaitForEndOfFrame();
+		}
+
+		_rigidB.isKinematic = false;
+	}
+
+	//public void ReduceTime()
+	//{
+	//	_timeLeft -= Time.deltaTime;
+	//	if (_timeLeft <= 0)
+	//	{
+	//		Fall();
+	//	}
+	//}
 
 	private void Fall()
 	{
-		Debug.Log("ass");
 		_rigidB.isKinematic = false;
 	}
 }
