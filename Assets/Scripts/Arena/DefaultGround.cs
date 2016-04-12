@@ -16,6 +16,6 @@ public class DefaultGround : Ground
 
 	void OnMouseDown()
 	{
-		GameObjectPool.AddObjectIntoPool(this);
+		GameObjectPool.AddObjectIntoPool(gameObject);
 	}
 }

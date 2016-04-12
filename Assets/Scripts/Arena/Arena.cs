@@ -6,18 +6,23 @@ using System.Collections;
 public class Arena : MonoBehaviour
 {
 	private ArenaGenerator _generator;
-	public GameObject _playerRef;
+
+	[Header("Arena Options")]
+	[Tooltip("References to players meshes")]
+	public GameObject[] PlayerRef;
 
 	// Use this for initialization
 	public void Init () {
 		_generator = GetComponent<ArenaGenerator>();
+
+		// Start initialisation of arena field
 		_generator.CreateArena();
 		_generator.CreateSpawns();
 	}
 
 	public void StartGame ()
 	{
-		StartCoroutine(CountDown(5));
+		StartCoroutine(CountDown(3));
 	}
 
 	private IEnumerator CountDown(int startValue)
@@ -26,10 +31,16 @@ public class Arena : MonoBehaviour
 
 		for (int s = 0; s < _generator.Spawns.Length; ++s)
 		{
-			_generator.Spawns[s].SpawnPlayer(s);
+			if (_generator.Spawns[s] != null && PlayerRef[s] != null)
+			{
+				_generator.Spawns[s].SpawnPlayer(s, PlayerRef[s]);
+			}
 		}
 
 		Text countDown = gm.CountdownScreen.transform.FindChild("CountDown").GetComponent<Text>();
+
+		countDown.text = "Ready ?";
+		yield return new WaitForSeconds(1);
 
 		gm.CountdownScreen.SetActive(true);
 		while (startValue > 0)
@@ -38,11 +49,18 @@ public class Arena : MonoBehaviour
 			startValue--;
 			yield return new WaitForSeconds(1);
 		}
+
+		countDown.text = "Go !!!";
+		yield return new WaitForSeconds(1);
+
 		gm.CountdownScreen.SetActive(false);
 
 		for(int s = 0; s < _generator.Spawns.Length; ++s)
 		{
-			_generator.Spawns[s].ActivatePlayer();
+			if (_generator.Spawns[s] != null)
+			{
+				_generator.Spawns[s].ActivatePlayer();
+			}
 		}
 	}
 }

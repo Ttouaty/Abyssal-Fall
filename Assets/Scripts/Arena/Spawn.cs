@@ -3,6 +3,9 @@ using System.Collections;
 
 public class Spawn : MonoBehaviour
 {
+	[HideInInspector]
+	public Arena ArenaRef;
+
 	private GameObject _player;
 
 	void Start ()
@@ -10,9 +13,10 @@ public class Spawn : MonoBehaviour
 		GetComponent<MeshRenderer>().material.color = Color.red;
 	}
 
-	public void SpawnPlayer (int playerId)
+	public void SpawnPlayer (int playerId, GameObject playerRef)
 	{
-		_player = (GameObject) Instantiate(GameManager.instance.PlayersRefs[playerId], transform.position + Vector3.up, Quaternion.identity);
+		_player = (GameObject) Instantiate(playerRef, transform.position + Vector3.up, Quaternion.identity);
+		_player.name = "PLayer_" + playerId;
 		_player.GetComponent<PlayerController>().enabled = false;
 	}
 

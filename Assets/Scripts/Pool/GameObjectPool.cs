@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -7,7 +6,7 @@ using System.Collections.Generic;
 public struct Pool
 {
 	public string Name;
-	public Poolable Prefab;
+	public GameObject Prefab;
 	public int Quantity;
 
 	[HideInInspector]
@@ -17,7 +16,7 @@ public struct Pool
 	public GameObject Root;
 
 	[HideInInspector]
-	public List<Poolable> Reserve;
+	public List<GameObject> Reserve;
 }
 
 public class GameObjectPool : Loadable
@@ -29,14 +28,14 @@ public class GameObjectPool : Loadable
 
 	public static GameObject GetAvailableObject (string poolName)
 	{
-		for(var i = 0; i < instance._pools.Length; ++i)
+		for(var i = 0; i < instance.Pools.Count; ++i)
 		{
-			Pool pool = instance._pools[i];
+			Pool pool = instance.Pools[i];
 			if(pool.Name.CompareTo(poolName) == 0)
 			{
 				if(pool.Reserve.Count > 0)
 				{
-					Poolable go = pool.Reserve[0];
+					GameObject go = pool.Reserve[0];
 					go.transform.parent = null;
 					go.gameObject.SetActive(true);
 
@@ -57,12 +56,12 @@ public class GameObjectPool : Loadable
 		return null;
 	}
 
-	public static void AddObjectIntoPool (Poolable go)
+	public static void AddObjectIntoPool (GameObject go)
 	{
-		for (var i = 0; i < instance._pools.Length; ++i)
+		for (var i = 0; i < instance.Pools.Count; ++i)
 		{
-			Pool pool = instance._pools[i];
-			if (pool.Name.CompareTo(go.PoolName) == 0 && pool.Reserve.Count > 0)
+			Pool pool = instance.Pools[i];
+			if (pool.Name.CompareTo(go.GetComponent<Poolable>().PoolName) == 0 && pool.Reserve.Count > 0)
 			{
 				pool.Reserve.Add(go);
 				go.transform.position = new Vector3(-9999.0f, -9999.0f, -9999.0f);
@@ -74,9 +73,9 @@ public class GameObjectPool : Loadable
 
 	public static bool PoolExists (string poolName)
 	{
-		for(var i = 0; i < instance._pools.Length; ++i)
+		for(var i = 0; i < instance.Pools.Count; ++i)
 		{
-			Pool pool = instance._pools[i];
+			Pool pool = instance.Pools[i];
 			if(pool.Name.CompareTo(poolName) == 0)
 			{
 				return true;
@@ -88,8 +87,7 @@ public class GameObjectPool : Loadable
 	/***********
 	* Instance *
 	***********/
-	[SerializeField]
-	private Pool[] _pools;
+	public List<Pool> Pools;
 
 	public int NumberOfInstancesPerFrame = 1000;
 
@@ -105,30 +103,57 @@ public class GameObjectPool : Loadable
 		StartCoroutine(LoadPoolAsync(0));
 	}
 
+	public void AddPool ()
+	{
+		Pools.Add(new Pool());
+	}
+
+	public void RemovePool (Pool pool)
+	{
+		Pools.Remove(pool);
+	}
+
+	public void DuplicatePool (Pool pool)
+	{
+		Pool newPool = new Pool();
+		newPool.Name = pool.Name + "Copy";
+		newPool.Prefab = pool.Prefab;
+		newPool.Quantity = pool.Quantity;
+
+		Pools.Add(newPool);
+	}
+
 	private IEnumerator LoadPoolAsync (int index)
 	{
 		Vector3 position = new Vector3(-9999.0f, -9999.0f, -9999.0f);
 
-		if(index == _pools.Length)
+		if(index == Pools.Count)
 		{
 			OnLoadComplete.Invoke();
 			yield break;
 		}
 		else
 		{
-			Pool pool = _pools[index];
+			Pool pool = Pools[index];
+
+			Poolable test = pool.Prefab.GetComponent<Poolable>();
+			if(test == null)
+			{
+				Debug.LogError("The prefab for the pool " + pool.Name + " doesn't have the Poolable component. Please attach it to your prefab !");
+				Debug.Break();
+			}
 
 			pool.QuantityLoaded = 0;
 			pool.Root = new GameObject(pool.Name);
 			pool.Root.transform.parent = transform;
-			pool.Reserve = new List<Poolable>();
+			pool.Reserve = new List<GameObject>();
 
 			while(pool.QuantityLoaded < pool.Quantity)
 			{
 				int diff = Mathf.Min(pool.Quantity - pool.QuantityLoaded, NumberOfInstancesPerFrame);
 				for(int i = 0; i < diff; ++i)
 				{
-					Poolable go = (Poolable) Instantiate(pool.Prefab, position, Quaternion.identity);
+					GameObject go = (GameObject) Instantiate(pool.Prefab, position, Quaternion.identity);
 					go.transform.parent = pool.Root.transform;
 					go.gameObject.SetActive(false);
 					go.name = pool.Name + "_" + pool.QuantityLoaded.ToString();
@@ -140,7 +165,7 @@ public class GameObjectPool : Loadable
 				}
 				yield return null;
 			}
-			_pools[index] = pool;
+			Pools[index] = pool;
 
 			StartCoroutine(LoadPoolAsync(++index));
 		}
