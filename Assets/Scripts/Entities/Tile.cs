@@ -5,7 +5,7 @@ using System.Collections;
 public class Tile : MonoBehaviour {
 
 	[SerializeField]
-	private float _timeLeft = 0.5f;
+	private float _timeLeft = 0.8f;
 
 	private Rigidbody _rigidB;
 	private bool _isTouched = false;
