@@ -78,7 +78,6 @@ public class GameManager : MonoBehaviour
 	void OnAllLoadablesLoaded()
 	{
 		_loadingType.text = "Building Arena";
-		Arena.Init();
 		Arena.StartGame();
 		LoadingScreen.SetActive(false);
 	}

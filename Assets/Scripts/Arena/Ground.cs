@@ -1,20 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Ground : Poolable
+public class Ground : MonoBehaviour
 {
-	public GroundConfig Config;
-
-	[SerializeField]
-	private float _hitPoints;
-
-	virtual public void Start ()
-	{
-		if(Config.Material != null)
-		{
-			GetComponent<MeshRenderer>().material = Config.Material;
-		}
-
-		_hitPoints = Config.HitPoints;
-	}
+	public GameObject Obstacle;
+	public GameObject TileForward;
+	public GameObject TileRight;
+	public GameObject TileBack;
+	public GameObject TileLeft;
 }
