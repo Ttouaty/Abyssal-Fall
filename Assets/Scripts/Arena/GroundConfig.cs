@@ -6,5 +6,5 @@ public class GroundConfig : ScriptableObject
 {
 	public string ConfigName = "DefaultGroundConfig";
 	public Material Material = null;
-	public int HitPoints = 10;
+	public float HitPoints = 10;
 }

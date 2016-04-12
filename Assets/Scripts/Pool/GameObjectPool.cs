@@ -7,7 +7,7 @@ using System.Collections.Generic;
 public struct Pool
 {
 	public string Name;
-	public GameObject Prefab;
+	public Poolable Prefab;
 	public int Quantity;
 
 	[HideInInspector]
@@ -17,7 +17,7 @@ public struct Pool
 	public GameObject Root;
 
 	[HideInInspector]
-	public List<GameObject> Reserve;
+	public List<Poolable> Reserve;
 }
 
 public class GameObjectPool : Loadable
@@ -36,13 +36,13 @@ public class GameObjectPool : Loadable
 			{
 				if(pool.Reserve.Count > 0)
 				{
-					GameObject go = pool.Reserve[0];
+					Poolable go = pool.Reserve[0];
 					go.transform.parent = null;
-					go.SetActive(true);
+					go.gameObject.SetActive(true);
 
 					pool.Reserve.RemoveAt(0);
 
-					return go;
+					return go.gameObject;
 				}
 				else
 				{
@@ -57,16 +57,16 @@ public class GameObjectPool : Loadable
 		return null;
 	}
 
-	public static void AddObjectIntoPool (string poolName, GameObject go)
+	public static void AddObjectIntoPool (Poolable go)
 	{
 		for (var i = 0; i < instance._pools.Length; ++i)
 		{
 			Pool pool = instance._pools[i];
-			if (pool.Name.CompareTo(poolName) == 0 && pool.Reserve.Count > 0)
+			if (pool.Name.CompareTo(go.PoolName) == 0 && pool.Reserve.Count > 0)
 			{
 				pool.Reserve.Add(go);
 				go.transform.position = new Vector3(-9999.0f, -9999.0f, -9999.0f);
-				go.SetActive(false);
+				go.gameObject.SetActive(false);
 				go.transform.parent = pool.Root.transform;
 			}
 		}
@@ -121,17 +121,18 @@ public class GameObjectPool : Loadable
 			pool.QuantityLoaded = 0;
 			pool.Root = new GameObject(pool.Name);
 			pool.Root.transform.parent = transform;
-			pool.Reserve = new List<GameObject>();
+			pool.Reserve = new List<Poolable>();
 
 			while(pool.QuantityLoaded < pool.Quantity)
 			{
 				int diff = Mathf.Min(pool.Quantity - pool.QuantityLoaded, NumberOfInstancesPerFrame);
 				for(int i = 0; i < diff; ++i)
 				{
-					GameObject go = (GameObject) Instantiate(pool.Prefab, position, Quaternion.identity);
+					Poolable go = (Poolable) Instantiate(pool.Prefab, position, Quaternion.identity);
 					go.transform.parent = pool.Root.transform;
-					go.SetActive(false);
+					go.gameObject.SetActive(false);
 					go.name = pool.Name + "_" + pool.QuantityLoaded.ToString();
+					go.GetComponent<Poolable>().PoolName = pool.Name;
 
 					pool.Reserve.Add(go);
 

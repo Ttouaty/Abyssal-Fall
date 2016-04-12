@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class DefaultGround : MonoBehaviour
-{
+public class Spawn : MonoBehaviour {
+
 	// Use this for initialization
 	void Start () {
 	
@@ -10,11 +10,6 @@ public class DefaultGround : MonoBehaviour
 	
 	// Update is called once per frame
 	void Update () {
-
-	}
-
-	void OnMouseDown()
-	{
-		GameObjectPool.AddObjectIntoPool("Test", gameObject);
+	
 	}
 }
