@@ -13,6 +13,8 @@ public class ArenaGenerator : MonoBehaviour
 	[Header("ArenaGenerator References")]
 	[Tooltip("References to players meshes")]
 	public GameObject[] PlayerRef;
+	[Tooltip("References to players meshes")]
+	public Material[] SpritesIDMaterialRef;
 	[Tooltip("Names of the pools required to build the level")]
 	public string[] RequiredPools;
 
@@ -71,15 +73,6 @@ public class ArenaGenerator : MonoBehaviour
 				tile.transform.position = new Vector3(-Size * 0.5f * TileScale + x * TileScale, 0, -Size * 0.5f * TileScale + z * TileScale);
 				tile.transform.parent = _tilesRoot.transform;
 				_tiles[x + z * Size] = tile;
-
-				/*if (x > 0)
-				{
-					ground.TileLeft = _tiles[x - 1 + z * Size];
-				}
-				if (x < Size)
-				{
-					ground.TileLeft = _tiles[x - 1 + z * Size];
-				}*/
 			}
 		}
 
@@ -212,7 +205,7 @@ public class ArenaGenerator : MonoBehaviour
 		{
 			if (Spawns[s] != null && PlayerRef[s] != null)
 			{
-				GameObject player = Spawns[s].SpawnPlayer(s, PlayerRef[s]);
+				GameObject player = Spawns[s].SpawnPlayer(s, PlayerRef[s], SpritesIDMaterialRef[s]);
 				player.transform.parent = _playersRoot.transform;
 			}
 		}

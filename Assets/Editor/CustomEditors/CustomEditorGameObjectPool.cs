@@ -68,7 +68,7 @@ public class CustomEditorGameObjectPool : Editor
 		EditorGUILayout.BeginVertical("box");
 		{
 			EditorGUILayout.LabelField("Options", EditorStyles.boldLabel);
-			myTarget.NumberOfInstancesPerFrame = EditorGUILayout.IntField("Quantity: ", myTarget.NumberOfInstancesPerFrame);
+			myTarget.NumberOfInstancesPerFrame = EditorGUILayout.IntField("Quantity Generated per frame: ", myTarget.NumberOfInstancesPerFrame);
 		}
 		EditorGUILayout.EndVertical();
 	}
