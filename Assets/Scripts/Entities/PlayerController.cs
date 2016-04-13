@@ -74,7 +74,9 @@ public class PlayerController : MonoBehaviour
 	private bool _allowInput = true;
 	private bool _isGrounded = false;
 	private bool _isStunned = false;
-	private bool _isInvul = false;
+	
+	[HideInInspector]
+	public bool _isInvul = false;
 
 	private bool _canFire
 	{
@@ -96,6 +98,7 @@ public class PlayerController : MonoBehaviour
 	{
 		_transf = transform;
 		_rigidB = GetComponent<Rigidbody>();
+		GameObjectPool.instance.Init();
 	}
 
 	void Update()
@@ -242,7 +245,7 @@ public class PlayerController : MonoBehaviour
 		_animator.SetTrigger("Throw");
 		_hammerCooldown = _hammerRechargeRate;
 		_hammerPropModel.GetComponent<Renderer>().enabled = false;
-		GameObjectPool.GetAvailableObject("Hammer").GetComponent<Hammer>().Launch(transform.forward, PlayerNumber);
+		GameObjectPool.GetAvailableObject("Hammer").GetComponent<Hammer>().Launch(transform.position + transform.forward, transform.forward, PlayerNumber);
 	}
 
 	public void Kill()

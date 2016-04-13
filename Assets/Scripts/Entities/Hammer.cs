@@ -16,11 +16,18 @@ public class Hammer : MonoBehaviour {
 		GetComponent<Collider>().isTrigger = true;
 	}
 
-	public void Launch(Vector3 Direction, int ShooterNumber)
+	public void Launch(Vector3 Position, Vector3 Direction, int ShooterNumber)
 	{
+		if (_rigidB == null)
+			_rigidB = GetComponent<Rigidbody>();
+
 		gameObject.SetActive(true);
 		_playerNumber = ShooterNumber;
+
+		transform.localScale = Vector3.one * 2;
+		transform.position = Position;
 		transform.rotation = Quaternion.LookRotation(Direction, Vector3.up);
+
 		_rigidB.velocity = Direction.normalized * _speed;
 	}
 
@@ -30,7 +37,7 @@ public class Hammer : MonoBehaviour {
 		if (this.gameObject.activeSelf)
 		{
 			this._rigidB.velocity = Vector3.zero;
-			this.gameObject.SetActive(false);
+			GameObjectPool.AddObjectIntoPool(gameObject);
 		}
 	}
 
@@ -38,10 +45,10 @@ public class Hammer : MonoBehaviour {
 	{
 		if (Collider.tag == "Player")
 		{
-			if (Collider.GetComponent<PlayerController>().PlayerNumber == _playerNumber)
+			if (Collider.GetComponent<PlayerController>().PlayerNumber == _playerNumber || Collider.GetComponent<PlayerController>()._isInvul)
 				return;
 
-			Collider.GetComponent<PlayerController>().Damage(_rigidB.velocity, _stunInflicted);
+			Collider.GetComponent<PlayerController>().Damage(_rigidB.velocity + Vector3.up * 3, _stunInflicted);
 			// explosion particules
 			this.Stop();
 		}
