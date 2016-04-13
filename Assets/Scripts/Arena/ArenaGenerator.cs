@@ -9,7 +9,11 @@ public class ArenaGenerator : MonoBehaviour
 	private GameObject _tilesRoot;
 	private GameObject _obstaclesRoot;
 	private GameObject _playersRoot;
-	private GameObject[] _tiles;
+	private List<GameObject> _tiles;
+	private List<GameObject> _obstacles;
+
+	private int _groundsDropped;
+	private int _obstaclessDropped;
 
 	private Vector2[] _spawnPositions;
 
@@ -38,13 +42,29 @@ public class ArenaGenerator : MonoBehaviour
 	[HideInInspector]
 	public Spawn[] Spawns;
 
+	void Awake ()
+	{
+		_groundsDropped = 0;
+		_obstaclessDropped = 0;
+
+		int dist = SpawnDistanceFromBorder;
+		_spawnPositions = new Vector2[4];
+		_spawnPositions[0] = new Vector2(dist, dist);
+		_spawnPositions[1] = new Vector2(dist, Size - dist - 1);
+		_spawnPositions[2] = new Vector2(Size - dist - 1, dist);
+		_spawnPositions[3] = new Vector2(Size - dist - 1, Size - dist - 1);
+	}
+
 	void Start ()
 	{
+		_tiles = new List<GameObject>();
 		_tilesRoot = new GameObject("Tiles");
 		_tilesRoot.transform.parent = transform;
 
+		_obstacles = new List<GameObject>();
 		_obstaclesRoot = new GameObject("Obstacles");
 		_obstaclesRoot.transform.parent = transform;
+		_obstaclesRoot.transform.position = new Vector3(0, TileScale * 1, 0);
 
 		_playersRoot = new GameObject("Players");
 		_playersRoot.transform.parent = transform;
@@ -71,21 +91,20 @@ public class ArenaGenerator : MonoBehaviour
 			}
 		}
 
-		_tiles = new GameObject[Size * Size];
-
+		int index = 0;
 		for (var z = 0; z < Size; ++z)
 		{
 			for (var x = 0; x < Size; ++x)
 			{
 				GameObject tile = GameObjectPool.GetAvailableObject("Ground");
 				tile.transform.localScale = new Vector3(TileScale, TileScale, TileScale);
-				tile.transform.position = new Vector3(-Size * 0.5f * TileScale + x * TileScale, -100, -Size * 0.5f * TileScale + z * TileScale);
+				tile.transform.position = new Vector3(-Size * 0.5f * TileScale + x * TileScale, Camera.main.transform.position.y + (index++ % Size), -Size * 0.5f * TileScale + z * TileScale);
 				tile.transform.parent = _tilesRoot.transform;
-				_tiles[x + z * Size] = tile;
+				_tiles.Add(tile);
 			}
 		}
 
-		for(int t = 0; t < _tiles.Length; ++t)
+		for(int t = 0; t < _tiles.Count; ++t)
 		{
 			Ground ground = _tiles[t].GetComponent<Ground>();
 
@@ -113,13 +132,6 @@ public class ArenaGenerator : MonoBehaviour
 
 	public void CreateSpawns()
 	{
-		int dist = SpawnDistanceFromBorder;
-
-		_spawnPositions = new Vector2[4];
-		_spawnPositions[0] = new Vector2(dist, dist);
-		_spawnPositions[1] = new Vector2(dist, Size - dist - 1);
-		_spawnPositions[2] = new Vector2(Size - dist - 1, dist);
-		_spawnPositions[3] = new Vector2(Size - dist - 1, Size - dist - 1);
 
 		Spawns = new Spawn[4];
 		for (var s = 0; s < Spawns.Length; ++s)
@@ -138,9 +150,7 @@ public class ArenaGenerator : MonoBehaviour
 		{
 			tiles.Add(hitColliders[c].gameObject);
 		}
-		Debug.Log(hitColliders[0]);
-		Debug.Break();
-		// Faire pop des patterns d'obstacles (des rangées de 1 à 4 obstacles)
+
 
 		for (int o = 0; o < ObstaclesQuantity; ++o)
 		{
@@ -151,9 +161,12 @@ public class ArenaGenerator : MonoBehaviour
 			GameObject obstacle = GameObjectPool.GetAvailableObject("Obstacle");
 
 			tiles.RemoveAt(index);
+
 			ground.Obstacle = obstacle;
-			obstacle.transform.position = tile.transform.position + Vector3.up * TileScale;
 			obstacle.transform.parent = _obstaclesRoot.transform;
+			obstacle.transform.position = new Vector3(tile.transform.position.x, Camera.main.transform.position.y + 1, tile.transform.position.z);
+
+			_obstacles.Add(obstacle);
 
 			CreateObstacleTrail(tiles, direction, tile, 80);
 		}
@@ -197,8 +210,10 @@ public class ArenaGenerator : MonoBehaviour
 			{
 				GameObject obstacle = GameObjectPool.GetAvailableObject("Obstacle");
 				ground.Obstacle = obstacle;
-				obstacle.transform.position = nextTile.transform.position + Vector3.up * TileScale;
 				obstacle.transform.parent = _obstaclesRoot.transform;
+				obstacle.transform.position = new Vector3(tile.transform.position.x, Camera.main.transform.position.y + 1, tile.transform.position.z);
+
+				_obstacles.Add(obstacle);
 
 				tiles.Remove(nextTile);
 			}
@@ -218,52 +233,82 @@ public class ArenaGenerator : MonoBehaviour
 			}
 		}
 	}
-
-	private int _elementsDropped = 0;
-
-	public IEnumerator DropElements ()
+	public IEnumerator DropArena ()
 	{
-		Debug.Log("Start Drop Elements");
-		List<GameObject> tiles = new List<GameObject>();
-		for(var i = 0; i < _tiles.Length; ++i)
-		{
-			tiles.Add(_tiles[i]);
-		}
-		tiles.Shuffle();
+		yield return DropGrounds();
+		CreateObstacles();
+		yield return DropObstacles();
+	}
 
-		for(int t = 0; t < tiles.Count; t += 5)
+	public IEnumerator DropGrounds ()
+	{
+		int ligne = 0;
+		for (int t = 0; t < _tiles.Count; t += Size)
 		{
-			for(int s = 0; s < 5; ++s)
+			float delay = 0.05f * ligne;
+			for(int i = 0; i < Size; ++i)
 			{
-				StartCoroutine(DropElement(tiles[t+s], 0.002f * (t + s)));
+				StartCoroutine(DropGround(_tiles[t+i], delay, i, _tiles[t+i].transform.position.y));
 			}
-			Debug.Log("Drop Elements");
+			++ligne;
 		}
-		while(_elementsDropped < tiles.Count)
+		while (_groundsDropped < _tiles.Count)
 		{
 			yield return null;
 		}
-
-		Debug.Log("End Drop Elements");
-		yield return null;
 	}
 
-	private IEnumerator DropElement (GameObject element, float delay)
+	private IEnumerator DropGround(GameObject element, float delay, float pos, float initY)
 	{
 		yield return new WaitForSeconds(delay);
 
-		float timer = 0;
-		float initialY = element.transform.position.z;
+		float timer = -pos * 0.05f;
+		float initialY = initY;
 
 		while (timer < 1)
 		{
-			timer += Time.deltaTime;
-			float y = Mathf.Lerp(-100, 0, timer);
+			timer += Time.deltaTime * 0.75f;
+			float y = Mathf.Lerp(initialY, 0, timer);
 			element.transform.position = new Vector3(element.transform.position.x, y, element.transform.position.z);
 			yield return null;
 		}
 
-		++_elementsDropped;
+		++_groundsDropped;
+
+		yield return null;
+	}
+
+	public IEnumerator DropObstacles ()
+	{
+		for (int t = 0; t < _obstacles.Count; ++t)
+		{
+			StartCoroutine(DropObstacle(_obstacles[t], 0));
+		}
+		while (_obstaclessDropped < _obstacles.Count)
+		{
+			yield return null;
+		}
+
+		yield return null;
+	}
+
+	private IEnumerator DropObstacle(GameObject element, float delay)
+	{
+		yield return new WaitForSeconds(delay);
+
+		float timer = 0;
+		float initialY = 100;
+
+		while (timer < 1)
+		{
+			timer += Time.deltaTime;
+			float y = Mathf.Lerp(initialY, TileScale, timer);
+			element.transform.position = new Vector3(element.transform.position.x, y, element.transform.position.z);
+			yield return null;
+		}
+
+		element.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
+		++_obstaclessDropped;
 
 		yield return null;
 	}

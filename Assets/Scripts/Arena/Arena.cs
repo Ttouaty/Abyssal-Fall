@@ -27,8 +27,7 @@ public class Arena : MonoBehaviour
 
 	private IEnumerator WaitForElementDropped()
 	{
-		yield return _generator.StartCoroutine(_generator.DropElements());
-		_generator.CreateObstacles();
+		yield return _generator.StartCoroutine(_generator.DropArena());
 		yield return StartCoroutine(CountDown(3));
 	}
 
