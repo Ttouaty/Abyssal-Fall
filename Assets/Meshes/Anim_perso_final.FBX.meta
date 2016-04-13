@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 1faa3d71fd796624185e6d447eb11cb2
-timeCreated: 1460541031
+guid: 30c78a4ad4a7aaf48bd007db27f1a4e9
+timeCreated: 1460554765
 licenseType: Free
 ModelImporter:
   serializedVersion: 18
@@ -27,18 +27,21 @@ ModelImporter:
     3300004: Bras001
     3300006: Pied
     3300008: Pied001
-    4300000: Pied
-    4300002: Bras
-    4300004: Pied001
+    4300000: Box783
+    4300002: Pied001
+    4300004: Pied
     4300006: Bras001
-    4300008: Box783
+    4300008: Bras
     7400000: Run
-    7400002: Take 0010
-    7400004: Take 0011
-    7400006: Dash_Start
-    7400008: Dash_End
-    7400010: Idle
+    7400002: Dash_Start
+    7400004: Dash_End
+    7400006: Idle
+    7400008: Stun
+    7400010: Throw
+    7400012: Death
+    7400014: Win
     9500000: //RootNode
+    11100000: //RootNode
   materials:
     importMaterials: 1
     materialName: 0
@@ -52,7 +55,7 @@ ModelImporter:
     animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
-    animationCompression: 1
+    animationCompression: 3
     animationRotationError: .5
     animationPositionError: .5
     animationScaleError: .5
@@ -63,14 +66,14 @@ ModelImporter:
       name: Run
       takeName: Take 001
       firstFrame: 0
-      lastFrame: 30
+      lastFrame: 20
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
       loop: 0
       loopTime: 1
-      loopBlend: 1
+      loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
       loopBlendPositionXZ: 0
@@ -100,8 +103,8 @@ ModelImporter:
     - serializedVersion: 16
       name: Dash_Start
       takeName: Take 001
-      firstFrame: 36
-      lastFrame: 41
+      firstFrame: 24
+      lastFrame: 29
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -138,8 +141,8 @@ ModelImporter:
     - serializedVersion: 16
       name: Dash_End
       takeName: Take 001
-      firstFrame: 42
-      lastFrame: 51
+      firstFrame: 30
+      lastFrame: 44
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -176,15 +179,167 @@ ModelImporter:
     - serializedVersion: 16
       name: Idle
       takeName: Take 001
-      firstFrame: 53
-      lastFrame: 57
+      firstFrame: 151
+      lastFrame: 155
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
       loop: 0
       loopTime: 1
-      loopBlend: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Box783
+        weight: 1
+      - path: Bras
+        weight: 1
+      - path: Bras001
+        weight: 1
+      - path: Pied
+        weight: 1
+      - path: Pied001
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Stun
+      takeName: Take 001
+      firstFrame: 50
+      lastFrame: 52
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Box783
+        weight: 1
+      - path: Bras
+        weight: 1
+      - path: Bras001
+        weight: 1
+      - path: Pied
+        weight: 1
+      - path: Pied001
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Throw
+      takeName: Take 001
+      firstFrame: 57
+      lastFrame: 68
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Box783
+        weight: 1
+      - path: Bras
+        weight: 1
+      - path: Bras001
+        weight: 1
+      - path: Pied
+        weight: 1
+      - path: Pied001
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Death
+      takeName: Take 001
+      firstFrame: 70
+      lastFrame: 88
+      wrapMode: 4
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Box783
+        weight: 1
+      - path: Bras
+        weight: 1
+      - path: Bras001
+        weight: 1
+      - path: Pied
+        weight: 1
+      - path: Pied001
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Win
+      takeName: Take 001
+      firstFrame: 90
+      lastFrame: 149
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
       loopBlendPositionXZ: 0

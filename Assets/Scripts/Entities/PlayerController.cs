@@ -12,6 +12,7 @@ public struct Dash
 	[SerializeField]
 	public int range;
 
+	[HideInInspector]
 	public bool inProgress;
 }
 
@@ -72,7 +73,6 @@ public class PlayerController : MonoBehaviour
 	private bool _isStunned = false;
 	private bool _isInvul = false;
 
-
 	private bool _canDash
 	{
 		get
@@ -116,14 +116,15 @@ public class PlayerController : MonoBehaviour
 	#region Processes
 	private void ProcessOrientation()
 	{
-		_activeDirection.x = Mathf.Lerp(_activeDirection.x, Input.GetAxis("Horizontal_P" + PlayerNumber), 10 * Time.deltaTime);
-		_activeDirection.z = Mathf.Lerp(_activeDirection.z, Input.GetAxis("Vertical_P" + PlayerNumber), 10 * Time.deltaTime);
-		transform.LookAt(transform.position + _activeDirection, Vector3.up);
+		_activeDirection.x = Mathf.Lerp(_activeDirection.x, Input.GetAxis("Horizontal_P" + PlayerNumber), 15 * Time.deltaTime);
+		_activeDirection.z = Mathf.Lerp(_activeDirection.z, Input.GetAxis("Vertical_P" + PlayerNumber), 15 * Time.deltaTime);
+		transform.LookAt(transform.position + (Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized) * _activeDirection), Vector3.up);
 	}
 
 
 	void ProcessCoolDowns()
 	{
+		_animator.SetFloat("StunTime", _stunTime);
 		if (_stunTime > 0)
 		{
 			_allowInput = false;
@@ -164,7 +165,7 @@ public class PlayerController : MonoBehaviour
 			}
 			_activeSpeed.x = _maxSpeed.x * Input.GetAxis("Horizontal_P" + PlayerNumber);
 			_activeSpeed.z = _maxSpeed.x * Input.GetAxis("Vertical_P" + PlayerNumber);
-			_activeSpeed = _activeSpeed.normalized * _maxSpeed.x;
+			_activeSpeed = Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized) * _activeSpeed.normalized * _maxSpeed.x;
 		}
 		else
 		{
@@ -223,6 +224,7 @@ public class PlayerController : MonoBehaviour
 	public void Kill()
 	{
 		Debug.Log("Player is DED!");
+		_animator.SetTrigger("Death");
 		_isDead = true;
 	}
 
@@ -235,6 +237,12 @@ public class PlayerController : MonoBehaviour
 		_stunTime = stunTime;
 	}
 
+	public void Damage(Vector3 direction, float stunTime)
+	{
+		Eject(direction, stunTime);
+		_animator.SetTrigger("Stun_Start");
+	}
+
 
 	IEnumerator ActivateDash() 
 	{
@@ -243,7 +251,6 @@ public class PlayerController : MonoBehaviour
 		_allowInput = false;
 
 		Eject(transform.forward * dash.range / dash.length + Vector3.up * Physics.gravity.magnitude * -_acceleration.y * dash.length * 0.5f, dash.length + dash.endingLag);
-		_animator.speed = 1;
 		_animator.SetTrigger("Dash_Start");
 
 		GetComponent<Collider>().isTrigger = true;
@@ -275,9 +282,10 @@ public class PlayerController : MonoBehaviour
 
 	void OnTriggerEnter(Collider colli)
 	{
-		if (colli.tag == "Player")
+		if (colli.tag == "Player" && GetComponent<Collider>().isTrigger)
 		{
-			colli.GetComponent<PlayerController>().Eject((colli.transform.position - transform.position) * 5 + Vector3.up * Physics.gravity.magnitude * 0.5f, 0.5f);
+			_rigidB.velocity = new Vector3(0,_rigidB.velocity.y,0);
+			colli.GetComponent<PlayerController>().Damage((colli.transform.position - transform.position) * 5 + Vector3.up * Physics.gravity.magnitude * 0.5f, 0.5f);
 		}
 	}
 

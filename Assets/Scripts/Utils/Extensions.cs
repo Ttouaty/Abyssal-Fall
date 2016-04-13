@@ -5,6 +5,24 @@ using System.Collections.Generic;
 
 public static class Extensions
 {
+	public static Vector3 ZeroX(this Vector3 vect)
+	{
+		vect.x = 0;
+		return vect;
+	}
+
+	public static Vector3 ZeroY(this Vector3 vect)
+	{
+		vect.y = 0;
+		return vect;
+	}
+
+	public static Vector3 ZeroZ(this Vector3 vect)
+	{
+		vect.z = 0;
+		return vect;
+	}
+
 	public static float Reduce(this float number, float amount)
 	{
 		if (Mathf.Abs(number) < Mathf.Abs(amount))

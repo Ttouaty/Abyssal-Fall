@@ -13,11 +13,25 @@ public class CameraManager : MonoBehaviour
 	private Vector3 _baseOffset = Vector3.zero;
 	private Vector3 _playerOffset = Vector3.zero;
 
+	private float _startRotX;
+
 	private GameObject[] _playersRef;
 
 	void Start()
 	{
 		_playersRef = GameObject.FindGameObjectsWithTag("Player");
+		_startRotX = transform.rotation.eulerAngles.x;
+
+		Vector3 cameraCenter = Vector3.zero;
+		for (int i = 0; i < _playersRef.Length; ++i)
+		{
+			cameraCenter += _playersRef[i].transform.position;
+		}
+
+		cameraCenter /= _playersRef.Length;
+		transform.position = new Vector3((_playerOffset + _baseOffset + cameraCenter).x, transform.position.y, (_playerOffset + _baseOffset + cameraCenter).z);
+
+		transform.LookAt(cameraCenter);
 	}
 
 	void Update() {
@@ -43,7 +57,7 @@ public class CameraManager : MonoBehaviour
 
 
 		transform.position = new Vector3(Mathf.Lerp(transform.position.x, (_playerOffset + _baseOffset + cameraCenter).x, 5 * Time.deltaTime), transform.position.y, Mathf.Lerp(transform.position.z, (_playerOffset + _baseOffset + cameraCenter).z, 5 * Time.deltaTime));
-		transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(cameraCenter - transform.position, _camDirection), 1 * Time.deltaTime);
+		//transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(cameraCenter - transform.position, _camDirection), 5 * Time.deltaTime);
 	}
 
 }
