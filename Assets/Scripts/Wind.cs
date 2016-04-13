@@ -34,5 +34,6 @@ public class Wind : MonoBehaviour {
         refTarget.transform.position = refCenter.transform.position + (Quaternion.Euler(new Vector3(0.0f, Time.time*speed, 0.0f))  * new Vector3(0.0f, 0.0f, distance)); 
         refSat.transform.position = refTarget.transform.position + (Quaternion.Euler(new Vector3(0.0f, Time.time * speed*2, 0.0f)) * new Vector3(0.0f, 0.0f, distance/2));
         refSatSat.transform.position = refSat.transform.position + (Quaternion.Euler(new Vector3(0.0f, Time.time * speed * 4, 0.0f)) * new Vector3(0.0f, 0.0f, distance / 4));
+        Debug.Log(position);
     }
 }
