@@ -7,7 +7,6 @@ public class Arena : MonoBehaviour
 {
 	public static Arena instance;
 
-	[Header("Arena Options")]
 	private ArenaGenerator _generator;
 
 	void Awake ()
@@ -23,8 +22,13 @@ public class Arena : MonoBehaviour
 		// Start initialisation of arena field
 		_generator.CreateArena();
 		_generator.CreateSpawns();
-		_generator.CreateObstacles();
-		StartCoroutine(CountDown(3));
+		StartCoroutine(WaitForElementDropped());
+	}
+
+	private IEnumerator WaitForElementDropped()
+	{
+		yield return _generator.StartCoroutine(_generator.DropArena());
+		yield return StartCoroutine(CountDown(3));
 	}
 
 	private IEnumerator CountDown(int startValue)

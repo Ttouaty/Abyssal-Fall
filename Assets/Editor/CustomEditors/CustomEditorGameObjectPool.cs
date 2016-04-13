@@ -71,5 +71,7 @@ public class CustomEditorGameObjectPool : Editor
 			myTarget.NumberOfInstancesPerFrame = EditorGUILayout.IntField("Quantity Generated per frame: ", myTarget.NumberOfInstancesPerFrame);
 		}
 		EditorGUILayout.EndVertical();
+
+		SceneView.RepaintAll();
 	}
 }

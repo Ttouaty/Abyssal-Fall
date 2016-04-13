@@ -43,6 +43,7 @@ public class CustomEditorArenaGenerator : Editor
 					{
 						EditorGUILayout.LabelField("Player " + (i + 1), EditorStyles.boldLabel);
 						myTarget.PlayerRef[i] = (GameObject)EditorGUILayout.ObjectField("Prefab: ", myTarget.PlayerRef[i], typeof(GameObject));
+						myTarget.PlayerMaterialRef[i] = (Material)EditorGUILayout.ObjectField("Player Material: ", myTarget.PlayerMaterialRef[i], typeof(Material));
 						myTarget.SpritesIDMaterialRef[i] = (Material)EditorGUILayout.ObjectField("SpriteID Material: ", myTarget.SpritesIDMaterialRef[i], typeof(Material));
 					}
 					EditorGUILayout.EndVertical();
@@ -60,7 +61,7 @@ public class CustomEditorArenaGenerator : Editor
 					EditorGUILayout.BeginVertical("box");
 					{
 						myTarget.RequiredPools[i] = EditorGUILayout.TextField("Pool name:", myTarget.RequiredPools[i]);
-						if (GUILayout.Button("Delete Pool", GUILayout.Width(80)))
+						if (GUILayout.Button("Delete Pool", GUILayout.ExpandWidth(false)))
 						{
 							myTarget.RequiredPools.Remove(myTarget.RequiredPools[i]);
 						}
@@ -75,5 +76,7 @@ public class CustomEditorArenaGenerator : Editor
 			EditorGUILayout.EndVertical();
 		}
 		EditorGUILayout.EndVertical();
+
+		SceneView.RepaintAll();
 	}
 }
