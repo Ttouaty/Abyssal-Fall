@@ -5,12 +5,13 @@ using System.Collections.Generic;
 
 public class ArenaGenerator : MonoBehaviour
 {
-
+	#region properties
 	private GameObject _tilesRoot;
 	private GameObject _obstaclesRoot;
 	private GameObject _playersRoot;
 	private List<GameObject> _tiles;
 	private List<GameObject> _obstacles;
+	private List<GameObject[]> _obstaclesGroups;
 
 	private int _groundsDropped;
 	private int _obstaclessDropped;
@@ -20,6 +21,8 @@ public class ArenaGenerator : MonoBehaviour
 	[Header("ArenaGenerator References")]
 	[Tooltip("References to players meshes")]
 	public GameObject[] PlayerRef = new GameObject[4];
+	[Tooltip("References to players Materials")]
+	public Material[] PlayerMaterialRef = new Material[4];
 	[Tooltip("References to players meshes")]
 	public Material[] SpritesIDMaterialRef = new Material[4];
 	[Tooltip("Names of the pools required to build the level")]
@@ -41,6 +44,7 @@ public class ArenaGenerator : MonoBehaviour
 
 	[HideInInspector]
 	public Spawn[] Spawns;
+	#endregion
 
 	void Awake ()
 	{
@@ -97,7 +101,7 @@ public class ArenaGenerator : MonoBehaviour
 			for (var x = 0; x < Size; ++x)
 			{
 				GameObject tile = GameObjectPool.GetAvailableObject("Ground");
-				tile.transform.localScale = new Vector3(TileScale, TileScale, TileScale);
+				tile.transform.localScale = new Vector3(1,1,1);
 				tile.transform.position = new Vector3(-Size * 0.5f * TileScale + x * TileScale, Camera.main.transform.position.y + (index++ % Size), -Size * 0.5f * TileScale + z * TileScale);
 				tile.transform.parent = _tilesRoot.transform;
 				_tiles.Add(tile);
@@ -211,7 +215,7 @@ public class ArenaGenerator : MonoBehaviour
 				GameObject obstacle = GameObjectPool.GetAvailableObject("Obstacle");
 				ground.Obstacle = obstacle;
 				obstacle.transform.parent = _obstaclesRoot.transform;
-				obstacle.transform.position = new Vector3(tile.transform.position.x, Camera.main.transform.position.y + 1, tile.transform.position.z);
+				obstacle.transform.position = new Vector3(nextTile.transform.position.x, Camera.main.transform.position.y + 1, nextTile.transform.position.z);
 
 				_obstacles.Add(obstacle);
 
@@ -228,7 +232,7 @@ public class ArenaGenerator : MonoBehaviour
 		{
 			if (Spawns[s] != null && PlayerRef[s] != null)
 			{
-				GameObject player = Spawns[s].SpawnPlayer(s, PlayerRef[s], SpritesIDMaterialRef[s]);
+				GameObject player = Spawns[s].SpawnPlayer(s, PlayerRef[s], PlayerMaterialRef[s], SpritesIDMaterialRef[s]);
 				player.transform.parent = _playersRoot.transform;
 			}
 		}
@@ -298,6 +302,7 @@ public class ArenaGenerator : MonoBehaviour
 
 		float timer = 0;
 		float initialY = 100;
+		element.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
 
 		while (timer < 1)
 		{
@@ -307,13 +312,12 @@ public class ArenaGenerator : MonoBehaviour
 			yield return null;
 		}
 
-		element.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
 		++_obstaclessDropped;
 
 		yield return null;
 	}
 
-	void OnDrawGizmos ()
+	void OnDrawGizmosSelected ()
 	{
 		int dist = SpawnDistanceFromBorder;
 
