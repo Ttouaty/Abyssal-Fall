@@ -21,6 +21,8 @@ public class Spawn : MonoBehaviour
 		_controller.enabled = false;
 		_controller.PlayerNumber = playerId + 1;
 
+		_player.GetComponent<PlayerChangeMaterial>().Target.material = materialRef;
+
 		_spriteId = GameObject.CreatePrimitive(PrimitiveType.Quad);
 		_spriteId.name = "SpriteId_" + playerId;
 		_spriteId.GetComponent<MeshRenderer>().material = idMaterialRef;

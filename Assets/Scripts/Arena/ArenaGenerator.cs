@@ -177,14 +177,12 @@ public class ArenaGenerator : MonoBehaviour
 
 	public void CreateObstacles ()
 	{
-		Collider[] hitColliders = Physics.OverlapSphere(transform.position, Size * 0.5f * TileScale);
+		Collider[] hitColliders = Physics.OverlapSphere(transform.position - new Vector3(TileScale * 0.5f, 0, TileScale * 0.5f), Size * 0.5f * TileScale);
 		List<GameObject> tiles = new List<GameObject>();
 		for (var c = 0; c < hitColliders.Length; ++c)
 		{
 			tiles.Add(hitColliders[c].gameObject);
 		}
-
-		Debug.Log(tiles.Count);
 
 		for (int o = 0; o < ObstaclesQuantity; ++o)
 		{
@@ -240,7 +238,7 @@ public class ArenaGenerator : MonoBehaviour
 
 			Ground nextGround = nextTile.GetComponent<Ground>();
 
-			if (nextGround.Obstacle == null)
+			if (nextGround.Obstacle == null && nextTile.GetComponent<Spawn>() == null)
 			{
 				GameObject obstacle = GameObjectPool.GetAvailableObject("Obstacle");
 				ground.Obstacle = obstacle;
@@ -385,5 +383,8 @@ public class ArenaGenerator : MonoBehaviour
 				Gizmos.DrawWireCube(new Vector3(-Size * 0.5f * TileScale + x * TileScale, 0, -Size * 0.5f * TileScale + z * TileScale), new Vector3(TileScale, TileScale, TileScale));
 			}
 		}
+
+		Gizmos.color = Color.red;
+		Gizmos.DrawWireSphere(transform.position - new Vector3(TileScale * 0.5f, 0, TileScale * 0.5f), Size * 0.5f * TileScale);
 	}
 }

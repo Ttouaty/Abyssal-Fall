@@ -9,7 +9,6 @@ public class GameManager : MonoBehaviour
 	private Text _loadingType;
 	private int _index;
 	private Loadable[] _loadables;
-	private Camera _camera;
 
 	public GameObject LoadingScreen;
 	public GameObject CountdownScreen;
@@ -26,7 +25,6 @@ public class GameManager : MonoBehaviour
 			Debug.Break();
 		}
 
-		_camera = Camera.main;
 		_loadables = GameObject.FindObjectsOfType<Loadable>();
 	}
 

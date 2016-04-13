@@ -27,7 +27,7 @@ public class CustomEditorGameObjectPool : Editor
 						{
 							EditorGUILayout.LabelField(pool.Name != "" ? pool.Name : "Unamed Pool", EditorStyles.boldLabel);
 							pool.Name = EditorGUILayout.TextField("Name: ", pool.Name);
-							pool.Prefab = (GameObject)EditorGUILayout.ObjectField("Prefab: ", pool.Prefab, typeof(GameObject));
+							pool.Prefab = (GameObject)EditorGUILayout.ObjectField("Prefab: ", pool.Prefab, typeof(GameObject), false);
 							pool.Quantity = EditorGUILayout.IntField("Quantity: ", pool.Quantity);
 							EditorGUILayout.BeginHorizontal();
 							{
