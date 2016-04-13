@@ -22,6 +22,9 @@ public class PlayerController : MonoBehaviour
 	[SerializeField]
 	private Dash dash;
 
+
+	[SerializeField]
+	private Animator _animator;
 	#region references
 
 	private Transform _transf;
@@ -33,7 +36,8 @@ public class PlayerController : MonoBehaviour
 	private float _inputRawX;
 	private float _inputRawZ;
 
-	private bool _isDead = false;
+	[HideInInspector]
+	public bool _isDead = false;
 	private Vector3 _activeSpeed = Vector3.zero; // Activespeed est un vecteur qui est appliqué a chaque frame au rigibody.velocity => permet de modifier librement la vitesse du player.
 	private Vector3 _activeDirection = Vector3.forward;
 
@@ -112,8 +116,8 @@ public class PlayerController : MonoBehaviour
 	#region Processes
 	private void ProcessOrientation()
 	{
-		_activeDirection.x = Input.GetAxis("Horizontal_P" + PlayerNumber);
-		_activeDirection.z = Input.GetAxis("Vertical_P" + PlayerNumber);
+		_activeDirection.x = Mathf.Lerp(_activeDirection.x, Input.GetAxis("Horizontal_P" + PlayerNumber), 10 * Time.deltaTime);
+		_activeDirection.z = Mathf.Lerp(_activeDirection.z, Input.GetAxis("Vertical_P" + PlayerNumber), 10 * Time.deltaTime);
 		transform.LookAt(transform.position + _activeDirection, Vector3.up);
 	}
 
@@ -154,18 +158,20 @@ public class PlayerController : MonoBehaviour
 		{
 			if (dash.inProgress)
 			{
-				_activeSpeed.x = _activeSpeed.x.Reduce(_maxSpeed.x * Time.deltaTime * 5);
-				_activeSpeed.z = _activeSpeed.z.Reduce(_maxSpeed.x * Time.deltaTime * 5);
+				_activeSpeed.x = _activeSpeed.x.Reduce(_maxSpeed.x * Time.deltaTime * 2);
+				_activeSpeed.z = _activeSpeed.z.Reduce(_maxSpeed.x * Time.deltaTime * 2);
 				return;
 			}
 			_activeSpeed.x = _maxSpeed.x * Input.GetAxis("Horizontal_P" + PlayerNumber);
 			_activeSpeed.z = _maxSpeed.x * Input.GetAxis("Vertical_P" + PlayerNumber);
+			_activeSpeed = _activeSpeed.normalized * _maxSpeed.x;
 		}
 		else
 		{
-			this._activeSpeed.y += this._acceleration.y * Time.deltaTime * Physics.gravity.magnitude; // * 60 to match old prefabs (bug security)
-			this._activeSpeed.y = Mathf.Clamp(this._activeSpeed.y, -this._maxSpeed.y, this._maxSpeed.y * 10f);
+			_activeSpeed.y += _acceleration.y * Time.deltaTime * Physics.gravity.magnitude;
+			_activeSpeed.y = Mathf.Clamp(_activeSpeed.y, -_maxSpeed.y, _maxSpeed.y * 10f);
 		}
+
 	}
 
 	void ProcessGroundedState()
@@ -194,7 +200,6 @@ public class PlayerController : MonoBehaviour
 			else
 				_isGrounded = false;
 		}
-
 	}
 
 	void ContactGround()
@@ -202,12 +207,13 @@ public class PlayerController : MonoBehaviour
 		_isGrounded = true;
 		_activeSpeed.y = 0f;
 		if(_hit.rigidbody.isKinematic == true)
-			this.transform.position = this.transform.position - (this._snapGround.transform.position - this._hit.point);
+			transform.position = transform.position - (_snapGround.transform.position - _hit.point);
 	}
 
 	void ApplyCharacterFinalVelocity()
 	{
 		_rigidB.velocity = new Vector3(_activeSpeed.x, _activeSpeed.y, _activeSpeed.z);
+		_animator.SetFloat("Speed", Mathf.Abs(_activeSpeed.x) + Mathf.Abs(_activeSpeed.z));
 	}
 
 
@@ -223,10 +229,10 @@ public class PlayerController : MonoBehaviour
 	public void Eject(Vector3 direction, float stunTime)
 	{
 		if (direction.y > 0)
-			this._isGrounded = false;
+			_isGrounded = false;
 
-		this._activeSpeed = direction;
-		this._stunTime = stunTime;
+		_activeSpeed = direction;
+		_stunTime = stunTime;
 	}
 
 
@@ -236,7 +242,9 @@ public class PlayerController : MonoBehaviour
 		_isInvul = true;
 		_allowInput = false;
 
-		Eject(this.transform.forward * dash.range / dash.length + Vector3.up * Physics.gravity.magnitude * -_acceleration.y * dash.length * 0.5f, dash.length + dash.endingLag);
+		Eject(transform.forward * dash.range / dash.length + Vector3.up * Physics.gravity.magnitude * -_acceleration.y * dash.length * 0.5f, dash.length + dash.endingLag);
+		_animator.speed = 1;
+		_animator.SetTrigger("Dash_Start");
 
 		GetComponent<Collider>().isTrigger = true;
 
@@ -253,11 +261,12 @@ public class PlayerController : MonoBehaviour
 		//_playerModel.transform.rotation = transform.rotation;
 		_isInvul = false;
 		GetComponent<Collider>().isTrigger = false;
+		
 		while (!_isGrounded)
 		{
 			yield return null;
 		}
-
+		_animator.SetTrigger("Dash_End");
 		yield return new WaitForSeconds(dash.endingLag);
 
 		dash.inProgress = false;
