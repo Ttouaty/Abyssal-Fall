@@ -33,9 +33,6 @@ public class PlayerController : MonoBehaviour
 
 	#endregion
 
-	//Raw Inputs
-	private float _inputRawX;
-	private float _inputRawZ;
 
 	[HideInInspector]
 	public bool _isDead = false;
@@ -56,22 +53,36 @@ public class PlayerController : MonoBehaviour
 	[SerializeField]
 	private Vector2 _maxSpeed = new Vector2(5f, 10f);
 
-	//Vectors affecting the player
 	[SerializeField]
-	private Vector2 _acceleration = new Vector2(0.1f, 0.1f);
+	private Vector2 _acceleration = new Vector2(1.5f, -1f);
+
+	[Header("Hammer")]
 	[SerializeField]
-	private Vector2 _friction = new Vector2(0.05f, 0);
+	private float _hammerRechargeRate = 3;
+	private float _hammerCooldown = 0;
 
 
 
 	private float _stunTime = 0f; //Secondes of stun on Hit
+	[Header("Models")]
 	[SerializeField]
 	private GameObject _playerModel;
+	[SerializeField]
+	private GameObject _hammerPropModel;
+
 
 	private bool _allowInput = true;
 	private bool _isGrounded = false;
 	private bool _isStunned = false;
 	private bool _isInvul = false;
+
+	private bool _canFire
+	{
+		get
+		{
+			return !dash.inProgress && !_isDead && _hammerCooldown <= 0;
+		}
+	}
 
 	private bool _canDash
 	{
@@ -94,8 +105,6 @@ public class PlayerController : MonoBehaviour
 
 		ProcessCoolDowns();
 
-		_inputRawX = 0;
-		_inputRawZ = 0;
 		if (_allowInput)
 			ProcessInputs();
 
@@ -124,6 +133,15 @@ public class PlayerController : MonoBehaviour
 
 	void ProcessCoolDowns()
 	{
+		if (_hammerCooldown > 0)
+			_hammerCooldown -= Time.deltaTime;
+		else
+		{
+			_hammerPropModel.GetComponent<Renderer>().enabled = true;
+			_hammerCooldown = 0;
+		}
+		
+
 		_animator.SetFloat("StunTime", _stunTime);
 		if (_stunTime > 0)
 		{
@@ -141,15 +159,14 @@ public class PlayerController : MonoBehaviour
 
 	void ProcessInputs()
 	{
-		float deadZone = Input.GetJoystickNames().Length != 0 ? 0.5f : 0.1f;
-		if (Mathf.Abs(Input.GetAxis("Horizontal_P" + PlayerNumber)) > deadZone)
-			_inputRawX = Input.GetAxisRaw("Horizontal_P" + PlayerNumber);
-		if (Mathf.Abs(Input.GetAxis("Vertical_P" + PlayerNumber)) > deadZone)
-			_inputRawZ = Input.GetAxisRaw("Vertical_P" + PlayerNumber);
-
 		if (Input.GetButtonDown("Dash_P" + PlayerNumber) && _canDash)
 		{
 			StartCoroutine(ActivateDash());
+		}
+
+		if (Input.GetButtonDown("Throw_P" + PlayerNumber) && _canFire)
+		{
+			ThrowHammer();
 		}
 	}
 
@@ -220,6 +237,13 @@ public class PlayerController : MonoBehaviour
 
 	#endregion
 
+	private void ThrowHammer()
+	{
+		_animator.SetTrigger("Throw");
+		_hammerCooldown = _hammerRechargeRate;
+		_hammerPropModel.GetComponent<Renderer>().enabled = false;
+		GameObjectPool.GetAvailableObject("Hammer").GetComponent<Hammer>().Launch(transform.forward, PlayerNumber);
+	}
 
 	public void Kill()
 	{
@@ -239,6 +263,8 @@ public class PlayerController : MonoBehaviour
 
 	public void Damage(Vector3 direction, float stunTime)
 	{
+		if (_isInvul)
+			return;
 		Eject(direction, stunTime);
 		_animator.SetTrigger("Stun_Start");
 	}

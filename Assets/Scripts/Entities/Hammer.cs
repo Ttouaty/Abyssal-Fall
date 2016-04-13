@@ -2,13 +2,13 @@
 using System.Collections;
 
 [RequireComponent(typeof(Rigidbody), typeof(Collider))]
-public class Bullet : MonoBehaviour {
+public class Hammer : MonoBehaviour {
 
 	private int _playerNumber;
 	[SerializeField]
-	private int _speed;
+	private int _speed = 10;
 	[SerializeField]
-	private int _stunInflicted;
+	private float _stunInflicted = 0.5f;
 
 	private Rigidbody _rigidB;
 	void Start () {
@@ -40,7 +40,9 @@ public class Bullet : MonoBehaviour {
 		{
 			if (Collider.GetComponent<PlayerController>().PlayerNumber == _playerNumber)
 				return;
-			
+
+			Collider.GetComponent<PlayerController>().Damage(_rigidB.velocity, _stunInflicted);
+			// explosion particules
 			this.Stop();
 		}
 	}

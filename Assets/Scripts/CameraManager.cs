@@ -13,14 +13,11 @@ public class CameraManager : MonoBehaviour
 	private Vector3 _baseOffset = Vector3.zero;
 	private Vector3 _playerOffset = Vector3.zero;
 
-	private float _startRotX;
-
 	private GameObject[] _playersRef;
 
 	void Start()
 	{
 		_playersRef = GameObject.FindGameObjectsWithTag("Player");
-		_startRotX = transform.rotation.eulerAngles.x;
 
 		Vector3 cameraCenter = Vector3.zero;
 		for (int i = 0; i < _playersRef.Length; ++i)
