@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 public class ArenaGenerator : MonoBehaviour
 {
+
 	private GameObject _tilesRoot;
 	private GameObject _obstaclesRoot;
 	private GameObject _playersRoot;
@@ -37,7 +38,6 @@ public class ArenaGenerator : MonoBehaviour
 	[HideInInspector]
 	public Spawn[] Spawns;
 
-	// Use this for initialization
 	void Start ()
 	{
 		_tilesRoot = new GameObject("Tiles");
@@ -48,6 +48,17 @@ public class ArenaGenerator : MonoBehaviour
 
 		_playersRoot = new GameObject("Players");
 		_playersRoot.transform.parent = transform;
+	}
+
+	public void StartGame()
+	{
+		for (int s = 0; s < Spawns.Length; ++s)
+		{
+			if (Spawns[s] != null)
+			{
+				Spawns[s].ActivatePlayer();
+			}
+		}
 	}
 
 	public void CreateArena () {
@@ -68,7 +79,7 @@ public class ArenaGenerator : MonoBehaviour
 			{
 				GameObject tile = GameObjectPool.GetAvailableObject("Ground");
 				tile.transform.localScale = new Vector3(TileScale, TileScale, TileScale);
-				tile.transform.position = new Vector3(-Size * 0.5f * TileScale + x * TileScale, 0, -Size * 0.5f * TileScale + z * TileScale);
+				tile.transform.position = new Vector3(-Size * 0.5f * TileScale + x * TileScale, -100, -Size * 0.5f * TileScale + z * TileScale);
 				tile.transform.parent = _tilesRoot.transform;
 				_tiles[x + z * Size] = tile;
 			}
@@ -121,18 +132,19 @@ public class ArenaGenerator : MonoBehaviour
 
 	public void CreateObstacles ()
 	{
-		Collider[] hitColliders = Physics.OverlapSphere(transform.position, Size * 0.5f * TileScale, LayerMask.GetMask("Ground"));
+		Collider[] hitColliders = Physics.OverlapSphere(transform.position, Size * 0.5f * TileScale);
 		List<GameObject> tiles = new List<GameObject>();
 		for (var c = 0; c < hitColliders.Length; ++c)
 		{
 			tiles.Add(hitColliders[c].gameObject);
 		}
+		Debug.Log(hitColliders[0]);
+		Debug.Break();
 		// Faire pop des patterns d'obstacles (des rangées de 1 à 4 obstacles)
 
 		for (int o = 0; o < ObstaclesQuantity; ++o)
 		{
 			int index = Random.Range(0, tiles.Count - 1);
-
 			GameObject tile = tiles[index];
 			Ground ground = tile.GetComponent<Ground>();
 			EDirection direction = Direction.GetRandomDirection();
@@ -207,15 +219,53 @@ public class ArenaGenerator : MonoBehaviour
 		}
 	}
 
-	public void StartGame ()
+	private int _elementsDropped = 0;
+
+	public IEnumerator DropElements ()
 	{
-		for (int s = 0; s < Spawns.Length; ++s)
+		Debug.Log("Start Drop Elements");
+		List<GameObject> tiles = new List<GameObject>();
+		for(var i = 0; i < _tiles.Length; ++i)
 		{
-			if (Spawns[s] != null)
-			{
-				Spawns[s].ActivatePlayer();
-			}
+			tiles.Add(_tiles[i]);
 		}
+		tiles.Shuffle();
+
+		for(int t = 0; t < tiles.Count; t += 5)
+		{
+			for(int s = 0; s < 5; ++s)
+			{
+				StartCoroutine(DropElement(tiles[t+s], 0.002f * (t + s)));
+			}
+			Debug.Log("Drop Elements");
+		}
+		while(_elementsDropped < tiles.Count)
+		{
+			yield return null;
+		}
+
+		Debug.Log("End Drop Elements");
+		yield return null;
+	}
+
+	private IEnumerator DropElement (GameObject element, float delay)
+	{
+		yield return new WaitForSeconds(delay);
+
+		float timer = 0;
+		float initialY = element.transform.position.z;
+
+		while (timer < 1)
+		{
+			timer += Time.deltaTime;
+			float y = Mathf.Lerp(-100, 0, timer);
+			element.transform.position = new Vector3(element.transform.position.x, y, element.transform.position.z);
+			yield return null;
+		}
+
+		++_elementsDropped;
+
+		yield return null;
 	}
 
 	void OnDrawGizmos ()
@@ -256,5 +306,8 @@ public class ArenaGenerator : MonoBehaviour
 				Gizmos.DrawWireCube(new Vector3(-Size * 0.5f * TileScale + x * TileScale, 0, -Size * 0.5f * TileScale + z * TileScale), new Vector3(TileScale, TileScale, TileScale));
 			}
 		}
+
+		Gizmos.color = Color.red;
+		Gizmos.DrawWireSphere(transform.position, Size * 0.5f * TileScale);
 	}
 }

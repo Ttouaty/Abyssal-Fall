@@ -60,7 +60,7 @@ public class CustomEditorArenaGenerator : Editor
 					EditorGUILayout.BeginVertical("box");
 					{
 						myTarget.RequiredPools[i] = EditorGUILayout.TextField("Pool name:", myTarget.RequiredPools[i]);
-						if (GUILayout.Button("Delete Pool", GUILayout.Width(80)))
+						if (GUILayout.Button("Delete Pool", GUILayout.ExpandWidth(false)))
 						{
 							myTarget.RequiredPools.Remove(myTarget.RequiredPools[i]);
 						}
@@ -75,5 +75,7 @@ public class CustomEditorArenaGenerator : Editor
 			EditorGUILayout.EndVertical();
 		}
 		EditorGUILayout.EndVertical();
+
+		SceneView.RepaintAll();
 	}
 }

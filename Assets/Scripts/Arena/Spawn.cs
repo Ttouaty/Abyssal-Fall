@@ -6,9 +6,6 @@ public class Spawn : MonoBehaviour
 	private GameObject _player;
 	private PlayerController _controller;
 
-	[HideInInspector]
-	public ArenaGenerator ArenaGeneratorRef;
-
 	void Start ()
 	{
 		GetComponent<Tile>().enabled = false;
