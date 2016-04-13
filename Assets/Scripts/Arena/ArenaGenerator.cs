@@ -48,8 +48,6 @@ public class ArenaGenerator : MonoBehaviour
 
 	void Awake ()
 	{
-		_groundsDropped = 0;
-		_obstaclessDropped = 0;
 
 		int dist = SpawnDistanceFromBorder;
 		_spawnPositions = new Vector2[4];
@@ -60,6 +58,11 @@ public class ArenaGenerator : MonoBehaviour
 	}
 
 	void Start ()
+	{
+		Init();
+	}
+
+	private void Init ()
 	{
 		_tiles = new List<GameObject>();
 		_tilesRoot = new GameObject("Tiles");
@@ -72,9 +75,36 @@ public class ArenaGenerator : MonoBehaviour
 
 		_playersRoot = new GameObject("Players");
 		_playersRoot.transform.parent = transform;
+
+		_groundsDropped = 0;
+		_obstaclessDropped = 0;
 	}
 
-	public void StartGame()
+	public void ResetGame ()
+	{
+		for (int s = 0; s < Spawns.Length; ++s)
+		{
+			Spawn spawn = Spawns[s].GetComponent<Spawn>();
+			spawn.Destroy();
+			Destroy(spawn);
+			
+		}
+		for (int t = 0; t < _tiles.Count; ++t)
+		{
+			GameObjectPool.AddObjectIntoPool(_tiles[t]);
+		}
+		for(int o = 0; o < _obstacles.Count; ++o)
+		{
+			GameObjectPool.AddObjectIntoPool(_obstacles[o]);
+		}
+		Destroy(_tilesRoot);
+		Destroy(_obstaclesRoot);
+		Destroy(_playersRoot);
+
+		Init();
+	}
+
+	public void StartGame ()
 	{
 		for (int s = 0; s < Spawns.Length; ++s)
 		{
@@ -136,7 +166,6 @@ public class ArenaGenerator : MonoBehaviour
 
 	public void CreateSpawns()
 	{
-
 		Spawns = new Spawn[4];
 		for (var s = 0; s < Spawns.Length; ++s)
 		{
@@ -155,6 +184,7 @@ public class ArenaGenerator : MonoBehaviour
 			tiles.Add(hitColliders[c].gameObject);
 		}
 
+		Debug.Log(tiles.Count);
 
 		for (int o = 0; o < ObstaclesQuantity; ++o)
 		{
@@ -317,7 +347,7 @@ public class ArenaGenerator : MonoBehaviour
 		yield return null;
 	}
 
-	void OnDrawGizmosSelected ()
+	void OnDrawGizmos ()
 	{
 		int dist = SpawnDistanceFromBorder;
 
@@ -355,8 +385,5 @@ public class ArenaGenerator : MonoBehaviour
 				Gizmos.DrawWireCube(new Vector3(-Size * 0.5f * TileScale + x * TileScale, 0, -Size * 0.5f * TileScale + z * TileScale), new Vector3(TileScale, TileScale, TileScale));
 			}
 		}
-
-		Gizmos.color = Color.red;
-		Gizmos.DrawWireSphere(transform.position, Size * 0.5f * TileScale);
 	}
 }

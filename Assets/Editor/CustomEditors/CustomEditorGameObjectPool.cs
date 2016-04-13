@@ -13,8 +13,6 @@ public class CustomEditorGameObjectPool : Editor
 		GameObjectPool myTarget = (GameObjectPool)target;
 		List<Pool> poolsToRemove = new List<Pool>();
 
-		Debug.Log(_scrollPosition);
-
 		EditorGUILayout.BeginVertical("box");
 		{
 			EditorGUILayout.BeginVertical("box");

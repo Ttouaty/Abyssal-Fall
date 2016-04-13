@@ -8,10 +8,23 @@ public class Arena : MonoBehaviour
 	public static Arena instance;
 
 	private ArenaGenerator _generator;
+	private bool _loaded;
 
 	void Awake ()
 	{
 		instance = this;
+		_loaded = false;
+	}
+
+	void Update ()
+	{
+		if(_loaded)
+		{
+			if(Input.GetKeyDown(KeyCode.Escape)) {
+				_generator.ResetGame();
+				StartGame();
+			}
+		}
 	}
 
 	// Use this for initialization
@@ -56,5 +69,6 @@ public class Arena : MonoBehaviour
 		gm.CountdownScreen.SetActive(false);
 
 		_generator.StartGame();
+		_loaded = true;
 	}
 }

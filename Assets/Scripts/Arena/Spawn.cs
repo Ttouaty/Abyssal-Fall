@@ -4,6 +4,7 @@ using System.Collections;
 public class Spawn : MonoBehaviour
 {
 	private GameObject _player;
+	private GameObject _spriteId;
 	private PlayerController _controller;
 
 	void Start ()
@@ -16,16 +17,14 @@ public class Spawn : MonoBehaviour
 		_player = (GameObject) Instantiate(playerRef, transform.position + Vector3.up, Quaternion.identity);
 		_player.name = "Player_" + playerId;
 
-		Transform child = _player.transform.GetChild(0);
-		child.GetComponent<MeshRenderer>().material = materialRef;
 		_controller = _player.GetComponent<PlayerController>();
 		_controller.enabled = false;
 		_controller.PlayerNumber = playerId + 1;
 
-		GameObject spriteId = GameObject.CreatePrimitive(PrimitiveType.Quad);
-		spriteId.name = "SpriteId_" + playerId;
-		spriteId.GetComponent<MeshRenderer>().material = idMaterialRef;
-		SpriteID id = spriteId.AddComponent<SpriteID>();
+		_spriteId = GameObject.CreatePrimitive(PrimitiveType.Quad);
+		_spriteId.name = "SpriteId_" + playerId;
+		_spriteId.GetComponent<MeshRenderer>().material = idMaterialRef;
+		SpriteID id = _spriteId.AddComponent<SpriteID>();
 		id.Target = _player.transform;
 
 		return _player;
@@ -35,5 +34,11 @@ public class Spawn : MonoBehaviour
 	{
 		_controller.enabled = true;
 		return _player;
+	}
+
+	public void Destroy ()
+	{
+		Destroy(_spriteId);
+		Destroy(_player);
 	}
 }
