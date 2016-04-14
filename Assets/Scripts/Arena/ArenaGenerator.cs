@@ -11,7 +11,8 @@ public class ArenaGenerator : MonoBehaviour
 	private GameObject _playersRoot;
 	private List<GameObject> _tiles;
 	private List<GameObject> _obstacles;
-	private List<GameObject[]> _obstaclesGroups;
+	private int _amoutGroupsToDrop;
+	private List<List<GameObject>> _groundsToDrop;
 
 	private int _groundsDropped;
 	private int _obstaclessDropped;
@@ -35,6 +36,8 @@ public class ArenaGenerator : MonoBehaviour
 	public int SpawnDistanceFromBorder = 3;
 	[Tooltip("Scale of tiles")]
 	public float TileScale = 1.5f;
+	[Tooltip("Time before the exterior tiles drop automaticaly")]
+	public int SecondsBeforeNextDrop = 5;
 
 	[Header("ArenaGenerator Obstacles")]
 	[Tooltip("Obstacles quantity")]
@@ -48,13 +51,16 @@ public class ArenaGenerator : MonoBehaviour
 
 	void Awake ()
 	{
-
 		int dist = SpawnDistanceFromBorder;
+
 		_spawnPositions = new Vector2[4];
 		_spawnPositions[0] = new Vector2(dist, dist);
 		_spawnPositions[1] = new Vector2(dist, Size - dist - 1);
 		_spawnPositions[2] = new Vector2(Size - dist - 1, dist);
 		_spawnPositions[3] = new Vector2(Size - dist - 1, Size - dist - 1);
+
+		_groundsToDrop = new List<List<GameObject>>();
+		_amoutGroupsToDrop = Mathf.FloorToInt(Size * 0.5f - Size / 10);
 	}
 
 	void Start ()
@@ -134,6 +140,8 @@ public class ArenaGenerator : MonoBehaviour
 				tile.transform.localScale = new Vector3(1,1,1);
 				tile.transform.position = new Vector3(-Size * 0.5f * TileScale + x * TileScale, Camera.main.transform.position.y + (index++ % Size), -Size * 0.5f * TileScale + z * TileScale);
 				tile.transform.parent = _tilesRoot.transform;
+				Ground ground = tile.GetComponent<Ground>();
+				ground.GridPosition = new Vector2(x, z);
 				_tiles.Add(tile);
 			}
 		}
@@ -162,6 +170,29 @@ public class ArenaGenerator : MonoBehaviour
 				ground.TileForward = _tiles[x + (z + 1) * Size];
 			}
 		}
+
+		List<GameObject> tiles = new List<GameObject>();
+		for(var t = 0; t < _tiles.Count; ++t)
+		{
+			tiles.Add(_tiles[t]);
+		}
+
+		for(var i = 0; i < _amoutGroupsToDrop; ++i)
+		{
+			List<GameObject> list = new List<GameObject>();
+			for(var t = 0; t < tiles.Count; ++t)
+			{
+				GameObject tile = _tiles[t];
+				Ground ground = tile.GetComponent<Ground>();
+				
+				if(ground.GridPosition.x == i || ground.GridPosition.x == Size - 1 - i ||
+					ground.GridPosition.y == i || ground.GridPosition.y == Size - 1 - i)
+				{
+					list.Add(tile);
+				}
+			}
+			_groundsToDrop.Add(list);
+		}
 	}
 
 	public void CreateSpawns()
@@ -177,12 +208,14 @@ public class ArenaGenerator : MonoBehaviour
 
 	public void CreateObstacles ()
 	{
-		Collider[] hitColliders = Physics.OverlapSphere(transform.position - new Vector3(TileScale * 0.5f, 0, TileScale * 0.5f), Size * 0.5f * TileScale);
+		Collider[] hitColliders = Physics.OverlapSphere(transform.position, Size * 0.5f * TileScale);
 		List<GameObject> tiles = new List<GameObject>();
 		for (var c = 0; c < hitColliders.Length; ++c)
 		{
 			tiles.Add(hitColliders[c].gameObject);
 		}
+
+		Debug.Log(tiles.Count);	
 
 		for (int o = 0; o < ObstaclesQuantity; ++o)
 		{
@@ -192,13 +225,13 @@ public class ArenaGenerator : MonoBehaviour
 			EDirection direction = Direction.GetRandomDirection();
 			GameObject obstacle = GameObjectPool.GetAvailableObject("Obstacle");
 
-			tiles.RemoveAt(index);
-
 			ground.Obstacle = obstacle;
 			obstacle.transform.parent = _obstaclesRoot.transform;
-			obstacle.transform.position = new Vector3(tile.transform.position.x, Camera.main.transform.position.y + 1, tile.transform.position.z);
+			obstacle.transform.position = new Vector3(tile.transform.position.x, Camera.main.transform.position.y, tile.transform.position.z);
 
 			_obstacles.Add(obstacle);
+
+			tiles.RemoveAt(index);
 
 			CreateObstacleTrail(tiles, direction, tile, 80);
 		}
@@ -241,9 +274,9 @@ public class ArenaGenerator : MonoBehaviour
 			if (nextGround.Obstacle == null && nextTile.GetComponent<Spawn>() == null)
 			{
 				GameObject obstacle = GameObjectPool.GetAvailableObject("Obstacle");
-				ground.Obstacle = obstacle;
+				nextGround.Obstacle = obstacle;
 				obstacle.transform.parent = _obstaclesRoot.transform;
-				obstacle.transform.position = new Vector3(nextTile.transform.position.x, Camera.main.transform.position.y + 1, nextTile.transform.position.z);
+				obstacle.transform.position = new Vector3(nextTile.transform.position.x, Camera.main.transform.position.y, nextTile.transform.position.z);
 
 				_obstacles.Add(obstacle);
 
@@ -335,7 +368,7 @@ public class ArenaGenerator : MonoBehaviour
 		while (timer < 1)
 		{
 			timer += Time.deltaTime;
-			float y = Mathf.Lerp(initialY, TileScale, timer);
+			float y = Mathf.Lerp(initialY, 1.75f, timer);
 			element.transform.position = new Vector3(element.transform.position.x, y, element.transform.position.z);
 			yield return null;
 		}
@@ -344,6 +377,26 @@ public class ArenaGenerator : MonoBehaviour
 
 		yield return null;
 	}
+
+	public IEnumerator DropArenaOverTime ()
+	{
+		while(_groundsToDrop.Count > 0)
+		{
+			yield return new WaitForSeconds(SecondsBeforeNextDrop);
+			for (var i = 0; i < _groundsToDrop[0].Count; ++i)
+			{
+				GameObject tile = _groundsToDrop[0][i];
+				tile.GetComponent<Tile>().ActivateFall();
+				Ground ground = tile.GetComponent<Ground>();
+				if(ground != null && ground.Obstacle != null)
+				{
+					ground.Obstacle.GetComponent<Obstacle>().ActivateFall();
+				}
+			}
+			_groundsToDrop.RemoveAt(0);
+		}
+	}
+
 
 	void OnDrawGizmos ()
 	{

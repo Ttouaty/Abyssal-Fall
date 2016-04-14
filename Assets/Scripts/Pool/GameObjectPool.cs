@@ -87,20 +87,26 @@ public class GameObjectPool : Loadable
 	/***********
 	* Instance *
 	***********/
-	public List<Pool> Pools;
+	private bool _initialized;
 
+	public List<Pool> Pools;
 	public int NumberOfInstancesPerFrame = 1000;
 
 	public void Awake ()
 	{
 		instance = this;
+		_initialized = false;
 	}
 
 	override public void Init ()
 	{
-		base.Init();
-		OnMessage.Invoke("Loading pools");
-		StartCoroutine(LoadPoolAsync(0));
+		if(!_initialized)
+		{
+			_initialized = true;
+			base.Init();
+			OnMessage.Invoke("Loading pools");
+			StartCoroutine(LoadPoolAsync(0));
+		}
 	}
 
 	public void AddPool ()

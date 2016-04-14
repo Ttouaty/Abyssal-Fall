@@ -42,6 +42,7 @@ public class Arena : MonoBehaviour
 	{
 		yield return _generator.StartCoroutine(_generator.DropArena());
 		yield return StartCoroutine(CountDown(3));
+		_generator.StartCoroutine(_generator.DropArenaOverTime());
 	}
 
 	private IEnumerator CountDown(int startValue)
