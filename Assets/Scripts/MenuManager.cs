@@ -132,6 +132,7 @@ public class MenuManager : MonoBehaviour
 	IEnumerator FadeIsartLogo()
 	{
 		SetActiveButtons(_mainButtons, false);
+		yield return StartCoroutine(GameObjectPool.instance.Init());
 		yield return new WaitForSeconds(2);
 		_isartLogo.GetComponent<RawImage>().CrossFadeAlpha(0, 1, false);
 		SetActiveButtons(_mainButtons, true);

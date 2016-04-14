@@ -55,40 +55,13 @@ public class GameManager : MonoBehaviour
 	// Use this for initialization
 	private void Init ()
 	{
-		AddEvents();
-
 		OnZoom.AddListener(Camera.main.GetComponent<CameraManager>().OnZoom);
-
-		_index = 0;
-		_loadables[_index].Init();
+		StartCoroutine(OnAllLoadablesLoaded());
 	}
 
 	public void Restart ()
 	{
 		StartCoroutine(OnAllLoadablesLoaded());
-	}
-
-	void AddEvents ()
-	{
-		for (var i = 0; i < _loadables.Length; ++i)
-		{
-			Loadable loadable = _loadables[i];
-			loadable.OnLoadComplete.AddListener(OnLoadableComplete);
-		}
-	}
-
-
-	void OnLoadableComplete()
-	{
-		++_index;
-		if(_index < _loadables.Length)
-		{
-			_loadables[_index].Init();
-		}
-		else
-		{
-			StartCoroutine(OnAllLoadablesLoaded());
-		}
 	}
 
 	IEnumerator OnAllLoadablesLoaded()

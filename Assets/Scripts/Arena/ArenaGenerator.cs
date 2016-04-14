@@ -267,16 +267,19 @@ public class ArenaGenerator : MonoBehaviour
 			EDirection direction = Direction.GetRandomDirection();
 			GameObject obstacle = GameObjectPool.GetAvailableObject("Obstacle");
 
-			ground.Obstacle = obstacle;
-			obstacle.transform.parent = _obstaclesRoot.transform;
-			obstacle.transform.position = new Vector3(tile.transform.position.x, Camera.main.transform.position.y, tile.transform.position.z);
-			obstacle.transform.Rotate(new Vector3(-90, 0, 0));
+			if(ground != null)
+			{
+				ground.Obstacle = obstacle;
+				obstacle.transform.parent = _obstaclesRoot.transform;
+				obstacle.transform.position = new Vector3(tile.transform.position.x, Camera.main.transform.position.y, tile.transform.position.z);
+				obstacle.transform.Rotate(new Vector3(-90, 0, 0));
 
-			_obstacles.Add(obstacle);
+				_obstacles.Add(obstacle);
 
-			tiles.RemoveAt(index);
+				tiles.RemoveAt(index);
 
-			CreateObstacleTrail(tiles, direction, tile, 80);
+				CreateObstacleTrail(tiles, direction, tile, 80);
+			}
 		}
 	}
 

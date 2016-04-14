@@ -19,7 +19,7 @@ public struct Pool
 	public List<GameObject> Reserve;
 }
 
-public class GameObjectPool : Loadable
+public class GameObjectPool : MonoBehaviour
 {
 	/*********
 	* Static *
@@ -98,14 +98,12 @@ public class GameObjectPool : Loadable
 		_initialized = false;
 	}
 
-	override public void Init ()
+	public IEnumerator Init ()
 	{
 		if(!_initialized)
 		{
 			_initialized = true;
-			base.Init();
-			OnMessage.Invoke("Loading pools");
-			StartCoroutine(LoadPoolAsync(0));
+			yield return StartCoroutine(LoadPoolAsync(0));
 		}
 	}
 
@@ -135,7 +133,6 @@ public class GameObjectPool : Loadable
 
 		if(index == Pools.Count)
 		{
-			OnLoadComplete.Invoke();
 			yield break;
 		}
 		else
