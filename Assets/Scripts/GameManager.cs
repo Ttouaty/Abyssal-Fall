@@ -1,15 +1,21 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using System.Collections;
+
+[System.Serializable]
+public class ZoomEvent : UnityEvent<int> { }
 
 public class GameManager : MonoBehaviour
 {
 	public static GameManager instance;
 
+
 	private Text _loadingType;
 	private int _index;
 	private Loadable[] _loadables;
 
+	public ZoomEvent OnZoom;
 	public GameObject LoadingScreen;
 	public GameObject CountdownScreen;
 	public Arena Arena;
@@ -33,6 +39,8 @@ public class GameManager : MonoBehaviour
 	{
 		OpenLoadingScreen();
 		AddEvents();
+
+		OnZoom.AddListener(Camera.main.GetComponent<CameraManager>().OnZoom);
 
 		_index = 0;
 		_loadables[_index].Init();
