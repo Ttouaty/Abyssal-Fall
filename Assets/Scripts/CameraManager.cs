@@ -3,7 +3,6 @@ using System.Collections;
 
 public class CameraManager : MonoBehaviour
 {
-	[SerializeField]
 	private Vector3 _basePosition;
 	[SerializeField]
 	private float _cameraWinZoomSpeed = 3;
@@ -36,10 +35,11 @@ public class CameraManager : MonoBehaviour
 	IEnumerator SmoothZoom ()
 	{
 		float timer = 0;
+		Vector3 endPosition = _camera.transform.forward + _camera.transform.transform.position;
 		while(timer < 1)
 		{
 			timer += Time.deltaTime;
-			_camera.transform.Translate(new Vector3(0, 0, timer * 0.2f), Space.Self);
+			_camera.transform.position = Vector3.Lerp(_camera.transform.position, endPosition, timer);
 			yield return null;
 		}
 
