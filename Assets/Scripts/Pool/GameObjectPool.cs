@@ -103,9 +103,9 @@ public class GameObjectPool : MonoBehaviour
 	public LoadEvent LoadProgress;
 	public LoadEvent LoadEnd;
 	[HideInInspector]
-	public int ElementsLoaded;
+	public float ElementsLoaded;
 	[HideInInspector]
-	public int ElementsToLoad;
+	public float ElementsToLoad;
 	[HideInInspector]
 	public float Progress
 	{
@@ -119,6 +119,13 @@ public class GameObjectPool : MonoBehaviour
 	{
 		instance = this;
 		_initialized = false;
+
+		LoadProgress.AddListener(DebugProgress);
+	}
+
+	private void DebugProgress (float progress)
+	{
+		Debug.Log(progress);
 	}
 
 	public IEnumerator Init ()
@@ -126,7 +133,10 @@ public class GameObjectPool : MonoBehaviour
 		if(!_initialized)
 		{
 			_initialized = true;
-			for(var p = 0; p < Pools.Count; ++p)
+			ElementsLoaded = 0;
+			ElementsToLoad = 0;
+
+			for (var p = 0; p < Pools.Count; ++p)
 			{
 				ElementsToLoad += Pools[p].Quantity;
 			}
