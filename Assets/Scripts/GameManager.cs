@@ -5,6 +5,8 @@ using System.Collections;
 
 [System.Serializable]
 public class ZoomEvent : UnityEvent { }
+[System.Serializable]
+public class PlayerEvent : UnityEvent<GameObject> { }
 
 public class GameManager : MonoBehaviour
 {
@@ -16,6 +18,9 @@ public class GameManager : MonoBehaviour
 	private Loadable[] _loadables;
 
 	public ZoomEvent OnZoom;
+	public PlayerEvent OnPlayerDeath;
+	public PlayerEvent OnPlayerWin;
+
 	public GameObject LoadingScreen;
 	public GameObject CountdownScreen;
 	public Arena Arena;
@@ -56,6 +61,11 @@ public class GameManager : MonoBehaviour
 
 		_index = 0;
 		_loadables[_index].Init();
+	}
+
+	public void Init ()
+	{
+		StartCoroutine(OnAllLoadablesLoaded());
 	}
 
 	void OpenLoadingScreen ()

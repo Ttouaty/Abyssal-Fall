@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System;
 
 [RequireComponent(typeof(ArenaGenerator))]
 public class Arena : MonoBehaviour
@@ -17,30 +18,32 @@ public class Arena : MonoBehaviour
 		_generator = GetComponent<ArenaGenerator>();
 	}
 
+	void Start ()
+	{
+		GameManager.instance.OnPlayerWin.AddListener(OnPlayerWin);
+	}
+
 	void Update ()
 	{
 		if(_loaded)
 		{
 			if(Input.GetKeyDown(KeyCode.Escape))
 			{
-				StartCoroutine(ResetGame());
+				StartCoroutine(StartGame());
+			}
+			if (Input.GetKeyDown(KeyCode.Return))
+			{
+				Time.timeScale = Time.timeScale == 0 ? 1 : 0;
 			}
 		}
-	}
-
-	private IEnumerator ResetGame ()
-	{
-		Debug.LogWarning(">>> Arena: Reset game");
-		StopAllCoroutines();
-		_generator.ResetGame();
-		StartCoroutine(StartGame());
-		yield return null;
 	}
 
 	// Use this for initialization
 	public IEnumerator StartGame()
 	{
 		// Start initialisation of arena field
+		StopAllCoroutines();
+		_generator.ResetStage();
 		_generator.CreateArena();
 		_generator.CreateSpawns();
 		yield return StartCoroutine(WaitForElementDropped());
@@ -80,5 +83,16 @@ public class Arena : MonoBehaviour
 
 		_generator.StartGame();
 		_loaded = true;
+	}
+
+	public void ClearArena ()
+	{
+		_generator.EndStage();
+	}
+
+	private void OnPlayerWin(GameObject winner)
+	{
+		StopAllCoroutines();
+		winner.GetComponent<Rigidbody>().isKinematic = true;
 	}
 }

@@ -47,6 +47,8 @@ public class ArenaGenerator : MonoBehaviour
 
 	[HideInInspector]
 	public Spawn[] Spawns;
+	[HideInInspector]
+	public List<GameObject> Players;
 	#endregion
 
 	void Awake ()
@@ -64,6 +66,7 @@ public class ArenaGenerator : MonoBehaviour
 
 	void Start ()
 	{
+		GameManager.instance.OnPlayerDeath.AddListener(OnPlayerDeath);
 		Init();
 	}
 
@@ -88,17 +91,39 @@ public class ArenaGenerator : MonoBehaviour
 		_amoutGroupsToDrop = Mathf.FloorToInt(Size * 0.5f - Size / 10);
 	}
 
-	public void ResetGame ()
+	void OnPlayerDeath (GameObject player)
 	{
-		Debug.LogWarning(">>> Arena Generator: Reset game");
-		StopAllCoroutines();
+		Players.Remove(player);
+		if(Players.Count == 1)
+		{
+			GameManager.instance.OnPlayerWin.Invoke(Players[0]);
+			StopAllCoroutines();
+			for (int t = 0; t < _tiles.Count; ++t)
+			{
+				_tiles[t].GetComponent<Tile>().StopAllCoroutines();
+			}
+
+			for (int o = 0; o < _obstacles.Count; ++o)
+			{
+				_obstacles[o].GetComponent<Obstacle>().StopAllCoroutines();
+			}
+			for (int s = 0; s < Spawns.Length; ++s)
+			{
+				Spawn spawn = Spawns[s].GetComponent<Spawn>();
+				spawn.DestroyId();
+
+			}
+		}
+	}
+
+	public void EndStage ()
+	{
 		for (int s = 0; s < Spawns.Length; ++s)
 		{
 			Spawn spawn = Spawns[s].GetComponent<Spawn>();
 			spawn.StopAllCoroutines();
 			spawn.Destroy();
 			Destroy(spawn);
-			
 		}
 		for (int t = 0; t < _tiles.Count; ++t)
 		{
@@ -110,9 +135,19 @@ public class ArenaGenerator : MonoBehaviour
 			_obstacles[o].GetComponent<Poolable>().StopAllCoroutines();
 			GameObjectPool.AddObjectIntoPool(_obstacles[o]);
 		}
-		Destroy(_tilesRoot);
-		Destroy(_obstaclesRoot);
-		Destroy(_playersRoot);
+	}
+
+	public void ResetStage ()
+	{
+		StopAllCoroutines();
+		EndStage();
+
+		if(_tilesRoot != null)
+			Destroy(_tilesRoot);
+		if (_obstaclesRoot != null)
+			Destroy(_obstaclesRoot);
+		if (_playersRoot != null)
+			Destroy(_playersRoot);
 
 		Init();
 	}
@@ -222,7 +257,9 @@ public class ArenaGenerator : MonoBehaviour
 			tiles.Add(hitColliders[c].gameObject);
 		}
 
-		for (int o = 0; o < ObstaclesQuantity; ++o)
+		int quantity = Mathf.Min(ObstaclesQuantity, tiles.Count);
+
+		for (int o = 0; o < quantity; ++o)
 		{
 			int index = Random.Range(0, tiles.Count - 1);
 			GameObject tile = tiles[index];
@@ -296,12 +333,14 @@ public class ArenaGenerator : MonoBehaviour
 
 	public void CreatePlayers ()
 	{
+		Players = new List<GameObject>();
 		for (int s = 0; s < Spawns.Length; ++s)
 		{
 			if (Spawns[s] != null && PlayerRef[s] != null)
 			{
 				GameObject player = Spawns[s].SpawnPlayer(s, PlayerRef[s], PlayerMaterialRef[s], SpritesIDMaterialRef[s]);
 				player.transform.parent = _playersRoot.transform;
+				Players.Add(player);
 			}
 		}
 	}

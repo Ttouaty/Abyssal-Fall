@@ -3,7 +3,7 @@ using System.Collections;
 using System;
 
 [Serializable]
-public struct Dash 
+public struct Dash
 {
 	[SerializeField]
 	public float length;
@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviour
 
 
 	[SerializeField]
-	private Animator _animator;
+	public Animator _animator;
 	#region references
 
 	private Transform _transf;
@@ -68,13 +68,13 @@ public class PlayerController : MonoBehaviour
 	[SerializeField]
 	private GameObject _playerModel;
 	[SerializeField]
-	private GameObject _hammerPropModel;
+	public GameObject _hammerPropModel;
 
 
 	private bool _allowInput = true;
 	private bool _isGrounded = false;
 	private bool _isStunned = false;
-	
+
 	[HideInInspector]
 	public bool _isInvul = false;
 
@@ -98,7 +98,8 @@ public class PlayerController : MonoBehaviour
 	{
 		_transf = transform;
 		_rigidB = GetComponent<Rigidbody>();
-		GameObjectPool.instance.Init();
+
+		GameManager.instance.OnPlayerWin.AddListener(OnPlayerWin);
 	}
 
 	void Update()
@@ -113,7 +114,7 @@ public class PlayerController : MonoBehaviour
 
 
 		ProcessActiveSpeed();
-		if(_allowInput)
+		if (_allowInput)
 			ProcessOrientation();
 		ApplyCharacterFinalVelocity();
 	}
@@ -123,6 +124,11 @@ public class PlayerController : MonoBehaviour
 		ProcessGroundedState();
 	}
 
+	void OnPlayerWin(GameObject player)
+	{
+		_allowInput = false;
+		_activeSpeed = Vector3.zero;
+	}
 
 
 	#region Processes
@@ -143,7 +149,7 @@ public class PlayerController : MonoBehaviour
 			_hammerPropModel.GetComponent<Renderer>().enabled = true;
 			_hammerCooldown = 0;
 		}
-		
+
 
 		_animator.SetFloat("StunTime", _stunTime);
 		if (_stunTime > 0)
@@ -177,6 +183,11 @@ public class PlayerController : MonoBehaviour
 	{
 		if (_isGrounded)
 		{
+			if (!_allowInput)
+			{
+				return;
+			}
+
 			if (dash.inProgress)
 			{
 				_activeSpeed.x = _activeSpeed.x.Reduce(_maxSpeed.x * Time.deltaTime * 2);
@@ -227,7 +238,7 @@ public class PlayerController : MonoBehaviour
 	{
 		_isGrounded = true;
 		_activeSpeed.y = 0f;
-		if(_hit.rigidbody.isKinematic == true)
+		if (_hit.rigidbody.isKinematic == true)
 			transform.position = transform.position - (_snapGround.transform.position - _hit.point);
 	}
 
@@ -253,6 +264,7 @@ public class PlayerController : MonoBehaviour
 		Debug.Log("Player is DED!");
 		_animator.SetTrigger("Death");
 		_isDead = true;
+		GameManager.instance.OnPlayerDeath.Invoke(gameObject);
 	}
 
 	public void Eject(Vector3 direction, float stunTime)
@@ -273,7 +285,7 @@ public class PlayerController : MonoBehaviour
 	}
 
 
-	IEnumerator ActivateDash() 
+	IEnumerator ActivateDash()
 	{
 		dash.inProgress = true;
 		_isInvul = true;
@@ -297,7 +309,7 @@ public class PlayerController : MonoBehaviour
 		//_playerModel.transform.rotation = transform.rotation;
 		_isInvul = false;
 		GetComponent<Collider>().isTrigger = false;
-		
+
 		while (!_isGrounded)
 		{
 			yield return null;
@@ -313,9 +325,8 @@ public class PlayerController : MonoBehaviour
 	{
 		if (colli.tag == "Player" && GetComponent<Collider>().isTrigger)
 		{
-			_rigidB.velocity = new Vector3(0,_rigidB.velocity.y,0);
+			_rigidB.velocity = new Vector3(0, _rigidB.velocity.y, 0);
 			colli.GetComponent<PlayerController>().Damage((colli.transform.position - transform.position) * 5 + Vector3.up * Physics.gravity.magnitude * 0.5f, 0.5f);
 		}
 	}
-
 }

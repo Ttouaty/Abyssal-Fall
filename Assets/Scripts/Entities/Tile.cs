@@ -15,12 +15,6 @@ public class Tile : MonoBehaviour {
 		_rigidB = GetComponent<Rigidbody>();
 		_rigidB.isKinematic = true;
 	}
-	
-	void Update () 
-	{
-	
-	}
-
 
 	public void ActivateFall()
 	{
