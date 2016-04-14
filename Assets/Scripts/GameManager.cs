@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
 
 [System.Serializable]
 public class ZoomEvent : UnityEvent { }
@@ -13,19 +13,19 @@ public class GameManager : MonoBehaviour
 	public static GameManager instance;
 	public static bool InProgress = false;
 
-
 	private int _index;
 
 	public ZoomEvent OnZoom;
 	public PlayerEvent OnPlayerDeath;
 	public PlayerEvent OnPlayerWin;
 
-	public GameObject LoadingScreen;
 	public GameObject CountdownScreen;
+	public GameObject EndStageScreen;
 	public Arena Arena;
 	public GameObject[] PlayersRefs;
 
 	public int[] RegisteredPlayers = { 0, 0, 0, 0 };  
+	public int[] PlayersScores = { 0, 0, 0, 0 };
 
 	void Awake ()
 	{

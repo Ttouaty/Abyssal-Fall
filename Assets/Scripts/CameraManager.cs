@@ -57,7 +57,7 @@ public class CameraManager : MonoBehaviour
 		Vector3 startPos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
 		winner.transform.Rotate(Vector3.up, Vector3.Angle(winner.transform.position, transform.position));
 
-		Vector3 endPos = winner.transform.position + winner.transform.forward * 6 + winner.transform.up * 4 ;
+		Vector3 endPos = winner.transform.position + winner.transform.forward * 6 + winner.transform.up * 5;
 
 		float timer = 0;
 		while(timer < 1)
@@ -69,8 +69,11 @@ public class CameraManager : MonoBehaviour
 		}
 
 		winner.GetComponent<PlayerController>()._animator.SetTrigger("Win");
-
-		yield return new WaitForSeconds(5);
+		yield return new WaitForSeconds(3);
+		int winnerId = winner.GetComponent<PlayerController>().PlayerNumber -1;
+		EndStageScreen endScreen = GameManager.instance.EndStageScreen.GetComponent<EndStageScreen>();
+		endScreen.ShowPanel();
+		yield return endScreen.StartCoroutine(endScreen.StartCountdown(winnerId));
 
 		Reset();
 		GameManager.instance.Arena.ClearArena();

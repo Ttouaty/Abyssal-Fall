@@ -94,9 +94,12 @@ public class ArenaGenerator : MonoBehaviour
 	void OnPlayerDeath (GameObject player)
 	{
 		// Debug to play alone
-		Debug.Break();
-		if(Players.Count == 1 && Spawns.Count == 1)
+		Players.Remove(player);
+		player.GetComponent<PlayerController>().Spawn.Destroy();
+		if (Players.Count == 1)
 		{
+			int playerId = Players[0].GetComponent<PlayerController>().PlayerNumber;
+			GameManager.instance.PlayersScores[playerId-1]++;
 			GameManager.instance.OnPlayerWin.Invoke(Players[0]);
 			StopAllCoroutines();
 			for (int t = 0; t < _tiles.Count; ++t)
@@ -112,29 +115,6 @@ public class ArenaGenerator : MonoBehaviour
 			{
 				Spawns[s].DestroyId();
 				Spawns.Remove(Spawns[s]);
-			}
-		}
-		else
-		{
-			Players.Remove(player);
-			if (Players.Count == 1)
-			{
-				GameManager.instance.OnPlayerWin.Invoke(Players[0]);
-				StopAllCoroutines();
-				for (int t = 0; t < _tiles.Count; ++t)
-				{
-					_tiles[t].GetComponent<Tile>().StopAllCoroutines();
-				}
-
-				for (int o = 0; o < _obstacles.Count; ++o)
-				{
-					_obstacles[o].GetComponent<Obstacle>().StopAllCoroutines();
-				}
-				for (int s = 0; s < Spawns.Count; ++s)
-				{
-					Spawns[s].DestroyId();
-					Spawns.Remove(Spawns[s]);
-				}
 			}
 		}
 	}
@@ -209,6 +189,7 @@ public class ArenaGenerator : MonoBehaviour
 				tile.transform.parent = _tilesRoot.transform;
 				Ground ground = tile.GetComponent<Ground>();
 				ground.GridPosition = new Vector2(x, z);
+				tile.GetComponent<Poolable>().SetReturnToPool(false);
 				_tiles.Add(tile);
 			}
 		}
@@ -267,11 +248,15 @@ public class ArenaGenerator : MonoBehaviour
 		Spawns = new List<Spawn>();
 		for (var s = 0; s < GameManager.instance.RegisteredPlayers.Length; ++s)
 		{
-			if(GameManager.instance.RegisteredPlayers[s] > 0 || s == 0)
+			if(GameManager.instance.RegisteredPlayers[s] > 0 || (s == 0 || s == 1))
 			{
 				int target = Mathf.FloorToInt(_spawnPositions[s].x + _spawnPositions[s].y * Size);
 				GameObject tile = _tiles[target];
 				Spawns.Add(tile.AddComponent<Spawn>());
+			}
+			if((s == 0 || s == 1) && GameManager.instance.RegisteredPlayers[s] == 0)
+			{
+				GameManager.instance.RegisteredPlayers[s] = 1;
 			}
 		}
 	}
@@ -301,6 +286,7 @@ public class ArenaGenerator : MonoBehaviour
 				obstacle.transform.parent = _obstaclesRoot.transform;
 				obstacle.transform.position = new Vector3(tile.transform.position.x, Camera.main.transform.position.y, tile.transform.position.z);
 				obstacle.transform.Rotate(new Vector3(-90, 0, 0));
+				obstacle.GetComponent<Poolable>().SetReturnToPool(false);
 
 				_obstacles.Add(obstacle);
 
@@ -352,6 +338,7 @@ public class ArenaGenerator : MonoBehaviour
 				obstacle.transform.parent = _obstaclesRoot.transform;
 				obstacle.transform.position = new Vector3(nextTile.transform.position.x, Camera.main.transform.position.y, nextTile.transform.position.z);
 				obstacle.transform.Rotate(new Vector3(-90, 0, 0));
+				obstacle.GetComponent<Poolable>().SetReturnToPool(false);
 
 				_obstacles.Add(obstacle);
 
@@ -371,6 +358,7 @@ public class ArenaGenerator : MonoBehaviour
 			{
 				GameObject player = Spawns[s].SpawnPlayer(s, PlayerRef[s], PlayerMaterialRef[s], SpritesIDMaterialRef[s]);
 				player.transform.parent = _playersRoot.transform;
+				player.GetComponent<PlayerController>().Spawn = Spawns[s];
 				Players.Add(player);
 			}
 		}
@@ -387,7 +375,8 @@ public class ArenaGenerator : MonoBehaviour
 		int ligne = 0;
 		for (int t = 0; t < _tiles.Count; t += Size)
 		{
-			float delay = 0.05f * ligne;
+			float delay = 0.15f + 0.05f * ligne;
+			Debug.Log(delay);
 			for(int i = 0; i < Size; ++i)
 			{
 				StartCoroutine(DropGround(_tiles[t+i], delay, i, _tiles[t+i].transform.position.y));
@@ -424,7 +413,7 @@ public class ArenaGenerator : MonoBehaviour
 	{
 		for (int t = 0; t < _obstacles.Count; ++t)
 		{
-			StartCoroutine(DropObstacle(_obstacles[t], 0));
+			StartCoroutine(DropObstacle(_obstacles[t], 0.05f * t));
 		}
 		while (_obstaclessDropped < _obstacles.Count)
 		{
@@ -450,6 +439,8 @@ public class ArenaGenerator : MonoBehaviour
 			yield return null;
 		}
 
+		element.GetComponent<Obstacle>().OnDropped();
+		CameraShake.instance.Shake(0.2f);
 		++_obstaclessDropped;
 
 		yield return null;
@@ -464,10 +455,13 @@ public class ArenaGenerator : MonoBehaviour
 			{
 				GameObject tile = _groundsToDrop[0][i];
 				tile.GetComponent<Tile>().ActivateFall();
+				tile.GetComponent<Poolable>().SetReturnToPool(true);
+
 				Ground ground = tile.GetComponent<Ground>();
-				if(ground != null && ground.Obstacle != null)
+				if (ground != null && ground.Obstacle != null)
 				{
 					ground.Obstacle.GetComponent<Obstacle>().ActivateFall();
+					ground.Obstacle.GetComponent<Poolable>().SetReturnToPool(true);
 				}
 			}
 			_groundsToDrop.RemoveAt(0);

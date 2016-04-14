@@ -40,11 +40,18 @@ public class Spawn : MonoBehaviour
 
 	public void Destroy ()
 	{
-		Destroy(_player);
+		if(_player != null)
+		{
+			Destroy(_player);
+		}
+		DestroyId();
 	}
 
 	public void DestroyId ()
 	{
-		Destroy(_spriteId);
+		if(_spriteId != null)
+		{
+			Destroy(_spriteId);
+		}
 	}
 }

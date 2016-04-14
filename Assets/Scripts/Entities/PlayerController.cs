@@ -20,6 +20,8 @@ public class PlayerController : MonoBehaviour
 {
 	public int PlayerNumber = 1;
 
+	public Spawn Spawn;
+
 	[SerializeField]
 	private Dash dash;
 

@@ -7,14 +7,21 @@ public class Obstacle : MonoBehaviour
 
 	[SerializeField]
 	private bool _isTouched;
+	[SerializeField]
+	private GameObject _particleSystem;
 	private Rigidbody _rigidB;
+
+	public void OnDropped ()
+	{
+		_particleSystem.SetActive(true);
+	}
 
 	public void ActivateFall()
 	{
-		_rigidB = GetComponent<Rigidbody>();
 		if (_isTouched)
 			return;
 
+		_rigidB = GetComponent<Rigidbody>();
 		_isTouched = true;
 		_rigidB.isKinematic = false;
 	}
