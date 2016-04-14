@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using System.Collections;
 
 [System.Serializable]
-public class ZoomEvent : UnityEvent<int> { }
+public class ZoomEvent : UnityEvent { }
 
 public class GameManager : MonoBehaviour
 {
@@ -77,14 +77,14 @@ public class GameManager : MonoBehaviour
 		}
 		else
 		{
-			OnAllLoadablesLoaded();
+			StartCoroutine(OnAllLoadablesLoaded());
 		}
 	}
 
-	void OnAllLoadablesLoaded()
+	IEnumerator OnAllLoadablesLoaded()
 	{
-		_loadingType.text = "Building Arena";
-		Arena.StartGame();
 		LoadingScreen.SetActive(false);
+		yield return StartCoroutine(Arena.StartGame());
+		yield return null;
 	}
 }

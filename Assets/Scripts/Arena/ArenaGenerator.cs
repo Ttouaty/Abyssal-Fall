@@ -60,7 +60,6 @@ public class ArenaGenerator : MonoBehaviour
 		_spawnPositions[3] = new Vector2(Size - dist - 1, Size - dist - 1);
 
 		_groundsToDrop = new List<List<GameObject>>();
-		_amoutGroupsToDrop = Mathf.FloorToInt(Size * 0.5f - Size / 10);
 	}
 
 	void Start ()
@@ -84,23 +83,31 @@ public class ArenaGenerator : MonoBehaviour
 
 		_groundsDropped = 0;
 		_obstaclessDropped = 0;
+
+		_groundsToDrop.Clear();
+		_amoutGroupsToDrop = Mathf.FloorToInt(Size * 0.5f - Size / 10);
 	}
 
 	public void ResetGame ()
 	{
+		Debug.LogWarning(">>> Arena Generator: Reset game");
+		StopAllCoroutines();
 		for (int s = 0; s < Spawns.Length; ++s)
 		{
 			Spawn spawn = Spawns[s].GetComponent<Spawn>();
+			spawn.StopAllCoroutines();
 			spawn.Destroy();
 			Destroy(spawn);
 			
 		}
 		for (int t = 0; t < _tiles.Count; ++t)
 		{
+			_tiles[t].GetComponent<Poolable>().StopAllCoroutines();
 			GameObjectPool.AddObjectIntoPool(_tiles[t]);
 		}
 		for(int o = 0; o < _obstacles.Count; ++o)
 		{
+			_obstacles[o].GetComponent<Poolable>().StopAllCoroutines();
 			GameObjectPool.AddObjectIntoPool(_obstacles[o]);
 		}
 		Destroy(_tilesRoot);
@@ -215,8 +222,6 @@ public class ArenaGenerator : MonoBehaviour
 			tiles.Add(hitColliders[c].gameObject);
 		}
 
-		Debug.Log(tiles.Count);	
-
 		for (int o = 0; o < ObstaclesQuantity; ++o)
 		{
 			int index = Random.Range(0, tiles.Count - 1);
@@ -228,6 +233,7 @@ public class ArenaGenerator : MonoBehaviour
 			ground.Obstacle = obstacle;
 			obstacle.transform.parent = _obstaclesRoot.transform;
 			obstacle.transform.position = new Vector3(tile.transform.position.x, Camera.main.transform.position.y, tile.transform.position.z);
+			obstacle.transform.Rotate(new Vector3(-90, 0, 0));
 
 			_obstacles.Add(obstacle);
 
@@ -277,6 +283,7 @@ public class ArenaGenerator : MonoBehaviour
 				nextGround.Obstacle = obstacle;
 				obstacle.transform.parent = _obstaclesRoot.transform;
 				obstacle.transform.position = new Vector3(nextTile.transform.position.x, Camera.main.transform.position.y, nextTile.transform.position.z);
+				obstacle.transform.Rotate(new Vector3(-90, 0, 0));
 
 				_obstacles.Add(obstacle);
 
@@ -368,7 +375,7 @@ public class ArenaGenerator : MonoBehaviour
 		while (timer < 1)
 		{
 			timer += Time.deltaTime;
-			float y = Mathf.Lerp(initialY, 1.75f, timer);
+			float y = Mathf.Lerp(initialY, TileScale * 0.5f, timer);
 			element.transform.position = new Vector3(element.transform.position.x, y, element.transform.position.z);
 			yield return null;
 		}
@@ -394,7 +401,7 @@ public class ArenaGenerator : MonoBehaviour
 				}
 			}
 			_groundsToDrop.RemoveAt(0);
-			GameManager.instance.OnZoom.Invoke(_amoutGroupsToDrop - _groundsToDrop.Count);
+			GameManager.instance.OnZoom.Invoke();
 		}
 	}
 

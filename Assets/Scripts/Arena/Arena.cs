@@ -14,28 +14,37 @@ public class Arena : MonoBehaviour
 	{
 		instance = this;
 		_loaded = false;
+		_generator = GetComponent<ArenaGenerator>();
 	}
 
 	void Update ()
 	{
 		if(_loaded)
 		{
-			if(Input.GetKeyDown(KeyCode.Escape)) {
-				_generator.ResetGame();
-				StartGame();
+			if(Input.GetKeyDown(KeyCode.Escape))
+			{
+				StartCoroutine(ResetGame());
 			}
 		}
 	}
 
-	// Use this for initialization
-	public void StartGame()
+	private IEnumerator ResetGame ()
 	{
-		_generator = GetComponent<ArenaGenerator>();
+		Debug.LogWarning(">>> Arena: Reset game");
+		StopAllCoroutines();
+		_generator.ResetGame();
+		StartCoroutine(StartGame());
+		yield return null;
+	}
 
+	// Use this for initialization
+	public IEnumerator StartGame()
+	{
 		// Start initialisation of arena field
 		_generator.CreateArena();
 		_generator.CreateSpawns();
-		StartCoroutine(WaitForElementDropped());
+		yield return StartCoroutine(WaitForElementDropped());
+		yield return null;
 	}
 
 	private IEnumerator WaitForElementDropped()

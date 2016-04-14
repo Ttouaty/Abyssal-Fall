@@ -52,4 +52,14 @@ public static class Extensions
 			list[n] = value;
 		}
 	}
+
+
+	public static void StopAllCoroutinesInScene ()
+	{
+		GameObject[] gos = GameObject.FindObjectsOfType<GameObject>();
+		for(var i = 0; i < gos.Length; ++i)
+		{
+			
+		}
+	}
 }

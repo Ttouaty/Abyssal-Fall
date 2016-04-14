@@ -39,7 +39,7 @@ public class Tile : MonoBehaviour {
 			yield return new WaitForEndOfFrame();
 		}
 
-		_rigidB.isKinematic = false;
+		Fall();
 	}
 
 	//public void ReduceTime()

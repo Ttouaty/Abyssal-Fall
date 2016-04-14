@@ -3,65 +3,43 @@ using System.Collections;
 
 public class CameraManager : MonoBehaviour
 {
-	public float zoomSpeed = 20f;
-	public float minZoomFOV = 10f;
-
+	[SerializeField]
+	private Vector3 _basePosition;
+	private float _currentZoom = 0;
 	private Vector3 _target;
 	private Camera _camera;
 
-	[SerializeField]
-	private Vector3 _camDirection;
-
-	[SerializeField]
-	private Vector3 _baseOffset = Vector3.zero;
-	private Vector3 _playerOffset = Vector3.zero;
-
-	private GameObject[] _playersRef;
-
-	void Start()
+	public void Start()
 	{
-		_camera = Camera.main;
-		_playersRef = GameObject.FindGameObjectsWithTag("Player");
+		_camera = GetComponent<Camera>();
+		_target = GameManager.instance.Arena.transform.position;
+		_basePosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);
 
-		Vector3 cameraCenter = Vector3.zero;
-		for (int i = 0; i < _playersRef.Length; ++i)
+		transform.LookAt(_target);
+	}
+
+	public void Reset ()
+	{
+		StopAllCoroutines();
+		transform.position = _basePosition;
+	}
+
+	public void OnZoom()
+	{
+		StartCoroutine(SmoothZoom());
+	}
+
+	IEnumerator SmoothZoom ()
+	{
+		float timer = 0;
+		while(timer < 1)
 		{
-			cameraCenter += _playersRef[i].transform.position;
+			timer += Time.deltaTime;
+			_camera.transform.Translate(new Vector3(0, 0, timer * 0.2f), Space.Self);
+			yield return null;
 		}
 
-		cameraCenter /= _playersRef.Length;
-		transform.position = new Vector3((_playerOffset + _baseOffset + cameraCenter).x, transform.position.y, (_playerOffset + _baseOffset + cameraCenter).z);
-
-		transform.LookAt(cameraCenter);
-	}
-
-	void Update() {
-		CalculateCameraPosAndSize();
-	}
-
-
-	void CalculateCameraPosAndSize()
-	{ 
-
-		Vector3 cameraCenter = Vector3.zero;
-		for (int i = 0; i < _playersRef.Length; ++i)
-		{
-			if (!_playersRef[i].GetComponent<PlayerController>()._isDead)
-				cameraCenter += _playersRef[i].transform.position;
-		}
-
-		if (cameraCenter.sqrMagnitude == 0)
-			return;
-
-		cameraCenter /= _playersRef.Length;
-
-		transform.position = new Vector3(Mathf.Lerp(transform.position.x, (_playerOffset + _baseOffset + cameraCenter).x, 5 * Time.deltaTime), transform.position.y, Mathf.Lerp(transform.position.z, (_playerOffset + _baseOffset + cameraCenter).z, 5 * Time.deltaTime));
-		//transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(cameraCenter - transform.position, _camDirection), 5 * Time.deltaTime);
-	}
-
-	public void OnZoom(int value)
-	{
-
+		yield return null;
 	}
 
 }
