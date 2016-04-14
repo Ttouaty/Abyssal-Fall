@@ -300,9 +300,9 @@ public class ArenaGenerator : MonoBehaviour
 	}
 	public IEnumerator DropArena ()
 	{
-		yield return DropGrounds();
+		yield return StartCoroutine(DropGrounds());
 		CreateObstacles();
-		yield return DropObstacles();
+		yield return StartCoroutine(DropObstacles());
 	}
 
 	public IEnumerator DropGrounds ()
@@ -394,6 +394,7 @@ public class ArenaGenerator : MonoBehaviour
 				}
 			}
 			_groundsToDrop.RemoveAt(0);
+			GameManager.instance.OnZoom.Invoke(_amoutGroupsToDrop - _groundsToDrop.Count);
 		}
 	}
 
