@@ -30,7 +30,7 @@ public class MenuManager : MonoBehaviour
 
 	void Update()
 	{
-		if (Input.GetButton("Cancel"))
+		if (Input.GetButton("Cancel") && !GameManager.InProgress)
 		{
 			if (_activeMenu.GetInstanceID() != _mainButtons.GetInstanceID())
 			{

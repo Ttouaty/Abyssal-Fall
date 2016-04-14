@@ -11,6 +11,7 @@ public class PlayerEvent : UnityEvent<GameObject> { }
 public class GameManager : MonoBehaviour
 {
 	public static GameManager instance;
+	public static bool InProgress = false;
 
 
 	private int _index;
@@ -42,6 +43,7 @@ public class GameManager : MonoBehaviour
 	public static void StartGame()
 	{
 		instance.Init();
+		InProgress = true;
 	}
 
 	public static void ResetRegisteredPlayers()
