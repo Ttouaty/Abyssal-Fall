@@ -75,7 +75,7 @@ public class CameraManager : MonoBehaviour
 
 		Reset();
 		GameManager.instance.Arena.ClearArena();
-		GameManager.instance.Init();
+		GameManager.instance.Restart();
 
 		yield return null;
 	}

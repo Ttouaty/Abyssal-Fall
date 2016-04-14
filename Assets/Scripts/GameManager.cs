@@ -13,7 +13,6 @@ public class GameManager : MonoBehaviour
 	public static GameManager instance;
 
 
-	private Text _loadingType;
 	private int _index;
 	private Loadable[] _loadables;
 
@@ -39,6 +38,8 @@ public class GameManager : MonoBehaviour
 		}
 
 		_loadables = GameObject.FindObjectsOfType<Loadable>();
+
+		Application.LoadLevelAdditive("Menu");
 	}
 
 
@@ -54,7 +55,6 @@ public class GameManager : MonoBehaviour
 	// Use this for initialization
 	private void Init ()
 	{
-		OpenLoadingScreen();
 		AddEvents();
 
 		OnZoom.AddListener(Camera.main.GetComponent<CameraManager>().OnZoom);
@@ -63,16 +63,9 @@ public class GameManager : MonoBehaviour
 		_loadables[_index].Init();
 	}
 
-	public void Init ()
+	public void Restart ()
 	{
 		StartCoroutine(OnAllLoadablesLoaded());
-	}
-
-	void OpenLoadingScreen ()
-	{
-		_loadingType = LoadingScreen.transform.FindChild("LoadingType").GetComponent<Text>();
-		_loadingType.text = "Init core";
-		LoadingScreen.SetActive(true);
 	}
 
 	void AddEvents ()
@@ -80,15 +73,10 @@ public class GameManager : MonoBehaviour
 		for (var i = 0; i < _loadables.Length; ++i)
 		{
 			Loadable loadable = _loadables[i];
-			loadable.OnMessage.AddListener(OnChangeLoadingMessage);
 			loadable.OnLoadComplete.AddListener(OnLoadableComplete);
 		}
 	}
 
-	void OnChangeLoadingMessage(string msg)
-	{
-		_loadingType.text = msg;
-	}
 
 	void OnLoadableComplete()
 	{
@@ -105,7 +93,6 @@ public class GameManager : MonoBehaviour
 
 	IEnumerator OnAllLoadablesLoaded()
 	{
-		LoadingScreen.SetActive(false);
 		yield return StartCoroutine(Arena.StartGame());
 		yield return null;
 	}

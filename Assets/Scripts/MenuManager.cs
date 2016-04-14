@@ -48,6 +48,8 @@ public class MenuManager : MonoBehaviour
 	{
 		Debug.Log("game started");
 		GameManager.StartGame();
+		SetActiveButtons(_activeMenu, false);
+		StartCoroutine(SendOut(_activeMenu));
 	}
 
 	public void LaunchLobby()
