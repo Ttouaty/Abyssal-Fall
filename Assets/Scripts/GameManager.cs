@@ -14,7 +14,6 @@ public class GameManager : MonoBehaviour
 
 
 	private int _index;
-	private Loadable[] _loadables;
 
 	public ZoomEvent OnZoom;
 	public PlayerEvent OnPlayerDeath;
@@ -37,11 +36,8 @@ public class GameManager : MonoBehaviour
 			Debug.Break();
 		}
 
-		_loadables = GameObject.FindObjectsOfType<Loadable>();
-
 		Application.LoadLevelAdditive("Menu");
 	}
-
 
 	public static void StartGame()
 	{

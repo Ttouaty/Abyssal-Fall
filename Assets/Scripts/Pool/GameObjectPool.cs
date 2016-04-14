@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -18,6 +19,9 @@ public struct Pool
 	[HideInInspector]
 	public List<GameObject> Reserve;
 }
+
+[System.Serializable]
+public class LoadEvent : UnityEvent<float> { }
 
 public class GameObjectPool : MonoBehaviour
 {
@@ -89,8 +93,27 @@ public class GameObjectPool : MonoBehaviour
 	***********/
 	private bool _initialized;
 
+	[HideInInspector]
 	public List<Pool> Pools;
+	[HideInInspector]
 	public int NumberOfInstancesPerFrame = 1000;
+
+	[Header("Events")]
+	public LoadEvent LoadStart;
+	public LoadEvent LoadProgress;
+	public LoadEvent LoadEnd;
+	[HideInInspector]
+	public int ElementsLoaded;
+	[HideInInspector]
+	public int ElementsToLoad;
+	[HideInInspector]
+	public float Progress
+	{
+		get
+		{
+			return ElementsLoaded / ElementsToLoad;
+		}
+	}
 
 	public void Awake ()
 	{
@@ -103,7 +126,15 @@ public class GameObjectPool : MonoBehaviour
 		if(!_initialized)
 		{
 			_initialized = true;
+			for(var p = 0; p < Pools.Count; ++p)
+			{
+				ElementsToLoad += Pools[p].Quantity;
+			}
+			LoadStart.Invoke(Progress);
+
 			yield return StartCoroutine(LoadPoolAsync(0));
+
+			LoadEnd.Invoke(Progress);
 		}
 	}
 
@@ -165,7 +196,9 @@ public class GameObjectPool : MonoBehaviour
 					pool.Reserve.Add(go);
 
 					++pool.QuantityLoaded;
+					++ElementsLoaded;
 				}
+				LoadProgress.Invoke(Progress);
 				yield return null;
 			}
 			Pools[index] = pool;

@@ -14,8 +14,8 @@ public class Spawn : MonoBehaviour
 
 	public GameObject SpawnPlayer (int playerId, GameObject playerRef, Material materialRef, Material idMaterialRef)
 	{
-		_player = (GameObject) Instantiate(playerRef, transform.position + Vector3.up * 5, Quaternion.identity);
-		_player.name = "Player_" + playerId;
+		_player = (GameObject) Instantiate(playerRef, transform.position + Vector3.up * Arena.TileScale, Quaternion.identity);
+		_player.name = "Player_" + (playerId + 1);
 
 		_controller = _player.GetComponent<PlayerController>();
 		_controller.enabled = false;

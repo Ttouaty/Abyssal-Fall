@@ -6,7 +6,6 @@ public class CameraManager : MonoBehaviour
 	private Vector3 _basePosition;
 	[SerializeField]
 	private float _cameraWinZoomSpeed = 3;
-	private float _currentZoom = 0;
 	private Vector3 _target;
 	private Camera _camera;
 
@@ -56,7 +55,6 @@ public class CameraManager : MonoBehaviour
 	{
 		winner.GetComponent<PlayerController>()._hammerPropModel.SetActive(false);
 		Vector3 startPos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-		Vector3 direction = (winner.transform.position - startPos).normalized;
 		winner.transform.Rotate(Vector3.up, Vector3.Angle(winner.transform.position, transform.position));
 
 		Vector3 endPos = winner.transform.position + winner.transform.forward * 6 + winner.transform.up * 4 ;

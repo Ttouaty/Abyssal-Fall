@@ -46,7 +46,7 @@ public class ArenaGenerator : MonoBehaviour
 	public int ObstaclesDecrease = 10;
 
 	[HideInInspector]
-	public Spawn[] Spawns;
+	public List<Spawn> Spawns;
 	[HideInInspector]
 	public List<GameObject> Players;
 	#endregion
@@ -93,8 +93,9 @@ public class ArenaGenerator : MonoBehaviour
 
 	void OnPlayerDeath (GameObject player)
 	{
-		Players.Remove(player);
-		if(Players.Count == 1)
+		// Debug to play alone
+		Debug.Break();
+		if(Players.Count == 1 && Spawns.Count == 1)
 		{
 			GameManager.instance.OnPlayerWin.Invoke(Players[0]);
 			StopAllCoroutines();
@@ -107,18 +108,40 @@ public class ArenaGenerator : MonoBehaviour
 			{
 				_obstacles[o].GetComponent<Obstacle>().StopAllCoroutines();
 			}
-			for (int s = 0; s < Spawns.Length; ++s)
+			for (int s = 0; s < Spawns.Count; ++s)
 			{
-				Spawn spawn = Spawns[s].GetComponent<Spawn>();
-				spawn.DestroyId();
+				Spawns[s].DestroyId();
+				Spawns.Remove(Spawns[s]);
+			}
+		}
+		else
+		{
+			Players.Remove(player);
+			if (Players.Count == 1)
+			{
+				GameManager.instance.OnPlayerWin.Invoke(Players[0]);
+				StopAllCoroutines();
+				for (int t = 0; t < _tiles.Count; ++t)
+				{
+					_tiles[t].GetComponent<Tile>().StopAllCoroutines();
+				}
 
+				for (int o = 0; o < _obstacles.Count; ++o)
+				{
+					_obstacles[o].GetComponent<Obstacle>().StopAllCoroutines();
+				}
+				for (int s = 0; s < Spawns.Count; ++s)
+				{
+					Spawns[s].DestroyId();
+					Spawns.Remove(Spawns[s]);
+				}
 			}
 		}
 	}
 
 	public void EndStage ()
 	{
-		for (int s = 0; s < Spawns.Length; ++s)
+		for (int s = 0; s < Spawns.Count; ++s)
 		{
 			Spawn spawn = Spawns[s].GetComponent<Spawn>();
 			spawn.StopAllCoroutines();
@@ -128,11 +151,13 @@ public class ArenaGenerator : MonoBehaviour
 		for (int t = 0; t < _tiles.Count; ++t)
 		{
 			_tiles[t].GetComponent<Poolable>().StopAllCoroutines();
+			_tiles[t].GetComponent<Rigidbody>().isKinematic = true;
 			GameObjectPool.AddObjectIntoPool(_tiles[t]);
 		}
 		for(int o = 0; o < _obstacles.Count; ++o)
 		{
 			_obstacles[o].GetComponent<Poolable>().StopAllCoroutines();
+			_obstacles[o].GetComponent<Rigidbody>().isKinematic = true;
 			GameObjectPool.AddObjectIntoPool(_obstacles[o]);
 		}
 	}
@@ -154,7 +179,7 @@ public class ArenaGenerator : MonoBehaviour
 
 	public void StartGame ()
 	{
-		for (int s = 0; s < Spawns.Length; ++s)
+		for (int s = 0; s < Spawns.Count; ++s)
 		{
 			if (Spawns[s] != null)
 			{
@@ -239,12 +264,15 @@ public class ArenaGenerator : MonoBehaviour
 
 	public void CreateSpawns()
 	{
-		Spawns = new Spawn[4];
-		for (var s = 0; s < Spawns.Length; ++s)
+		Spawns = new List<Spawn>();
+		for (var s = 0; s < GameManager.instance.RegisteredPlayers.Length; ++s)
 		{
-			int target = Mathf.FloorToInt(_spawnPositions[s].x + _spawnPositions[s].y * Size);
-			GameObject tile = _tiles[target];
-			Spawns[s] = tile.AddComponent<Spawn>();
+			if(GameManager.instance.RegisteredPlayers[s] > 0 || s == 0)
+			{
+				int target = Mathf.FloorToInt(_spawnPositions[s].x + _spawnPositions[s].y * Size);
+				GameObject tile = _tiles[target];
+				Spawns.Add(tile.AddComponent<Spawn>());
+			}
 		}
 	}
 
@@ -337,7 +365,7 @@ public class ArenaGenerator : MonoBehaviour
 	public void CreatePlayers ()
 	{
 		Players = new List<GameObject>();
-		for (int s = 0; s < Spawns.Length; ++s)
+		for (int s = 0; s < Spawns.Count; ++s)
 		{
 			if (Spawns[s] != null && PlayerRef[s] != null)
 			{
