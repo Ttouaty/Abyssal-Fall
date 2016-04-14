@@ -52,6 +52,10 @@ public class Hammer : MonoBehaviour {
 			// explosion particules
 			this.Stop();
 		}
+		else if(Collider.gameObject.layer == LayerMask.NameToLayer("Ground"))
+		{
+			this.Stop();
+		}
 	}
 
 	private void OnBecameInvisible()

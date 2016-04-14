@@ -21,6 +21,8 @@ public class GameManager : MonoBehaviour
 	public Arena Arena;
 	public GameObject[] PlayersRefs;
 
+	public int[] RegisteredPlayers = { 0, 0, 0, 0 };  
+
 	void Awake ()
 	{
 		instance = this;
@@ -34,8 +36,18 @@ public class GameManager : MonoBehaviour
 		_loadables = GameObject.FindObjectsOfType<Loadable>();
 	}
 
+
+	public static void StartGame()
+	{
+		instance.Init();
+	}
+
+	public static void ResetRegisteredPlayers()
+	{
+		for (int i = 0; i < 4; ++i) { instance.RegisteredPlayers[i] = 0; }
+	}
 	// Use this for initialization
-	void Start ()
+	private void Init ()
 	{
 		OpenLoadingScreen();
 		AddEvents();
