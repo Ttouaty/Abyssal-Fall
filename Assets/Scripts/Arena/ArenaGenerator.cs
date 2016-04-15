@@ -92,7 +92,10 @@ public class ArenaGenerator : MonoBehaviour
 
 		for(var i = 1; i < GameManager.instance.RegisteredPlayers.Length; ++i)
 		{
-			SecondsBeforeNextDrop -= 1;
+			if(GameManager.instance.RegisteredPlayers[i] > 0)
+			{
+				SecondsBeforeNextDrop -= 1;
+			}
 		}
 	}
 

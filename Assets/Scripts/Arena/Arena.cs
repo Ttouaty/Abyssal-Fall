@@ -31,21 +31,6 @@ public class Arena : MonoBehaviour
 		GameManager.instance.OnPlayerWin.AddListener(OnPlayerWin);
 	}
 
-	void Update ()
-	{
-		if(_loaded)
-		{
-			if(Input.GetKeyDown(KeyCode.Escape))
-			{
-				StartCoroutine(StartGame());
-			}
-			if (Input.GetKeyDown(KeyCode.Return))
-			{
-				Time.timeScale = Time.timeScale == 0 ? 1 : 0;
-			}
-		}
-	}
-
 	// Use this for initialization
 	public IEnumerator StartGame()
 	{
