@@ -90,7 +90,8 @@ public class ArenaGenerator : MonoBehaviour
 		_groundsToDrop.Clear();
 		_amoutGroupsToDrop = Mathf.FloorToInt(Size * 0.5f - Size / 10);
 
-		for(var i = 1; i < GameManager.instance.RegisteredPlayers.Length; ++i)
+		SecondsBeforeNextDrop = 4;
+		for (var i = 1; i < GameManager.instance.RegisteredPlayers.Length; ++i)
 		{
 			if(GameManager.instance.RegisteredPlayers[i] > 0)
 			{
