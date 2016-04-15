@@ -54,7 +54,7 @@ public class MenuManager : MonoBehaviour
 				GameManager.instance.RegisteredPlayers[i] = Input.GetJoystickNames()[i] != null ? 1 : 0;
 			}
 
-			_StartButton.interactable = Input.GetJoystickNames().Length >= 2;
+			_StartButton.interactable = Input.GetJoystickNames().Length >= 2 && !GameManager.InProgress;
 		}
 	}
 
