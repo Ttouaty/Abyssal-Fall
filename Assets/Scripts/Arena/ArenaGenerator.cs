@@ -95,6 +95,7 @@ public class ArenaGenerator : MonoBehaviour
 	{
 		// Debug to play alone
 		Players.Remove(player);
+		player.GetComponent<PlayerController>().Spawn.DestroyId();
 		player.GetComponent<PlayerController>().Spawn.Destroy();
 		if (Players.Count == 1)
 		{
@@ -184,6 +185,7 @@ public class ArenaGenerator : MonoBehaviour
 			for (var x = 0; x < Size; ++x)
 			{
 				GameObject tile = GameObjectPool.GetAvailableObject("Ground");
+				tile.GetComponent<Rigidbody>().isKinematic = true;
 				tile.transform.localScale = new Vector3(1,1,1);
 				tile.transform.position = new Vector3(-Size * 0.5f * TileScale + x * TileScale, Camera.main.transform.position.y + (index++ % Size), -Size * 0.5f * TileScale + z * TileScale);
 				tile.transform.parent = _tilesRoot.transform;
@@ -428,7 +430,7 @@ public class ArenaGenerator : MonoBehaviour
 		yield return new WaitForSeconds(delay);
 
 		float timer = 0;
-		float initialY = 100;
+		float initialY = 150;
 		element.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
 
 		while (timer < 1)

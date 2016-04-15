@@ -22,6 +22,13 @@ public class PlayerController : MonoBehaviour
 
 	public Spawn Spawn;
 
+	public AudioClip OnDashStart;
+	public AudioClip OnDashEnd;
+	public AudioClip OnDeath;
+	public AudioClip OnHammerThrow;
+
+	private AudioSource _audioSource;
+
 	[SerializeField]
 	private Dash dash;
 
@@ -98,6 +105,7 @@ public class PlayerController : MonoBehaviour
 
 	void Start()
 	{
+		_audioSource = GetComponent<AudioSource>();
 		_transf = transform;
 		_rigidB = GetComponent<Rigidbody>();
 
@@ -130,6 +138,8 @@ public class PlayerController : MonoBehaviour
 	{
 		_allowInput = false;
 		_activeSpeed = Vector3.zero;
+		enabled = false;
+		_animator.SetTrigger("Reset");
 	}
 
 
@@ -251,6 +261,7 @@ public class PlayerController : MonoBehaviour
 	private void ThrowHammer()
 	{
 		_animator.SetTrigger("Throw");
+		_audioSource.PlayOneShot(OnHammerThrow);
 		_hammerCooldown = _hammerRechargeRate;
 		_hammerPropModel.GetComponent<Renderer>().enabled = false;
 		GameObjectPool.GetAvailableObject("Hammer").GetComponent<Hammer>().Launch(transform.position + transform.forward, transform.forward, PlayerNumber);
@@ -260,6 +271,7 @@ public class PlayerController : MonoBehaviour
 	{
 		Debug.Log("Player is DED!");
 		_animator.SetTrigger("Death");
+		_audioSource.PlayOneShot(OnDeath);
 		_isDead = true;
 		GameManager.instance.OnPlayerDeath.Invoke(gameObject);
 	}
@@ -290,6 +302,7 @@ public class PlayerController : MonoBehaviour
 
 		Eject(transform.forward * dash.range / dash.length + Vector3.up * Physics.gravity.magnitude * -_acceleration.y * dash.length * 0.5f, dash.length + dash.endingLag);
 		_animator.SetTrigger("Dash_Start");
+		_audioSource.PlayOneShot(OnDashStart);
 
 		GetComponent<Collider>().isTrigger = true;
 
@@ -312,6 +325,8 @@ public class PlayerController : MonoBehaviour
 			yield return null;
 		}
 		_animator.SetTrigger("Dash_End");
+		_audioSource.PlayOneShot(OnDashEnd);
+
 		yield return new WaitForSeconds(dash.endingLag);
 
 		dash.inProgress = false;

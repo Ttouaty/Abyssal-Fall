@@ -62,6 +62,7 @@ public class MenuManager : MonoBehaviour
 	{
 		Debug.Log("game started");
 		GameManager.StartGame();
+		// SpawnFallingGround.instance.Init();
 		SetActiveButtons(_activeMenu, false);
 		StartCoroutine(SendOut(_activeMenu));
 	}

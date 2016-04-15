@@ -4,6 +4,9 @@ using System.Collections;
 [RequireComponent(typeof(Rigidbody), typeof(Collider))]
 public class Hammer : MonoBehaviour {
 
+	public AudioClip OnHitPlayer;
+	public AudioClip OnHitObstacle;
+
 	private int _playerNumber;
 	[SerializeField]
 	private int _speed = 10;
@@ -11,7 +14,10 @@ public class Hammer : MonoBehaviour {
 	private float _stunInflicted = 0.5f;
 
 	private Rigidbody _rigidB;
+	private AudioSource _audioSource;
+
 	void Start () {
+		_audioSource = GetComponent<AudioSource>();
 		_rigidB = GetComponent<Rigidbody>();
 		GetComponent<Collider>().isTrigger = true;
 	}
@@ -50,10 +56,12 @@ public class Hammer : MonoBehaviour {
 
 			Collider.GetComponent<PlayerController>().Damage(_rigidB.velocity + Vector3.up * 3, _stunInflicted);
 			// explosion particules
+			_audioSource.PlayOneShot(OnHitPlayer);
 			this.Stop();
 		}
 		else if(Collider.gameObject.layer == LayerMask.NameToLayer("Ground"))
 		{
+			_audioSource.PlayOneShot(OnHitObstacle);
 			this.Stop();
 		}
 	}

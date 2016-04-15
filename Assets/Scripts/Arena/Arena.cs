@@ -70,22 +70,28 @@ public class Arena : MonoBehaviour
 		GameManager gm = GameManager.instance;
 
 		_generator.CreatePlayers();
-
-		Text countDown = gm.CountdownScreen.transform.FindChild("CountDown").GetComponent<Text>();
-
 		gm.CountdownScreen.SetActive(true);
-		countDown.text = "Ready ?";
-		yield return new WaitForSeconds(1);
 
-		while (startValue > 0)
+		int index = 0;
+		while (index < 4)
 		{
-			countDown.text = startValue.ToString();
-			startValue--;
-			yield return new WaitForSeconds(1);
+			Transform element = gm.CountdownScreen.transform.GetChild(index);
+			element.gameObject.SetActive(true);
+			float timer = 0;
+			while(timer < 1)
+			{
+				timer += Time.deltaTime;
+				Vector3 scale = Vector3.Slerp(Vector3.one * 0.5f, Vector3.one * 3, timer);
+				element.localScale = scale;
+				yield return null;
+			}
+			if(index == 3)
+			{
+				yield return new WaitForSeconds(1);
+			}
+			element.gameObject.SetActive(false);
+			++index;
 		}
-
-		countDown.text = "Go !!!";
-		yield return new WaitForSeconds(1);
 
 		gm.CountdownScreen.SetActive(false);
 

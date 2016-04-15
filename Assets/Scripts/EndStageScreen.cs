@@ -63,8 +63,7 @@ public class EndStageScreen : MonoBehaviour
 			--duration;
 			yield return new WaitForSeconds(1);
 		}
-		Countdown.text += "GO !!!";
-		yield return new WaitForSeconds(2);
+		yield return new WaitForSeconds(0.5f);
 		Disable();
 	}
 }
