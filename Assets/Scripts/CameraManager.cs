@@ -35,7 +35,7 @@ public class CameraManager : MonoBehaviour
 	IEnumerator SmoothZoom ()
 	{
 		float timer = 0;
-		Vector3 endPosition = _camera.transform.forward + _camera.transform.transform.position;
+		Vector3 endPosition = _camera.transform.forward * 3 + _camera.transform.transform.position;
 		while(timer < 1)
 		{
 			timer += Time.deltaTime;
