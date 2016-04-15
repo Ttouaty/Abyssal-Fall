@@ -49,11 +49,14 @@ public class MenuManager : MonoBehaviour
 		{
 			for (int i = 0; i < Input.GetJoystickNames().Length; i++)
 			{
+				if (Input.GetJoystickNames()[i] == "")
+					continue;
 				if (i > 3)
 					break;
 				GameManager.instance.RegisteredPlayers[i] = Input.GetJoystickNames()[i] != null ? 1 : 0;
 			}
-
+		
+			Debug.Log(Input.GetJoystickNames().Length);
 			_StartButton.interactable = Input.GetJoystickNames().Length >= 2 && !GameManager.InProgress;
 		}
 	}
