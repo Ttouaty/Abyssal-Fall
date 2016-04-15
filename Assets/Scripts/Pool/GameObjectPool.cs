@@ -69,8 +69,8 @@ public class GameObjectPool : MonoBehaviour
 			{
 				pool.Reserve.Add(go);
 				//go.transform.position = new Vector3(-9999.0f, -9999.0f, -9999.0f);
-				go.gameObject.SetActive(false);
 				go.transform.parent = pool.Root.transform;
+				go.gameObject.SetActive(false);
 			}
 		}
 	}

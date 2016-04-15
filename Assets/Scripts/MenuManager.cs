@@ -22,6 +22,9 @@ public class MenuManager : MonoBehaviour
 	[SerializeField]
 	private Button _StartButton;
 
+	[SerializeField]
+	private Image[] _playerImages;
+
 
 	private GameObject _activeMenu;
 
@@ -33,6 +36,12 @@ public class MenuManager : MonoBehaviour
 		StartCoroutine(FadeIsartLogo());
 		_lobbyButtons.transform.position = new Vector3(-Screen.width * 1.5f, _lobbyButtons.transform.position.y, 0);
 		_credits.transform.position = new Vector3(-Screen.width * 1.5f, _credits.transform.position.y, 0);
+
+		for (int i = 0; i < _playerImages.Length; i++)
+		{ 
+			_playerImages[i].gameObject.SetActive(false);
+		}
+
 	}
 
 	void Update()
@@ -54,9 +63,9 @@ public class MenuManager : MonoBehaviour
 				if (i > 3)
 					break;
 				GameManager.instance.RegisteredPlayers[i] = Input.GetJoystickNames()[i] != null ? 1 : 0;
+				_playerImages[i].gameObject.SetActive(Input.GetJoystickNames()[i] != null);
 			}
 		
-			Debug.Log(Input.GetJoystickNames().Length);
 			_StartButton.interactable = Input.GetJoystickNames().Length >= 2 && !GameManager.InProgress;
 		}
 	}
@@ -73,7 +82,6 @@ public class MenuManager : MonoBehaviour
 	public void LaunchLobby()
 	{
 		MakeTransition(_lobbyButtons);
-		ListenForInput();
 		_isListeningForInput = true;
 	}
 
@@ -114,13 +122,8 @@ public class MenuManager : MonoBehaviour
 
 	public void Exit()
 	{
+		Application.Quit();
 	}
-
-	void ListenForInput()
-	{
-
-	}
-
 
 	IEnumerator SendOut(GameObject targetMenu)
 	{
