@@ -24,14 +24,25 @@ public class GameManager : MonoBehaviour
 	public Arena Arena;
 	public GameObject[] PlayersRefs;
 
+	public AudioClip OnGroundDrop;
+	public AudioClip OnObstacleDrop;
+	public AudioClip OnThree;
+	public AudioClip OnTWo;
+	public AudioClip OnOne;
+	public AudioClip OnGo;
+	public AudioClip GameLoop;
+	[HideInInspector]
+	public AudioSource AudioSource;
+
 	public int[] RegisteredPlayers = { 0, 0, 0, 0 };
 	public int[] PlayersScores = { 0, 0, 0, 0 };
 
 	void Awake ()
 	{
 		instance = this;
+		AudioSource = GetComponent<AudioSource>();
 
-		if(Arena == null)
+		if (Arena == null)
 		{
 			Debug.LogError("Arena reference is missing");
 			Debug.Break();

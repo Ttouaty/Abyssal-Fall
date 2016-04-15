@@ -382,10 +382,9 @@ public class ArenaGenerator : MonoBehaviour
 		for (int t = 0; t < _tiles.Count; t += Size)
 		{
 			float delay = 0.15f + 0.05f * ligne;
-			Debug.Log(delay);
 			for(int i = 0; i < Size; ++i)
 			{
-				StartCoroutine(DropGround(_tiles[t+i], delay, i, _tiles[t+i].transform.position.y));
+				StartCoroutine(DropGround(_tiles[t+i], delay, i, _tiles[t+i].transform.position.y, i % Size * 2 == 0));
 			}
 			++ligne;
 		}
@@ -395,7 +394,7 @@ public class ArenaGenerator : MonoBehaviour
 		}
 	}
 
-	private IEnumerator DropGround(GameObject element, float delay, float pos, float initY)
+	private IEnumerator DropGround(GameObject element, float delay, float pos, float initY, bool sound = false)
 	{
 		yield return new WaitForSeconds(delay);
 
@@ -419,7 +418,7 @@ public class ArenaGenerator : MonoBehaviour
 	{
 		for (int t = 0; t < _obstacles.Count; ++t)
 		{
-			StartCoroutine(DropObstacle(_obstacles[t], 0.05f * t));
+			StartCoroutine(DropObstacle(_obstacles[t], 0.05f * t, t % 5 == 0));
 		}
 		while (_obstaclessDropped < _obstacles.Count)
 		{
@@ -429,7 +428,7 @@ public class ArenaGenerator : MonoBehaviour
 		yield return null;
 	}
 
-	private IEnumerator DropObstacle(GameObject element, float delay)
+	private IEnumerator DropObstacle(GameObject element, float delay, bool sound = false)
 	{
 		yield return new WaitForSeconds(delay);
 
@@ -443,6 +442,11 @@ public class ArenaGenerator : MonoBehaviour
 			float y = Mathf.Lerp(initialY, TileScale * 0.5f, timer);
 			element.transform.position = new Vector3(element.transform.position.x, y, element.transform.position.z);
 			yield return null;
+		}
+
+		if(sound)
+		{
+			GameManager.instance.AudioSource.PlayOneShot(GameManager.instance.OnObstacleDrop);
 		}
 
 		element.GetComponent<Obstacle>().OnDropped();

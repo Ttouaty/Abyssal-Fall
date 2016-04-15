@@ -47,6 +47,8 @@ public class Arena : MonoBehaviour
 	{
 		yield return _generator.StartCoroutine(_generator.DropArena());
 		yield return StartCoroutine(CountDown(3));
+		GameManager.instance.AudioSource.Stop();
+		GameManager.instance.AudioSource.PlayOneShot(GameManager.instance.GameLoop);
 		_generator.StartCoroutine(_generator.DropArenaOverTime());
 	}
 
@@ -62,6 +64,13 @@ public class Arena : MonoBehaviour
 		{
 			Transform element = gm.CountdownScreen.transform.GetChild(index);
 			element.gameObject.SetActive(true);
+			switch(index)
+			{
+				case 0: GameManager.instance.AudioSource.PlayOneShot(GameManager.instance.OnThree); break;
+				case 1: GameManager.instance.AudioSource.PlayOneShot(GameManager.instance.OnTWo); break;
+				case 2: GameManager.instance.AudioSource.PlayOneShot(GameManager.instance.OnOne); break;
+				case 3: GameManager.instance.AudioSource.PlayOneShot(GameManager.instance.OnGo); break;
+			}
 			float timer = 0;
 			while(timer < 1)
 			{
