@@ -258,15 +258,11 @@ public class ArenaGenerator : MonoBehaviour
 		Spawns = new List<Spawn>();
 		for (var s = 0; s < GameManager.instance.RegisteredPlayers.Length; ++s)
 		{
-			if(GameManager.instance.RegisteredPlayers[s] > 0 || s == 0)
+			if(GameManager.instance.RegisteredPlayers[s] > 0)
 			{
 				int target = Mathf.FloorToInt(_spawnPositions[s].x + _spawnPositions[s].y * Size);
 				GameObject tile = _tiles[target];
 				Spawns.Add(tile.AddComponent<Spawn>());
-			}
-			if((s == 0 || s == 1) && GameManager.instance.RegisteredPlayers[s] == 0)
-			{
-				GameManager.instance.RegisteredPlayers[s] = 1;
 			}
 		}
 	}

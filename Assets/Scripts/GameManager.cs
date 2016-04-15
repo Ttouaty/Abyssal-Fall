@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviour
 	public Arena Arena;
 	public GameObject[] PlayersRefs;
 
-	public int[] RegisteredPlayers = { 0, 0, 0, 0 };  
+	public int[] RegisteredPlayers = { 0, 0, 0, 0 };
 	public int[] PlayersScores = { 0, 0, 0, 0 };
 
 	void Awake ()

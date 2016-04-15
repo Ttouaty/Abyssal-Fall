@@ -299,7 +299,6 @@ public class PlayerController : MonoBehaviour
 		dash.inProgress = true;
 		_isInvul = true;
 		_allowInput = false;
-
 		Eject(transform.forward * dash.range / dash.length + Vector3.up * Physics.gravity.magnitude * -_acceleration.y * dash.length * 0.5f, dash.length + dash.endingLag);
 		_animator.SetTrigger("Dash_Start");
 		_audioSource.PlayOneShot(OnDashStart);
