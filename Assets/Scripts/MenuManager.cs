@@ -168,6 +168,7 @@ public class MenuManager : MonoBehaviour
 
 	void OnLoadEnd(float progress)
 	{
+		_loadBarProgress.rectTransform.sizeDelta = new Vector2(progress * originalSize, _loadBarProgress.rectTransform.rect.height);
 
 		StartCoroutine(MoveObjectOverTime(_loadBarProgress.gameObject, Vector3.down * Screen.height, 0.5f));
 		StartCoroutine(MoveObjectOverTime(_loadBarContainer.gameObject, Vector3.down * Screen.height, 0.5f));
