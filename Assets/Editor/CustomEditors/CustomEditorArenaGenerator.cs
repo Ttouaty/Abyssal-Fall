@@ -18,7 +18,7 @@ public class CustomEditorArenaGenerator : Editor
 				myTarget.Size = EditorGUILayout.IntSlider("Arena Size: ", myTarget.Size, 20, 100);
 				myTarget.TileScale = EditorGUILayout.Slider("Ground bloc scale: ", myTarget.TileScale, 1, 5);
 				myTarget.SpawnDistanceFromBorder = EditorGUILayout.IntSlider("Spawn distance from border: ", myTarget.SpawnDistanceFromBorder, 0, 5);
-				myTarget.SecondsBeforeNextDrop = EditorGUILayout.IntSlider("Time before outer tiles fall: ", myTarget.SecondsBeforeNextDrop, 1, 10);
+				myTarget.SecondsBeforeNextDrop = EditorGUILayout.FloatField("Time before outer tiles fall: ", myTarget.SecondsBeforeNextDrop);
 			}
 			EditorGUILayout.EndVertical();
 

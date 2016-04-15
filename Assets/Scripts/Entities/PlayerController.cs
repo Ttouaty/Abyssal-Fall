@@ -166,7 +166,11 @@ public class PlayerController : MonoBehaviour
 		_animator.SetFloat("StunTime", _stunTime);
 		if (_stunTime > 0)
 		{
+			if (_isGrounded && !dash.inProgress)
+				this._activeSpeed = Vector3.zero;
+
 			_allowInput = false;
+
 			_stunTime -= Time.deltaTime;
 		}
 		else if (_isStunned)
@@ -339,8 +343,9 @@ public class PlayerController : MonoBehaviour
 			_rigidB.velocity = new Vector3(0, _rigidB.velocity.y, 0);
 			colli.GetComponent<PlayerController>().Damage((colli.transform.position - transform.position) * 5 + Vector3.up * Physics.gravity.magnitude * 0.5f, 0.5f);
 		}
-		else if (colli.gameObject.layer == LayerMask.NameToLayer("Ground") && dash.inProgress)
+		else if (colli.gameObject.layer == 8 && dash.inProgress)
 		{
+			_activeSpeed = Vector3.zero;
 			_rigidB.velocity = Vector3.zero;
 		}
 	}

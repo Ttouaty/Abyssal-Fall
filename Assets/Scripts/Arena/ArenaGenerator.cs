@@ -37,7 +37,7 @@ public class ArenaGenerator : MonoBehaviour
 	[Tooltip("Scale of tiles")]
 	public float TileScale = 1.5f;
 	[Tooltip("Time before the exterior tiles drop automaticaly")]
-	public int SecondsBeforeNextDrop = 5;
+	public float SecondsBeforeNextDrop = 5;
 
 	[Header("ArenaGenerator Obstacles")]
 	[Tooltip("Obstacles quantity")]
@@ -95,7 +95,7 @@ public class ArenaGenerator : MonoBehaviour
 		{
 			if(GameManager.instance.RegisteredPlayers[i] > 0)
 			{
-				SecondsBeforeNextDrop -= 1;
+				SecondsBeforeNextDrop -= 0.5f;
 			}
 		}
 	}

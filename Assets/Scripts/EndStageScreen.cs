@@ -55,7 +55,7 @@ public class EndStageScreen : MonoBehaviour
 	{
 		PlayerXWins.text = "Player " + (idWinner + 1) + " wins";
 		Countdown.text = "";
-		yield return new WaitForSeconds(4);
+		yield return new WaitForSeconds(2);
 		Countdown.text = "Next battle in \n";
 		while (duration > 0)
 		{
