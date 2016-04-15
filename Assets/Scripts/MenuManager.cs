@@ -47,8 +47,10 @@ public class MenuManager : MonoBehaviour
 
 		if (_isListeningForInput)
 		{
-			for (int i = 0; i < GameManager.instance.RegisteredPlayers.Length; i++)
+			for (int i = 0; i < Input.GetJoystickNames().Length; i++)
 			{
+				if (i > 3)
+					break;
 				GameManager.instance.RegisteredPlayers[i] = Input.GetJoystickNames()[i] != null ? 1 : 0;
 			}
 
