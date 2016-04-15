@@ -12,7 +12,7 @@ public class CameraManager : MonoBehaviour
 	public void Start()
 	{
 		_camera = GetComponent<Camera>();
-		_target = GameManager.instance.Arena.transform.position;
+		_target = GameManager.instance.Arena.transform.position - Vector3.forward * 3 + Vector3.right * 3;
 		_basePosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);
 		
 		

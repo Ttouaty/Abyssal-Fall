@@ -68,7 +68,7 @@ public class GameObjectPool : MonoBehaviour
 			if (pool.Name.CompareTo(go.GetComponent<Poolable>().PoolName) == 0 && pool.Reserve.Count > 0)
 			{
 				pool.Reserve.Add(go);
-				go.transform.position = new Vector3(-9999.0f, -9999.0f, -9999.0f);
+				//go.transform.position = new Vector3(-9999.0f, -9999.0f, -9999.0f);
 				go.gameObject.SetActive(false);
 				go.transform.parent = pool.Root.transform;
 			}
@@ -170,7 +170,7 @@ public class GameObjectPool : MonoBehaviour
 
 	private IEnumerator LoadPoolAsync (int index)
 	{
-		Vector3 position = new Vector3(-9999.0f, -9999.0f, -9999.0f);
+		Vector3 position =  Vector3.zero;
 
 		if(index == Pools.Count)
 		{

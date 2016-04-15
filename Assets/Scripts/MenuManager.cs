@@ -12,9 +12,16 @@ public class MenuManager : MonoBehaviour
 	private GameObject _mainButtons;
 	[SerializeField]
 	private GameObject _lobbyButtons;
-
 	[SerializeField]
 	private GameObject _credits;
+	[SerializeField]
+	private Image _loadBarContainer;
+	[SerializeField]
+	private Image _loadBarProgress;
+
+	[SerializeField]
+	private Button _StartButton;
+
 
 	private GameObject _activeMenu;
 
@@ -39,8 +46,13 @@ public class MenuManager : MonoBehaviour
 		}
 
 		if (_isListeningForInput)
-		{ 
-		
+		{
+			for (int i = 0; i < GameManager.instance.RegisteredPlayers.Length; i++)
+			{
+				GameManager.instance.RegisteredPlayers[i] = Input.GetJoystickNames()[i] != null ? 1 : 0;
+			}
+
+			_StartButton.interactable = Input.GetJoystickNames().Length >= 2;
 		}
 	}
 
@@ -56,6 +68,7 @@ public class MenuManager : MonoBehaviour
 	{
 		MakeTransition(_lobbyButtons);
 		ListenForInput();
+		_isListeningForInput = true;
 	}
 
 	public void ReturnToMainMenu()
@@ -98,8 +111,8 @@ public class MenuManager : MonoBehaviour
 	}
 
 	void ListenForInput()
-	{ 
-	
+	{
+
 	}
 
 
@@ -132,10 +145,50 @@ public class MenuManager : MonoBehaviour
 	IEnumerator FadeIsartLogo()
 	{
 		SetActiveButtons(_mainButtons, false);
+		GameObjectPool.instance.LoadStart.AddListener(OnLoadStart);
+		GameObjectPool.instance.LoadEnd.AddListener(OnLoadEnd);
+		GameObjectPool.instance.LoadProgress.AddListener(OnLoadProgress);
 		yield return StartCoroutine(GameObjectPool.instance.Init());
-		yield return new WaitForSeconds(2);
+		//yield return new WaitForSeconds(2);
 		_isartLogo.GetComponent<RawImage>().CrossFadeAlpha(0, 1, false);
 		SetActiveButtons(_mainButtons, true);
 		Destroy(_isartLogo, 1);
+	}
+
+
+	private float originalSize;
+	void OnLoadStart(float progress)
+	{
+		originalSize = _loadBarProgress.rectTransform.rect.width;
+		_loadBarProgress.rectTransform.sizeDelta = new Vector2(0, _loadBarProgress.rectTransform.rect.height);
+	}
+
+	void OnLoadEnd(float progress)
+	{
+
+		StartCoroutine(MoveObjectOverTime(_loadBarProgress.gameObject, Vector3.down * Screen.height, 0.5f));
+		StartCoroutine(MoveObjectOverTime(_loadBarContainer.gameObject, Vector3.down * Screen.height, 0.5f));
+		_loadBarProgress.CrossFadeAlpha(0, 2, false);
+		_loadBarContainer.CrossFadeAlpha(0, 2, false);
+		Destroy(_loadBarProgress, 2);
+		Destroy(_loadBarContainer, 2);
+		//_isartLogo.GetComponent<RawImage>().CrossFadeAlpha(0, 1, false);
+	}
+
+	void OnLoadProgress(float progress)
+	{
+		_loadBarProgress.rectTransform.sizeDelta = new Vector2(progress * originalSize, _loadBarProgress.rectTransform.rect.height);
+	}
+
+	IEnumerator MoveObjectOverTime(GameObject go, Vector3 offset, float time)
+	{
+		float eT = 0;
+		Vector3 endPos = go.transform.position + offset;
+		while (eT < time)
+		{
+			eT += Time.deltaTime;
+			go.transform.position = Vector3.Lerp(go.transform.position, endPos, eT);
+			yield return null;
+		}
 	}
 }

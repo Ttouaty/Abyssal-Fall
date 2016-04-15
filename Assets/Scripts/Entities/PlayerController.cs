@@ -183,13 +183,8 @@ public class PlayerController : MonoBehaviour
 
 	void ProcessActiveSpeed()
 	{
-		if (_isGrounded)
+		if (_isGrounded && _allowInput)
 		{
-			if (!_allowInput)
-			{
-				return;
-			}
-
 			if (dash.inProgress)
 			{
 				_activeSpeed.x = _activeSpeed.x.Reduce(_maxSpeed.x * Time.deltaTime * 2);
@@ -325,10 +320,14 @@ public class PlayerController : MonoBehaviour
 
 	void OnTriggerEnter(Collider colli)
 	{
-		if (colli.tag == "Player" && GetComponent<Collider>().isTrigger)
+		if (colli.tag == "Player" && dash.inProgress)
 		{
 			_rigidB.velocity = new Vector3(0, _rigidB.velocity.y, 0);
 			colli.GetComponent<PlayerController>().Damage((colli.transform.position - transform.position) * 5 + Vector3.up * Physics.gravity.magnitude * 0.5f, 0.5f);
+		}
+		else if (colli.gameObject.layer == LayerMask.NameToLayer("Ground") && dash.inProgress)
+		{
+			_rigidB.velocity = Vector3.zero;
 		}
 	}
 }
