@@ -51,7 +51,7 @@ public class EndStageScreen : MonoBehaviour
 		Players[id].PlayerRoot.gameObject.SetActive(value);
 	}
 
-	public IEnumerator StartCountdown (int idWinner, int duration = 5)
+	public IEnumerator StartCountdown (int idWinner, int duration = 2)
 	{
 		PlayerXWins.text = "Player " + (idWinner + 1) + " wins";
 		Countdown.text = "";
@@ -61,7 +61,7 @@ public class EndStageScreen : MonoBehaviour
 		{
 			Countdown.text += duration + "... ";
 			--duration;
-			yield return new WaitForSeconds(1);
+			yield return new WaitForSeconds(0.5f);
 		}
 		yield return new WaitForSeconds(0.5f);
 		Disable();

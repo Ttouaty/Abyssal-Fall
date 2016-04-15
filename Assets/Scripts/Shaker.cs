@@ -20,7 +20,7 @@ public class Shaker : MonoBehaviour
 		Vector3 originalPosition = target.transform.localPosition;
 		while(duration > 0)
 		{
-			transform.localPosition = originalPosition + Random.insideUnitSphere * shakeAmount;
+			transform.position = originalPosition + Random.insideUnitSphere * shakeAmount;
 			duration -= Time.deltaTime * decreaseFactor;
 			yield return null;
 		}

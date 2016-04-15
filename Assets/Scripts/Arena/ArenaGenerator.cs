@@ -450,6 +450,7 @@ public class ArenaGenerator : MonoBehaviour
 		}
 
 		element.GetComponent<Obstacle>().OnDropped();
+		CameraShake.instance.shakeAmount = 0.7f;
 		CameraShake.instance.Shake(0.2f);
 		++_obstaclessDropped;
 
@@ -461,6 +462,7 @@ public class ArenaGenerator : MonoBehaviour
 		while(_groundsToDrop.Count > 0)
 		{
 			yield return new WaitForSeconds(SecondsBeforeNextDrop * 0.5f);
+			CameraShake.instance.shakeAmount = 0.2f;
 			CameraShake.instance.Shake(SecondsBeforeNextDrop * 0.5f);
 			yield return new WaitForSeconds(SecondsBeforeNextDrop * 0.5f);
 			for (var i = 0; i < _groundsToDrop[0].Count; ++i)
