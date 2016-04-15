@@ -89,6 +89,11 @@ public class ArenaGenerator : MonoBehaviour
 
 		_groundsToDrop.Clear();
 		_amoutGroupsToDrop = Mathf.FloorToInt(Size * 0.5f - Size / 10);
+
+		for(var i = 1; i < GameManager.instance.RegisteredPlayers.Length; ++i)
+		{
+			SecondsBeforeNextDrop -= 1;
+		}
 	}
 
 	void OnPlayerDeath (GameObject player)
@@ -250,7 +255,7 @@ public class ArenaGenerator : MonoBehaviour
 		Spawns = new List<Spawn>();
 		for (var s = 0; s < GameManager.instance.RegisteredPlayers.Length; ++s)
 		{
-			if(GameManager.instance.RegisteredPlayers[s] > 0 || (s == 0 || s == 1))
+			if(GameManager.instance.RegisteredPlayers[s] > 0 || s == 0)
 			{
 				int target = Mathf.FloorToInt(_spawnPositions[s].x + _spawnPositions[s].y * Size);
 				GameObject tile = _tiles[target];
@@ -452,7 +457,9 @@ public class ArenaGenerator : MonoBehaviour
 	{
 		while(_groundsToDrop.Count > 0)
 		{
-			yield return new WaitForSeconds(SecondsBeforeNextDrop);
+			yield return new WaitForSeconds(SecondsBeforeNextDrop * 0.5f);
+			CameraShake.instance.Shake(SecondsBeforeNextDrop * 0.5f);
+			yield return new WaitForSeconds(SecondsBeforeNextDrop * 0.5f);
 			for (var i = 0; i < _groundsToDrop[0].Count; ++i)
 			{
 				GameObject tile = _groundsToDrop[0][i];

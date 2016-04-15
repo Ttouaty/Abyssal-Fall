@@ -15,7 +15,6 @@ public class CameraManager : MonoBehaviour
 		_target = GameManager.instance.Arena.transform.position - Vector3.forward * 3 + Vector3.right * 3;
 		_basePosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);
 		
-		
 		GameManager.instance.OnPlayerWin.AddListener(OnPlayerWin);
 		Reset();
 	}
