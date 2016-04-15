@@ -30,9 +30,8 @@ public class GameManager : MonoBehaviour
 	public AudioClip OnTWo;
 	public AudioClip OnOne;
 	public AudioClip OnGo;
-	public AudioClip GameLoop;
-	[HideInInspector]
 	public AudioSource AudioSource;
+	public AudioSource GameLoop;
 
 	public int[] RegisteredPlayers = { 0, 0, 0, 0 };
 	public int[] PlayersScores = { 0, 0, 0, 0 };
@@ -47,6 +46,8 @@ public class GameManager : MonoBehaviour
 			Debug.LogError("Arena reference is missing");
 			Debug.Break();
 		}
+
+		GameLoop.volume = 0.1f;
 
 		Application.LoadLevelAdditive("Menu");
 	}

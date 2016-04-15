@@ -35,6 +35,7 @@ public class Arena : MonoBehaviour
 	public IEnumerator StartGame()
 	{
 		// Start initialisation of arena field
+		GameManager.instance.GameLoop.Play();
 		StopAllCoroutines();
 		_generator.ResetStage();
 		_generator.CreateArena();
@@ -48,7 +49,6 @@ public class Arena : MonoBehaviour
 		yield return _generator.StartCoroutine(_generator.DropArena());
 		yield return StartCoroutine(CountDown(3));
 		GameManager.instance.AudioSource.Stop();
-		GameManager.instance.AudioSource.PlayOneShot(GameManager.instance.GameLoop);
 		_generator.StartCoroutine(_generator.DropArenaOverTime());
 	}
 
