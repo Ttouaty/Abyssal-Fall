@@ -200,7 +200,6 @@ public class ArenaGenerator : MonoBehaviour
 				tile.transform.parent = _tilesRoot.transform;
 				Ground ground = tile.GetComponent<Ground>();
 				ground.GridPosition = new Vector2(x, z);
-				tile.GetComponent<Poolable>().SetReturnToPool(false);
 				_tiles.Add(tile);
 			}
 		}
@@ -293,7 +292,6 @@ public class ArenaGenerator : MonoBehaviour
 				obstacle.transform.parent = _obstaclesRoot.transform;
 				obstacle.transform.position = new Vector3(tile.transform.position.x, Camera.main.transform.position.y, tile.transform.position.z);
 				obstacle.transform.Rotate(new Vector3(-90, 0, 0));
-				obstacle.GetComponent<Poolable>().SetReturnToPool(false);
 
 				_obstacles.Add(obstacle);
 
@@ -345,7 +343,6 @@ public class ArenaGenerator : MonoBehaviour
 				obstacle.transform.parent = _obstaclesRoot.transform;
 				obstacle.transform.position = new Vector3(nextTile.transform.position.x, Camera.main.transform.position.y, nextTile.transform.position.z);
 				obstacle.transform.Rotate(new Vector3(-90, 0, 0));
-				obstacle.GetComponent<Poolable>().SetReturnToPool(false);
 
 				_obstacles.Add(obstacle);
 
@@ -470,13 +467,11 @@ public class ArenaGenerator : MonoBehaviour
 			{
 				GameObject tile = _groundsToDrop[0][i];
 				tile.GetComponent<Tile>().ActivateFall();
-				tile.GetComponent<Poolable>().SetReturnToPool(true);
 
 				Ground ground = tile.GetComponent<Ground>();
 				if (ground != null && ground.Obstacle != null)
 				{
 					ground.Obstacle.GetComponent<Obstacle>().ActivateFall();
-					ground.Obstacle.GetComponent<Poolable>().SetReturnToPool(true);
 				}
 			}
 			_groundsToDrop.RemoveAt(0);

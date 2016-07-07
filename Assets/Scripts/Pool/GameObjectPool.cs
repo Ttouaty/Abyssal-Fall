@@ -6,18 +6,17 @@ using System.Collections.Generic;
 [System.Serializable]
 public struct Pool
 {
-	public string Name;
+	public bool bIsOpen;
 	public GameObject Prefab;
 	public int Quantity;
-
-	[HideInInspector]
 	public int QuantityLoaded;
-
-	[HideInInspector]
 	public GameObject Root;
-
-	[HideInInspector]
 	public List<GameObject> Reserve;
+	public string Name {
+		get {
+			return Prefab != null ? Prefab.name : "Unkown Pool";
+		}
+	}
 }
 
 [System.Serializable]
@@ -25,19 +24,22 @@ public class LoadEvent : UnityEvent<float> { }
 
 public class GameObjectPool : MonoBehaviour
 {
+	
 	/*********
 	* Static *
 	*********/
-	public static GameObjectPool instance;
+	public const string VERSION = "2.1.0";
+	
+	public static GameObjectPool Instance;
 
-	public static GameObject GetAvailableObject (string poolName)
+	public static GameObject GetAvailableObject(string poolName)
 	{
-		for(var i = 0; i < instance.Pools.Count; ++i)
+		for (var i = 0; i < Instance.Pools.Count; ++i)
 		{
-			Pool pool = instance.Pools[i];
-			if(pool.Name.CompareTo(poolName) == 0)
+			Pool pool = Instance.Pools[i];
+			if (pool.Name.CompareTo(poolName) == 0)
 			{
-				if(pool.Reserve.Count > 0)
+				if (pool.Reserve.Count > 0)
 				{
 					GameObject go = pool.Reserve[0];
 					go.transform.parent = null;
@@ -51,6 +53,7 @@ public class GameObjectPool : MonoBehaviour
 				{
 					Debug.LogError("GameObjectPool >>>> Not enough items in this pool: " + poolName);
 					Debug.Break();
+					return null;
 				}
 			}
 		}
@@ -60,16 +63,50 @@ public class GameObjectPool : MonoBehaviour
 		return null;
 	}
 
+	public static T GetAvailableObject<T>(string poolName)
+	{
+		for (var i = 0; i < Instance.Pools.Count; ++i)
+		{
+			Pool pool = Instance.Pools[i];
+			if (pool.Name.CompareTo(poolName) == 0)
+			{
+				if (pool.Reserve.Count > 0)
+				{
+					GameObject go = pool.Reserve[0];
+					go.transform.parent = null;
+					go.gameObject.SetActive(true);
+
+					pool.Reserve.RemoveAt(0);
+
+					return go.GetComponent<T>();
+				}
+				else
+				{
+					Debug.LogError("GameObjectPool >>>> Not enough items in this pool: " + poolName);
+					Debug.Break();
+				}
+			}
+		}
+
+		Debug.LogError("GameObjectPool >>>> The pool doesn't exists: " + poolName);
+		Debug.Break();
+		return default(T);
+	}
+
 	public static void AddObjectIntoPool (GameObject go)
 	{
-		for (var i = 0; i < instance.Pools.Count; ++i)
+		string poolName = go.GetComponent<Poolable>().PoolName;
+		for (var i = 0; i < Instance.Pools.Count; ++i)
 		{
-			Pool pool = instance.Pools[i];
-			if (pool.Name.CompareTo(go.GetComponent<Poolable>().PoolName) == 0 && pool.Reserve.Count > 0)
+			Pool pool = Instance.Pools[i];
+			if (pool.Name.CompareTo(poolName) == 0)
 			{
 				pool.Reserve.Add(go);
-				//go.transform.position = new Vector3(-9999.0f, -9999.0f, -9999.0f);
 				go.transform.parent = pool.Root.transform;
+				go.transform.position = Vector3.zero;
+				go.transform.localPosition = Vector3.zero;
+				go.transform.rotation = Quaternion.identity;
+				go.transform.localRotation = Quaternion.identity;
 				go.gameObject.SetActive(false);
 			}
 		}
@@ -77,9 +114,9 @@ public class GameObjectPool : MonoBehaviour
 
 	public static bool PoolExists (string poolName)
 	{
-		for(var i = 0; i < instance.Pools.Count; ++i)
+		for(var i = 0; i < Instance.Pools.Count; ++i)
 		{
-			Pool pool = instance.Pools[i];
+			Pool pool = Instance.Pools[i];
 			if(pool.Name.CompareTo(poolName) == 0)
 			{
 				return true;
@@ -92,21 +129,15 @@ public class GameObjectPool : MonoBehaviour
 	* Instance *
 	***********/
 	private bool _initialized;
-
-	[HideInInspector]
-	public List<Pool> Pools;
-	[HideInInspector]
+	public List<Pool> Pools = new List<Pool>();
 	public int NumberOfInstancesPerFrame = 1000;
-
-	[Header("Events")]
+	public bool bInitOnLoad = false;
+	public bool bIsLoading = false;
 	public LoadEvent LoadStart;
 	public LoadEvent LoadProgress;
 	public LoadEvent LoadEnd;
-	[HideInInspector]
 	public float ElementsLoaded;
-	[HideInInspector]
 	public float ElementsToLoad;
-	[HideInInspector]
 	public float Progress
 	{
 		get
@@ -115,17 +146,14 @@ public class GameObjectPool : MonoBehaviour
 		}
 	}
 
-	public void Awake ()
+	public void Start ()
 	{
-		instance = this;
+		Instance = this;
 		_initialized = false;
-
-		LoadProgress.AddListener(DebugProgress);
-	}
-
-	private void DebugProgress (float progress)
-	{
-		Debug.Log(progress);
+		if (bInitOnLoad)
+		{
+			StartCoroutine(Init());
+		}
 	}
 
 	public IEnumerator Init ()
@@ -140,17 +168,19 @@ public class GameObjectPool : MonoBehaviour
 			{
 				ElementsToLoad += Pools[p].Quantity;
 			}
+
 			LoadStart.Invoke(Progress);
-
-			yield return StartCoroutine(LoadPoolAsync(0));
-
+			yield return StartCoroutine(LoadPoolAsync());
 			LoadEnd.Invoke(Progress);
 		}
 	}
 
-	public void AddPool ()
+	#if UNITY_EDITOR
+	public void AddPool (GameObject prefab = null)
 	{
-		Pools.Add(new Pool());
+		Pool pool = new Pool();
+		pool.Prefab = prefab;
+		Pools.Add(pool);
 	}
 
 	public void RemovePool (Pool pool)
@@ -161,30 +191,23 @@ public class GameObjectPool : MonoBehaviour
 	public void DuplicatePool (Pool pool)
 	{
 		Pool newPool = new Pool();
-		newPool.Name = pool.Name + "Copy";
 		newPool.Prefab = pool.Prefab;
 		newPool.Quantity = pool.Quantity;
-
 		Pools.Add(newPool);
 	}
+	#endif
 
-	private IEnumerator LoadPoolAsync (int index)
+	private IEnumerator LoadPoolAsync ()
 	{
+		bIsLoading = true;
 		Vector3 position =  Vector3.zero;
-
-		if(index == Pools.Count)
+		for(var p = 0; p < Pools.Count; ++p)
 		{
-			yield break;
-		}
-		else
-		{
-			Pool pool = Pools[index];
-
-			Poolable test = pool.Prefab.GetComponent<Poolable>();
-			if(test == null)
+			Pool pool = Pools[p];
+			Poolable poolable = pool.Prefab.GetComponent<Poolable>();
+			if (poolable == null)
 			{
-				Debug.LogError("The prefab for the pool " + pool.Name + " doesn't have the Poolable component. Please attach it to your prefab !");
-				Debug.Break();
+				pool.Prefab.AddComponent<Poolable>();
 			}
 
 			pool.QuantityLoaded = 0;
@@ -192,16 +215,21 @@ public class GameObjectPool : MonoBehaviour
 			pool.Root.transform.parent = transform;
 			pool.Reserve = new List<GameObject>();
 
-			while(pool.QuantityLoaded < pool.Quantity)
+			while (pool.QuantityLoaded < pool.Quantity)
 			{
 				int diff = Mathf.Min(pool.Quantity - pool.QuantityLoaded, NumberOfInstancesPerFrame);
-				for(int i = 0; i < diff; ++i)
+				for (int i = 0; i < diff; ++i)
 				{
-					GameObject go = (GameObject) Instantiate(pool.Prefab, position, Quaternion.identity);
+					GameObject go = (GameObject)Instantiate(pool.Prefab, position, Quaternion.identity);
 					go.transform.parent = pool.Root.transform;
 					go.gameObject.SetActive(false);
 					go.name = pool.Name + "_" + pool.QuantityLoaded.ToString();
 					go.GetComponent<Poolable>().PoolName = pool.Name;
+
+					go.transform.position = Vector3.zero;
+					go.transform.localPosition = Vector3.zero;
+					go.transform.rotation = Quaternion.identity;
+					go.transform.localRotation = Quaternion.identity;
 
 					pool.Reserve.Add(go);
 
@@ -209,13 +237,11 @@ public class GameObjectPool : MonoBehaviour
 					++ElementsLoaded;
 				}
 				LoadProgress.Invoke(Progress);
+				Pools[p] = pool;
 				yield return null;
 			}
-			Pools[index] = pool;
-
-			StartCoroutine(LoadPoolAsync(++index));
+			Pools[p] = pool;
 		}
-
-		yield return null;
+		bIsLoading = false;
 	}
 }
