@@ -11,7 +11,7 @@ public class Hammer : MonoBehaviour {
 	[SerializeField]
 	private int _speed = 10;
 	[SerializeField]
-	private float _stunInflicted = 0.5f;
+	private float _stunInflicted = 0.3f;
 
 	private Rigidbody _rigidB;
 	private AudioSource _audioSource;

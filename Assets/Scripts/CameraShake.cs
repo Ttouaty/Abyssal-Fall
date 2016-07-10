@@ -10,14 +10,15 @@ public class CameraShake : MonoBehaviour
 	public float shakeAmount = 0.7f;
 	public float decreaseFactor = 1.0f;
 
-	private Vector3 _originalPos;
+
+	private Vector3 _oldShakeOffset = Vector3.zero;
+	private Vector3 _shakeOffset = Vector3.zero;
 	private bool _isShaking;
 
 	void OnEnable()
 	{
 		instance = this;
 		_isShaking = false;
-		_originalPos = transform.localPosition;
 	}
 
 	public void Shake (float duration)
@@ -28,16 +29,22 @@ public class CameraShake : MonoBehaviour
 
 	void Update()
 	{
+
+		//It may seem like trash code, but it is efficient.
+		transform.position = transform.position - _oldShakeOffset;
+		_oldShakeOffset = _shakeOffset;
+		transform.position = transform.position + _shakeOffset;
+		_shakeOffset = Vector3.zero;
+
 		if (shakeDuration > 0 && _isShaking)
 		{
-			transform.localPosition = _originalPos + Random.insideUnitSphere * shakeAmount;
+			_shakeOffset = Random.insideUnitSphere * shakeAmount;
 			shakeDuration -= Time.deltaTime * decreaseFactor;
 		}
 		else if(_isShaking)
 		{
 			_isShaking = false;
 			shakeDuration = 0f;
-			transform.localPosition = _originalPos;
 		}
 	}
 }

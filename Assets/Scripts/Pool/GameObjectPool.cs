@@ -125,7 +125,7 @@ public class GameObjectPool : MonoBehaviour
 
 	private void DebugProgress (float progress)
 	{
-		Debug.Log(progress);
+		//Debug.Log(progress);
 	}
 
 	public IEnumerator Init ()

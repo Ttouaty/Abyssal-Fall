@@ -479,6 +479,7 @@ public class ArenaGenerator : MonoBehaviour
 					ground.Obstacle.GetComponent<Poolable>().SetReturnToPool(true);
 				}
 			}
+			Size -= 2;
 			_groundsToDrop.RemoveAt(0);
 			GameManager.instance.OnZoom.Invoke();
 		}
