@@ -1,73 +1,126 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using System;
 
 public class MenuManager : MonoBehaviour
 {
-	[SerializeField]
-	private GameObject _canvas;
+	public static MenuManager instance;
+	[HideInInspector]
+	public Canvas _canvas;
 	[SerializeField]
 	private GameObject _isartLogo;
-	[SerializeField]
-	private GameObject _mainButtons;
-	[SerializeField]
-	private GameObject _lobbyButtons;
-	[SerializeField]
-	private GameObject _credits;
-	[SerializeField]
-	private Image _loadBarContainer;
-	[SerializeField]
-	private Image _loadBarProgress;
+
+	private LoadingBar _loadBar;
 
 	[SerializeField]
 	private Button _StartButton;
 
-	[SerializeField]
-	private Image[] _playerImages;
 
+	private MenuPanel _activeMenu;
 
-	private GameObject _activeMenu;
+	//public string[] debugNames;
+	private MenuPanel[] _menuArray;
 
 	private bool _isListeningForInput = false;
+	private bool[] _controllerAlreadyInUse = new bool[12];
+	private CharacterSlotsContainer _characterSlotsContainerRef;
+	
 
+	void Awake()
+	{
+		instance = this;
+		_canvas = GetComponentInChildren<Canvas>();
+		_canvas.worldCamera = Camera.main;
+	}
 	void Start()
 	{
-		_activeMenu = _mainButtons;
+
+		_menuArray = GetComponentsInChildren<MenuPanel>();
+		_loadBar = GetComponentInChildren<LoadingBar>();
+		_activeMenu = _menuArray[0];
+
+		_characterSlotsContainerRef = GetComponentInChildren<CharacterSlotsContainer>();
 		StartCoroutine(FadeIsartLogo());
-		_lobbyButtons.transform.position = new Vector3(-Screen.width * 1.5f, _lobbyButtons.transform.position.y, 0);
-		_credits.transform.position = new Vector3(-Screen.width * 1.5f, _credits.transform.position.y, 0);
 
-		for (int i = 0; i < _playerImages.Length; i++)
-		{ 
-			_playerImages[i].gameObject.SetActive(false);
+		for (int i = 0; i < _menuArray.Length; ++i)
+		{
+			if (i == 0)
+				continue;
+
+			_menuArray[i].transform.position = new Vector3(-Screen.width * 1.5f, _menuArray[i].transform.position.y, 0);
 		}
-
 	}
 
 	void Update()
 	{
 		if (Input.GetButton("Cancel") && !GameManager.InProgress)
 		{
-			if (_activeMenu.GetInstanceID() != _mainButtons.GetInstanceID())
+			if (_activeMenu.ParentMenu != null)
 			{
-				MakeTransition(_mainButtons);
+				MakeTransition(_activeMenu.ParentMenu);
+				if (_activeMenu.MenuName == "Main")
+					_activeMenu.ParentMenu = null;
 			}
 		}
-
 		if (_isListeningForInput)
 		{
+			//CHEESING 
+			Debug.LogWarning("Warning cheesing in progress.");
+			if (Input.GetKeyDown(KeyCode.A))
+			{
+				Debug.Log("T'as bourré a comme un porc... on va trouver un arrangement");
+
+				RegisterNewPlayer(1);
+			}
+
+			//CHEESING END
 			for (int i = 0; i < Input.GetJoystickNames().Length; i++)
 			{
 				if (Input.GetJoystickNames()[i] == "")
 					continue;
-				if (i > 3)
-					break;
-				GameManager.instance.RegisteredPlayers[i] = Input.GetJoystickNames()[i] != null ? 1 : 0;
-				_playerImages[i].gameObject.SetActive(Input.GetJoystickNames()[i] != null);
+
+				if (InputManager.GetButtonDown("Start", i + 1) && !_controllerAlreadyInUse[i + 1])
+				{
+					Debug.Log("JOYSTICK NUMBER: " + (i + 1) + " PRESSED START");
+					RegisterNewPlayer(i + 1);
+				}
 			}
-		
-			_StartButton.interactable = Input.GetJoystickNames().Length >= 2 && !GameManager.InProgress;
+			_StartButton.interactable = GameManager.instance.nbPlayers >= 2 && !GameManager.InProgress && AllPlayersReady();
 		}
+	}
+
+	bool AllPlayersReady()
+	{
+		for (int i = 0; i < GameManager.instance.RegisteredPlayers.Length; ++i)
+		{
+			if (GameManager.instance.RegisteredPlayers[i] != null)
+			{
+				if (!GameManager.instance.RegisteredPlayers[i].isReady)
+					return false;
+			}
+		}
+
+		return true;
+	}
+
+	private void ResetPlayers()
+	{
+		//Trashy way but fuck it.
+		_controllerAlreadyInUse = new bool[12];
+		GameManager.ResetRegisteredPlayers();
+	}
+
+	private void RegisterNewPlayer(int joystickNumber)
+	{
+		_controllerAlreadyInUse[joystickNumber] = true; // J'aurai pu utiliser un enum, mais je me rappellais plus comment faire dans le metro lAUl.
+
+		Player newPlayer = new Player();
+		GameManager.instance.RegisteredPlayers[newPlayer.PlayerNumber] = newPlayer;
+		newPlayer.JoystickNumber = joystickNumber;
+
+		GameManager.instance.nbPlayers++;
+		_characterSlotsContainerRef.OpenNextSlot(joystickNumber);
 	}
 
 	public void StartGame()
@@ -79,45 +132,49 @@ public class MenuManager : MonoBehaviour
 		StartCoroutine(SendOut(_activeMenu));
 	}
 
-	public void LaunchLobby()
+	private MenuPanel GetMenuPanel(string panelName)
 	{
-		MakeTransition(_lobbyButtons);
-		_isListeningForInput = true;
+		for (int i = 0; i < _menuArray.Length; ++i)
+		{
+			if (panelName == _menuArray[i].MenuName)
+				return _menuArray[i];
+		}
+
+		Debug.Log("no panel found for name: " + panelName);
+		return null;
 	}
 
-	public void ReturnToMainMenu()
+	public void MakeTransition(string newMenu)
 	{
-		MakeTransition(_mainButtons);
-		GameManager.ResetRegisteredPlayers();
+		MakeTransition(GetMenuPanel(newMenu));
+	}
+
+	public void MakeTransition(MenuPanel newMenu)
+	{
 		_isListeningForInput = false;
-	}
-
-
-	private void MakeTransition(GameObject targetMenu)
-	{
 		SetActiveButtons(_activeMenu, false);
+		StopAllCoroutines();
 		StartCoroutine(SendOut(_activeMenu));
 
-		SetActiveButtons(targetMenu, true);
-		StartCoroutine(SendIn(targetMenu));
+		if (newMenu.MenuName == "Lobby")
+			_isListeningForInput = true;
 
-		_activeMenu = targetMenu;
+		newMenu.ParentMenu = _activeMenu;
+		SetActiveButtons(newMenu, true);
+		StartCoroutine(SendIn(newMenu));
+		newMenu.PreSelectedButton.Select();
+		_activeMenu = newMenu;
 	}
 
-	private void SetActiveButtons(GameObject goTarget, bool active)
+	private void SetActiveButtons(MenuPanel target, bool active)
 	{
-		Button[] buttons = goTarget.GetComponentsInChildren<Button>();
-		if (active)
-			buttons[0].Select();
+		Button[] buttons = target.GetComponentsInChildren<Button>();
+		//if (active)
+		//	buttons[0].Select();
 		for (int i = 0; i < buttons.Length; ++i)
 		{
 			buttons[i].interactable = active;
 		}
-	}
-
-	public void LaunchCredits()
-	{
-		MakeTransition(_credits);
 	}
 
 	public void Exit()
@@ -125,7 +182,7 @@ public class MenuManager : MonoBehaviour
 		Application.Quit();
 	}
 
-	IEnumerator SendOut(GameObject targetMenu)
+	IEnumerator SendOut(MenuPanel targetMenu)
 	{
 		float eT = 0;
 		float timeTaken = 0.7f;
@@ -133,12 +190,12 @@ public class MenuManager : MonoBehaviour
 		while (eT < timeTaken)
 		{
 			eT += Time.deltaTime;
-			targetMenu.transform.position = Vector3.Lerp(targetMenu.transform.position, _canvas.transform.position + Vector3.left * Screen.width * 1.5f, eT / timeTaken);
+			targetMenu.transform.position = Vector3.Lerp(targetMenu.transform.position, _canvas.transform.position - _canvas.transform.right * _canvas.pixelRect.width / _canvas.referencePixelsPerUnit * 5, eT / timeTaken);
 			yield return null;
 		}
 	}
 
-	IEnumerator SendIn(GameObject targetMenu)
+	IEnumerator SendIn(MenuPanel targetMenu)
 	{
 		float eT = 0;
 		float timeTaken = 0.7f;
@@ -153,41 +210,28 @@ public class MenuManager : MonoBehaviour
 
 	IEnumerator FadeIsartLogo()
 	{
-		SetActiveButtons(_mainButtons, false);
-		GameObjectPool.instance.LoadStart.AddListener(OnLoadStart);
+		SetActiveButtons(GetMenuPanel("Main"), false);
 		GameObjectPool.instance.LoadEnd.AddListener(OnLoadEnd);
 		GameObjectPool.instance.LoadProgress.AddListener(OnLoadProgress);
+		_loadBar.SetPercent(0);
 		yield return StartCoroutine(GameObjectPool.instance.Init());
 		//yield return new WaitForSeconds(2);
 		_isartLogo.GetComponent<RawImage>().CrossFadeAlpha(0, 1, false);
-		SetActiveButtons(_mainButtons, true);
+		SetActiveButtons(GetMenuPanel("Main"), true);
 		Destroy(_isartLogo, 1);
-	}
-
-
-	private float originalSize;
-	void OnLoadStart(float progress)
-	{
-		originalSize = _loadBarProgress.rectTransform.rect.width;
-		_loadBarProgress.rectTransform.sizeDelta = new Vector2(0, _loadBarProgress.rectTransform.rect.height);
 	}
 
 	void OnLoadEnd(float progress)
 	{
-		_loadBarProgress.rectTransform.sizeDelta = new Vector2(progress * originalSize, _loadBarProgress.rectTransform.rect.height);
-
-		StartCoroutine(MoveObjectOverTime(_loadBarProgress.gameObject, Vector3.down * Screen.height, 0.5f));
-		StartCoroutine(MoveObjectOverTime(_loadBarContainer.gameObject, Vector3.down * Screen.height, 0.5f));
-		_loadBarProgress.CrossFadeAlpha(0, 2, false);
-		_loadBarContainer.CrossFadeAlpha(0, 2, false);
-		Destroy(_loadBarProgress, 2);
-		Destroy(_loadBarContainer, 2);
+		_loadBar.SetPercent(progress);
+		StartCoroutine(MoveObjectOverTime(_loadBar.gameObject, Vector3.down * Screen.height, 0.5f));
+		Destroy(_loadBar.gameObject, 2);
 		//_isartLogo.GetComponent<RawImage>().CrossFadeAlpha(0, 1, false);
 	}
 
 	void OnLoadProgress(float progress)
 	{
-		_loadBarProgress.rectTransform.sizeDelta = new Vector2(progress * originalSize, _loadBarProgress.rectTransform.rect.height);
+		_loadBar.SetPercent(progress);
 	}
 
 	IEnumerator MoveObjectOverTime(GameObject go, Vector3 offset, float time)

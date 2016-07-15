@@ -40,11 +40,7 @@ public class Stats
 public class PlayerController : MonoBehaviour
 {
 	[HideInInspector]
-	public int PlayerNumber = 1;
-	[HideInInspector]
-	public int JoystickNumber = 1;
-	[HideInInspector]
-	public int SkinNumber = 0; //the index of the material used by the playerMesh
+	public Player _playerRef;
 	[HideInInspector]
 	public bool _isInvul = false;
 	[HideInInspector]
@@ -76,8 +72,7 @@ public class PlayerController : MonoBehaviour
 	protected float _friction = 50; //friction applied to the player when it slides (pushed or end dash) (units/s)
 
 	[Space]
-	[SerializeField]
-	protected SO_Character _playerData;
+	public SO_Character _characterData;
 
 	protected TimeCooldown _specialCooldown;
 	protected TimeCooldown _stunTime; //Secondes of stun on Hit
@@ -90,7 +85,7 @@ public class PlayerController : MonoBehaviour
 	{
 		get
 		{
-			return !_playerData.Dash.inProgress && !_isDead && _specialCooldown.TimeLeft <= 0;
+			return !_characterData.Dash.inProgress && !_isDead && _specialCooldown.TimeLeft <= 0;
 		}
 	}
 
@@ -98,21 +93,28 @@ public class PlayerController : MonoBehaviour
 	{
 		get
 		{
-			return !_playerData.Dash.inProgress && IsGrounded && !_isDead;
+			return !_characterData.Dash.inProgress && IsGrounded && !_isDead;
 		}
 	}
 
 	protected void Start()
 	{
+		Debug.Log("remove that part from player code !");
+		//CHEESE
+		_playerRef = new Player();
+		_playerRef.SkinNumber = 0;
+		_playerRef.JoystickNumber = 1;
+		//CHEESE END
+
 		_audioSource = GetComponent<AudioSource>();
 		_transf = transform;
 		_rigidB = GetComponent<Rigidbody>();
-		Debug.Log(_transf.Find("CharacterModel"));
+
 		//Instantiates player mesh and retrieves its props and particles
-		GameObject playerMesh = Instantiate(_playerData.CharacterModel.gameObject, _transf.position, _playerData.CharacterModel.transform.rotation) as GameObject;
+		GameObject playerMesh = Instantiate(_characterData.CharacterModel.gameObject, _transf.position, _characterData.CharacterModel.transform.rotation) as GameObject;
 		playerMesh.transform.parent = _transf.FindChild("CharacterModel");
 
-		playerMesh.GetComponentInChildren<CharacterModel>().Reskin(_playerData.CharacterMaterials[SkinNumber]);
+		playerMesh.GetComponentInChildren<CharacterModel>().Reskin(_characterData.CharacterMaterials[_playerRef.SkinNumber]);
 
 		_animator = _transf.FindChild("CharacterModel").GetComponentInChildren<Animator>();
 		_playerProp = transform.GetComponentInChildren<PlayerProp>();
@@ -120,7 +122,7 @@ public class PlayerController : MonoBehaviour
 		if (_playerProp == null)
 			Debug.LogError("No player prop found in playermesh: "+gameObject.name+" !");
 
-		_playerData.Dash.inProgress = false; // security because sometimes dash is activated, lolwutomfgrektbbq
+		_characterData.Dash.inProgress = false; // security because sometimes dash is activated, lolwutomfgrektbbq
 		_specialCooldown = new TimeCooldown(this);
 		_specialCooldown.onFinish = OnSpecialReset;
 
@@ -130,7 +132,7 @@ public class PlayerController : MonoBehaviour
 
 		GameManager.instance.OnPlayerWin.AddListener(OnPlayerWin);
 
-		_maxSpeed.x = _maxSpeed.x * _playerData.CharacterStats.speed / 3;
+		_maxSpeed.x = _maxSpeed.x * _characterData.CharacterStats.speed / 3;
 
 		if (GetComponentInChildren<GroundCheck>() == null)
 		{
@@ -179,8 +181,8 @@ public class PlayerController : MonoBehaviour
 	#region Processes
 	private void ProcessOrientation()
 	{
-		_activeDirection.x = Mathf.Lerp(_activeDirection.x, Input.GetAxis("Horizontal_P" + JoystickNumber), 15 * Time.deltaTime);
-		_activeDirection.z = Mathf.Lerp(_activeDirection.z, Input.GetAxis("Vertical_P" + JoystickNumber), 15 * Time.deltaTime);
+		_activeDirection.x = Mathf.Lerp(_activeDirection.x, InputManager.GetAxis("x", _playerRef.JoystickNumber), 15 * Time.deltaTime);
+		_activeDirection.z = Mathf.Lerp(_activeDirection.z, InputManager.GetAxis("y", _playerRef.JoystickNumber), 15 * Time.deltaTime);
 		transform.LookAt(transform.position + (Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized) * _activeDirection), Vector3.up);
 	}
 
@@ -214,12 +216,12 @@ public class PlayerController : MonoBehaviour
 
 	private void ProcessInputs()
 	{
-		if (Input.GetButtonDown("Dash_P" + JoystickNumber) && _canDash)
+		if (InputManager.GetButtonDown("Dash", _playerRef.JoystickNumber) && _canDash)
 		{
 			StartCoroutine(ActivateDash());
 		}
 
-		if (Input.GetButtonDown("Throw_P" + JoystickNumber) && _canSpecial)
+		if (InputManager.GetButtonDown("Special", _playerRef.JoystickNumber) && _canSpecial)
 		{
 			SpecialAction();
 		}
@@ -231,12 +233,13 @@ public class PlayerController : MonoBehaviour
 		{
 			if (_allowInput)
 			{
+				
 #if UNITY_EDITOR
-				_activeSpeed.x = _maxSpeed.x * Input.GetAxisRaw("Horizontal_P" + JoystickNumber);
-				_activeSpeed.z = _maxSpeed.x * Input.GetAxisRaw("Vertical_P" + JoystickNumber);
+				_activeSpeed.x = _maxSpeed.x * InputManager.GetAxisRaw("x", _playerRef.JoystickNumber);
+				_activeSpeed.z = _maxSpeed.x * InputManager.GetAxisRaw("y", _playerRef.JoystickNumber);
 #else
-				_activeSpeed.x = _maxSpeed.x * Input.GetAxis("Horizontal_P" + JoystickNumber);
-				_activeSpeed.z = _maxSpeed.x * Input.GetAxis("Vertical_P" + JoystickNumber);
+				_activeSpeed.x = _maxSpeed.x * InputManager.GetAxis("x", _playerRef.JoystickNumber) ;
+				_activeSpeed.z = _maxSpeed.x * InputManager.GetAxis("y", _playerRef.JoystickNumber) ;
 #endif
 				_activeSpeed = Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized) * _activeSpeed.normalized * _maxSpeed.x;
 			}
@@ -285,7 +288,7 @@ public class PlayerController : MonoBehaviour
 	{
 		Debug.Log("Player is DED!");
 		_animator.SetTrigger("Death");
-		_audioSource.PlayOneShot(_playerData.SoundList.OnDeath);
+		_audioSource.PlayOneShot(_characterData.SoundList.OnDeath);
 		_isDead = true;
 		GameManager.instance.OnPlayerDeath.Invoke(gameObject);
 	}
@@ -296,8 +299,8 @@ public class PlayerController : MonoBehaviour
 			IsGrounded= false;
 
 		float oldMagnitude = direction.magnitude;
-		_playerData.CharacterStats.resistance = _playerData.CharacterStats.resistance == 0 ? 1 : _playerData.CharacterStats.resistance;
-		direction = direction.normalized * (oldMagnitude * 3 / _playerData.CharacterStats.resistance);
+		_characterData.CharacterStats.resistance = _characterData.CharacterStats.resistance == 0 ? 1 : _characterData.CharacterStats.resistance;
+		direction = direction.normalized * (oldMagnitude * 3 / _characterData.CharacterStats.resistance);
 		
 		_activeSpeed = direction;
 		
@@ -310,21 +313,21 @@ public class PlayerController : MonoBehaviour
 			return;
 		Eject(direction, stunTime);
 		_activeDirection = -direction.ZeroY();
-		_audioSource.PlayOneShot(_playerData.SoundList.OnHit);
+		_audioSource.PlayOneShot(_characterData.SoundList.OnHit);
 		_animator.SetTrigger("Stun_Start");
 	}
 
 
 	protected virtual IEnumerator ActivateDash()
 	{
-		_playerData.Dash.inProgress = true;
+		_characterData.Dash.inProgress = true;
 		_isInvul = true;
 		_allowInput = false;
 
-		Eject(Quaternion.FromToRotation(Vector3.right,transform.forward) * _playerData.Dash.force, _playerData.Dash.endingLag);
+		Eject(Quaternion.FromToRotation(Vector3.right,transform.forward) * _characterData.Dash.force, _characterData.Dash.endingLag);
 
 		_animator.SetTrigger("Dash_Start");
-		_audioSource.PlayOneShot(_playerData.SoundList.OnDashStart);
+		_audioSource.PlayOneShot(_characterData.SoundList.OnDashStart);
 		gameObject.layer = LayerMask.NameToLayer("PlayerInvul");
 
 
@@ -338,10 +341,10 @@ public class PlayerController : MonoBehaviour
 		_isInvul = false;
 
 		_animator.SetTrigger("Dash_End");
-		_audioSource.PlayOneShot(_playerData.SoundList.OnDashEnd);
+		_audioSource.PlayOneShot(_characterData.SoundList.OnDashEnd);
 
-		yield return new WaitForSeconds(_playerData.Dash.endingLag);
-		_playerData.Dash.inProgress = false;
+		yield return new WaitForSeconds(_characterData.Dash.endingLag);
+		_characterData.Dash.inProgress = false;
 		_allowInput = true;
 	}
 
@@ -357,14 +360,14 @@ public class PlayerController : MonoBehaviour
 
 	protected virtual void PlayerCollisionHandler(Collision colli)
 	{
-		if (colli.gameObject.tag == "Player" && _playerData.Dash.inProgress)
+		if (colli.gameObject.tag == "Player" && _characterData.Dash.inProgress)
 		{
 			colli.transform.GetComponent<PlayerController>()
 				.Damage(Quaternion.FromToRotation(Vector3.right, 
-				(colli.transform.position - transform.position).ZeroY().normalized) * _playerData.Dash.ImpactEjection * (_playerData.CharacterStats.strength / 3),
+				(colli.transform.position - transform.position).ZeroY().normalized) * _characterData.Dash.ImpactEjection * (_characterData.CharacterStats.strength / 3),
 				0.3f);
 		}
-		//else if (colli.gameObject.layer == LayerMask.NameToLayer("Wall") && _playerData.Dash.inProgress)
+		//else if (colli.gameObject.layer == LayerMask.NameToLayer("Wall") && _characterData.Dash.inProgress)
 		//{
 		//	if (Vector3.Dot((colli.transform.position - transform.position), _activeSpeed) > 0) // if you are going towards a wall
 		//	{

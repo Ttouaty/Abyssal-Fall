@@ -5,7 +5,7 @@ public delegate void CoolDownCallBack();
 
 public class CoolDown {
 
-	private MonoBehaviour parent;
+	protected MonoBehaviour parent;
 	protected bool isFinished = true;
 
 	public CoolDownCallBack onFinish;

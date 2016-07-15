@@ -91,42 +91,39 @@ public class ArenaGenerator : MonoBehaviour
 		_amoutGroupsToDrop = Mathf.FloorToInt(Size * 0.5f - Size / 10);
 
 		SecondsBeforeNextDrop = 4;
-		for (var i = 1; i < GameManager.instance.RegisteredPlayers.Length; ++i)
-		{
-			if(GameManager.instance.RegisteredPlayers[i] > 0)
-			{
-				SecondsBeforeNextDrop -= 0.5f;
-			}
-		}
+		
+		
+		SecondsBeforeNextDrop -= 0.5f * GameManager.instance.RegisteredPlayers.Length;
 	}
 
 	void OnPlayerDeath (GameObject player)
 	{
 		// Debug to play alone
-		Players.Remove(player);
-		player.GetComponent<PlayerController>().Spawn.DestroyId();
-		player.GetComponent<PlayerController>().Spawn.Destroy();
-		if (Players.Count == 1)
-		{
-			int playerId = Players[0].GetComponent<PlayerController>().PlayerNumber;
-			GameManager.instance.PlayersScores[playerId-1]++;
-			GameManager.instance.OnPlayerWin.Invoke(Players[0]);
-			StopAllCoroutines();
-			for (int t = 0; t < _tiles.Count; ++t)
-			{
-				_tiles[t].GetComponent<Tile>().StopAllCoroutines();
-			}
+		Debug.Log("REDO PLAYER DEATH");
+		//Players.Remove(player);
+		//player.GetComponent<PlayerController>().Spawn.DestroyId();
+		//player.GetComponent<PlayerController>().Spawn.Destroy();
+		//if (Players.Count == 1)
+		//{
+		//	int playerId = Players[0].GetComponent<PlayerController>().PlayerNumber;
+		//	GameManager.instance.PlayersScores[playerId-1]++;
+		//	GameManager.instance.OnPlayerWin.Invoke(Players[0]);
+		//	StopAllCoroutines();
+		//	for (int t = 0; t < _tiles.Count; ++t)
+		//	{
+		//		_tiles[t].GetComponent<Tile>().StopAllCoroutines();
+		//	}
 
-			for (int o = 0; o < _obstacles.Count; ++o)
-			{
-				_obstacles[o].GetComponent<Obstacle>().StopAllCoroutines();
-			}
-			for (int s = 0; s < Spawns.Count; ++s)
-			{
-				Spawns[s].DestroyId();
-				Spawns.Remove(Spawns[s]);
-			}
-		}
+		//	for (int o = 0; o < _obstacles.Count; ++o)
+		//	{
+		//		_obstacles[o].GetComponent<Obstacle>().StopAllCoroutines();
+		//	}
+		//	for (int s = 0; s < Spawns.Count; ++s)
+		//	{
+		//		Spawns[s].DestroyId();
+		//		Spawns.Remove(Spawns[s]);
+		//	}
+		//}
 	}
 
 	public void EndStage ()
@@ -259,12 +256,9 @@ public class ArenaGenerator : MonoBehaviour
 		Spawns = new List<Spawn>();
 		for (var s = 0; s < GameManager.instance.RegisteredPlayers.Length; ++s)
 		{
-			if(GameManager.instance.RegisteredPlayers[s] > 0)
-			{
-				int target = Mathf.FloorToInt(_spawnPositions[s].x + _spawnPositions[s].y * Size);
-				GameObject tile = _tiles[target];
-				Spawns.Add(tile.AddComponent<Spawn>());
-			}
+			int target = Mathf.FloorToInt(_spawnPositions[s].x + _spawnPositions[s].y * Size);
+			GameObject tile = _tiles[target];
+			Spawns.Add(tile.AddComponent<Spawn>());
 		}
 	}
 
@@ -358,6 +352,7 @@ public class ArenaGenerator : MonoBehaviour
 
 	public void CreatePlayers ()
 	{
+		Debug.Log("REDO PLAYER CREATION !");
 		Players = new List<GameObject>();
 		for (int s = 0; s < Spawns.Count; ++s)
 		{

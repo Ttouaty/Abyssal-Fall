@@ -33,9 +33,10 @@ public class GameManager : MonoBehaviour
 	public AudioSource AudioSource;
 	public AudioSource GameLoop;
 
-	public int[] RegisteredPlayers = { 0, 0, 0, 0 };
-	public int[] PlayersScores = { 0, 0, 0, 0 };
-
+	[HideInInspector]
+	public Player[] RegisteredPlayers = new Player[4];
+	[HideInInspector]
+	public int nbPlayers = 0;
 	[Space()]
 	[SerializeField]
 	private bool isInDebugMode = false;
@@ -68,7 +69,8 @@ public class GameManager : MonoBehaviour
 
 	public static void ResetRegisteredPlayers()
 	{
-		for (int i = 0; i < 4; ++i) { instance.RegisteredPlayers[i] = 0; }
+		instance.RegisteredPlayers = new Player[4];
+		instance.nbPlayers = 0;
 	}
 	// Use this for initialization
 	private void Init ()

@@ -51,7 +51,7 @@ public class Hammer : MonoBehaviour {
 	{
 		if (Collider.tag == "Player")
 		{
-			if (Collider.GetComponent<PlayerController>().PlayerNumber == _playerNumber || Collider.GetComponent<PlayerController>()._isInvul)
+			if (Collider.GetComponent<PlayerController>()._playerRef.PlayerNumber == _playerNumber || Collider.GetComponent<PlayerController>()._isInvul)
 				return;
 
 			Collider.GetComponent<PlayerController>().Damage(_rigidB.velocity + Vector3.up * 3, _stunInflicted);

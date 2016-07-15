@@ -91,7 +91,7 @@ public class CameraManager : MonoBehaviour
 
 		winner.GetComponent<PlayerController>()._animator.SetTrigger("Win");
 		yield return new WaitForSeconds(3);
-		int winnerId = winner.GetComponent<PlayerController>().PlayerNumber -1;
+		int winnerId = winner.GetComponent<PlayerController>()._playerRef.PlayerNumber -1;
 		EndStageScreen endScreen = GameManager.instance.EndStageScreen.GetComponent<EndStageScreen>();
 		endScreen.ShowPanel();
 		yield return endScreen.StartCoroutine(endScreen.StartCountdown(winnerId));
