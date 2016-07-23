@@ -5,8 +5,10 @@ using UnityEngine.UI;
 public class CharacterSlot : MonoBehaviour
 {
 	private static SelectableCharacter[] _availableCharacters;
+	public static ParticleSystem OnCharacterSelectedParticles;
 	
-	private float _switchCharacterDelay = 0.2f;
+
+	private float _switchCharacterDelay = 0.15f;
 	private TimeCooldown _switchCharacterCooldown;
 	private int _selectedCharacterIndex = 0;
 	private int _selectedSkinIndex = 0;
@@ -21,6 +23,10 @@ public class CharacterSlot : MonoBehaviour
 	private bool _canSwitchCharacter = true;
 
 	private CharacterSelectWheel _wheelRef;
+	private GameObject _selectedCharacterModel;
+	private Vector3 _selectedModelTargetPosition;
+
+	private Coroutine _activeCoroutineRef;
 
 	public SelectableCharacter GetSelectedCharacter
 	{
@@ -40,13 +46,16 @@ public class CharacterSlot : MonoBehaviour
 
 	void Start()
 	{
-		if (_availableCharacters == null)
+		if (_availableCharacters == null) //setup static vars (messy)
+		{
+			OnCharacterSelectedParticles = GetComponentInParent<CharacterSlotsContainer>().OnCharacterSelectedParticles;
 			_availableCharacters = GetComponentInParent<CharacterSlotsContainer>()._availableCharacters;
+		}
 
 
 		_wheelRef = new GameObject().AddComponent<CharacterSelectWheel>();
 		_wheelRef.transform.SetParent(transform);
-		_wheelRef.transform.localPosition = transform.forward * 60;
+		_wheelRef.transform.position = transform.position + transform.forward * CharacterSelectWheel._wheelRadius;
 		_wheelRef.gameObject.name = "characterWheel";
 
 		_switchCharacterCooldown = new TimeCooldown(this);
@@ -60,52 +69,94 @@ public class CharacterSlot : MonoBehaviour
 			return;
 
 		if (InputManager.GetButtonDown(1, _joyToListen, true))
-		{
-			Debug.Log("cancel selection");
-			GameManager.instance.RegisteredPlayers[_playerIndex].UnReady();
-			Selected = false;
-		}
+			CancelCharacterSelection();
 
 		if (Selected)
 			return;
 
-		//Cheesing
 		if (_canSwitchCharacter)
 		{
-			if (Input.GetKeyDown(KeyCode.RightArrow))
-				ChangeCharacter(1);
-			if (Input.GetKeyDown(KeyCode.LeftArrow))
-				ChangeCharacter(-1);
-		}
-		if (Input.GetKeyDown(KeyCode.UpArrow))
-			ChangeSkin(1);
-		if (Input.GetKeyDown(KeyCode.DownArrow))
-			ChangeSkin(-1);
-
-
-		//end Cheesing
-
-		/*
-		 rendre fonctionnel le character select
-		 tester une partie !		 
-		 */
-
-		if (_canSwitchCharacter)
-		{
-			if (Mathf.Abs(InputManager.GetAxis("x", _joyToListen)) > 0.9f)
-				ChangeCharacter((int) Mathf.Sign(InputManager.GetAxis("x", _joyToListen)));
+			if (_joyToListen == 0)
+			{ 
+				if (Mathf.Abs(InputManager.GetAxis("x", _joyToListen)) > 0.5f)
+					ChangeCharacter((int)Mathf.Sign(InputManager.GetAxis("x", _joyToListen)));
+			}
+			else
+			{
+				if (Mathf.Abs(InputManager.GetAxis("x", _joyToListen)) > 0.9f)
+					ChangeCharacter((int) Mathf.Sign(InputManager.GetAxis("x", _joyToListen)));
+			}
 		}
 
 		if (InputManager.GetButtonDown(3, _joyToListen))
 			ChangeSkin(1);
 
 		if (InputManager.GetButtonDown(0, _joyToListen))
-		{
-			GameObject characterModel = Instantiate(_availableCharacters[_selectedCharacterIndex].CharacterRef._characterData.CharacterModel.gameObject, Camera.main.ScreenToWorldPoint(transform.position), Quaternion.identity) as GameObject;
-			GameManager.instance.RegisteredPlayers[_playerIndex].Ready(_availableCharacters[_selectedCharacterIndex].CharacterRef);
-			Selected = true;
-		}
+			SelectCharacter();
 
+	}
+
+	void SelectCharacter()
+	{
+		if (_activeCoroutineRef != null)
+		StopCoroutine(_activeCoroutineRef);
+
+		GameManager.instance.RegisteredPlayers[_playerIndex].Ready(_wheelRef.SelectedPlayerController);
+		//PLACEMENT DES PARTICULES A L'ARRACHE
+
+		// changer les particules
+		/*
+		 * faire 2 systems de particules
+		 * 1 flash 
+		 * et une explosion de particules en dessous.
+		 */
+		Instantiate(OnCharacterSelectedParticles, transform.position - transform.up * 5 + (Camera.main.transform.position - transform.position).normalized * 1.5f, transform.rotation * Quaternion.FromToRotation(Vector3.forward, Vector3.up));
+	
+		if (_selectedCharacterModel != null)
+			Destroy(_selectedCharacterModel);
+
+		_selectedCharacterModel = (GameObject)Instantiate(GetSelectedCharacter.CharacterRef._characterData.CharacterModel.gameObject, transform.position - transform.up * 30, transform.rotation * Quaternion.FromToRotation(Vector3.right, Vector3.left));
+		_selectedModelTargetPosition = _selectedCharacterModel.transform.position;
+
+		Selected = true;
+		_activeCoroutineRef = StartCoroutine(SlideCharacterModelIn());
+	}
+
+	void CancelCharacterSelection()
+	{
+		if (_activeCoroutineRef != null)
+			StopCoroutine(_activeCoroutineRef);
+
+		Selected = false;
+		GameManager.instance.RegisteredPlayers[_playerIndex].UnReady();
+		Debug.Log("cancel selection");
+
+		_activeCoroutineRef = StartCoroutine(SlideCharacterModelOut());
+
+	}
+
+	IEnumerator SlideCharacterModelIn()
+	{
+		float targetTime = Time.time + 1;
+		Vector3 targetPosition = transform.position + (Camera.main.transform.position - transform.position).normalized;
+
+		while (targetTime > Time.time)
+		{
+			_selectedCharacterModel.transform.position = Vector3.Lerp(_selectedCharacterModel.transform.position, targetPosition, 0.1f);
+			yield return null;
+		}
+	}
+
+	IEnumerator SlideCharacterModelOut()
+	{
+		float targetTime = Time.time + 1;
+		Vector3 targetPosition = transform.position + transform.up * 10;
+
+		while (targetTime > Time.time)
+		{
+			_selectedCharacterModel.transform.position = Vector3.Lerp(_selectedCharacterModel.transform.position, targetPosition, 0.1f);
+			yield return null;
+		}
 	}
 
 	void AllowSwitchCharacter()

@@ -15,6 +15,7 @@ public class CharacterSlotsContainer : MonoBehaviour
 {
 	private CharacterSlot[] _slotsAvailable;
 	public SelectableCharacter[] _availableCharacters;
+	public ParticleSystem OnCharacterSelectedParticles;
 
 	void Start()
 	{

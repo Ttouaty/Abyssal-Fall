@@ -65,22 +65,14 @@ public class MenuManager : MonoBehaviour
 		}
 		if (_isListeningForInput)
 		{
-			//CHEESING 
-			Debug.LogWarning("Warning cheesing in progress.");
-			if (Input.GetKeyDown(KeyCode.A))
+
+			for (int i = -1; i < Input.GetJoystickNames().Length; i++)
 			{
-				Debug.Log("T'as bourré a comme un porc... on va trouver un arrangement");
+				if (i != -1)
+					if (Input.GetJoystickNames()[i] == "")//ignores unplugged controllers but tests for keyboard
+						continue;
 
-				RegisterNewPlayer(1);
-			}
-
-			//CHEESING END
-			for (int i = 0; i < Input.GetJoystickNames().Length; i++)
-			{
-				if (Input.GetJoystickNames()[i] == "")
-					continue;
-
-				if (InputManager.GetButtonDown("Start", i + 1) && !_controllerAlreadyInUse[i + 1])
+				if (InputManager.GetButtonDown("Start", i + 1) && !_controllerAlreadyInUse[i + 1]) //if new controller presses start
 				{
 					Debug.Log("JOYSTICK NUMBER: " + (i + 1) + " PRESSED START");
 					RegisterNewPlayer(i + 1);

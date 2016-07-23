@@ -2,10 +2,22 @@
 using System.Collections;
 using System.Collections.Generic;
 
+public struct CharacterSelectionData
+{
+	public PlayerController Controller;
+	public int SelectedSkinIndex;
+
+	public CharacterSelectionData(PlayerController newController, int skinIndex)
+	{
+		Controller = newController;
+		SelectedSkinIndex = skinIndex;
+	}
+}
+
 public class CharacterSelectWheel : MonoBehaviour
 {
 
-	private static float _wheelRadius = 2;
+	public static float _wheelRadius = 2;
 	private static float _alphaThresholdAngleMin = 20;
 	private static float _alphaThresholdAngleMax = 180;
 
@@ -16,7 +28,23 @@ public class CharacterSelectWheel : MonoBehaviour
 
 	public List<SpriteRenderer> _characterArtworkList = new List<SpriteRenderer>();
 	private float _rotationBetweenArtworks;
+	private CharacterSelectionData _selectedCharacterData = new CharacterSelectionData();
 
+	public CharacterSelectionData SelectedPlayerController
+	{
+		get
+		{
+			return _selectedCharacterData;
+		}
+	}
+
+	//public Transform ActiveCharacterArtwork
+	//{
+	//	get
+	//	{
+	//		return transform.GetChild(_selectedCharacterIndex).GetChild(0);
+	//	}
+	//}
 
 	void Start()
 	{
@@ -27,7 +55,7 @@ public class CharacterSelectWheel : MonoBehaviour
 
 	void Update()
 	{
-		transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(0, _selectedCharacterIndex * _rotationBetweenArtworks, 0), 0.1f);
+		transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(0, _selectedCharacterIndex * _rotationBetweenArtworks, 0), 0.15f);
 
 		for (int i = 0; i < _characterArtworkList.Count; ++i)
 		{
@@ -35,7 +63,7 @@ public class CharacterSelectWheel : MonoBehaviour
 			artworkAngle = Vector3.Angle(-Camera.main.transform.forward, (_characterArtworkList[i].transform.position - transform.position));
 
 			Debug.DrawLine(transform.position, _characterArtworkList[i].transform.position, Color.green);
-			
+
 			if (artworkAngle < _alphaThresholdAngleMin)
 				tempColor.a = 1;
 			else
@@ -56,7 +84,9 @@ public class CharacterSelectWheel : MonoBehaviour
 		{
 			GenerateCharacter(i);
 		}
-		//transform.localPosition = _wheelRadius * Camera.main.transform.forward;
+
+		_selectedCharacterData.SelectedSkinIndex = _selectedSkinIndex;
+		_selectedCharacterData.Controller = _availableCharacters[_selectedCharacterIndex].CharacterRef;
 	}
 
 	public void RotateArtworksFacingCam()
@@ -84,7 +114,7 @@ public class CharacterSelectWheel : MonoBehaviour
 		tempColor.a = 0;
 		artwork.GetComponent<SpriteRenderer>().color = tempColor;
 
-		artwork.transform.RotateAround(transform.position, transform.up, - _rotationBetweenArtworks * charaIndex);
+		artwork.transform.RotateAround(transform.position, transform.up, -_rotationBetweenArtworks * charaIndex);
 		artwork.name += "_ " + charaIndex;
 
 		_characterArtworkList.Add(artwork.GetComponent<SpriteRenderer>());
@@ -96,11 +126,13 @@ public class CharacterSelectWheel : MonoBehaviour
 	{
 		_selectedCharacterIndex = newIndex;
 		_targetAngle = _selectedCharacterIndex * _rotationBetweenArtworks;
+		_selectedCharacterData.Controller = _availableCharacters[_selectedCharacterIndex].CharacterRef;
 	}
 
 	public void ChangeActiveCharacterSkin(Sprite newSkin)
 	{
-		Debug.Log("changing skin for character: "+_selectedCharacterIndex);
 		_characterArtworkList[_selectedCharacterIndex].sprite = newSkin;
+		_selectedCharacterData.SelectedSkinIndex = _selectedSkinIndex;
+
 	}
 }
