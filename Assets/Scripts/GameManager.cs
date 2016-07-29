@@ -8,12 +8,10 @@ public class ZoomEvent : UnityEvent { }
 [System.Serializable]
 public class PlayerEvent : UnityEvent<GameObject> { }
 
-public class GameManager : MonoBehaviour
+public class GameManager : GenericSingleton<GameManager>
 {
 	public static GameManager instance;
 	public static bool InProgress = false;
-
-	private int _index;
 
 	public ZoomEvent OnZoom;
 	public PlayerEvent OnPlayerDeath;

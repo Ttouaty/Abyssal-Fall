@@ -26,8 +26,6 @@ public class ArenaGenerator : MonoBehaviour
 	public Material[] PlayerMaterialRef = new Material[4];
 	[Tooltip("References to players meshes")]
 	public Material[] SpritesIDMaterialRef = new Material[4];
-	[Tooltip("Names of the pools required to build the level")]
-	public List<string> RequiredPools = new List<string>();
 
 	[Header("ArenaGenerator Options")]
 	[Tooltip("Size of the level")]
@@ -38,6 +36,8 @@ public class ArenaGenerator : MonoBehaviour
 	public float TileScale = 1.5f;
 	[Tooltip("Time before the exterior tiles drop automaticaly")]
 	public float SecondsBeforeNextDrop = 5;
+	[Tooltip("Time before the exterior tiles drop automaticaly")]
+	public float DecreaseSecondsBeforeNextDropPerPlayer = 0.5f;
 
 	[Header("ArenaGenerator Obstacles")]
 	[Tooltip("Obstacles quantity")]
@@ -67,7 +67,7 @@ public class ArenaGenerator : MonoBehaviour
 	void Start ()
 	{
 		GameManager.instance.OnPlayerDeath.AddListener(OnPlayerDeath);
-		Init();
+        Init();
 	}
 
 	private void Init ()
@@ -95,17 +95,16 @@ public class ArenaGenerator : MonoBehaviour
 		{
 			if(GameManager.instance.RegisteredPlayers[i] > 0)
 			{
-				SecondsBeforeNextDrop -= 0.5f;
+				SecondsBeforeNextDrop -= DecreaseSecondsBeforeNextDropPerPlayer;
 			}
 		}
 	}
 
 	void OnPlayerDeath (GameObject player)
 	{
-		// Debug to play alone
 		Players.Remove(player);
-		player.GetComponent<PlayerController>().Spawn.DestroyId();
-		player.GetComponent<PlayerController>().Spawn.Destroy();
+		StartCoroutine(WaitBeforeDestroyPlayer(player));
+		// Debug to play alone
 		if (Players.Count == 1)
 		{
 			int playerId = Players[0].GetComponent<PlayerController>().PlayerNumber;
@@ -127,6 +126,13 @@ public class ArenaGenerator : MonoBehaviour
 				Spawns.Remove(Spawns[s]);
 			}
 		}
+	}
+
+	IEnumerator WaitBeforeDestroyPlayer(GameObject player)
+	{
+		yield return new WaitForSeconds(3.0f);
+		player.GetComponent<PlayerController>().Spawn.DestroyId();
+		player.GetComponent<PlayerController>().Spawn.Destroy();
 	}
 
 	public void EndStage ()
@@ -179,15 +185,6 @@ public class ArenaGenerator : MonoBehaviour
 	}
 
 	public void CreateArena () {
-		for (var r = 0; r < RequiredPools.Count; ++r)
-		{
-			if (!GameObjectPool.PoolExists(RequiredPools[r]))
-			{
-				Debug.LogError("The pool " + RequiredPools[r] + " don't exists and is required by the ArenaGenerator. Please verify if it exists or create it");
-				Debug.Break();
-			}
-		}
-
 		int index = 0;
 		for (var z = 0; z < Size; ++z)
 		{
@@ -367,6 +364,7 @@ public class ArenaGenerator : MonoBehaviour
 			}
 		}
 	}
+
 	public IEnumerator DropArena ()
 	{
 		yield return StartCoroutine(DropGrounds());
@@ -490,9 +488,10 @@ public class ArenaGenerator : MonoBehaviour
 		spawnPositions[2] = new Vector2(Size - dist - 1, dist);
 		spawnPositions[3] = new Vector2(Size - dist - 1, Size - dist - 1);
 
-		Gizmos.color = Color.green;
-		Gizmos.DrawWireCube(transform.position + new Vector3(-0.5f * TileScale, 0, -0.5f * TileScale), new Vector3(Size * TileScale + 0.1f, TileScale + 0.2f, Size * TileScale + 0.1f));
+		Matrix4x4 oldMatrix = Gizmos.matrix;
+		Matrix4x4 rotationMatrix = Matrix4x4.TRS(transform.position, transform.rotation, transform.lossyScale);
 
+		Gizmos.matrix = rotationMatrix;
 		for (var i = 0; i < Size * Size; ++i)
 		{
 			int x = i % Size;
@@ -518,8 +517,6 @@ public class ArenaGenerator : MonoBehaviour
 				Gizmos.DrawWireCube(new Vector3(-Size * 0.5f * TileScale + x * TileScale, 0, -Size * 0.5f * TileScale + z * TileScale), new Vector3(TileScale, TileScale, TileScale));
 			}
 		}
-
-		Gizmos.color = Color.red;
-		Gizmos.DrawWireSphere(transform.position - new Vector3(TileScale * 0.5f, 0, TileScale * 0.5f), Size * 0.5f * TileScale);
+		Gizmos.matrix = oldMatrix;
 	}
 }

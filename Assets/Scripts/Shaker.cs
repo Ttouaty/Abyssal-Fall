@@ -10,8 +10,9 @@ public class Shaker : MonoBehaviour
 		instance = this;
 	}
 
-	public void Shake(GameObject target, float duration, float shakeAmount = 0.7f, float decreaseFactor = 1.0f)
+	public void Shake(GameObject target, float duration, float shakeAmount = 0.7f, float decreaseFactor = 1.0f, bool bEraseAllShakes = true)
 	{
+		StopAllCoroutines();
 		StartCoroutine(OnShake(target, duration, shakeAmount, decreaseFactor));
 	}
 

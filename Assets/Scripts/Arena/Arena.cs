@@ -17,12 +17,10 @@ public class Arena : MonoBehaviour
 	}
 
 	private ArenaGenerator _generator;
-	private bool _loaded;
 
 	void Awake ()
 	{
 		instance = this;
-		_loaded = false;
 		_generator = GetComponent<ArenaGenerator>();
 	}
 
@@ -90,7 +88,6 @@ public class Arena : MonoBehaviour
 		gm.CountdownScreen.SetActive(false);
 
 		_generator.StartGame();
-		_loaded = true;
 	}
 
 	public void ClearArena ()

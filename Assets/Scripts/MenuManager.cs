@@ -157,8 +157,7 @@ public class MenuManager : MonoBehaviour
 		GameObjectPool.Instance.LoadStart.AddListener(OnLoadStart);
 		GameObjectPool.Instance.LoadEnd.AddListener(OnLoadEnd);
 		GameObjectPool.Instance.LoadProgress.AddListener(OnLoadProgress);
-		yield return StartCoroutine(GameObjectPool.Instance.Init());
-		//yield return new WaitForSeconds(2);
+		yield return StartCoroutine(GameObjectPool.Instance.LoadPoolsAsync());
 		_isartLogo.GetComponent<RawImage>().CrossFadeAlpha(0, 1, false);
 		SetActiveButtons(_mainButtons, true);
 		Destroy(_isartLogo, 1);
@@ -180,8 +179,6 @@ public class MenuManager : MonoBehaviour
 		StartCoroutine(MoveObjectOverTime(_loadBarContainer.gameObject, Vector3.down * Screen.height, 0.5f));
 		_loadBarProgress.CrossFadeAlpha(0, 2, false);
 		_loadBarContainer.CrossFadeAlpha(0, 2, false);
-		Destroy(_loadBarProgress, 2);
-		Destroy(_loadBarContainer, 2);
 		//_isartLogo.GetComponent<RawImage>().CrossFadeAlpha(0, 1, false);
 	}
 
@@ -200,5 +197,6 @@ public class MenuManager : MonoBehaviour
 			go.transform.position = Vector3.Lerp(go.transform.position, endPos, eT);
 			yield return null;
 		}
+		Destroy(go);
 	}
 }

@@ -1,7 +1,17 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class Poolable : MonoBehaviour
 {
-	public string PoolName;
+	public Pool Pool;
+	
+	public void AddToPool ()
+    {
+        Pool.Reserve.Add(gameObject);
+        gameObject.transform.parent = Pool.Root.transform;
+        gameObject.transform.position = Vector3.zero;
+        gameObject.transform.localPosition = Vector3.zero;
+        gameObject.transform.rotation = Quaternion.identity;
+        gameObject.transform.localRotation = Quaternion.identity;
+        gameObject.gameObject.SetActive(false);
+    }
 }
