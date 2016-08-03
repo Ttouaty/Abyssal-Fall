@@ -68,7 +68,7 @@ public class CharacterSlot : MonoBehaviour
 		if (!Open)
 			return;
 
-		if (InputManager.GetButtonDown(1, _joyToListen, true))
+		if (InputManager.GetButtonDown(1, _joyToListen, true) && Selected)
 			CancelCharacterSelection();
 
 		if (Selected)
@@ -100,29 +100,28 @@ public class CharacterSlot : MonoBehaviour
 	{
 		if (_activeCoroutineRef != null)
 		StopCoroutine(_activeCoroutineRef);
-
 		GameManager.instance.RegisteredPlayers[_playerIndex].Ready(_wheelRef.SelectedPlayerController);
+		
 		//PLACEMENT DES PARTICULES A L'ARRACHE
 
-		// changer les particules
-		/*
-		 * faire 2 systems de particules
-		 * 1 flash 
-		 * et une explosion de particules en dessous.
-		 */
-		Instantiate(OnCharacterSelectedParticles, transform.position - transform.up * 5 + (Camera.main.transform.position - transform.position).normalized * 1.5f, transform.rotation * Quaternion.FromToRotation(Vector3.forward, Vector3.up));
+		Vector3 camDirection = (Camera.main.transform.position - transform.position).normalized;
+
+		ParticleSystem spawnParticles = (ParticleSystem) Instantiate(OnCharacterSelectedParticles, transform.position + camDirection * 1.5f, Quaternion.identity);
+		spawnParticles.transform.rotation = transform.rotation;
+		spawnParticles.GetComponent<FlashAndRotate>()._rotationAxis = -transform.up;
 	
 		if (_selectedCharacterModel != null)
 			Destroy(_selectedCharacterModel);
 
 		_selectedCharacterModel = (GameObject)Instantiate(GetSelectedCharacter.CharacterRef._characterData.CharacterModel.gameObject, transform.position - transform.up * 30, transform.rotation * Quaternion.FromToRotation(Vector3.right, Vector3.left));
+		_selectedCharacterModel.transform.parent = transform;
 		_selectedModelTargetPosition = _selectedCharacterModel.transform.position;
 
 		Selected = true;
 		_activeCoroutineRef = StartCoroutine(SlideCharacterModelIn());
 	}
 
-	void CancelCharacterSelection()
+	public void CancelCharacterSelection()
 	{
 		if (_activeCoroutineRef != null)
 			StopCoroutine(_activeCoroutineRef);
@@ -169,10 +168,17 @@ public class CharacterSlot : MonoBehaviour
 		Open = true;
 		_joyToListen = joyToListen;
 		_playerIndex = playerNumber;
+		_wheelRef.gameObject.SetActive(true);
 		_wheelRef.Generate(_availableCharacters);
-		Debug.Log("SLOT: " + name + ", Listening to gamePad n°: " + joyToListen);
+		Debug.Log("SLOT: " + name + " Opened, Listening to gamePad n°: " + joyToListen);
 	}
 
+	public void CloseSlot()
+	{
+		_wheelRef.gameObject.SetActive(false);
+		Open = false;
+		Debug.Log("SLOT: " + name + " Closed");
+	}
 	
 
 	public void ChangeSkin(int direction)

@@ -4,54 +4,36 @@ using System.Collections;
 [RequireComponent(typeof(ParticleSystem))]
 public class FlashAndRotate : MonoBehaviour
 {
-	//[SerializeField]
-	//private Material _whiteCircle;
-
-	//[Space]
-	//[SerializeField]
-	//private float _width = 10;
-	//[SerializeField]
-	//private float _height = 10;
+	[SerializeField]
+	private ParticleSystem _flash;
+	[Space]
 	[SerializeField]
 	private float _rotation = 720;
+	public Vector3 _rotationAxis = Vector3.up;
 
-	//private GameObject _quad;
+
 	private ParticleSystem _particles;
-
 	private float eT = 0;
-	//private int framesElapsed = 0;
+	private ParticleSystem _tempFlash;
+	private float _rotationDone = 0;
 
-
-	/*
-	 commented out the flash (useless for now)
-	 */
 	void Start()
 	{
 		_particles = GetComponent<ParticleSystem>();
-		//_quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
-		//_quad.transform.localScale = new Vector3(_width, _height, 1);
-		//_quad.transform.position = transform.position + Vector3.up * _height;
-		//_quad.GetComponent<Renderer>().material = _whiteCircle;
 
-		//_quad.transform.LookAt(Camera.main.transform);
-		//_quad.transform.rotation = _quad.transform.rotation * Quaternion.FromToRotation(Vector3.forward, Vector3.back);
+		_tempFlash = (ParticleSystem)Instantiate(_flash, transform.position, Quaternion.identity);
 
+		Destroy(_tempFlash.gameObject, _particles.duration + _particles.startLifetime - 0.00001f);
 		Destroy(gameObject, _particles.duration + _particles.startLifetime);
-		
 	}
+
+
 
 	void Update()
 	{
-		//TELLEMENT L'ARRACHE, mais on s'en fous, on a besoin de faire un flash blanc puis noir sur 2 frames. Bien sur que ça va être dégueux...
-		//if (framesElapsed == 1)
-		//	_quad.GetComponent<Renderer>().material.color = Color.black;
-		//else if (framesElapsed == 2)
-		//	Destroy(_quad);
-
+		_rotationDone = Mathf.Lerp(_rotationDone, _rotation, eT / (_particles.duration + _particles.startLifetime));
+		transform.rotation = Quaternion.AngleAxis(_rotationDone, _rotationAxis);
+		
 		eT += Time.deltaTime;
-		transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x,
-													transform.rotation.eulerAngles.y,
-													Mathf.Lerp(transform.rotation.eulerAngles.z, _rotation, eT / (_particles.duration + _particles.startLifetime)));
-		//++framesElapsed;
 	}
 }

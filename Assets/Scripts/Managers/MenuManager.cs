@@ -52,10 +52,15 @@ public class MenuManager : MonoBehaviour
 		}
 	}
 
+	private float timeCancelHeld = 0;
+	private float timeCancelActivated = 0.5f;
 	void Update()
 	{
-		if (Input.GetButton("Cancel") && !GameManager.InProgress)
+		timeCancelHeld = Mathf.Clamp(timeCancelHeld + (Input.GetButton("Cancel") ? Time.deltaTime : -Time.deltaTime), 0, timeCancelActivated);
+		Debug.Log(timeCancelHeld);
+		if (timeCancelHeld == timeCancelActivated && !GameManager.InProgress)
 		{
+			timeCancelHeld = 0;
 			if (_activeMenu.ParentMenu != null)
 			{
 				MakeTransition(_activeMenu.ParentMenu);
@@ -110,8 +115,6 @@ public class MenuManager : MonoBehaviour
 		Player newPlayer = new Player();
 		GameManager.instance.RegisteredPlayers[newPlayer.PlayerNumber] = newPlayer;
 		newPlayer.JoystickNumber = joystickNumber;
-
-		GameManager.instance.nbPlayers++;
 		_characterSlotsContainerRef.OpenNextSlot(joystickNumber);
 	}
 
@@ -120,8 +123,7 @@ public class MenuManager : MonoBehaviour
 		Debug.Log("game started");
 		GameManager.StartGame();
 		// SpawnFallingGround.instance.Init();
-		SetActiveButtons(_activeMenu, false);
-		StartCoroutine(SendOut(_activeMenu));
+		DeactivateMenu();
 	}
 
 	private MenuPanel GetMenuPanel(string panelName)
@@ -143,6 +145,7 @@ public class MenuManager : MonoBehaviour
 
 	public void MakeTransition(MenuPanel newMenu)
 	{
+		timeCancelHeld = 0;
 		_isListeningForInput = false;
 		SetActiveButtons(_activeMenu, false);
 		StopAllCoroutines();
@@ -150,7 +153,17 @@ public class MenuManager : MonoBehaviour
 
 		if (newMenu.MenuName == "Lobby")
 			_isListeningForInput = true;
+		else
+		{
+			ResetPlayers();
+			_characterSlotsContainerRef.CancelAllSelections(true);
+		}
 
+		if (newMenu == null)
+		{
+			_activeMenu = null;
+			return;
+		}
 		newMenu.ParentMenu = _activeMenu;
 		SetActiveButtons(newMenu, true);
 		StartCoroutine(SendIn(newMenu));
@@ -237,4 +250,41 @@ public class MenuManager : MonoBehaviour
 			yield return null;
 		}
 	}
+
+	public static void DeactivateMenu(bool instant = false)
+	{
+		if (instant)
+		{
+			instance.StartCoroutine(instance.SendOut(instance._activeMenu));
+			instance.gameObject.SetActive(false);
+		}
+		else
+			instance.StartCoroutine(instance.DeactivateMenuCoroutine());
+		
+	}
+
+	private IEnumerator DeactivateMenuCoroutine()
+	{
+		MakeTransition((MenuPanel) null);
+		yield return new WaitForSeconds(1);
+		gameObject.SetActive(false);
+	}
+
+	public static void ActivateMenu(bool instant = false, string activeMenu = "Main")
+	{
+		instance.ReactivateMenu(instant, activeMenu);
+	}
+
+	private void ReactivateMenu(bool instant = false, string activeMenu = "Main")
+	{
+		gameObject.SetActive(true);
+		if (instant)
+		{
+			MakeTransition(GetMenuPanel(activeMenu));
+			_activeMenu.transform.position = _canvas.transform.position;
+		}
+		else
+			StartCoroutine(SendIn(GetMenuPanel(activeMenu)));
+	}
+
 }

@@ -7,7 +7,7 @@ public class InputManager : MonoBehaviour
 {
 	//  Buttons						0		1		 2			3		4		5		6		7
 	private string[] InputNames = { "Dash", null, "Special", null, null, null, "Select", "Start" };
-	private KeyCode[] KeyboardControls = { KeyCode.K, KeyCode.M, KeyCode.L, KeyCode.UpArrow, KeyCode.None, KeyCode.None, KeyCode.Return, KeyCode.Space };
+	private KeyCode[] KeyboardControls = { KeyCode.J, KeyCode.L, KeyCode.K, KeyCode.UpArrow, KeyCode.None, KeyCode.None, KeyCode.Return, KeyCode.Space };
 	private bool[] _inputCaught = new bool[10]; // capé a 10 buttons. C'est un peu dangereux, si tu catch une input, pendant 1 frame, tous les autres appels a ce bouton renverons false.
 	private static InputManager instance;
 

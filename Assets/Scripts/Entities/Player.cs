@@ -3,7 +3,6 @@ using System.Collections;
 
 public class Player
 {
-	public static int NumberOfPlayersAlreadyPresent = -1;
 	[HideInInspector]
 	public int PlayerNumber;
 	[HideInInspector]
@@ -23,7 +22,7 @@ public class Player
 
 	public Player()
 	{
-		PlayerNumber = ++NumberOfPlayersAlreadyPresent;
+		PlayerNumber = GameManager.instance.nbPlayers++;
 	}
 
 

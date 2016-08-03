@@ -13,9 +13,10 @@ public struct SelectableCharacter
 
 public class CharacterSlotsContainer : MonoBehaviour 
 {
+	public ParticleSystem OnCharacterSelectedParticles;
+	[Space]
 	private CharacterSlot[] _slotsAvailable;
 	public SelectableCharacter[] _availableCharacters;
-	public ParticleSystem OnCharacterSelectedParticles;
 
 	void Start()
 	{
@@ -34,5 +35,17 @@ public class CharacterSlotsContainer : MonoBehaviour
 		}
 
 		Debug.LogWarning("no more slots to open !");
+	}
+
+	public void CancelAllSelections(bool needClose = true)
+	{
+		for (int i = 0; i < _slotsAvailable.Length; ++i)
+		{
+			if (_slotsAvailable[i].Selected)
+				_slotsAvailable[i].CancelCharacterSelection();
+			if (_slotsAvailable[i].Open && needClose)
+				_slotsAvailable[i].CloseSlot();
+
+		}
 	}
 }

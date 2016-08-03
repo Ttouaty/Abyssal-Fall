@@ -99,12 +99,12 @@ public class PlayerController : MonoBehaviour
 
 	protected void Start()
 	{
-		Debug.Log("remove that part from player code !");
-		//CHEESE
-		_playerRef = new Player();
-		_playerRef.SkinNumber = 0;
-		_playerRef.JoystickNumber = 1;
-		//CHEESE END
+		//Debug.Log("remove that part from player code !");
+		////CHEESE
+		//_playerRef = new Player();
+		//_playerRef.SkinNumber = 0;
+		//_playerRef.JoystickNumber = 1;
+		////CHEESE END
 
 		_audioSource = GetComponent<AudioSource>();
 		_transf = transform;

@@ -29,6 +29,7 @@ public class CharacterSelectWheel : MonoBehaviour
 	public List<SpriteRenderer> _characterArtworkList = new List<SpriteRenderer>();
 	private float _rotationBetweenArtworks;
 	private CharacterSelectionData _selectedCharacterData = new CharacterSelectionData();
+	private bool _generated = false;
 
 	public CharacterSelectionData SelectedPlayerController
 	{
@@ -80,11 +81,14 @@ public class CharacterSelectWheel : MonoBehaviour
 		_targetAngle = 0;
 		_availableCharacters = availableCharacters;
 		_rotationBetweenArtworks = 360 / _availableCharacters.Length;
-		for (int i = 0; i < _availableCharacters.Length; i++)
-		{
-			GenerateCharacter(i);
+		if (!_generated)
+		{ 
+			for (int i = 0; i < _availableCharacters.Length; i++)
+			{
+				GenerateCharacter(i);
+			}
 		}
-
+		_generated = true;
 		_selectedCharacterData.SelectedSkinIndex = _selectedSkinIndex;
 		_selectedCharacterData.Controller = _availableCharacters[_selectedCharacterIndex].CharacterRef;
 	}

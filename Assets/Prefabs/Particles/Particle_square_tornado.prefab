@@ -1,41 +1,41 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &137010
+--- !u!1 &161170
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 4
   m_Component:
-  - 4: {fileID: 441334}
-  - 198: {fileID: 19813804}
-  - 199: {fileID: 19912598}
-  - 114: {fileID: 11447928}
+  - 4: {fileID: 427088}
+  - 198: {fileID: 19819088}
+  - 199: {fileID: 19956520}
+  - 114: {fileID: 11415954}
   m_Layer: 0
-  m_Name: Particle_square_player_selected
+  m_Name: Particle_square_tornado
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &441334
+--- !u!4 &427088
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 137010}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_GameObject: {fileID: 161170}
+  m_LocalRotation: {x: -.705858529, y: -.041997537, z: -.0419975445, w: .705858409}
   m_LocalPosition: {x: 0, y: 34.1599998, z: -0}
   m_LocalScale: {x: .300000012, y: .300000012, z: .300000012}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!114 &11447928
+--- !u!114 &11415954
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 137010}
+  m_GameObject: {fileID: 161170}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4296c47cca062f045928256e9cfee840, type: 3}
@@ -44,13 +44,13 @@ MonoBehaviour:
   _flash: {fileID: 19891572, guid: 7889c1dd36672c142b36ace546ac7b29, type: 2}
   _rotation: 720
   _rotationAxis: {x: 0, y: 1, z: 0}
---- !u!198 &19813804
+--- !u!198 &19819088
 ParticleSystem:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 137010}
-  lengthInSec: .300000012
+  m_GameObject: {fileID: 161170}
+  lengthInSec: .5
   startDelay: 0
   speed: 1
   randomSeed: 0
@@ -94,7 +94,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 0
     startSpeed:
-      scalar: 10
+      scalar: 50
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -292,7 +292,7 @@ ParticleSystem:
   ShapeModule:
     serializedVersion: 2
     enabled: 1
-    type: 10
+    type: 4
     radius: 3
     angle: 5
     length: 5
@@ -307,7 +307,7 @@ ParticleSystem:
     enabled: 1
     m_Type: 0
     rate:
-      scalar: 150
+      scalar: 250
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -855,7 +855,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 0
     magnitude:
-      scalar: .100000001
+      scalar: 1
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1087,12 +1087,12 @@ ParticleSystem:
     subEmitterCollision1: {fileID: 0}
     subEmitterDeath: {fileID: 0}
     subEmitterDeath1: {fileID: 0}
---- !u!199 &19912598
+--- !u!199 &19956520
 ParticleSystemRenderer:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 137010}
+  m_GameObject: {fileID: 161170}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -1131,8 +1131,25 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: m_LocalScale.x
+      value: .300000012
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_LocalScale.y
+      value: .300000012
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_LocalScale.z
+      value: .300000012
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: _flash
+      value: 
+      objectReference: {fileID: 19891572, guid: 7889c1dd36672c142b36ace546ac7b29,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 137010}
+  m_RootGameObject: {fileID: 161170}
   m_IsPrefabParent: 1
