@@ -31,6 +31,7 @@ public class CustomEditorDynamicConfig : Editor
     public override void OnInspectorGUI()
     {
         List<ArenaConfiguration> arenaConfigToRemove = new List<ArenaConfiguration>();
+        List<ModeConfiguration> modeConfigToRemove = new List<ModeConfiguration>();
 
         SetGUIBackgroundColor(Color.white * 0.75f);
         EditorGUILayout.BeginVertical("box");
@@ -105,6 +106,65 @@ public class CustomEditorDynamicConfig : Editor
                 if (GUILayout.Button("Add Arena Configuration"))
                 {
                     _myTarget.AddArenaConfiguration();
+                }
+                SetGUIBackgroundColor(Color.white);
+            }
+            EditorGUILayout.EndVertical();
+
+            EditorGUILayout.Separator();
+
+            EditorGUILayout.BeginVertical("box");
+            {
+                EditorGUILayout.LabelField("Mode Configurations", EditorStyles.boldLabel);
+
+                for (int i = 0; i < _myTarget.ModeConfigurations.Count; ++i)
+                {
+                    ModeConfiguration config = _myTarget.ModeConfigurations[i];
+
+                    EditorGUILayout.BeginHorizontal("box");
+                    {
+                        EditorGUILayout.BeginVertical("box");
+                        {
+                            config.Name = EditorGUILayout.TextField("Mode Name: ", config.Name);
+                            config.Configuration = (ModeConfiguration_SO)EditorGUILayout.ObjectField(config.Configuration, typeof(ModeConfiguration_SO), false);
+                        }
+                        EditorGUILayout.EndVertical();
+
+                        EditorGUILayout.BeginVertical(GUILayout.Width(25));
+                        {
+
+                            GUIStyle styleButton = new GUIStyle(EditorStyles.miniButtonRight);
+                            SetGUIBackgroundColor(Color.red);
+                            if (GUILayout.Button("x", styleButton, GUILayout.Width(25), GUILayout.Height(20)))
+                            {
+                                modeConfigToRemove.Add(config);
+                            }
+                            SetGUIBackgroundColor(Color.white);
+                        }
+                        EditorGUILayout.EndVertical();
+
+                    }
+                    EditorGUILayout.EndHorizontal();
+
+                    _myTarget.ModeConfigurations[i] = config;
+                }
+
+                for (var r = 0; r < arenaConfigToRemove.Count; ++r)
+                {
+                    _myTarget.RemoveArenaConfiguration(arenaConfigToRemove[r]);
+                }
+
+                for (var r = 0; r < modeConfigToRemove.Count; ++r)
+                {
+                    _myTarget.RemoveModeConfiguration(modeConfigToRemove[r]);
+                }
+
+                EditorGUILayout.Separator();
+
+                SetGUIBackgroundColor(Color.green);
+                if (GUILayout.Button("Add Mode Configuration"))
+                {
+                    _myTarget.AddModeConfiguration();
                 }
                 SetGUIBackgroundColor(Color.white);
             }

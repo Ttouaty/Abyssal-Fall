@@ -10,7 +10,8 @@ public struct LevelConfiguration
 public class LevelManager : GenericSingleton<LevelManager>
 {
     /* Variables */
-    public ArenaConfiguration_SO CurrentArenaConfig;
+    public ArenaConfiguration_SO    CurrentArenaConfig;
+    public ModeConfiguration_SO     CurrentModeConfig;
     public float LoadingProgress = 0.0f;
     
     /* Defined Scenes */
@@ -65,7 +66,7 @@ public class LevelManager : GenericSingleton<LevelManager>
         }
     }
 
-    public void StartLevel(string config)
+    public void StartLevel(string config, string mode)
     {
         if (!_bIsLoading)
         {
@@ -76,13 +77,14 @@ public class LevelManager : GenericSingleton<LevelManager>
                 Application.UnloadLevel(CurrentArenaConfig.BackgroundLevel);
             }
 
-            CurrentArenaConfig = MainManager.Instance.DYNAMIC_CONFIG.GetConfig(config);
+            CurrentArenaConfig = MainManager.Instance.DYNAMIC_CONFIG.GetArenaConfig(config);
+            CurrentModeConfig = MainManager.Instance.DYNAMIC_CONFIG.GetModeConfig(mode);
 
             MainManager.Instance.GAME_OBJECT_POOL.DropAll();
 
             PoolConfiguration groundToLoad = new PoolConfiguration();
             groundToLoad.Prefab = CurrentArenaConfig.Ground;
-            groundToLoad.Quantity = CurrentArenaConfig.ArenaSize * CurrentArenaConfig.ArenaSize;
+            groundToLoad.Quantity = CurrentModeConfig.ArenaSize * CurrentModeConfig.ArenaSize;
 
             MainManager.Instance.GAME_OBJECT_POOL.AddPool(groundToLoad);
             for (int i = 0; i < CurrentArenaConfig.OtherAssetsToLoad.Count; ++i)
@@ -152,7 +154,7 @@ public class LevelManager : GenericSingleton<LevelManager>
         MainManager.Instance.ARENA_MANAGER = ArenaManager.Instance;
 
         // Start Game
-        MainManager.Instance.ARENA_MANAGER.Init(CurrentArenaConfig);
+        MainManager.Instance.ARENA_MANAGER.Init();
         _bIsLoading = false;
     }
 
@@ -167,7 +169,7 @@ public class LevelManager : GenericSingleton<LevelManager>
             }
             else if (Input.GetKeyDown(KeyCode.Alpha2))
             {
-                StartLevel("Default");
+                StartLevel("Default", "FreeForAll");
             }
         }
     }

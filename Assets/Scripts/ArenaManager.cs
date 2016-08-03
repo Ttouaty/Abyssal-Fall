@@ -7,6 +7,7 @@ public class ArenaManager : GenericSingleton<ArenaManager>
     public Transform ArenaRoot;
 
     private ArenaConfiguration_SO _currentArenaConfig;
+    private ModeConfiguration_SO _currentModeConfig;
     private List<GameObject> _tiles;
     private List<GameObject> _obstacles;
     private int _tilesDropped;
@@ -26,24 +27,24 @@ public class ArenaManager : GenericSingleton<ArenaManager>
         _obstacles = new List<GameObject>();
     }
 
-    public void Init (ArenaConfiguration_SO arenaConfig)
+    public void Init ()
     {
-        _currentArenaConfig = arenaConfig;
+        _currentArenaConfig = MainManager.Instance.LEVEL_MANAGER.CurrentArenaConfig;
+        _currentModeConfig = MainManager.Instance.LEVEL_MANAGER.CurrentModeConfig;
 
         Vector3 position = new Vector3(0, Camera.main.transform.position.y, 0);
 
-        int tileCount = _currentArenaConfig.ArenaSize * _currentArenaConfig.ArenaSize;
-        for (int z = 0; z < _currentArenaConfig.ArenaSize; ++z)
+        int tileCount = _currentModeConfig.ArenaSize * _currentModeConfig.ArenaSize;
+        for (int z = 0; z < _currentModeConfig.ArenaSize; ++z)
         {
-            position.z = Mathf.Floor(z % _currentArenaConfig.ArenaSize) * _currentArenaConfig.TileScale - _currentArenaConfig.ArenaSize * 0.5f * _currentArenaConfig.TileScale;
+            position.z = Mathf.Floor(z % _currentModeConfig.ArenaSize) - _currentModeConfig.ArenaSize * 0.5f;
 
-            for (int x = 0; x < _currentArenaConfig.ArenaSize; ++x)
+            for (int x = 0; x < _currentModeConfig.ArenaSize; ++x)
             {
                 GameObject tile = GameObjectPool.GetAvailableObject(_currentArenaConfig.Ground.name);
-                tile.transform.localScale = new Vector3(_currentArenaConfig.TileScale, _currentArenaConfig.TileScale, _currentArenaConfig.TileScale);
                 tile.transform.SetParent(ArenaRoot);
 
-                position.x = (x % _currentArenaConfig.ArenaSize) * _currentArenaConfig.TileScale - _currentArenaConfig.ArenaSize * 0.5f * _currentArenaConfig.TileScale;
+                position.x = (x % _currentModeConfig.ArenaSize) - _currentModeConfig.ArenaSize * 0.5f;
 
                 tile.transform.position = position;
                 _tiles.Add(tile);
@@ -57,12 +58,12 @@ public class ArenaManager : GenericSingleton<ArenaManager>
     private IEnumerator DropArena ()
     {
         int ligne = 0;
-        for (int t = 0; t < _tiles.Count; t += _currentArenaConfig.ArenaSize)
+        for (int t = 0; t < _tiles.Count; t += _currentModeConfig.ArenaSize)
         {
             float delay = 0.15f + 0.05f * ligne;
-            for (int i = 0; i < _currentArenaConfig.ArenaSize; ++i)
+            for (int i = 0; i < _currentModeConfig.ArenaSize; ++i)
             {
-                StartCoroutine(DropGround(_tiles[t + i], delay, i, _tiles[t + i].transform.position.y, i % _currentArenaConfig.ArenaSize * 2 == 0));
+                StartCoroutine(DropGround(_tiles[t + i], delay, i, _tiles[t + i].transform.position.y, i % _currentModeConfig.ArenaSize * 2 == 0));
             }
             ++ligne;
         }
