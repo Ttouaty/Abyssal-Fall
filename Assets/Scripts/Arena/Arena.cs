@@ -34,14 +34,14 @@ public class Arena : MonoBehaviour
 
 	void Start ()
 	{
-		GameManager.instance.OnPlayerWin.AddListener(OnPlayerWin);
+		GameManager.Instance.OnPlayerWin.AddListener(OnPlayerWin);
 	}
 
 	// Use this for initialization
 	public IEnumerator StartGame()
 	{
 		// Start initialisation of arena field
-		GameManager.instance.GameLoop.Play();
+		GameManager.Instance.GameLoop.Play();
 		StopAllCoroutines();
 		_generator.ResetStage();
 		_generator.CreateArena();
@@ -54,13 +54,13 @@ public class Arena : MonoBehaviour
 	{
 		yield return _generator.StartCoroutine(_generator.DropArena());
 		yield return StartCoroutine(CountDown(3));
-		GameManager.instance.AudioSource.Stop();
+		GameManager.Instance.AudioSource.Stop();
 		_generator.StartCoroutine(_generator.DropArenaOverTime());
 	}
 
 	private IEnumerator CountDown(int startValue)
 	{
-		GameManager gm = GameManager.instance;
+		GameManager gm = GameManager.Instance;
 
 		_generator.CreatePlayers();
 		gm.CountdownScreen.SetActive(true);
@@ -72,10 +72,10 @@ public class Arena : MonoBehaviour
 			element.gameObject.SetActive(true);
 			switch(index)
 			{
-				case 0: GameManager.instance.AudioSource.PlayOneShot(GameManager.instance.OnThree); break;
-				case 1: GameManager.instance.AudioSource.PlayOneShot(GameManager.instance.OnTWo); break;
-				case 2: GameManager.instance.AudioSource.PlayOneShot(GameManager.instance.OnOne); break;
-				case 3: GameManager.instance.AudioSource.PlayOneShot(GameManager.instance.OnGo); break;
+				case 0: GameManager.Instance.AudioSource.PlayOneShot(GameManager.Instance.OnThree); break;
+				case 1: GameManager.Instance.AudioSource.PlayOneShot(GameManager.Instance.OnTWo); break;
+				case 2: GameManager.Instance.AudioSource.PlayOneShot(GameManager.Instance.OnOne); break;
+				case 3: GameManager.Instance.AudioSource.PlayOneShot(GameManager.Instance.OnGo); break;
 			}
 			float timer = 0;
 			while(timer < 1)

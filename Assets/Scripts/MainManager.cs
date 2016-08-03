@@ -12,11 +12,17 @@ public class MainManager : GenericSingleton<MainManager>
     public GameManager           GAME_MANAGER;
     public ArenaManager          ARENA_MANAGER;
 
+    public InputManager          INPUT_MANAGER;
+    public CoolDownManager       COOLDOWN_MANAGER;
+
     void Awake ()
     {
         GAME_OBJECT_POOL    = GameObjectPool.Instance;
         DYNAMIC_CONFIG      = DynamicConfig.Instance;
         LEVEL_MANAGER       = LevelManager.Instance;
+        INPUT_MANAGER       = InputManager.Instance;
+        COOLDOWN_MANAGER    = CoolDownManager.Instance;
+        GAME_MANAGER        = GameManager.Instance;
 
         if (GAME_OBJECT_POOL == null)
         {

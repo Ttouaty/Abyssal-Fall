@@ -68,7 +68,7 @@ public class CharacterSlot : MonoBehaviour
 		if (!Open)
 			return;
 
-		if (InputManager.GetButtonDown(1, _joyToListen, true) && Selected)
+		if (InputManager.GetButtonDown(1, _joyToListen) && Selected)
 			CancelCharacterSelection();
 
 		if (Selected)
@@ -100,7 +100,7 @@ public class CharacterSlot : MonoBehaviour
 	{
 		if (_activeCoroutineRef != null)
 		StopCoroutine(_activeCoroutineRef);
-		GameManager.instance.RegisteredPlayers[_playerIndex].Ready(_wheelRef.SelectedPlayerController);
+		GameManager.Instance.RegisteredPlayers[_playerIndex].Ready(_wheelRef.SelectedPlayerController);
 		
 		//PLACEMENT DES PARTICULES A L'ARRACHE
 
@@ -127,7 +127,7 @@ public class CharacterSlot : MonoBehaviour
 			StopCoroutine(_activeCoroutineRef);
 
 		Selected = false;
-		GameManager.instance.RegisteredPlayers[_playerIndex].UnReady();
+		GameManager.Instance.RegisteredPlayers[_playerIndex].UnReady();
 		Debug.Log("cancel selection");
 
 		_activeCoroutineRef = StartCoroutine(SlideCharacterModelOut());

@@ -17,7 +17,7 @@ public class CameraManager : MonoBehaviour
 		
 		_basePosition = transform.position;
 
-		GameManager.instance.OnPlayerWin.AddListener(OnPlayerWin);
+		GameManager.Instance.OnPlayerWin.AddListener(OnPlayerWin);
 		Reset();
 		StartCoroutine(SmoothZoom());
 	}
@@ -33,9 +33,11 @@ public class CameraManager : MonoBehaviour
 
 	private void RecalculateTarget()
 	{
-		Vector3 directionToCam = (transform.position - GameManager.instance.Arena.transform.position).ZeroY().normalized;
-		_target = GameManager.instance.Arena.transform.position + directionToCam * (Arena.instance.Size * 0.25f * (Mathf.Cos((_camera.transform.rotation.eulerAngles.x) * Mathf.Deg2Rad)));
-	}
+        // Vector3 directionToCam = (transform.position - GameManager.Instance.Arena.transform.position).ZeroY().normalized;
+        // _target = GameManager.Instance.Arena.transform.position + directionToCam * (Arena.instance.Size * 0.25f * (Mathf.Cos((_camera.transform.rotation.eulerAngles.x) * Mathf.Deg2Rad)));
+        _target = transform.forward * 10.0f;
+
+    }
 
 	public void Reset ()
 	{
@@ -55,7 +57,7 @@ public class CameraManager : MonoBehaviour
 		RecalculateTarget();
 		float timer = 0;
 		//Vector3 endPosition = _camera.transform.forward * 3 + _camera.transform.transform.position;
-		Vector3 endPosition = _target - _camera.transform.forward * (((Arena.instance.Size * Mathf.Sin((_camera.transform.rotation.eulerAngles.x) *Mathf.Deg2Rad)) * 0.5f / Mathf.Tan(Camera.main.fieldOfView * 0.5f * Mathf.Deg2Rad)) + _cameraOffset);
+		Vector3 endPosition = _target - _camera.transform.forward * (((40 * Mathf.Sin((_camera.transform.rotation.eulerAngles.x) *Mathf.Deg2Rad)) * 0.5f / Mathf.Tan(Camera.main.fieldOfView * 0.5f * Mathf.Deg2Rad)) + _cameraOffset);
 		// Thanks unity doc for distance calculation :)
 		while(timer < 1)
 		{
@@ -92,13 +94,13 @@ public class CameraManager : MonoBehaviour
 		winner.GetComponent<PlayerController>()._animator.SetTrigger("Win");
 		yield return new WaitForSeconds(3);
 		int winnerId = winner.GetComponent<PlayerController>()._playerRef.PlayerNumber -1;
-		EndStageScreen endScreen = GameManager.instance.EndStageScreen.GetComponent<EndStageScreen>();
+		EndStageScreen endScreen = GameManager.Instance.EndStageScreen.GetComponent<EndStageScreen>();
 		endScreen.ShowPanel();
 		yield return endScreen.StartCoroutine(endScreen.StartCountdown(winnerId));
 
 		Reset();
-		GameManager.instance.Arena.ClearArena();
-		GameManager.instance.Restart();
+		// GameManager.Instance.Arena.ClearArena();
+		GameManager.Instance.Restart();
 
 		yield return null;
 	}

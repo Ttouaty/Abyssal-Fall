@@ -130,7 +130,7 @@ public class PlayerController : MonoBehaviour
 		_stunTime.onFinish = OnStunOver;
 		_stunTime.onProgress = OnStunActive;
 
-		GameManager.instance.OnPlayerWin.AddListener(OnPlayerWin);
+		GameManager.Instance.OnPlayerWin.AddListener(OnPlayerWin);
 
 		_maxSpeed.x = _maxSpeed.x * _characterData.CharacterStats.speed / 3;
 
@@ -290,7 +290,7 @@ public class PlayerController : MonoBehaviour
 		_animator.SetTrigger("Death");
 		_audioSource.PlayOneShot(_characterData.SoundList.OnDeath);
 		_isDead = true;
-		GameManager.instance.OnPlayerDeath.Invoke(gameObject);
+		GameManager.Instance.OnPlayerDeath.Invoke(gameObject);
 	}
 
 	public void Eject(Vector3 direction, float stunTime)

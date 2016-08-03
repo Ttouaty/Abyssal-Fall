@@ -34,10 +34,10 @@ public class EndStageScreen : MonoBehaviour
 	public void ShowPanel ()
 	{
 		Enable();
-		for(var i = 0; i < GameManager.instance.RegisteredPlayers.Length; ++i)
+		for(var i = 0; i < GameManager.Instance.RegisteredPlayers.Length; ++i)
 		{
-			SetFieldEnable(i, GameManager.instance.RegisteredPlayers[i] != null);
-			SetPlayerScore(i, (int)GameManager.instance.RegisteredPlayers[i].Score);
+			SetFieldEnable(i, GameManager.Instance.RegisteredPlayers[i] != null);
+			SetPlayerScore(i, (int)GameManager.Instance.RegisteredPlayers[i].Score);
 		}
 	}
 

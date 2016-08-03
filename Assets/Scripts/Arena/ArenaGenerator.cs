@@ -66,7 +66,7 @@ public class ArenaGenerator : MonoBehaviour
 
 	void Start ()
 	{
-		GameManager.instance.OnPlayerDeath.AddListener(OnPlayerDeath);
+		GameManager.Instance.OnPlayerDeath.AddListener(OnPlayerDeath);
         Init();
 	}
 
@@ -91,9 +91,9 @@ public class ArenaGenerator : MonoBehaviour
 		_amoutGroupsToDrop = Mathf.FloorToInt(Size * 0.5f - Size / 10);
 
 		SecondsBeforeNextDrop = 4;
-		for (var i = 1; i < GameManager.instance.RegisteredPlayers.Length; ++i)
+		for (var i = 1; i < GameManager.Instance.RegisteredPlayers.Length; ++i)
 		{
-			if(GameManager.instance.RegisteredPlayers[i] > 0)
+			if(GameManager.Instance.nbPlayers > 0)
 			{
 				SecondsBeforeNextDrop -= DecreaseSecondsBeforeNextDropPerPlayer;
 			}
@@ -102,30 +102,30 @@ public class ArenaGenerator : MonoBehaviour
 
 	void OnPlayerDeath (GameObject player)
 	{
-		Players.Remove(player);
-		StartCoroutine(WaitBeforeDestroyPlayer(player));
-		// Debug to play alone
-		if (Players.Count == 1)
-		{
-			int playerId = Players[0].GetComponent<PlayerController>().PlayerNumber;
-			GameManager.instance.PlayersScores[playerId-1]++;
-			GameManager.instance.OnPlayerWin.Invoke(Players[0]);
-			StopAllCoroutines();
-			for (int t = 0; t < _tiles.Count; ++t)
-			{
-				_tiles[t].GetComponent<Tile>().StopAllCoroutines();
-			}
-
-			for (int o = 0; o < _obstacles.Count; ++o)
-			{
-				_obstacles[o].GetComponent<Obstacle>().StopAllCoroutines();
-			}
-			for (int s = 0; s < Spawns.Count; ++s)
-			{
-				Spawns[s].DestroyId();
-				Spawns.Remove(Spawns[s]);
-			}
-		}
+		//Players.Remove(player);
+		//StartCoroutine(WaitBeforeDestroyPlayer(player));
+		//// Debug to play alone
+		//if (Players.Count == 1)
+		//{
+		//	int playerId = Players[0].GetComponent<PlayerController>().PlayerNumber;
+		//	GameManager.Instance.PlayersScores[playerId-1]++;
+		//	GameManager.Instance.OnPlayerWin.Invoke(Players[0]);
+		//	StopAllCoroutines();
+		//	for (int t = 0; t < _tiles.Count; ++t)
+		//	{
+		//		_tiles[t].GetComponent<Tile>().StopAllCoroutines();
+		//	}
+        //
+		//	for (int o = 0; o < _obstacles.Count; ++o)
+		//	{
+		//		_obstacles[o].GetComponent<Obstacle>().StopAllCoroutines();
+		//	}
+		//	for (int s = 0; s < Spawns.Count; ++s)
+		//	{
+		//		Spawns[s].DestroyId();
+		//		Spawns.Remove(Spawns[s]);
+		//	}
+		//}
 	}
 
 	IEnumerator WaitBeforeDestroyPlayer(GameObject player)
@@ -252,16 +252,16 @@ public class ArenaGenerator : MonoBehaviour
 
 	public void CreateSpawns()
 	{
-		Spawns = new List<Spawn>();
-		for (var s = 0; s < GameManager.instance.RegisteredPlayers.Length; ++s)
-		{
-			if(GameManager.instance.RegisteredPlayers[s] > 0)
-			{
-				int target = Mathf.FloorToInt(_spawnPositions[s].x + _spawnPositions[s].y * Size);
-				GameObject tile = _tiles[target];
-				Spawns.Add(tile.AddComponent<Spawn>());
-			}
-		}
+		//Spawns = new List<Spawn>();
+		//for (var s = 0; s < GameManager.Instance.RegisteredPlayers.Length; ++s)
+		//{
+		//	if(GameManager.Instance.RegisteredPlayers[s] > 0)
+		//	{
+		//		int target = Mathf.FloorToInt(_spawnPositions[s].x + _spawnPositions[s].y * Size);
+		//		GameObject tile = _tiles[target];
+		//		Spawns.Add(tile.AddComponent<Spawn>());
+		//	}
+		//}
 	}
 
 	public void CreateObstacles ()
@@ -442,7 +442,7 @@ public class ArenaGenerator : MonoBehaviour
 
 		if(sound)
 		{
-			GameManager.instance.AudioSource.PlayOneShot(GameManager.instance.OnObstacleDrop);
+			GameManager.Instance.AudioSource.PlayOneShot(GameManager.Instance.OnObstacleDrop);
 		}
 
 		element.GetComponent<Obstacle>().OnDropped();
@@ -473,7 +473,7 @@ public class ArenaGenerator : MonoBehaviour
 				}
 			}
 			_groundsToDrop.RemoveAt(0);
-			GameManager.instance.OnZoom.Invoke();
+			GameManager.Instance.OnZoom.Invoke();
 		}
 	}
 

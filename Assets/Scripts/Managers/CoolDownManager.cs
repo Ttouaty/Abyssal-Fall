@@ -2,16 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class CoolDownManager : MonoBehaviour {
-
-	public static CoolDownManager instance;
-
+public class CoolDownManager : GenericSingleton<CoolDownManager>
+{
 	private List<CoolDown> _managedCoolDowns = new List<CoolDown>();
 
 	private CoolDown[] _arrayCooldown;
 	void Awake()
 	{
-		instance = this;
 		_arrayCooldown = new CoolDown[0];
 	}
 

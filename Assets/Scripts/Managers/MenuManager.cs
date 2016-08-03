@@ -57,7 +57,6 @@ public class MenuManager : MonoBehaviour
 	void Update()
 	{
 		timeCancelHeld = Mathf.Clamp(timeCancelHeld + (Input.GetButton("Cancel") ? Time.deltaTime : -Time.deltaTime), 0, timeCancelActivated);
-		Debug.Log(timeCancelHeld);
 		if (timeCancelHeld == timeCancelActivated && !GameManager.InProgress)
 		{
 			timeCancelHeld = 0;
@@ -70,30 +69,31 @@ public class MenuManager : MonoBehaviour
 		}
 		if (_isListeningForInput)
 		{
-
 			for (int i = -1; i < Input.GetJoystickNames().Length; i++)
 			{
 				if (i != -1)
-					if (Input.GetJoystickNames()[i] == "")//ignores unplugged controllers but tests for keyboard
-						continue;
+                {
+                    if (Input.GetJoystickNames()[i] == "")//ignores unplugged controllers but tests for keyboard
+                        continue;
+                }
 
-				if (InputManager.GetButtonDown("Start", i + 1) && !_controllerAlreadyInUse[i + 1]) //if new controller presses start
+                if (InputManager.GetButtonDown("Start", i + 1) && !_controllerAlreadyInUse[i + 1]) //if new controller presses start
 				{
-					Debug.Log("JOYSTICK NUMBER: " + (i + 1) + " PRESSED START");
+Debug.Log("JOYSTICK NUMBER: " + (i + 1) + " PRESSED START");
 					RegisterNewPlayer(i + 1);
 				}
 			}
-			_StartButton.interactable = GameManager.instance.nbPlayers >= 2 && !GameManager.InProgress && AllPlayersReady();
+			_StartButton.interactable = GameManager.Instance.nbPlayers >= 2 && !GameManager.InProgress && AllPlayersReady();
 		}
 	}
 
 	bool AllPlayersReady()
 	{
-		for (int i = 0; i < GameManager.instance.RegisteredPlayers.Length; ++i)
+		for (int i = 0; i < GameManager.Instance.RegisteredPlayers.Length; ++i)
 		{
-			if (GameManager.instance.RegisteredPlayers[i] != null)
+			if (GameManager.Instance.RegisteredPlayers[i] != null)
 			{
-				if (!GameManager.instance.RegisteredPlayers[i].isReady)
+				if (!GameManager.Instance.RegisteredPlayers[i].isReady)
 					return false;
 			}
 		}
@@ -113,7 +113,7 @@ public class MenuManager : MonoBehaviour
 		_controllerAlreadyInUse[joystickNumber] = true; // J'aurai pu utiliser un enum, mais je me rappellais plus comment faire dans le metro lAUl.
 
 		Player newPlayer = new Player();
-		GameManager.instance.RegisteredPlayers[newPlayer.PlayerNumber] = newPlayer;
+		GameManager.Instance.RegisteredPlayers[newPlayer.PlayerNumber] = newPlayer;
 		newPlayer.JoystickNumber = joystickNumber;
 		_characterSlotsContainerRef.OpenNextSlot(joystickNumber);
 	}
@@ -216,10 +216,10 @@ public class MenuManager : MonoBehaviour
 	IEnumerator FadeIsartLogo()
 	{
 		SetActiveButtons(GetMenuPanel("Main"), false);
-		GameObjectPool.instance.LoadEnd.AddListener(OnLoadEnd);
-		GameObjectPool.instance.LoadProgress.AddListener(OnLoadProgress);
+		GameObjectPool.Instance.LoadEnd.AddListener(OnLoadEnd);
+		GameObjectPool.Instance.LoadProgress.AddListener(OnLoadProgress);
 		_loadBar.SetPercent(0);
-		yield return StartCoroutine(GameObjectPool.instance.Init());
+		yield return StartCoroutine(GameObjectPool.Instance.Init());
 		//yield return new WaitForSeconds(2);
 		_isartLogo.GetComponent<RawImage>().CrossFadeAlpha(0, 1, false);
 		SetActiveButtons(GetMenuPanel("Main"), true);

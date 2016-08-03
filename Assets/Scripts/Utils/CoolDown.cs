@@ -21,12 +21,12 @@ public class CoolDown {
 	public CoolDown(MonoBehaviour linkedParent)
 	{
 		parent = linkedParent;
-		if (CoolDownManager.instance == null)
+		if (CoolDownManager.Instance == null)
 		{
 			Debug.Log("No Cooldown Manager found ! Cooldowns won't work");
 			return;
 		}
-		CoolDownManager.instance.AddCoolDown(this);
+		CoolDownManager.Instance.AddCoolDown(this);
 	}
 
 	virtual public void Start () {
@@ -37,7 +37,7 @@ public class CoolDown {
 		if (parent == null)
 		{
 			Debug.Log("parent is null, removing cooldown");
-			CoolDownManager.instance.RemoveCoolDown(this);
+			CoolDownManager.Instance.RemoveCoolDown(this);
 		}
 		else if (parent.enabled || isCoolDownAbsolute)
 			if (active)

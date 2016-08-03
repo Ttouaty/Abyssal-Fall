@@ -22,7 +22,7 @@ public class Player
 
 	public Player()
 	{
-		PlayerNumber = GameManager.instance.nbPlayers++;
+		PlayerNumber = GameManager.Instance.nbPlayers++;
 	}
 
 

@@ -66,7 +66,7 @@ public class LevelManager : GenericSingleton<LevelManager>
         }
     }
 
-    public void StartLevel(string config, string mode)
+    public IEnumerator StartLevel(string config, string mode)
     {
         if (!_bIsLoading)
         {
@@ -92,7 +92,7 @@ public class LevelManager : GenericSingleton<LevelManager>
                 MainManager.Instance.GAME_OBJECT_POOL.AddPool(CurrentArenaConfig.OtherAssetsToLoad[i]);
             }
 
-            StartCoroutine(LoadLevel());
+            yield return StartCoroutine(LoadLevel());
         }
     }
 
