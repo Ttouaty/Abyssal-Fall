@@ -5,114 +5,149 @@ using System;
 [Serializable]
 public struct Dash
 {
-	[SerializeField]
-	public float length;
-	[SerializeField]
 	public float endingLag;
-	[SerializeField]
-	public int range;
+	public Vector2 force;
+	public Vector2 ImpactEjection;
 
 	[HideInInspector]
 	public bool inProgress;
 }
 
-public class PlayerController : MonoBehaviour
+[Serializable]
+public struct PlayerAudioList
 {
-	public int PlayerNumber = 1;
-
-	public Spawn Spawn;
-
 	public AudioClip OnDashStart;
 	public AudioClip OnDashEnd;
 	public AudioClip OnDeath;
-	public AudioClip OnHammerThrow;
+	public AudioClip OnSpecialActivate;
+	public AudioClip OnHit;
+}
 
-	private AudioSource _audioSource;
+[Serializable]
+public class Stats
+{
+	[Range(1,5)]
+	public int strength = 3;
+	[Range(0, 30)]
+	public float specialCooldown = 3;
+	[Range(1, 5)]
+	public int speed = 3;
+	[Range(1, 5)]
+	public int resistance = 3;
+}
 
-	[SerializeField]
-	private Dash dash;
-
-
-	[SerializeField]
+[RequireComponent(typeof(Rigidbody), typeof(AudioSource))]
+public class PlayerController : MonoBehaviour
+{
+	[HideInInspector]
+	public Player _playerRef;
+	[HideInInspector]
+	public bool _isInvul = false;
+	[HideInInspector]
+	public Spawn Spawn;
+	[HideInInspector]
 	public Animator _animator;
+	[HideInInspector]
+	public bool _isDead = false;
+	[HideInInspector]
+	public bool IsGrounded = false;
+	//change to protected
+	[HideInInspector]
+	public PlayerProp _playerProp;
+
 	#region references
 
-	private Transform _transf;
-	private Rigidbody _rigidB;
+	protected Transform _transf;
+	protected Rigidbody _rigidB;
+	protected AudioSource _audioSource;
+	protected RaycastHit _hit;
+	private Transform _groundCheck;
 
 	#endregion
 
+	protected Vector3 _activeSpeed = Vector3.zero; // Activespeed est un vecteur qui est appliqué a chaque frame au rigibody.velocity => permet de modifier librement la vitesse du player.
+	protected Vector3 _activeDirection = Vector3.forward;
+	protected Vector2 _maxSpeed = new Vector2(7f, 20f);
+	protected Vector2 _acceleration = new Vector2(1.2f, -2f);
+	protected float _friction = 50; //friction applied to the player when it slides (pushed or end dash) (units/s)
 
-	[HideInInspector]
-	public bool _isDead = false;
-	private Vector3 _activeSpeed = Vector3.zero; // Activespeed est un vecteur qui est appliqué a chaque frame au rigibody.velocity => permet de modifier librement la vitesse du player.
-	private Vector3 _activeDirection = Vector3.forward;
+	[Space]
+	public SO_Character _characterData;
 
+	protected TimeCooldown _specialCooldown;
+	protected TimeCooldown _stunTime; //Secondes of stun on Hit
+	
 
-	private RaycastHit _hit;
+	protected bool _allowInput = true;
+	protected bool _isStunned = false;
 
-	[Header("Collisions checks")]
-	[SerializeField]
-	private Transform _groundCheck;
-	[SerializeField]
-	private Transform _snapGround;
-
-
-	[Header("Movement")]
-	[SerializeField]
-	private Vector2 _maxSpeed = new Vector2(5f, 10f);
-
-	[SerializeField]
-	private Vector2 _acceleration = new Vector2(1.5f, -1f);
-
-	[Header("Hammer")]
-	[SerializeField]
-	private float _hammerRechargeRate = 3;
-	private float _hammerCooldown = 0;
-
-
-
-	private float _stunTime = 0f; //Secondes of stun on Hit
-	[Header("Models")]
-	[SerializeField]
-	private GameObject _playerModel;
-	[SerializeField]
-	public GameObject _hammerPropModel;
-
-
-	private bool _allowInput = true;
-	private bool _isGrounded = false;
-	private bool _isStunned = false;
-
-	[HideInInspector]
-	public bool _isInvul = false;
-
-	private bool _canFire
+	protected bool _canSpecial
 	{
 		get
 		{
-			return !dash.inProgress && !_isDead && _hammerCooldown <= 0;
+			return !_characterData.Dash.inProgress && !_isDead && _specialCooldown.TimeLeft <= 0;
 		}
 	}
 
-	private bool _canDash
+	protected bool _canDash
 	{
 		get
 		{
-			return !dash.inProgress && _isGrounded && !_isDead;
+			return !_characterData.Dash.inProgress && IsGrounded && !_isDead;
 		}
 	}
 
-	void Start()
+	protected void Start()
 	{
+		//Debug.Log("remove that part from player code !");
+		////CHEESE
+		//_playerRef = new Player();
+		//_playerRef.SkinNumber = 0;
+		//_playerRef.JoystickNumber = 1;
+		////CHEESE END
+
 		_audioSource = GetComponent<AudioSource>();
 		_transf = transform;
 		_rigidB = GetComponent<Rigidbody>();
 
+		//Instantiates player mesh and retrieves its props and particles
+		GameObject playerMesh = Instantiate(_characterData.CharacterModel.gameObject, _transf.position, _characterData.CharacterModel.transform.rotation) as GameObject;
+		playerMesh.transform.parent = _transf.FindChild("CharacterModel");
+
+		playerMesh.GetComponentInChildren<CharacterModel>().Reskin(_characterData.CharacterMaterials[_playerRef.SkinNumber]);
+
+		_animator = _transf.FindChild("CharacterModel").GetComponentInChildren<Animator>();
+		_playerProp = transform.GetComponentInChildren<PlayerProp>();
+
+		if (_playerProp == null)
+			Debug.LogError("No player prop found in playermesh: "+gameObject.name+" !");
+
+		_characterData.Dash.inProgress = false; // security because sometimes dash is activated, lolwutomfgrektbbq
+		_specialCooldown = new TimeCooldown(this);
+		_specialCooldown.onFinish = OnSpecialReset;
+
+		_stunTime = new TimeCooldown(this);
+		_stunTime.onFinish = OnStunOver;
+		_stunTime.onProgress = OnStunActive;
+
 		GameManager.instance.OnPlayerWin.AddListener(OnPlayerWin);
+
+		_maxSpeed.x = _maxSpeed.x * _characterData.CharacterStats.speed / 3;
+
+		if (GetComponentInChildren<GroundCheck>() == null)
+		{
+			Debug.LogWarning("no GroundCheck found in player: "+gameObject.name+"\nCreating one.");
+			GameObject tempGo = new GameObject();
+			Instantiate(tempGo);
+			tempGo.transform.parent = transform;
+			tempGo.AddComponent(typeof(GroundCheck));
+			tempGo.transform.position = _transf.position - Vector3.up;
+		}
+
+		CustomStart();
 	}
 
-	void Update()
+	protected void Update()
 	{
 		if (_isDead)
 			return;
@@ -121,20 +156,20 @@ public class PlayerController : MonoBehaviour
 
 		if (_allowInput)
 			ProcessInputs();
-
+		
 
 		ProcessActiveSpeed();
 		if (_allowInput)
 			ProcessOrientation();
 		ApplyCharacterFinalVelocity();
+
+		CustomUpdate();
 	}
 
-	void FixedUpdate()
-	{
-		ProcessGroundedState();
-	}
+	protected virtual void CustomStart() { }
+	protected virtual void CustomUpdate() { }
 
-	void OnPlayerWin(GameObject player)
+	protected virtual void OnPlayerWin(GameObject player)
 	{
 		_allowInput = false;
 		_activeSpeed = Vector3.zero;
@@ -146,136 +181,114 @@ public class PlayerController : MonoBehaviour
 	#region Processes
 	private void ProcessOrientation()
 	{
-		_activeDirection.x = Mathf.Lerp(_activeDirection.x, Input.GetAxis("Horizontal_P" + PlayerNumber), 15 * Time.deltaTime);
-		_activeDirection.z = Mathf.Lerp(_activeDirection.z, Input.GetAxis("Vertical_P" + PlayerNumber), 15 * Time.deltaTime);
+		_activeDirection.x = Mathf.Lerp(_activeDirection.x, InputManager.GetAxis("x", _playerRef.JoystickNumber), 15 * Time.deltaTime);
+		_activeDirection.z = Mathf.Lerp(_activeDirection.z, InputManager.GetAxis("y", _playerRef.JoystickNumber), 15 * Time.deltaTime);
 		transform.LookAt(transform.position + (Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized) * _activeDirection), Vector3.up);
 	}
 
-
-	void ProcessCoolDowns()
+	protected virtual void OnSpecialReset()
 	{
-		if (_hammerCooldown > 0)
-			_hammerCooldown -= Time.deltaTime;
-		else
-		{
-			_hammerPropModel.GetComponent<Renderer>().enabled = true;
-			_hammerCooldown = 0;
-		}
-
-
-		_animator.SetFloat("StunTime", _stunTime);
-		if (_stunTime > 0)
-		{
-			if (_isGrounded && !dash.inProgress)
-				this._activeSpeed = Vector3.zero;
-
-			_allowInput = false;
-
-			_stunTime -= Time.deltaTime;
-		}
-		else if (_isStunned)
-		{
-			_isStunned = false;
-			_allowInput = true;
-			_stunTime = 0;
-		}
-
+		_playerProp.PropRenderer.enabled = true;
+		_playerProp.PropRespawnParticles.Play();
 	}
 
-	void ProcessInputs()
+	protected virtual void OnStunOver()
 	{
-		if (Input.GetButtonDown("Dash_P" + PlayerNumber) && _canDash)
+		_isStunned = false;
+		_allowInput = true;
+	}
+
+	protected virtual void OnStunActive()
+	{
+		if (!IsGrounded)
+		{
+			_stunTime.Add(Time.deltaTime); //decrease Stun only if grounded
+		}
+		
+		_allowInput = false;
+		_isStunned = true;
+	}
+
+	private void ProcessCoolDowns()
+	{
+		_animator.SetFloat("StunTime", _stunTime.TimeLeft);
+	}
+
+	private void ProcessInputs()
+	{
+		if (InputManager.GetButtonDown("Dash", _playerRef.JoystickNumber) && _canDash)
 		{
 			StartCoroutine(ActivateDash());
 		}
 
-		if (Input.GetButtonDown("Throw_P" + PlayerNumber) && _canFire)
+		if (InputManager.GetButtonDown("Special", _playerRef.JoystickNumber) && _canSpecial)
 		{
-			ThrowHammer();
+			SpecialAction();
 		}
 	}
 
-	void ProcessActiveSpeed()
+	private void ProcessActiveSpeed()
 	{
-		if (_isGrounded && _allowInput)
+		if (IsGrounded)
 		{
-			if (dash.inProgress)
+			if (_allowInput)
 			{
-				_activeSpeed.x = _activeSpeed.x.Reduce(_maxSpeed.x * Time.deltaTime * 2);
-				_activeSpeed.z = _activeSpeed.z.Reduce(_maxSpeed.x * Time.deltaTime * 2);
-				return;
+				
+#if UNITY_EDITOR
+				_activeSpeed.x = _maxSpeed.x * InputManager.GetAxisRaw("x", _playerRef.JoystickNumber);
+				_activeSpeed.z = _maxSpeed.x * InputManager.GetAxisRaw("y", _playerRef.JoystickNumber);
+#else
+				_activeSpeed.x = _maxSpeed.x * InputManager.GetAxis("x", _playerRef.JoystickNumber) ;
+				_activeSpeed.z = _maxSpeed.x * InputManager.GetAxis("y", _playerRef.JoystickNumber) ;
+#endif
+				_activeSpeed = Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized) * _activeSpeed.normalized * _maxSpeed.x;
 			}
-			_activeSpeed.x = _maxSpeed.x * Input.GetAxis("Horizontal_P" + PlayerNumber);
-			_activeSpeed.z = _maxSpeed.x * Input.GetAxis("Vertical_P" + PlayerNumber);
-			_activeSpeed = Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized) * _activeSpeed.normalized * _maxSpeed.x;
 		}
 		else
 		{
 			_activeSpeed.y += _acceleration.y * Time.deltaTime * Physics.gravity.magnitude;
 			_activeSpeed.y = Mathf.Clamp(_activeSpeed.y, -_maxSpeed.y, _maxSpeed.y * 10f);
 		}
-
+		ApplyFriction();
 	}
 
-	void ProcessGroundedState()
+	private void ApplyFriction()
 	{
-		if (_isGrounded)
+		if (IsGrounded)
 		{
-			_activeSpeed.y = 0;
-			if (!Physics.Linecast(_transf.position, _groundCheck.position, out _hit, 1 << LayerMask.NameToLayer("Ground")))
-				_isGrounded = false;
-			else
-			{
-				//Contact Tile
-				if (_hit.transform.gameObject.activeInHierarchy)
-				{
-					if (_hit.transform.gameObject.layer == LayerMask.NameToLayer("Ground"))
-					{
-						_hit.transform.GetComponent<Tile>().ActivateFall();
-					}
-				}
-			}
-		}
-		else if (_activeSpeed.y <= 0)
-		{
-			if (Physics.Linecast(_transf.position, _groundCheck.position, out _hit, 1 << LayerMask.NameToLayer("Ground")))
-				ContactGround(); // only activate if you make contact with the ground once
-			else
-				_isGrounded = false;
+			_activeSpeed.x = _activeSpeed.x.Reduce(_friction * Time.deltaTime);
+			_activeSpeed.z = _activeSpeed.z.Reduce(_friction * Time.deltaTime);
 		}
 	}
 
-	void ContactGround()
+	public void ContactGround()
 	{
-		_isGrounded = true;
+		IsGrounded= true;
 		_activeSpeed.y = 0f;
-		if (_hit.rigidbody.isKinematic == true)
-			transform.position = transform.position - (_snapGround.transform.position - _hit.point);
+		//Breaks physics
+		//if (_hit.rigidbody.isKinematic == true)
+		//	transform.position = transform.position - (_snapGround.transform.position - _hit.point);
 	}
 
-	void ApplyCharacterFinalVelocity()
+	private void ApplyCharacterFinalVelocity()
 	{
-		_rigidB.velocity = new Vector3(_activeSpeed.x, _activeSpeed.y, _activeSpeed.z);
+		_rigidB.velocity = _activeSpeed;
 		_animator.SetFloat("Speed", Mathf.Abs(_activeSpeed.x) + Mathf.Abs(_activeSpeed.z));
 	}
 
 
 	#endregion
 
-	private void ThrowHammer()
+	protected virtual void SpecialAction()
 	{
-		_animator.SetTrigger("Throw");
-		_audioSource.PlayOneShot(OnHammerThrow);
-		_hammerCooldown = _hammerRechargeRate;
-		_hammerPropModel.GetComponent<Renderer>().enabled = false;
-		GameObjectPool.GetAvailableObject("Hammer").GetComponent<Hammer>().Launch(transform.position + transform.forward, transform.forward, PlayerNumber);
+		Debug.LogWarning("No default special Action defined in PlayerController, use a child class to code a special Action: "+gameObject.name);
 	}
 
 	public void Kill()
 	{
 		Debug.Log("Player is DED!");
 		_animator.SetTrigger("Death");
-		_audioSource.PlayOneShot(OnDeath);
+		_audioSource.PlayOneShot(_characterData.SoundList.OnDeath);
 		_isDead = true;
 		GameManager.instance.OnPlayerDeath.Invoke(gameObject);
 	}
@@ -283,10 +296,15 @@ public class PlayerController : MonoBehaviour
 	public void Eject(Vector3 direction, float stunTime)
 	{
 		if (direction.y > 0)
-			_isGrounded = false;
+			IsGrounded= false;
 
+		float oldMagnitude = direction.magnitude;
+		_characterData.CharacterStats.resistance = _characterData.CharacterStats.resistance == 0 ? 1 : _characterData.CharacterStats.resistance;
+		direction = direction.normalized * (oldMagnitude * 3 / _characterData.CharacterStats.resistance);
+		
 		_activeSpeed = direction;
-		_stunTime = stunTime;
+		
+		_stunTime.Set(stunTime);
 	}
 
 	public void Damage(Vector3 direction, float stunTime)
@@ -294,59 +312,68 @@ public class PlayerController : MonoBehaviour
 		if (_isInvul)
 			return;
 		Eject(direction, stunTime);
+		_activeDirection = -direction.ZeroY();
+		_audioSource.PlayOneShot(_characterData.SoundList.OnHit);
 		_animator.SetTrigger("Stun_Start");
 	}
 
 
-	IEnumerator ActivateDash()
+	protected virtual IEnumerator ActivateDash()
 	{
-		dash.inProgress = true;
+		_characterData.Dash.inProgress = true;
 		_isInvul = true;
 		_allowInput = false;
-		Eject(transform.forward * dash.range / dash.length + Vector3.up * Physics.gravity.magnitude * -_acceleration.y * dash.length * 0.5f, dash.length + dash.endingLag);
+
+		Eject(Quaternion.FromToRotation(Vector3.right,transform.forward) * _characterData.Dash.force, _characterData.Dash.endingLag);
+
 		_animator.SetTrigger("Dash_Start");
-		_audioSource.PlayOneShot(OnDashStart);
+		_audioSource.PlayOneShot(_characterData.SoundList.OnDashStart);
+		gameObject.layer = LayerMask.NameToLayer("PlayerInvul");
 
-		GetComponent<Collider>().isTrigger = true;
 
-		yield return new WaitForSeconds(dash.length);
-		//float elapsedTime = 0;
-
-		//Quaternion originalRotation = _playerModel.transform.rotation;
-		//while (elapsedTime < dash.length)
-		//{
-		//	elapsedTime += Time.deltaTime;
-		//	_playerModel.transform.rotation = Quaternion.Lerp(transform.rotation, transform.rotation * Quaternion.Euler(-180, 0, 0), elapsedTime / dash.length) * Quaternion.Lerp(Quaternion.identity, Quaternion.Euler(-180, 0, 0), elapsedTime / dash.length);
-		//	yield return null;
-		//}
-		//_playerModel.transform.rotation = transform.rotation;
-		_isInvul = false;
-		GetComponent<Collider>().isTrigger = false;
-
-		while (!_isGrounded)
+		while (!IsGrounded)
 		{
 			yield return null;
 		}
+
+		gameObject.layer = LayerMask.NameToLayer("Default");
+
+		_isInvul = false;
+
 		_animator.SetTrigger("Dash_End");
-		_audioSource.PlayOneShot(OnDashEnd);
+		_audioSource.PlayOneShot(_characterData.SoundList.OnDashEnd);
 
-		yield return new WaitForSeconds(dash.endingLag);
-
-		dash.inProgress = false;
+		yield return new WaitForSeconds(_characterData.Dash.endingLag);
+		_characterData.Dash.inProgress = false;
 		_allowInput = true;
 	}
 
-	void OnTriggerEnter(Collider colli)
+	protected void OnCollisionEnter(Collision colli)
 	{
-		if (colli.tag == "Player" && dash.inProgress)
+		PlayerCollisionHandler(colli);
+	}
+
+	protected void OnCollisionStay(Collision colli)
+	{
+		PlayerCollisionHandler(colli);
+	}
+
+	protected virtual void PlayerCollisionHandler(Collision colli)
+	{
+		if (colli.gameObject.tag == "Player" && _characterData.Dash.inProgress)
 		{
-			_rigidB.velocity = new Vector3(0, _rigidB.velocity.y, 0);
-			colli.GetComponent<PlayerController>().Damage((colli.transform.position - transform.position) * 5 + Vector3.up * Physics.gravity.magnitude * 0.5f, 0.5f);
+			colli.transform.GetComponent<PlayerController>()
+				.Damage(Quaternion.FromToRotation(Vector3.right, 
+				(colli.transform.position - transform.position).ZeroY().normalized) * _characterData.Dash.ImpactEjection * (_characterData.CharacterStats.strength / 3),
+				0.3f);
 		}
-		else if (colli.gameObject.layer == 8 && dash.inProgress)
-		{
-			_activeSpeed = Vector3.zero;
-			_rigidB.velocity = Vector3.zero;
-		}
+		//else if (colli.gameObject.layer == LayerMask.NameToLayer("Wall") && _characterData.Dash.inProgress)
+		//{
+		//	if (Vector3.Dot((colli.transform.position - transform.position), _activeSpeed) > 0) // if you are going towards a wall
+		//	{
+		//		_activeSpeed = _activeSpeed.ZeroX().ZeroZ(); // blocks you
+		//		_rigidB.velocity = _activeSpeed;
+		//	}
+		//}
 	}
 }

@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6709b90a5db50264aa37f582427c3be2, type: 3}
+  m_Name: SO_Viking
+  m_EditorClassIdentifier: 
+  IngameName: Raghnar The Viking
+  CharacterModel: {fileID: 11490236, guid: c4134ab8ae5e15043ab1f2a0e6bc5451, type: 2}
+  CharacterMaterials:
+  - {fileID: 2100000, guid: d2f2aaaa6c3957647951af0ae0083cd7, type: 2}
+  - {fileID: 2100000, guid: 64fadcda929490b4eb630f234f5b59d0, type: 2}
+  - {fileID: 2100000, guid: e514ef4b14e2b4b48a07d989e4f80355, type: 2}
+  - {fileID: 2100000, guid: 9f141fb44803574409bba210e5f1f83d, type: 2}
+  CharacterStats:
+    strength: 3
+    specialCooldown: 3
+    speed: 3
+    resistance: 3
+  Dash:
+    endingLag: .300000012
+    force: {x: 7, y: 7}
+    ImpactEjection: {x: 5, y: 5}
+    inProgress: 0
+  SoundList:
+    OnDashStart: {fileID: 0}
+    OnDashEnd: {fileID: 0}
+    OnDeath: {fileID: 0}
+    OnSpecialActivate: {fileID: 0}
+    OnHit: {fileID: 0}

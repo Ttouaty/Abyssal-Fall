@@ -14,22 +14,24 @@ public class Spawn : MonoBehaviour
 
 	public GameObject SpawnPlayer (int playerId, GameObject playerRef, Material materialRef, Material idMaterialRef)
 	{
-		_player = (GameObject) Instantiate(playerRef, transform.position + Vector3.up * Arena.TileScale, Quaternion.identity);
-		_player.name = "Player_" + (playerId + 1);
+		Debug.Log("REDO SPAWN PLAYER");
+		//_player = (GameObject) Instantiate(playerRef, transform.position + Vector3.up * Arena.TileScale, Quaternion.identity);
+		//_player.name = "Player_" + (playerId + 1);
 
-		_controller = _player.GetComponent<PlayerController>();
-		_controller.enabled = false;
-		_controller.PlayerNumber = playerId + 1;
+		//_controller = _player.GetComponent<PlayerController>();
+		//_controller.enabled = false;
+		//_controller.PlayerNumber = playerId + 1;
 
-		_player.GetComponent<PlayerChangeMaterial>().Target.material = materialRef;
+		//_player.GetComponent<PlayerChangeMaterial>().Target.material = materialRef;
 
-		_spriteId = GameObject.CreatePrimitive(PrimitiveType.Quad);
-		_spriteId.name = "SpriteId_" + playerId;
-		_spriteId.GetComponent<MeshRenderer>().material = idMaterialRef;
-		SpriteID id = _spriteId.AddComponent<SpriteID>();
-		id.Target = _player.transform;
+		//_spriteId = GameObject.CreatePrimitive(PrimitiveType.Quad);
+		//_spriteId.name = "SpriteId_" + playerId;
+		//_spriteId.GetComponent<MeshRenderer>().material = idMaterialRef;
+		//SpriteID id = _spriteId.AddComponent<SpriteID>();
+		//id.Target = _player.transform;
 
-		return _player;
+		//return _player;
+		return null;
 	}
 
 	public GameObject ActivatePlayer ()

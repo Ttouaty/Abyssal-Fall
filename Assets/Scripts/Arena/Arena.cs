@@ -8,6 +8,14 @@ public class Arena : MonoBehaviour
 {
 	public static Arena instance;
 
+	public float Size 
+	{
+		get 
+		{
+			return _generator.TileScale * _generator.Size;
+		}
+	}
+
 	public static float TileScale
 	{
 		get

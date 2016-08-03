@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6709b90a5db50264aa37f582427c3be2, type: 3}
+  m_Name: SO_Ninja
+  m_EditorClassIdentifier: 
+  IngameName: Vaznir The Assassin
+  CharacterModel: {fileID: 11453866, guid: 4cc52c0f75a5bf34eb5e7a7463e30859, type: 2}
+  CharacterMaterials:
+  - {fileID: 2100000, guid: 42c419f8648a5f8498d342a565a0c213, type: 2}
+  - {fileID: 2100000, guid: 2085d6d318e9139479838deb44ecb229, type: 2}
+  - {fileID: 2100000, guid: 0347f43d680c4ec41aa2e15fb5d71a74, type: 2}
+  CharacterStats:
+    strength: 3
+    specialCooldown: 10
+    speed: 4
+    resistance: 2
+  Dash:
+    endingLag: .100000001
+    force: {x: 7, y: 7}
+    ImpactEjection: {x: 5, y: 5}
+    inProgress: 0
+  SoundList:
+    OnDashStart: {fileID: 0}
+    OnDashEnd: {fileID: 0}
+    OnDeath: {fileID: 0}
+    OnSpecialActivate: {fileID: 0}
+    OnHit: {fileID: 0}

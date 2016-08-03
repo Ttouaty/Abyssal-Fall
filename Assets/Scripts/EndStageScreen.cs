@@ -36,8 +36,8 @@ public class EndStageScreen : MonoBehaviour
 		Enable();
 		for(var i = 0; i < GameManager.instance.RegisteredPlayers.Length; ++i)
 		{
-			SetFieldEnable(i, GameManager.instance.RegisteredPlayers[i] == 1);
-			SetPlayerScore(i, GameManager.instance.PlayersScores[i]);
+			SetFieldEnable(i, GameManager.instance.RegisteredPlayers[i] != null);
+			SetPlayerScore(i, (int)GameManager.instance.RegisteredPlayers[i].Score);
 		}
 	}
 

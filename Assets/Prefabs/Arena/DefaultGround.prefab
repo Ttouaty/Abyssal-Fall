@@ -14,7 +14,6 @@ GameObject:
   - 54: {fileID: 5487564}
   - 114: {fileID: 11483926}
   - 114: {fileID: 11459360}
-  - 114: {fileID: 11497188}
   m_Layer: 8
   m_Name: DefaultGround
   m_TagString: Untagged
@@ -105,13 +104,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec4d046775ad5cb4e878d6743eef85f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Pool:
-    bIsOpen: 0
-    Prefab: {fileID: 0}
-    Quantity: 0
-    QuantityLoaded: 0
-    Root: {fileID: 0}
-    Reserve: []
+  PoolName: 
 --- !u!114 &11483926
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -124,23 +117,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _timeLeft: .5
---- !u!114 &11497188
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 140624}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f39d800c33933e147b9e38da1fb95493, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GridPosition: {x: 0, y: 0}
-  Obstacle: {fileID: 0}
-  TileForward: {fileID: 0}
-  TileRight: {fileID: 0}
-  TileBack: {fileID: 0}
-  TileLeft: {fileID: 0}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
