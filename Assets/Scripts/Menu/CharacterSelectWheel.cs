@@ -16,7 +16,6 @@ public struct CharacterSelectionData
 
 public class CharacterSelectWheel : MonoBehaviour
 {
-
 	public static float _wheelRadius = 2;
 	private static float _alphaThresholdAngleMin = 20;
 	private static float _alphaThresholdAngleMax = 180;

@@ -11,13 +11,6 @@ public abstract class GenericSingleton<T> : MonoBehaviour where T : Component
 			if (_instance == null)
 			{
 				_instance = FindObjectOfType<T>();
-				if (_instance == null)
-                {
-                    Debug.Log("Singleton doesn't exists. A empty Generic Singleton for this class (" + typeof(T).Name + ") is automatically created");
-                    GameObject obj = new GameObject();
-                    obj.hideFlags = HideFlags.HideAndDontSave;
-					_instance = obj.AddComponent<T>();
-                }
 			}
 			return _instance;
 		}

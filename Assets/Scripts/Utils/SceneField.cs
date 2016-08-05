@@ -13,7 +13,15 @@ public struct SceneField
     {
         get { return _sceneName; }
     }
-    // makes it work with the existing Unity methods (LoadLevel/LoadScene)
+
+    public bool IsNull
+    {
+        get
+        {
+            return _sceneAsset == null && _sceneName == "";
+        }
+    }
+
     public static implicit operator string(SceneField sceneField)
     {
         return sceneField.SceneName;

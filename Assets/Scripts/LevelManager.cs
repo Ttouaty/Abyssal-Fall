@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 
 [System.Serializable]
@@ -45,7 +46,7 @@ public class LevelManager : GenericSingleton<LevelManager>
     {
         if(!_bIsOnMenu)
         {
-            Application.LoadLevelAdditive(SCENE_MENU.SceneName);
+            Application.LoadLevelAdditive(SCENE_MENU);
 
             if (CurrentArenaConfig != null)
             {
@@ -66,7 +67,20 @@ public class LevelManager : GenericSingleton<LevelManager>
         }
     }
 
-    public IEnumerator StartLevel(string config, string mode)
+    IEnumerator LoadAsyncScene(string scene, Action<AsyncOperation> callback = null)
+    {
+        AsyncOperation async = Application.LoadLevelAdditiveAsync(scene);
+        while (!async.isDone)
+        {
+            if(callback != null)
+            {
+                callback.Invoke(async);
+            }
+            yield return null;
+        }
+    }
+
+    public IEnumerator StartLevel(string arena, string mode)
     {
         if (!_bIsLoading)
         {
@@ -77,16 +91,21 @@ public class LevelManager : GenericSingleton<LevelManager>
                 Application.UnloadLevel(CurrentArenaConfig.BackgroundLevel);
             }
 
-            CurrentArenaConfig = MainManager.Instance.DYNAMIC_CONFIG.GetArenaConfig(config);
+            CurrentArenaConfig = MainManager.Instance.DYNAMIC_CONFIG.GetArenaConfig(arena);
             CurrentModeConfig = MainManager.Instance.DYNAMIC_CONFIG.GetModeConfig(mode);
 
             MainManager.Instance.GAME_OBJECT_POOL.DropAll();
 
-            PoolConfiguration groundToLoad = new PoolConfiguration();
-            groundToLoad.Prefab = CurrentArenaConfig.Ground;
-            groundToLoad.Quantity = CurrentModeConfig.ArenaSize * CurrentModeConfig.ArenaSize;
+            PoolConfiguration newPoolToLoad = new PoolConfiguration();
 
-            MainManager.Instance.GAME_OBJECT_POOL.AddPool(groundToLoad);
+            newPoolToLoad.Prefab = CurrentArenaConfig.Ground;
+            newPoolToLoad.Quantity = CurrentModeConfig.ArenaSize * CurrentModeConfig.ArenaSize;
+            MainManager.Instance.GAME_OBJECT_POOL.AddPool(newPoolToLoad);
+
+            newPoolToLoad.Prefab = CurrentArenaConfig.Obstacle;
+            newPoolToLoad.Quantity = CurrentModeConfig.ObstaclesQuantity * 2;
+            MainManager.Instance.GAME_OBJECT_POOL.AddPool(newPoolToLoad);
+
             for (int i = 0; i < CurrentArenaConfig.OtherAssetsToLoad.Count; ++i)
             {
                 MainManager.Instance.GAME_OBJECT_POOL.AddPool(CurrentArenaConfig.OtherAssetsToLoad[i]);
@@ -98,11 +117,10 @@ public class LevelManager : GenericSingleton<LevelManager>
 
     private IEnumerator LoadLevel()
     {
-        AsyncOperation async = Application.LoadLevelAdditiveAsync(SCENE_LOADING.SceneName);
-        while(!async.isDone)
+        yield return StartCoroutine(LoadAsyncScene(SCENE_LOADING, (AsyncOperation async) =>
         {
-            yield return true;
-        }
+            Debug.Log(async.progress);
+        }));
 
         if (_bIsOnMenu)
         {
@@ -136,14 +154,13 @@ public class LevelManager : GenericSingleton<LevelManager>
         MainManager.Instance.GAME_OBJECT_POOL.LoadProgress.RemoveAllListeners();
 
         // Load background level
-        async = Application.LoadLevelAdditiveAsync(CurrentArenaConfig.BackgroundLevel);
-        while (async.progress < 1.0f)
+        yield return StartCoroutine(LoadAsyncScene(CurrentArenaConfig.BackgroundLevel, (AsyncOperation async) =>
         {
             currentState = "building_level";
             LoadingProgress = 0.75f + async.progress * 0.25f;
             OnLoadProgress.Invoke(LoadingProgress);
-            yield return null;
-        }
+        }));
+
         LoadingProgress = 1.0f;
         OnLoadProgress.Invoke(LoadingProgress);
 
@@ -158,20 +175,14 @@ public class LevelManager : GenericSingleton<LevelManager>
         _bIsLoading = false;
     }
 
-#if UNITY_EDITOR
-    void Update()
+    public IEnumerator ShowLevelPreview (string arena, Action<AsyncOperation> callback = null)
     {
-        if (!_bIsLoading)
+        ArenaConfiguration_SO arenaConfig = MainManager.Instance.DYNAMIC_CONFIG.GetArenaConfig(arena);
+        yield return StartCoroutine(LoadAsyncScene(arenaConfig.BackgroundLevel, callback));
+        if (CurrentArenaConfig != null)
         {
-            if (Input.GetKeyDown(KeyCode.Alpha1) && !_bIsOnMenu)
-            {
-                OpenMenu();
-            }
-            else if (Input.GetKeyDown(KeyCode.Alpha2))
-            {
-                StartLevel("Default", "FreeForAll");
-            }
+            Application.UnloadLevel(CurrentArenaConfig.BackgroundLevel);
         }
+        CurrentArenaConfig = arenaConfig;
     }
-#endif
 }

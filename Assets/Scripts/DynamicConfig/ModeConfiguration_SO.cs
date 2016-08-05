@@ -8,4 +8,6 @@ public class ModeConfiguration_SO : ScriptableObject
     public int ArenaSize = 32;
     [Range(60, 600)]
     public int RoundDuration = 60;
+    [Range(0, 200)]
+    public int ObstaclesQuantity = 20;
 }

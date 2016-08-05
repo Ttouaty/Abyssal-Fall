@@ -72,7 +72,6 @@ public class GameManager : GenericSingleton<GameManager>
 
 	IEnumerator OnAllLoadablesLoaded()
 	{
-		yield return StartCoroutine(LevelManager.Instance.StartLevel("Default", "FreeForAll"));
-		yield return null;
+		yield return StartCoroutine(LevelManager.Instance.StartLevel("Aerial", "FreeForAll"));
 	}
 }

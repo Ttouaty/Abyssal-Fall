@@ -216,12 +216,16 @@ Debug.Log("JOYSTICK NUMBER: " + (i + 1) + " PRESSED START");
 	IEnumerator FadeIsartLogo()
 	{
 		SetActiveButtons(GetMenuPanel("Main"), false);
-		GameObjectPool.Instance.LoadEnd.AddListener(OnLoadEnd);
-		GameObjectPool.Instance.LoadProgress.AddListener(OnLoadProgress);
-		_loadBar.SetPercent(0);
-		yield return StartCoroutine(GameObjectPool.Instance.Init());
-		//yield return new WaitForSeconds(2);
-		_isartLogo.GetComponent<RawImage>().CrossFadeAlpha(0, 1, false);
+
+        _loadBar.SetPercent(0);
+        yield return StartCoroutine(LevelManager.Instance.ShowLevelPreview("Aerial", (AsyncOperation async) =>
+        {
+            _loadBar.SetPercent(async.progress);
+        }));
+
+        OnLoadEnd(1.0f);
+
+        _isartLogo.GetComponent<RawImage>().CrossFadeAlpha(0, 1, false);
 		SetActiveButtons(GetMenuPanel("Main"), true);
 		Destroy(_isartLogo, 1);
 	}

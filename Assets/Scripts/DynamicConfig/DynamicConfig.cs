@@ -12,10 +12,14 @@ public class DynamicConfig : GenericSingleton<DynamicConfig>
     public List<ModeConfiguration> ModeConfigurations;
     public Dictionary<string, ModeConfiguration_SO> ModeConfigurationsDic;
 
+    public List<CharacterConfiguration> CharacterConfigurations;
+    public Dictionary<string, SO_Character> CharacterConfigurationsDic;
+
     void Awake ()
     {
         ArenaConfigurationsDic = new Dictionary<string, ArenaConfiguration_SO>();
         ModeConfigurationsDic = new Dictionary<string, ModeConfiguration_SO>();
+        CharacterConfigurationsDic = new Dictionary<string, SO_Character>();
 
         for (int i = 0; i < ArenaConfigurations.Count; ++i)
         {
@@ -27,6 +31,12 @@ public class DynamicConfig : GenericSingleton<DynamicConfig>
         {
             ModeConfiguration config = ModeConfigurations[i];
             ModeConfigurationsDic.Add(config.Name, config.Configuration);
+        }
+
+        for (int i = 0; i < CharacterConfigurations.Count; ++i)
+        {
+            CharacterConfiguration config = CharacterConfigurations[i];
+            CharacterConfigurationsDic.Add(config.Name, config.Configuration);
         }
     }
 
@@ -41,6 +51,13 @@ public class DynamicConfig : GenericSingleton<DynamicConfig>
     {
         ModeConfiguration_SO config;
         ModeConfigurationsDic.TryGetValue(configName, out config);
+        return config;
+    }
+
+    public SO_Character GetCharacterConfig(string configName)
+    {
+        SO_Character config;
+        CharacterConfigurationsDic.TryGetValue(configName, out config);
         return config;
     }
 
@@ -66,6 +83,17 @@ public class DynamicConfig : GenericSingleton<DynamicConfig>
     {
         ModeConfigurations.Remove(config);
     }
+
+    public void AddCharacterConfiguration()
+    {
+        CharacterConfiguration config = new CharacterConfiguration();
+        CharacterConfigurations.Add(config);
+    }
+
+    public void RemoveCharacterConfiguration(CharacterConfiguration config)
+    {
+        CharacterConfigurations.Remove(config);
+    }
 #endif
 }
 
@@ -81,4 +109,11 @@ public struct ModeConfiguration
 {
     public string Name;
     public ModeConfiguration_SO Configuration;
+}
+
+[System.Serializable]
+public struct CharacterConfiguration
+{
+    public string Name;
+    public SO_Character Configuration;
 }

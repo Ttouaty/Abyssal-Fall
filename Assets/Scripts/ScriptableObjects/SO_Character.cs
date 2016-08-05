@@ -2,8 +2,9 @@
 using System.Collections;
 using UnityEditor;
 
-[CreateAssetMenu(fileName = "NewCharacterData", menuName = "Game/Character/SO_Character")]
-public class SO_Character :  ScriptableObject{
+[CreateAssetMenu(fileName = "NewCharacterData", menuName = "Abyssal Fall/Character Configuration")]
+public class SO_Character :  ScriptableObject
+{
 	public string IngameName;
 	public CharacterModel CharacterModel;
 	public Material[] CharacterMaterials;

@@ -365,8 +365,7 @@ MonoBehaviour:
     m_TypeName: PlayerEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   CountdownScreen: {fileID: 0}
   EndStageScreen: {fileID: 0}
-  PlayersRefs:
-  - {fileID: 0}
+  PlayersRefs: []
   OnGroundDrop: {fileID: 8300000, guid: a5e0aacf1fb3c994ba6d4fd5c9af7a1d, type: 3}
   OnObstacleDrop: {fileID: 8300000, guid: d05465f2e1c26454d9e730102f99e657, type: 3}
   OnThree: {fileID: 8300000, guid: 9871689d8bbe1e841b3856c5f91c4d5c, type: 3}
@@ -405,11 +404,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ArenaConfigurations:
-  - Name: Default
+  - Name: Aerial
     Configuration: {fileID: 11400000, guid: 9607891b4d5eeed4ba887eebc917efe0, type: 2}
+  - Name: Hell
+    Configuration: {fileID: 11400000, guid: 52c2f425a4a35674bab2a563f9c07ad6, type: 2}
   ModeConfigurations:
   - Name: FreeForAll
     Configuration: {fileID: 11400000, guid: ae73c736c3cc5de42b56d0d31bf30add, type: 2}
+  CharacterConfigurations:
+  - Name: Viking
+    Configuration: {fileID: 11400000, guid: 24a0a06ce55a2b54794e14afa7bd9465, type: 2}
+  - Name: Ninja
+    Configuration: {fileID: 11400000, guid: 914bd4a5d4534224b8bcf6e2301ddcfd, type: 2}
 --- !u!4 &1127726023
 Transform:
   m_ObjectHideFlags: 0

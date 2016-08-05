@@ -6,6 +6,7 @@ using System.Collections.Generic;
 public class ArenaConfiguration_SO : ScriptableObject
 {
     public GameObject Ground;
+    public GameObject Obstacle;
     public List<PoolConfiguration> OtherAssetsToLoad;
     public string BackgroundLevel;
     public Dictionary<string, ABehavior> Behaviors;
