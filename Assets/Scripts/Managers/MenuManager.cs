@@ -14,8 +14,8 @@ public class MenuManager : MonoBehaviour
 	private LoadingBar _loadBar;
 
 	[SerializeField]
-	private Button _StartButton;
-
+	private CanvasGroup _returnGroup;
+	private Image _returnFill;
 
 	private MenuPanel _activeMenu;
 
@@ -35,6 +35,9 @@ public class MenuManager : MonoBehaviour
 	}
 	void Start()
 	{
+		_returnGroup = transform.Find("ReturnGroup").GetComponent<CanvasGroup>();
+		_returnFill = _returnGroup.transform.Find("Fill").GetComponent<Image>();
+		_returnFill.fillAmount = 0;
 
 		_menuArray = GetComponentsInChildren<MenuPanel>();
 		_loadBar = GetComponentInChildren<LoadingBar>();
@@ -56,16 +59,23 @@ public class MenuManager : MonoBehaviour
 	private float timeCancelActivated = 0.5f;
 	void Update()
 	{
-		timeCancelHeld = Mathf.Clamp(timeCancelHeld + (Input.GetButton("Cancel") ? Time.deltaTime : -Time.deltaTime), 0, timeCancelActivated);
-		if (timeCancelHeld == timeCancelActivated && !GameManager.InProgress)
+		if (_activeMenu != null)
 		{
-			timeCancelHeld = 0;
 			if (_activeMenu.ParentMenu != null)
 			{
-				MakeTransition(_activeMenu.ParentMenu);
-				if (_activeMenu.MenuName == "Main")
-					_activeMenu.ParentMenu = null;
+				_returnGroup.gameObject.SetActive(true);
+
+				timeCancelHeld = Mathf.Clamp(timeCancelHeld + (Input.GetButton("Cancel") ? Time.deltaTime : -Time.deltaTime), 0, timeCancelActivated);
+				_returnFill.fillAmount = timeCancelHeld / timeCancelActivated;
+
+				if (timeCancelHeld >= timeCancelActivated && !GameManager.InProgress)
+				{
+					timeCancelHeld = 0;
+					MakeTransition(_activeMenu.ParentMenu);
+				}
 			}
+			else
+				_returnGroup.gameObject.SetActive(false);
 		}
 		if (_isListeningForInput)
 		{
@@ -83,7 +93,6 @@ Debug.Log("JOYSTICK NUMBER: " + (i + 1) + " PRESSED START");
 					RegisterNewPlayer(i + 1);
 				}
 			}
-			_StartButton.interactable = GameManager.Instance.nbPlayers >= 2 && !GameManager.InProgress && AllPlayersReady();
 		}
 	}
 
@@ -164,7 +173,6 @@ Debug.Log("JOYSTICK NUMBER: " + (i + 1) + " PRESSED START");
 			_activeMenu = null;
 			return;
 		}
-		newMenu.ParentMenu = _activeMenu;
 		SetActiveButtons(newMenu, true);
 		StartCoroutine(SendIn(newMenu));
 		newMenu.PreSelectedButton.Select();
