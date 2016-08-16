@@ -13,7 +13,7 @@ public class LevelManager : GenericSingleton<LevelManager>
     /* Variables */
     public ArenaConfiguration_SO    CurrentArenaConfig;
     public ModeConfiguration_SO     CurrentModeConfig;
-    public TextAsset                CurrentMapConfig;
+    public MapConfiguration_SO      CurrentMapConfig;
     public float                    LoadingProgress         = 0.0f;
     
     /* Defined Scenes */
@@ -101,11 +101,11 @@ public class LevelManager : GenericSingleton<LevelManager>
             PoolConfiguration newPoolToLoad = new PoolConfiguration();
 
             newPoolToLoad.Prefab = CurrentArenaConfig.Ground;
-            newPoolToLoad.Quantity = CurrentModeConfig.ArenaSizeSquared;
+            newPoolToLoad.Quantity = Mathf.CeilToInt(CurrentMapConfig.MapSize.x * CurrentMapConfig.MapSize.y);
             MainManager.Instance.GAME_OBJECT_POOL.AddPool(newPoolToLoad);
 
             newPoolToLoad.Prefab = CurrentArenaConfig.Obstacle;
-            newPoolToLoad.Quantity = CurrentModeConfig.ArenaSizeSquared;
+            newPoolToLoad.Quantity = Mathf.CeilToInt(CurrentMapConfig.MapSize.x * CurrentMapConfig.MapSize.y);
             MainManager.Instance.GAME_OBJECT_POOL.AddPool(newPoolToLoad);
 
             for (int i = 0; i < CurrentArenaConfig.OtherAssetsToLoad.Count; ++i)
