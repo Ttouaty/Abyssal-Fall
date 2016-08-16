@@ -6,10 +6,10 @@ using System;
 public class TestLoadingScreen : PersistantGenericSingleton<TestLoadingScreen>
 {
     public Image LoadBarProgress;
-    public LocalizedText LoadingStatusText;
+    public Localizator.LocalizedText LoadingStatusText;
 
-    public void SetStateText(string lang)
+    public void SetStateText(Localizator.EFragmentsEnum fragment)
     {
-        LoadingStatusText.SetText(lang);
+        LoadingStatusText.SetText(fragment);
     }
 }

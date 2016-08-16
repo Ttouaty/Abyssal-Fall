@@ -3,19 +3,20 @@ using System.Collections;
 using UnityEngine.UI;
 using System;
 
-public class MenuManager : MonoBehaviour
+public class MenuManager : GenericSingleton<MenuManager>
 {
-	public static MenuManager instance;
 	[HideInInspector]
 	public Canvas _canvas;
-	[SerializeField]
-	private GameObject _isartLogo;
+    public GameObject Loading;
+    public Image LoadingOut;
 
+    [SerializeField]
+	private GameObject _isartLogo;
+    [SerializeField]
 	private LoadingBar _loadBar;
 
 	[SerializeField]
 	private Button _StartButton;
-
 
 	private MenuPanel _activeMenu;
 
@@ -29,18 +30,18 @@ public class MenuManager : MonoBehaviour
 
 	void Awake()
 	{
-		instance = this;
-		_canvas = GetComponentInChildren<Canvas>();
-		_canvas.worldCamera = Camera.main;
-	}
+		_canvas                         = GetComponentInChildren<Canvas>();
+		_canvas.worldCamera             = Camera.main;
+        _menuArray                      = GetComponentsInChildren<MenuPanel>();
+        _loadBar                        = GetComponentInChildren<LoadingBar>();
+        _characterSlotsContainerRef     = GetComponentInChildren<CharacterSlotsContainer>();
+    }
+
 	void Start()
 	{
-
-		_menuArray = GetComponentsInChildren<MenuPanel>();
-		_loadBar = GetComponentInChildren<LoadingBar>();
+        Loading.SetActive(false);
 		_activeMenu = _menuArray[0];
 
-		_characterSlotsContainerRef = GetComponentInChildren<CharacterSlotsContainer>();
 		StartCoroutine(FadeIsartLogo());
 
 		for (int i = 0; i < _menuArray.Length; ++i)
@@ -79,13 +80,34 @@ public class MenuManager : MonoBehaviour
 
                 if (InputManager.GetButtonDown("Start", i + 1) && !_controllerAlreadyInUse[i + 1]) //if new controller presses start
 				{
-Debug.Log("JOYSTICK NUMBER: " + (i + 1) + " PRESSED START");
+                    Debug.Log("JOYSTICK NUMBER: " + (i + 1) + " PRESSED START");
 					RegisterNewPlayer(i + 1);
 				}
 			}
 			_StartButton.interactable = GameManager.Instance.nbPlayers >= 2 && !GameManager.InProgress && AllPlayersReady();
 		}
-	}
+
+
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            StartCoroutine(LoadPreviewTest("Aerial"));
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            StartCoroutine(LoadPreviewTest("Hell"));
+        }
+    }
+
+    IEnumerator LoadPreviewTest (string levelName)
+    {
+        MenuManager.Instance.Loading.SetActive(true);
+        MenuManager.Instance.LoadingOut.GetComponent<Image>().fillAmount = 0;
+        yield return StartCoroutine(LevelManager.Instance.ShowLevelPreview(levelName, (AsyncOperation async) =>
+        {
+            MenuManager.Instance.LoadingOut.GetComponent<Image>().fillAmount = async.progress;
+        }));
+        MenuManager.Instance.Loading.SetActive(false);
+    }
 
 	bool AllPlayersReady()
 	{
@@ -259,11 +281,11 @@ Debug.Log("JOYSTICK NUMBER: " + (i + 1) + " PRESSED START");
 	{
 		if (instant)
 		{
-			instance.StartCoroutine(instance.SendOut(instance._activeMenu));
-			instance.gameObject.SetActive(false);
+			Instance.StartCoroutine(Instance.SendOut(Instance._activeMenu));
+			Instance.gameObject.SetActive(false);
 		}
 		else
-			instance.StartCoroutine(instance.DeactivateMenuCoroutine());
+			Instance.StartCoroutine(Instance.DeactivateMenuCoroutine());
 		
 	}
 
@@ -276,7 +298,7 @@ Debug.Log("JOYSTICK NUMBER: " + (i + 1) + " PRESSED START");
 
 	public static void ActivateMenu(bool instant = false, string activeMenu = "Main")
 	{
-		instance.ReactivateMenu(instant, activeMenu);
+		Instance.ReactivateMenu(instant, activeMenu);
 	}
 
 	private void ReactivateMenu(bool instant = false, string activeMenu = "Main")
@@ -290,5 +312,4 @@ Debug.Log("JOYSTICK NUMBER: " + (i + 1) + " PRESSED START");
 		else
 			StartCoroutine(SendIn(GetMenuPanel(activeMenu)));
 	}
-
 }

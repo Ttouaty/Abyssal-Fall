@@ -85,52 +85,6 @@ NavMeshSettings:
     cellSize: .166666672
     manualCellSize: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &190513028
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 190513029}
-  - 114: {fileID: 190513030}
-  m_Layer: 0
-  m_Name: LocalizationManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &190513029
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 190513028}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1275877639}
-  m_RootOrder: 3
---- !u!114 &190513030
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 190513028}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b532ba5614dd55a48b526d8222dad4b0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _currentLanguage: 0
-  LocalizationFile: {fileID: 4900000, guid: 6b77b3f1f3f8c45468390c210300de0a, type: 3}
-  OnChangeLanguage:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: LocalizationManager+LocalizationTextChangeEvent, Assembly-CSharp,
-      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
 --- !u!1 &498654666
 GameObject:
   m_ObjectHideFlags: 0
@@ -158,7 +112,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1275877639}
-  m_RootOrder: 4
+  m_RootOrder: 3
 --- !u!114 &498654668
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -199,7 +153,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1275877639}
-  m_RootOrder: 6
+  m_RootOrder: 5
 --- !u!82 &664798913
 AudioSource:
   m_ObjectHideFlags: 0
@@ -376,6 +330,50 @@ MonoBehaviour:
   GameLoop: {fileID: 664798913}
   nbPlayers: 0
   isInDebugMode: 0
+--- !u!1 &1003786147
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1003786149}
+  - 114: {fileID: 1003786148}
+  m_Layer: 0
+  m_Name: LanguageManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1003786148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1003786147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3a005fa1152b4d44b6a4e601fb58570, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnChangeLanguage:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Localizator.LocalizationTextChangeEvent, Assembly-CSharp, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+--- !u!4 &1003786149
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1003786147}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1275877639}
+  m_RootOrder: 6
 --- !u!1 &1127726021
 GameObject:
   m_ObjectHideFlags: 0
@@ -416,6 +414,10 @@ MonoBehaviour:
     Configuration: {fileID: 11400000, guid: 24a0a06ce55a2b54794e14afa7bd9465, type: 2}
   - Name: Ninja
     Configuration: {fileID: 11400000, guid: 914bd4a5d4534224b8bcf6e2301ddcfd, type: 2}
+  MapsConfigurations:
+  - Name: TestArena
+    Configuration: {fileID: 4900000, guid: 06bb4d7e9557cce4bb2ede0a706bcad4, type: 3}
+    MapSize: {x: 16, y: 16}
 --- !u!4 &1127726023
 Transform:
   m_ObjectHideFlags: 0
@@ -521,10 +523,10 @@ Transform:
   - {fileID: 1238131360}
   - {fileID: 1127726023}
   - {fileID: 1661495781}
-  - {fileID: 190513029}
   - {fileID: 498654667}
   - {fileID: 1864334900}
   - {fileID: 664798912}
+  - {fileID: 1003786149}
   m_Father: {fileID: 1511463442}
   m_RootOrder: 1
 --- !u!1 &1511463441
@@ -732,6 +734,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CurrentArenaConfig: {fileID: 0}
   CurrentModeConfig: {fileID: 0}
+  CurrentMapConfig: {fileID: 0}
   LoadingProgress: 0
   SCENE_LOADING:
     _sceneAsset: {fileID: 102900000, guid: e54ac6572ab434944b41e654e6870d14, type: 3}
@@ -789,4 +792,4 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1275877639}
-  m_RootOrder: 5
+  m_RootOrder: 4

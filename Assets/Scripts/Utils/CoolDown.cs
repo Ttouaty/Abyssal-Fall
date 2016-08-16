@@ -3,7 +3,7 @@ using UnityEngine.Events;
 using System.Collections;
 public delegate void CoolDownCallBack();
 
-public class CoolDown {
+public abstract class CoolDown {
 
 	protected MonoBehaviour parent;
 	protected bool isFinished = true;
@@ -40,8 +40,10 @@ public class CoolDown {
 			CoolDownManager.Instance.RemoveCoolDown(this);
 		}
 		else if (parent.enabled || isCoolDownAbsolute)
-			if (active)
-				Update();
+        {
+            if (active)
+                Update();
+        }
 	}
 
 	virtual protected void Update() { }

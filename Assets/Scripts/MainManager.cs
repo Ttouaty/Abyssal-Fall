@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class MainManager : GenericSingleton<MainManager>
 {
@@ -37,6 +38,21 @@ public class MainManager : GenericSingleton<MainManager>
         if (LEVEL_MANAGER == null)
         {
             Debug.LogError("[public LevelManager LEVEL_MANAGER] is Required to launch the game");
+            Debug.Break();
+        }
+        if (INPUT_MANAGER == null)
+        {
+            Debug.LogError("[public InputManager INPUT_MANAGER] is Required to launch the game");
+            Debug.Break();
+        }
+        if (COOLDOWN_MANAGER == null)
+        {
+            Debug.LogError("[public CoolDownManager COOLDOWN_MANAGER] is Required to launch the game");
+            Debug.Break();
+        }
+        if (GAME_MANAGER == null)
+        {
+            Debug.LogError("[public GameManager GAME_MANAGER] is Required to launch the game");
             Debug.Break();
         }
     }

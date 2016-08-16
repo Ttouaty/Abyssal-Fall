@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class DynamicConfig : GenericSingleton<DynamicConfig>
 {
-    public const string VERSION = "1.0.0";
+    public const string VERSION = "1.1.0";
 
     public List<ArenaConfiguration> ArenaConfigurations;
     public Dictionary<string, ArenaConfiguration_SO> ArenaConfigurationsDic;
@@ -15,11 +15,15 @@ public class DynamicConfig : GenericSingleton<DynamicConfig>
     public List<CharacterConfiguration> CharacterConfigurations;
     public Dictionary<string, SO_Character> CharacterConfigurationsDic;
 
+    public List<MapConfiguration> MapsConfigurations;
+    public Dictionary<string, TextAsset> MapsConfigurationsDic;
+
     void Awake ()
     {
-        ArenaConfigurationsDic = new Dictionary<string, ArenaConfiguration_SO>();
-        ModeConfigurationsDic = new Dictionary<string, ModeConfiguration_SO>();
-        CharacterConfigurationsDic = new Dictionary<string, SO_Character>();
+        ArenaConfigurationsDic      = new Dictionary<string, ArenaConfiguration_SO>();
+        ModeConfigurationsDic       = new Dictionary<string, ModeConfiguration_SO>();
+        CharacterConfigurationsDic  = new Dictionary<string, SO_Character>();
+        MapsConfigurationsDic       = new Dictionary<string, TextAsset>();
 
         for (int i = 0; i < ArenaConfigurations.Count; ++i)
         {
@@ -37,6 +41,12 @@ public class DynamicConfig : GenericSingleton<DynamicConfig>
         {
             CharacterConfiguration config = CharacterConfigurations[i];
             CharacterConfigurationsDic.Add(config.Name, config.Configuration);
+        }
+
+        for (int i = 0; i < MapsConfigurations.Count; ++i)
+        {
+            MapConfiguration config = MapsConfigurations[i];
+            MapsConfigurationsDic.Add(config.Name, config.Configuration);
         }
     }
 
@@ -58,6 +68,13 @@ public class DynamicConfig : GenericSingleton<DynamicConfig>
     {
         SO_Character config;
         CharacterConfigurationsDic.TryGetValue(configName, out config);
+        return config;
+    }
+
+    public TextAsset GetMapConfig(string configName)
+    {
+        TextAsset config;
+        MapsConfigurationsDic.TryGetValue(configName, out config);
         return config;
     }
 
@@ -94,6 +111,17 @@ public class DynamicConfig : GenericSingleton<DynamicConfig>
     {
         CharacterConfigurations.Remove(config);
     }
+
+    public void AddMapConfiguration()
+    {
+        MapConfiguration config = new MapConfiguration();
+        MapsConfigurations.Add(config);
+    }
+
+    public void RemoveMapConfiguration(MapConfiguration config)
+    {
+        MapsConfigurations.Remove(config);
+    }
 #endif
 }
 
@@ -116,4 +144,12 @@ public struct CharacterConfiguration
 {
     public string Name;
     public SO_Character Configuration;
+}
+
+[System.Serializable]
+public struct MapConfiguration
+{
+    public string Name;
+    public TextAsset Configuration;
+    public Vector2 MapSize;
 }

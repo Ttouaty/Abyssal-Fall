@@ -215,6 +215,5 @@ public class CharacterSlot : MonoBehaviour
 		_wheelRef.ScrollToIndex(_selectedCharacterIndex);
 		_canSwitchCharacter = false;
 		_switchCharacterCooldown.Add(_switchCharacterDelay);
-
 	}
 }
