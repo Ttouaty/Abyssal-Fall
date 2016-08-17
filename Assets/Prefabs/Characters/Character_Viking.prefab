@@ -190,6 +190,10 @@ MonoBehaviour:
   _isDead: 0
   IsGrounded: 0
   _playerProp: {fileID: 0}
+  _transf: {fileID: 462968}
+  _rigidB: {fileID: 5474470}
+  _audioSource: {fileID: 8219030}
+  _groundCheck: {fileID: 0}
   _characterData: {fileID: 11400000, guid: 24a0a06ce55a2b54794e14afa7bd9465, type: 2}
 --- !u!114 &11489744
 MonoBehaviour:
@@ -221,7 +225,19 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: _transf
+      value: 
+      objectReference: {fileID: 462968}
+    - target: {fileID: 0}
+      propertyPath: _rigidB
+      value: 
+      objectReference: {fileID: 5474470}
+    - target: {fileID: 0}
+      propertyPath: _audioSource
+      value: 
+      objectReference: {fileID: 8219030}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 140124}

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 [System.Serializable]
 public struct LevelConfiguration
@@ -11,11 +12,11 @@ public struct LevelConfiguration
 public class LevelManager : GenericSingleton<LevelManager>
 {
     /* Variables */
-    public ArenaConfiguration_SO    CurrentArenaConfig;
-    public ModeConfiguration_SO     CurrentModeConfig;
-    public MapConfiguration_SO      CurrentMapConfig;
-    public float                    LoadingProgress         = 0.0f;
-    
+    public ArenaConfiguration_SO            CurrentArenaConfig;
+    public ModeConfiguration_SO             CurrentModeConfig;
+    public MapConfiguration_SO              CurrentMapConfig;
+    public float                            LoadingProgress         = 0.0f;
+
     /* Defined Scenes */
     public SceneField SCENE_LOADING;
     public SceneField SCENE_MENU;
@@ -30,13 +31,13 @@ public class LevelManager : GenericSingleton<LevelManager>
 
     void Awake ()
     {
-        if (SCENE_LOADING.SceneName == null || SCENE_LOADING.SceneName == "")
+        if (SCENE_LOADING.IsNull)
         {
             Debug.LogError("SCENE_LOADING must be provided !");
             Debug.Break();
         }
 
-        if (SCENE_MENU.SceneName == null || SCENE_MENU.SceneName == "")
+        if (SCENE_MENU.IsNull)
         {
             Debug.LogError("SCENE_MENU must be provided !");
             Debug.Break();
@@ -81,7 +82,7 @@ public class LevelManager : GenericSingleton<LevelManager>
         }
     }
 
-    public IEnumerator StartLevel(string arena, string mode, string map)
+    public IEnumerator StartLevel(EArenaConfiguration arena, EModeConfiguration mode, EMapConfiguration map)
     {
         if (!_bIsLoading)
         {
@@ -174,7 +175,7 @@ public class LevelManager : GenericSingleton<LevelManager>
         _bIsLoading = false;
     }
 
-    public IEnumerator ShowLevelPreview (string arena, Action<AsyncOperation> callback = null)
+    public IEnumerator ShowLevelPreview (EArenaConfiguration arena, Action<AsyncOperation> callback = null)
     {
         if (_bIsOnMenu)
         {

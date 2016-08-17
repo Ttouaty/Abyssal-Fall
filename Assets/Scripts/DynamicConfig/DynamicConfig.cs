@@ -50,31 +50,31 @@ public class DynamicConfig : GenericSingleton<DynamicConfig>
         }
     }
 
-    public ArenaConfiguration_SO GetArenaConfig(string configName)
+    public ArenaConfiguration_SO GetArenaConfig(EArenaConfiguration configName)
     {
         ArenaConfiguration_SO config;
-        ArenaConfigurationsDic.TryGetValue(configName, out config);
+        ArenaConfigurationsDic.TryGetValue(configName.ToString(), out config);
         return config;
     }
 
-    public ModeConfiguration_SO GetModeConfig(string configName)
+    public ModeConfiguration_SO GetModeConfig(EModeConfiguration configName)
     {
         ModeConfiguration_SO config;
-        ModeConfigurationsDic.TryGetValue(configName, out config);
+        ModeConfigurationsDic.TryGetValue(configName.ToString(), out config);
         return config;
     }
 
-    public SO_Character GetCharacterConfig(string configName)
+    public SO_Character GetCharacterConfig(ECharacterConfiguration configName)
     {
         SO_Character config;
-        CharacterConfigurationsDic.TryGetValue(configName, out config);
+        CharacterConfigurationsDic.TryGetValue(configName.ToString(), out config);
         return config;
     }
 
-    public MapConfiguration_SO GetMapConfig(string configName)
+    public MapConfiguration_SO GetMapConfig(EMapConfiguration configName)
     {
         MapConfiguration_SO config;
-        MapsConfigurationsDic.TryGetValue(configName, out config);
+        MapsConfigurationsDic.TryGetValue(configName.ToString(), out config);
         return config;
     }
 

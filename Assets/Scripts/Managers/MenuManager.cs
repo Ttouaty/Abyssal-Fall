@@ -86,19 +86,9 @@ public class MenuManager : GenericSingleton<MenuManager>
 			}
 			_StartButton.interactable = GameManager.Instance.nbPlayers >= 2 && !GameManager.InProgress && AllPlayersReady();
 		}
-
-
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            StartCoroutine(LoadPreviewTest("Aerial"));
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            StartCoroutine(LoadPreviewTest("Hell"));
-        }
     }
 
-    IEnumerator LoadPreviewTest (string levelName)
+    IEnumerator LoadPreview (EArenaConfiguration levelName)
     {
         MenuManager.Instance.Loading.SetActive(true);
         MenuManager.Instance.LoadingOut.GetComponent<Image>().fillAmount = 0;
@@ -240,7 +230,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 		SetActiveButtons(GetMenuPanel("Main"), false);
 
         _loadBar.SetPercent(0);
-        yield return StartCoroutine(LevelManager.Instance.ShowLevelPreview("Aerial", (AsyncOperation async) =>
+        yield return StartCoroutine(LevelManager.Instance.ShowLevelPreview(EArenaConfiguration.Aerial, (AsyncOperation async) =>
         {
             _loadBar.SetPercent(async.progress);
         }));
@@ -257,7 +247,6 @@ public class MenuManager : GenericSingleton<MenuManager>
 		_loadBar.SetPercent(progress);
 		StartCoroutine(MoveObjectOverTime(_loadBar.gameObject, Vector3.down * Screen.height, 0.5f));
 		Destroy(_loadBar.gameObject, 2);
-		//_isartLogo.GetComponent<RawImage>().CrossFadeAlpha(0, 1, false);
 	}
 
 	void OnLoadProgress(float progress)

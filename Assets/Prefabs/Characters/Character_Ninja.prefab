@@ -201,6 +201,10 @@ MonoBehaviour:
   _isDead: 0
   IsGrounded: 0
   _playerProp: {fileID: 0}
+  _transf: {fileID: 427594}
+  _rigidB: {fileID: 5453788}
+  _audioSource: {fileID: 8228324}
+  _groundCheck: {fileID: 0}
   _characterData: {fileID: 11400000, guid: 914bd4a5d4534224b8bcf6e2301ddcfd, type: 2}
 --- !u!136 &13640706
 CapsuleCollider:
@@ -221,7 +225,19 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: _transf
+      value: 
+      objectReference: {fileID: 427594}
+    - target: {fileID: 0}
+      propertyPath: _rigidB
+      value: 
+      objectReference: {fileID: 5453788}
+    - target: {fileID: 0}
+      propertyPath: _audioSource
+      value: 
+      objectReference: {fileID: 8228324}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 113056}

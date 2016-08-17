@@ -9,30 +9,22 @@ public class Spawn : MonoBehaviour
 
 	void Start ()
 	{
-		GetComponent<Tile>().enabled = false;
+        Tile tileComponent = GetComponent<Tile>();
+        if(tileComponent != null)
+        {
+            tileComponent.enabled = false;
+        }
+
+        GetComponent<MeshRenderer>().material.color = Color.red;
 	}
 
-	public GameObject SpawnPlayer (int playerId, GameObject playerRef, Material materialRef, Material idMaterialRef)
+	public void SpawnPlayer (GameObject player)
 	{
-		Debug.Log("REDO SPAWN PLAYER");
-		// _player = (GameObject) Instantiate(playerRef, transform.position + Vector3.up * Arena.TileScale, Quaternion.identity);
-		// _player.name = "Player_" + (playerId + 1);
-           
-		// _controller = _player.GetComponent<PlayerController>();
-		// _controller.enabled = false;
-		// _controller.PlayerNumber = playerId + 1;
-           
-		// _player.GetComponent<PlayerChangeMaterial>().Target.material = materialRef;
-           
-		// _spriteId = GameObject.CreatePrimitive(PrimitiveType.Quad);
-		// _spriteId.name = "SpriteId_" + playerId;
-		// _spriteId.GetComponent<MeshRenderer>().material = idMaterialRef;
-		// SpriteID id = _spriteId.AddComponent<SpriteID>();
-		// id.Target = _player.transform;
-           
-		// return _player;
-		return null;
-	}
+        _player = player;
+        _player.transform.position = transform.position + Vector3.up;
+        _player.transform.LookAt(new Vector3(0, _player.transform.position.y, 0));
+        _player.transform.localScale.Set(0.5f, 0.5f, 0.5f);
+    }
 
 	public GameObject ActivatePlayer ()
 	{

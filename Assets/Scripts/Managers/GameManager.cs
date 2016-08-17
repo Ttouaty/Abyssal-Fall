@@ -12,7 +12,7 @@ public class GameManager : GenericSingleton<GameManager>
 {
 	public static bool InProgress = false;
 
-	public ZoomEvent OnZoom;
+    public ZoomEvent OnZoom;
 	public PlayerEvent OnPlayerDeath;
 	public PlayerEvent OnPlayerWin;
 
@@ -72,6 +72,6 @@ public class GameManager : GenericSingleton<GameManager>
 
 	IEnumerator OnAllLoadablesLoaded()
 	{
-		yield return StartCoroutine(LevelManager.Instance.StartLevel("Aerial", "FreeForAll", "TestArena"));
+		yield return StartCoroutine(LevelManager.Instance.StartLevel(EArenaConfiguration.Aerial, EModeConfiguration.FreeForAll, EMapConfiguration.TestArena));
 	}
 }
