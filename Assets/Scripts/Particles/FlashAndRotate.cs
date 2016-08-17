@@ -22,12 +22,11 @@ public class FlashAndRotate : MonoBehaviour
 		_particles = GetComponent<ParticleSystem>();
 
 		_tempFlash = (ParticleSystem)Instantiate(_flash, transform.position, Quaternion.identity);
+        _tempFlash.transform.parent = transform;
 
 		Destroy(_tempFlash.gameObject, _particles.duration + _particles.startLifetime - 0.00001f);
 		Destroy(gameObject, _particles.duration + _particles.startLifetime);
 	}
-
-
 
 	void Update()
 	{

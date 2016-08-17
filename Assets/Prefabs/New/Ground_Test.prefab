@@ -13,7 +13,7 @@ GameObject:
   - 23: {fileID: 2398152}
   - 114: {fileID: 11475648}
   - 114: {fileID: 11422588}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Ground_Test
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -90,10 +90,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GridPosition: {x: 0, y: 0}
   Obstacle: {fileID: 0}
-  TileForward: {fileID: 0}
-  TileRight: {fileID: 0}
-  TileBack: {fileID: 0}
-  TileLeft: {fileID: 0}
 --- !u!114 &11475648
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -118,7 +114,11 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 197914}

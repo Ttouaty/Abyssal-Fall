@@ -82,7 +82,7 @@ public class LevelManager : GenericSingleton<LevelManager>
         }
     }
 
-    public IEnumerator StartLevel(EArenaConfiguration arena, EModeConfiguration mode, EMapConfiguration map)
+    public void StartLevel(EArenaConfiguration arena, EModeConfiguration mode, EMapConfiguration map)
     {
         if (!_bIsLoading)
         {
@@ -109,12 +109,25 @@ public class LevelManager : GenericSingleton<LevelManager>
             newPoolToLoad.Quantity = Mathf.CeilToInt(CurrentMapConfig.MapSize.x * CurrentMapConfig.MapSize.y);
             MainManager.Instance.GAME_OBJECT_POOL.AddPool(newPoolToLoad);
 
-            for (int i = 0; i < CurrentArenaConfig.OtherAssetsToLoad.Count; ++i)
+            for(int i = 0; i < GameManager.Instance.nbPlayers; ++i)
+            {
+                Player player = GameManager.Instance.RegisteredPlayers[i];
+                if(player != null)
+                {
+                    PoolConfiguration[] assets = player.CharacterUsed._characterData.OtherAssetsToLoad;
+                    for(int j = 0; j < assets.Length; ++j)
+                    {
+                        MainManager.Instance.GAME_OBJECT_POOL.AddPool(assets[i]);
+                    }
+                }
+            }
+
+            for (int i = 0; i < CurrentArenaConfig.OtherAssetsToLoad.Length; ++i)
             {
                 MainManager.Instance.GAME_OBJECT_POOL.AddPool(CurrentArenaConfig.OtherAssetsToLoad[i]);
             }
 
-            yield return StartCoroutine(LoadLevel());
+            StartCoroutine(LoadLevel());
         }
     }
 

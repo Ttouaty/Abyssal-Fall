@@ -3,8 +3,6 @@ using System.Collections;
 
 public class Obstacle : MonoBehaviour
 {
-	public GameObject Next;
-
 	[SerializeField]
 	private bool _isTouched;
 	[SerializeField]

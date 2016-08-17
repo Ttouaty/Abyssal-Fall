@@ -23,7 +23,6 @@ public class Spawn : MonoBehaviour
         _player = player;
         _player.transform.position = transform.position + Vector3.up;
         _player.transform.LookAt(new Vector3(0, _player.transform.position.y, 0));
-        _player.transform.localScale.Set(0.5f, 0.5f, 0.5f);
     }
 
 	public GameObject ActivatePlayer ()

@@ -108,9 +108,10 @@ public class CharacterSlot : MonoBehaviour
 
 		ParticleSystem spawnParticles = (ParticleSystem) Instantiate(OnCharacterSelectedParticles, transform.position + camDirection * 1.5f, Quaternion.identity);
 		spawnParticles.transform.rotation = transform.rotation;
-		spawnParticles.GetComponent<FlashAndRotate>()._rotationAxis = -transform.up;
-	
-		if (_selectedCharacterModel != null)
+        spawnParticles.GetComponent<FlashAndRotate>()._rotationAxis = -transform.up;
+        spawnParticles.transform.parent = MenuManager.Instance.transform;
+
+        if (_selectedCharacterModel != null)
 			Destroy(_selectedCharacterModel);
 
 		_selectedCharacterModel = (GameObject)Instantiate(GetSelectedCharacter.CharacterRef._characterData.CharacterModel.gameObject, transform.position - transform.up * 30, transform.rotation * Quaternion.FromToRotation(Vector3.right, Vector3.left));

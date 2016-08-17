@@ -335,7 +335,7 @@ public class CustomEditorDynamicConfig : Editor
         string[] enumFile = new string[] {
             "public enum " + fileName,
             "{",
-            "   " + string.Join(",", fileContent.ToArray()) + ",",
+            "   " + string.Join(",", fileContent.ToArray()),
             "}"
         };
         File.WriteAllLines(Application.dataPath + "/Scripts/DynamicConfig/" + fileName + ".cs", enumFile);

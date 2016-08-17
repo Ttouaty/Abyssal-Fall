@@ -97,26 +97,31 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
-	protected void Start()
+    protected void Awake ()
+    {
+        _audioSource = GetComponent<AudioSource>();
+        _transf = transform;
+        _rigidB = GetComponent<Rigidbody>();
+    }
+
+	public void Init(Player player)
 	{
-		//Debug.Log("remove that part from player code !");
-		////CHEESE
-		//_playerRef = new Player();
-		//_playerRef.SkinNumber = 0;
-		//_playerRef.JoystickNumber = 1;
-		////CHEESE END
+        //Debug.Log("remove that part from player code !");
+        ////CHEESE
+        //_playerRef = new Player();
+        //_playerRef.SkinNumber = 0;
+        //_playerRef.JoystickNumber = 1;
+        ////CHEESE END
 
-		_audioSource = GetComponent<AudioSource>();
-		_transf = transform;
-		_rigidB = GetComponent<Rigidbody>();
+        _playerRef = player;
 
-		//Instantiates player mesh and retrieves its props and particles
-		GameObject playerMesh = Instantiate(_characterData.CharacterModel.gameObject, _transf.position, _characterData.CharacterModel.transform.rotation) as GameObject;
+        //Instantiates player mesh and retrieves its props and particles
+        GameObject playerMesh = Instantiate(_characterData.CharacterModel.gameObject, _transf.position, _characterData.CharacterModel.transform.rotation) as GameObject;
 		playerMesh.transform.parent = _transf.FindChild("CharacterModel");
 
-		playerMesh.GetComponentInChildren<CharacterModel>().Reskin(_characterData.CharacterMaterials[_playerRef.SkinNumber]);
+        _transf.GetComponentInChildren<CharacterModel>().Reskin(_characterData.CharacterMaterials[_playerRef.SkinNumber]);
 
-		_animator = _transf.FindChild("CharacterModel").GetComponentInChildren<Animator>();
+		_animator = _transf.GetComponentInChildren<Animator>();
 		_playerProp = transform.GetComponentInChildren<PlayerProp>();
 
 		if (_playerProp == null)
@@ -156,9 +161,8 @@ public class PlayerController : MonoBehaviour
 
 		if (_allowInput)
 			ProcessInputs();
-		
 
-		ProcessActiveSpeed();
+        ProcessActiveSpeed();
 		if (_allowInput)
 			ProcessOrientation();
 		ApplyCharacterFinalVelocity();
@@ -263,7 +267,7 @@ public class PlayerController : MonoBehaviour
 
 	public void ContactGround()
 	{
-		IsGrounded= true;
+		IsGrounded = true;
 		_activeSpeed.y = 0f;
 		//Breaks physics
 		//if (_hit.rigidbody.isKinematic == true)
@@ -284,7 +288,7 @@ public class PlayerController : MonoBehaviour
 		Debug.LogWarning("No default special Action defined in PlayerController, use a child class to code a special Action: "+gameObject.name);
 	}
 
-	public void Kill()
+    public void Kill()
 	{
 		Debug.Log("Player is DED!");
 		_animator.SetTrigger("Death");

@@ -90,13 +90,13 @@ public class MenuManager : GenericSingleton<MenuManager>
 
     IEnumerator LoadPreview (EArenaConfiguration levelName)
     {
-        MenuManager.Instance.Loading.SetActive(true);
-        MenuManager.Instance.LoadingOut.GetComponent<Image>().fillAmount = 0;
+        Loading.SetActive(true);
+        LoadingOut.GetComponent<Image>().fillAmount = 0;
         yield return StartCoroutine(LevelManager.Instance.ShowLevelPreview(levelName, (AsyncOperation async) =>
         {
-            MenuManager.Instance.LoadingOut.GetComponent<Image>().fillAmount = async.progress;
+            LoadingOut.GetComponent<Image>().fillAmount = async.progress;
         }));
-        MenuManager.Instance.Loading.SetActive(false);
+        Loading.SetActive(false);
     }
 
 	bool AllPlayersReady()

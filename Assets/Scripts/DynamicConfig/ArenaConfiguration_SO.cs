@@ -7,6 +7,6 @@ public class ArenaConfiguration_SO : ScriptableObject
 {
     public GameObject Ground;
     public GameObject Obstacle;
-    public List<PoolConfiguration> OtherAssetsToLoad;
+    public PoolConfiguration[] OtherAssetsToLoad;
     public string BackgroundLevel;
 }

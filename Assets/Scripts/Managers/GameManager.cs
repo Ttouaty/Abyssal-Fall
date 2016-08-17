@@ -23,7 +23,7 @@ public class GameManager : GenericSingleton<GameManager>
 	public AudioClip OnGroundDrop;
 	public AudioClip OnObstacleDrop;
 	public AudioClip OnThree;
-	public AudioClip OnTWo;
+	public AudioClip OnTwo;
 	public AudioClip OnOne;
 	public AudioClip OnGo;
 	public AudioSource AudioSource;
@@ -41,10 +41,6 @@ public class GameManager : GenericSingleton<GameManager>
 	{
 		if (isInDebugMode)
 			return;
-
-		AudioSource = GetComponent<AudioSource>();
-
-		GameLoop.volume = 0.1f;
 	}
 
 	public static void StartGame()
@@ -62,16 +58,16 @@ public class GameManager : GenericSingleton<GameManager>
 	private void Init ()
 	{
 		OnZoom.AddListener(Camera.main.GetComponent<CameraManager>().OnZoom);
-		StartCoroutine(OnAllLoadablesLoaded());
+		OnAllLoadablesLoaded();
 	}
 
 	public void Restart ()
 	{
-		StartCoroutine(OnAllLoadablesLoaded());
+        OnAllLoadablesLoaded();
 	}
 
-	IEnumerator OnAllLoadablesLoaded()
+	void OnAllLoadablesLoaded()
 	{
-		yield return StartCoroutine(LevelManager.Instance.StartLevel(EArenaConfiguration.Aerial, EModeConfiguration.FreeForAll, EMapConfiguration.TestArena));
+		LevelManager.Instance.StartLevel(EArenaConfiguration.Aerial, EModeConfiguration.FreeForAll, EMapConfiguration.TestArena);
 	}
 }

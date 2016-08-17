@@ -84,7 +84,17 @@ public class ArenaManager : GenericSingleton<ArenaManager>
             Player player = GameManager.Instance.RegisteredPlayers[i];
             if(player != null)
             {
-                _players[i] = player.GetPlayerController().InstantiatePlayer();
+                _players[i] = Instantiate(player.CharacterUsed.gameObject);
+                PlayerController playerController = _players[i].GetComponent<PlayerController>();
+                if(playerController != null)
+                {
+                    playerController.Init(player);
+                }
+                else
+                {
+                    Debug.LogError("No player controller");
+                    Debug.Break();
+                }
                 _spawns[i].SpawnPlayer(_players[i]);
             }
         }
@@ -92,11 +102,7 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 
     IEnumerator LoadArena()
     {
-        position    = new Vector3(
-            -_mapConfig.MapSize.x * 0.5f + 0.5f, 
-            Camera.main.transform.position.y + 5.0f, 
-            -_mapConfig.MapSize.y * 0.5f + 0.5f
-        );
+        position    = new Vector3(-_mapConfig.MapSize.x * 0.5f + 0.5f, Camera.main.transform.position.y + 5.0f, -_mapConfig.MapSize.y * 0.5f + 0.5f);
         Map         = ParseMapFile();
 
         CreateMap(position);
@@ -140,8 +146,8 @@ public class ArenaManager : GenericSingleton<ArenaManager>
                     if (type == ETileType.OBSTACLE)
                     {
                         GameObject obstacle = GameObjectPool.GetAvailableObject(_currentArenaConfig.Obstacle.name);
-                        obstacle.transform.position = new Vector3(x, 1, y) + position;
                         obstacle.transform.parent = ObstaclesRoot;
+                        obstacle.transform.position = new Vector3(x, 1, y) + position;
                         _obstacles[y * (int)_mapConfig.MapSize.y + x] = obstacle;
                     }
                 }
@@ -221,7 +227,7 @@ public class ArenaManager : GenericSingleton<ArenaManager>
         while (timer < 1)
         {
             timer += Time.deltaTime;
-            float y = Mathf.Lerp(initialY, 0.5f, timer);
+            float y = Mathf.Lerp(initialY, 1.0f, timer);
             element.transform.position = new Vector3(element.transform.position.x, y, element.transform.position.z);
             yield return null;
         }

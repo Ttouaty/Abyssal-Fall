@@ -6,7 +6,7 @@ using UnityEditor;
 public class SO_Character :  ScriptableObject
 {
 	public string IngameName;
-	public CharacterModel CharacterModel;
+    public CharacterModel CharacterModel;
 	public Material[] CharacterMaterials;
 	
 	[Space()]
@@ -15,5 +15,6 @@ public class SO_Character :  ScriptableObject
 	public Dash Dash;
 
 	public PlayerAudioList SoundList;
-	//public string[] sounds = { "Not Used for now" };
+
+    public PoolConfiguration[] OtherAssetsToLoad;
 }

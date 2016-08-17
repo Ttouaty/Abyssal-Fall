@@ -323,10 +323,10 @@ MonoBehaviour:
   OnGroundDrop: {fileID: 8300000, guid: a5e0aacf1fb3c994ba6d4fd5c9af7a1d, type: 3}
   OnObstacleDrop: {fileID: 8300000, guid: d05465f2e1c26454d9e730102f99e657, type: 3}
   OnThree: {fileID: 8300000, guid: 9871689d8bbe1e841b3856c5f91c4d5c, type: 3}
-  OnTWo: {fileID: 8300000, guid: 2b723845e31407a4eaadce619dff9e7e, type: 3}
+  OnTwo: {fileID: 8300000, guid: 2b723845e31407a4eaadce619dff9e7e, type: 3}
   OnOne: {fileID: 8300000, guid: 76b95c286108e104e8d0942bc4d4bcda, type: 3}
   OnGo: {fileID: 8300000, guid: da994bf18daa348478aca40b01533d79, type: 3}
-  AudioSource: {fileID: 0}
+  AudioSource: {fileID: 664798914}
   GameLoop: {fileID: 664798913}
   nbPlayers: 0
   isInDebugMode: 0
@@ -457,7 +457,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Pools: []
-  NumberOfInstancesPerFrame: 100
+  NumberOfInstancesPerFrame: 1000
   bCanLoad: 1
   bInitOnLoad: 0
   bIsLoading: 0
@@ -636,7 +636,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f060aeeff281f7343987fd2b75a0831b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cameraWinZoomSpeed: 1
+  _cameraWinZoomSpeed: 3
 --- !u!81 &1614391834
 AudioListener:
   m_ObjectHideFlags: 0
