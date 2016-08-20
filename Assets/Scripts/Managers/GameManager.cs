@@ -4,21 +4,16 @@ using System.Collections;
 using System.Collections.Generic;
 
 [System.Serializable]
-public class ZoomEvent : UnityEvent { }
-[System.Serializable]
-public class PlayerEvent : UnityEvent<GameObject> { }
+public struct GameConfiguration
+{
+    public EArenaConfiguration ArenaConfiguration;
+    public EModeConfiguration ModeConfiguration;
+    public EMapConfiguration MapConfiguration;
+}
 
 public class GameManager : GenericSingleton<GameManager>
 {
 	public static bool InProgress = false;
-
-    public ZoomEvent OnZoom;
-	public PlayerEvent OnPlayerDeath;
-	public PlayerEvent OnPlayerWin;
-
-	public GameObject CountdownScreen;
-	public GameObject EndStageScreen;
-	public GameObject[] PlayersRefs;
 
 	public AudioClip OnGroundDrop;
 	public AudioClip OnObstacleDrop;
@@ -33,15 +28,9 @@ public class GameManager : GenericSingleton<GameManager>
 	public Player[] RegisteredPlayers = new Player[4];
 	[HideInInspector]
 	public int nbPlayers = 0;
-	[Space()]
-	[SerializeField]
-	private bool isInDebugMode = false;
 
-	void Awake ()
-	{
-		if (isInDebugMode)
-			return;
-	}
+    [Space()]
+    public GameConfiguration  CurrentGameConfiguration;
 
 	public static void StartGame()
 	{
@@ -57,7 +46,6 @@ public class GameManager : GenericSingleton<GameManager>
 	// Use this for initialization
 	private void Init ()
 	{
-		OnZoom.AddListener(Camera.main.GetComponent<CameraManager>().OnZoom);
 		OnAllLoadablesLoaded();
 	}
 
@@ -68,6 +56,6 @@ public class GameManager : GenericSingleton<GameManager>
 
 	void OnAllLoadablesLoaded()
 	{
-		LevelManager.Instance.StartLevel(EArenaConfiguration.Aerial, EModeConfiguration.FreeForAll, EMapConfiguration.TestArena);
+		LevelManager.Instance.StartLevel(CurrentGameConfiguration);
 	}
 }

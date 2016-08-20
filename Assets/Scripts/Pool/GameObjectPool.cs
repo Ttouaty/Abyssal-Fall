@@ -21,6 +21,12 @@ public class GameObjectPool : GenericSingleton<GameObjectPool>
 	*********/
     public const string VERSION = "2.3.0";
 
+    public static T GetAvailableObject<T>(string poolName) where T : Component
+    {
+        GameObject go = GetAvailableObject(poolName);
+        return go.GetComponent<T>();
+    }
+
     public static GameObject GetAvailableObject(string poolName)
     {
         for (var i = 0; i < Instance.Pools.Count; ++i)

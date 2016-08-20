@@ -48,5 +48,13 @@ public class Tile : MonoBehaviour {
 	private void Fall()
 	{
 		_rigidB.isKinematic = false;
+        Ground groundComponent = GetComponent<Ground>();
+        if(groundComponent != null)
+        {
+            if(groundComponent.Obstacle != null)
+            {
+                groundComponent.Obstacle.ActivateFall();
+            }
+        }
 	}
 }

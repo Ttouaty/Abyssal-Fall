@@ -257,7 +257,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec4d046775ad5cb4e878d6743eef85f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PoolName: 
+  Pool:
+    bIsOpen: 0
+    Prefab: {fileID: 0}
+    Quantity: 0
+    QuantityLoaded: 0
+    Root: {fileID: 0}
+    Reserve: []
 --- !u!114 &11492082
 MonoBehaviour:
   m_ObjectHideFlags: 1

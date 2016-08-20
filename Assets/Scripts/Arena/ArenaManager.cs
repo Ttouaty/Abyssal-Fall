@@ -1,24 +1,25 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
 [System.Serializable]
 public enum ETileType : int
 {
-    GROUND      = 0,
-    OBSTACLE    = 1,
-    SPAWN       = 2,
-    HOLE        = 3
+    GROUND      = -1,
+    OBSTACLE    = 0,
+    SPAWN       = 1,
+    HOLE        = 2
 }
 
 public class ArenaManager : GenericSingleton<ArenaManager>
 {
     [SerializeField] private ArenaConfiguration_SO  _currentArenaConfig;
     [SerializeField] private ModeConfiguration_SO   _currentModeConfig;
-    [SerializeField] private MapConfiguration_SO    _mapConfig;
+    [SerializeField] private MapConfiguration_SO    _currentMapConfig;
 
     public Transform ArenaRoot;
-    public int[,] Map;
+    public ETileType[,] Map;
     public Vector3 position;
     private int _mapSize;
 
@@ -60,15 +61,21 @@ public class ArenaManager : GenericSingleton<ArenaManager>
     {
         _currentArenaConfig     = MainManager.Instance.LEVEL_MANAGER.CurrentArenaConfig;
         _currentModeConfig      = MainManager.Instance.LEVEL_MANAGER.CurrentModeConfig;
-        _mapConfig              = MainManager.Instance.LEVEL_MANAGER.CurrentMapConfig;
+        _currentMapConfig       = MainManager.Instance.LEVEL_MANAGER.CurrentMapConfig;
 
         _tilesDropped           = 0;
         _obstaclesDropped       = 0;
-        _mapSize                = (int)(_mapConfig.MapSize.y * _mapConfig.MapSize.x);
+        _mapSize                = (int)(_currentMapConfig.MapSize.y * _currentMapConfig.MapSize.x);
 
         _tiles                  = new GameObject[_mapSize];
         _obstacles              = new GameObject[_mapSize];
         _spawns                 = new List<Spawn>();
+
+        GameObject go = new GameObject("KillPlane", typeof(KillPlane), typeof(BoxCollider));
+        go.GetComponent<BoxCollider>().isTrigger = true;
+        go.transform.parent = transform;
+        go.transform.position.Set(0, 0, -10.0f);
+        go.GetComponent<BoxCollider>().size.Set(100, 1, 100);
 
         StartCoroutine(Initialization());
     }
@@ -82,11 +89,11 @@ public class ArenaManager : GenericSingleton<ArenaManager>
         for (int i = 0; i < GameManager.Instance.nbPlayers; ++i)
         {
             Player player = GameManager.Instance.RegisteredPlayers[i];
-            if(player != null)
+            if (player != null)
             {
                 _players[i] = Instantiate(player.CharacterUsed.gameObject);
                 PlayerController playerController = _players[i].GetComponent<PlayerController>();
-                if(playerController != null)
+                if (playerController != null)
                 {
                     playerController.Init(player);
                 }
@@ -102,22 +109,25 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 
     IEnumerator LoadArena()
     {
-        position    = new Vector3(-_mapConfig.MapSize.x * 0.5f + 0.5f, Camera.main.transform.position.y + 5.0f, -_mapConfig.MapSize.y * 0.5f + 0.5f);
-        Map         = ParseMapFile();
+        position    = new Vector3(-_currentMapConfig.MapSize.x * 0.5f + 0.5f, Camera.main.transform.position.y + 5.0f, -_currentMapConfig.MapSize.y * 0.5f + 0.5f);
+        Map = ParseMapFile();
 
         CreateMap(position);
         yield return StartCoroutine(DropArena(position));
     }
 
-    int[,] ParseMapFile ()
+    ETileType[,] ParseMapFile ()
     {
-        List<List<string>> rawMap = CSVReader.Read(_mapConfig.MapFile);
-        int[,] map = new int[(int)_mapConfig.MapSize.y, (int)_mapConfig.MapSize.x];
+        List<List<string>> rawMap = CSVReader.Read(_currentMapConfig.MapFile);
+        ETileType[,] map = new ETileType[(int)_currentMapConfig.MapSize.y, (int)_currentMapConfig.MapSize.x];
         for (int y = 0; y < rawMap.Count; ++y)
         {
             for (int x = 0; x < rawMap[y].Count; ++x)
             {
-                map[y, x] = int.Parse(rawMap[y][x]);
+                if(rawMap[y][x] != "")
+                {
+                    map[y, x] = (ETileType)int.Parse(rawMap[y][x]);
+                }
             }
         }
         return map;
@@ -125,30 +135,35 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 
     void CreateMap(Vector3 position)
     {
-        // Via fichier de config
-        for (int y = 0; y < _mapConfig.MapSize.y; ++y)
+        for (int y = 0; y < _currentMapConfig.MapSize.y; ++y)
         {
-            for(int x = 0; x < _mapConfig.MapSize.x; ++x)
+            for(int x = 0; x < _currentMapConfig.MapSize.x; ++x)
             {
-                ETileType type = (ETileType)Map[y, x];
+                ETileType type = Map[y, x];
                 if (type != ETileType.HOLE)
                 {
                     GameObject tile = GameObjectPool.GetAvailableObject(_currentArenaConfig.Ground.name);
-                    if(type == ETileType.SPAWN)
+                    tile.transform.position = new Vector3(x, 0, y) + position;
+                    tile.transform.parent = TilesRoot;
+                    _tiles[y * (int)_currentMapConfig.MapSize.y + x] = tile;
+
+                    if (type == ETileType.SPAWN)
                     {
                         Spawn spawn = tile.AddComponent<Spawn>();
                         _spawns.Add(spawn);
                     }
-                    tile.transform.position = new Vector3(x, 0, y) + position;
-                    tile.transform.parent = TilesRoot;
-                    _tiles[y * (int)_mapConfig.MapSize.y + x] = tile;
-
-                    if (type == ETileType.OBSTACLE)
+                    else if (type == ETileType.OBSTACLE)
                     {
                         GameObject obstacle = GameObjectPool.GetAvailableObject(_currentArenaConfig.Obstacle.name);
                         obstacle.transform.parent = ObstaclesRoot;
                         obstacle.transform.position = new Vector3(x, 1, y) + position;
-                        _obstacles[y * (int)_mapConfig.MapSize.y + x] = obstacle;
+                        _obstacles[y * (int)_currentMapConfig.MapSize.y + x] = obstacle;
+
+                        Ground groundComponent = tile.GetComponent<Ground>();
+                        if(groundComponent != null)
+                        {
+                            groundComponent.Obstacle = obstacle.GetComponent<Obstacle>();
+                        }
                     }
                 }
             }
@@ -163,7 +178,7 @@ public class ArenaManager : GenericSingleton<ArenaManager>
         {
             if(_tiles[i] != null)
             {
-                float delay = 0.05f * Mathf.Floor(i / _mapConfig.MapSize.y);
+                float delay = 0.05f * Mathf.Floor(i / _currentMapConfig.MapSize.y);
                 StartCoroutine(DropGround(_tiles[i], delay, index, _tiles[i].transform.position.y));
                 ++index;
             }
@@ -201,7 +216,7 @@ public class ArenaManager : GenericSingleton<ArenaManager>
         yield return new WaitForSeconds(delay);
 
         float timer = -pos * 0.05f;
-        float initialY = initY;
+        float initialY = element.transform.position.y;
 
         while (timer < 1)
         {
@@ -221,7 +236,7 @@ public class ArenaManager : GenericSingleton<ArenaManager>
         yield return new WaitForSeconds(delay);
 
         float timer = 0;
-        float initialY = 150;
+        float initialY = element.transform.position.y;
         element.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
 
         while (timer < 1)
@@ -238,29 +253,30 @@ public class ArenaManager : GenericSingleton<ArenaManager>
         }
 
         element.GetComponent<Obstacle>().OnDropped();
-        CameraShake.instance.shakeAmount = 0.7f;
         CameraShake.instance.Shake(0.2f);
         ++_obstaclesDropped;
 
         yield return null;
     }
 
-
+    #if UNITY_EDITOR
     void OnDrawGizmos()
     {
-        if(_currentModeConfig != null)
+        if(_currentMapConfig != null)
         {
-            for (var i = 0; i < _currentModeConfig.ArenaSizeSquared; ++i)
+            int mapSize = (int)(_currentMapConfig.MapSize.x * _currentMapConfig.MapSize.y);
+            for (var i = 0; i < mapSize; ++i)
             {
-                int x = i % _currentModeConfig.ArenaSize;
-                int z = Mathf.FloorToInt(i / _currentModeConfig.ArenaSize);
+                int x = i % (int)_currentMapConfig.MapSize.x;
+                int z = Mathf.FloorToInt(i / _currentMapConfig.MapSize.y);
 
                 Gizmos.color = Color.yellow;
                 Gizmos.DrawWireCube(
-                    ArenaRoot.position + new Vector3(-_currentModeConfig.ArenaSize * 0.5f + x + 0.5f, 0, -_currentModeConfig.ArenaSize * 0.5f + z + 0.5f), 
+                    ArenaRoot.position + new Vector3(-_currentMapConfig.MapSize.x * 0.5f + x + 0.5f, 0, -_currentMapConfig.MapSize.y * 0.5f + z + 0.5f), 
                     new Vector3(1,1,1)
                 );
             }
         }
     }
+    #endif
 }

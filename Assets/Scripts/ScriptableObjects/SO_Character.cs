@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UnityEditor;
 
 [CreateAssetMenu(fileName = "NewCharacterData", menuName = "Abyssal Fall/Character Configuration")]
 public class SO_Character :  ScriptableObject

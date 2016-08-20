@@ -7,18 +7,14 @@ using UnityEditor;
 [System.Serializable]
 public struct SceneField
 {
-    [SerializeField] private Object _sceneAsset;
-    [SerializeField] private string _sceneName;
-    public string SceneName
-    {
-        get { return _sceneName; }
-    }
+    public Object SceneAsset;
+    public string SceneName;
 
     public bool IsNull
     {
         get
         {
-            return _sceneAsset == null && _sceneName == "";
+            return SceneAsset == null && SceneName == "";
         }
     }
 
@@ -27,32 +23,3 @@ public struct SceneField
         return sceneField.SceneName;
     }
 }
-
-#if UNITY_EDITOR
-[CustomPropertyDrawer(typeof(SceneField))]
-public class SceneFieldPropertyDrawer : PropertyDrawer
-{
-    public override void OnGUI(Rect _position, SerializedProperty _property, GUIContent _label)
-    {
-        EditorGUI.BeginProperty(_position, GUIContent.none, _property);
-        SerializedProperty sceneAsset = _property.FindPropertyRelative("_sceneAsset");
-        SerializedProperty sceneName = _property.FindPropertyRelative("_sceneName");
-        _position = EditorGUI.PrefixLabel(_position, GUIUtility.GetControlID(FocusType.Passive), _label);
-        if (sceneAsset != null)
-        {
-            Object oldSceneAsset = sceneAsset.objectReferenceValue;
-            sceneAsset.objectReferenceValue = EditorGUI.ObjectField(_position, sceneAsset.objectReferenceValue, typeof(Object), false);
-            if (sceneAsset.objectReferenceValue != null && (sceneAsset.objectReferenceValue as Object).name.StartsWith("Scene_"))
-            {
-                sceneName.stringValue = (sceneAsset.objectReferenceValue as Object).name;
-            }
-            else
-            {
-                sceneAsset.objectReferenceValue = sceneAsset.objectReferenceValue == null ? null : oldSceneAsset;
-                Debug.LogError("Not a SceneAsset");
-            }
-        }
-        EditorGUI.EndProperty();
-    }
-}
-#endif

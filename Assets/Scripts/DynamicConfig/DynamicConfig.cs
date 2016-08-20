@@ -12,18 +12,18 @@ public class DynamicConfig : GenericSingleton<DynamicConfig>
     public List<ModeConfiguration> ModeConfigurations;
     public Dictionary<string, ModeConfiguration_SO> ModeConfigurationsDic;
 
-    public List<CharacterConfiguration> CharacterConfigurations;
-    public Dictionary<string, SO_Character> CharacterConfigurationsDic;
-
     public List<MapConfiguration> MapsConfigurations;
     public Dictionary<string, MapConfiguration_SO> MapsConfigurationsDic;
+
+    public List<CharacterConfiguration> CharacterConfigurations;
+    public Dictionary<string, PlayerController> CharacterConfigurationsDic;
 
     void Awake ()
     {
         ArenaConfigurationsDic      = new Dictionary<string, ArenaConfiguration_SO>();
         ModeConfigurationsDic       = new Dictionary<string, ModeConfiguration_SO>();
-        CharacterConfigurationsDic  = new Dictionary<string, SO_Character>();
         MapsConfigurationsDic       = new Dictionary<string, MapConfiguration_SO>();
+        CharacterConfigurationsDic  = new Dictionary<string, PlayerController>();
 
         for (int i = 0; i < ArenaConfigurations.Count; ++i)
         {
@@ -37,92 +37,30 @@ public class DynamicConfig : GenericSingleton<DynamicConfig>
             ModeConfigurationsDic.Add(config.Name, config.Configuration);
         }
 
-        for (int i = 0; i < CharacterConfigurations.Count; ++i)
-        {
-            CharacterConfiguration config = CharacterConfigurations[i];
-            CharacterConfigurationsDic.Add(config.Name, config.Configuration);
-        }
-
         for (int i = 0; i < MapsConfigurations.Count; ++i)
         {
             MapConfiguration config = MapsConfigurations[i];
             MapsConfigurationsDic.Add(config.Name, config.Configuration);
         }
+
+        for (int i = 0; i < CharacterConfigurations.Count; ++i)
+        {
+            CharacterConfiguration config = CharacterConfigurations[i];
+            CharacterConfigurationsDic.Add(config.Name, config.Configuration);
+        }
     }
 
-    public ArenaConfiguration_SO GetArenaConfig(EArenaConfiguration configName)
-    {
-        ArenaConfiguration_SO config;
-        ArenaConfigurationsDic.TryGetValue(configName.ToString(), out config);
-        return config;
-    }
+    public void GetConfig(EArenaConfiguration configName, out ArenaConfiguration_SO config) { config = ArenaConfigurationsDic[configName.ToString()]; }
+    public void GetConfigs(ref ArenaConfiguration_SO[] config)                              { ArenaConfigurationsDic.Values.CopyTo(config, 0); }
 
-    public ModeConfiguration_SO GetModeConfig(EModeConfiguration configName)
-    {
-        ModeConfiguration_SO config;
-        ModeConfigurationsDic.TryGetValue(configName.ToString(), out config);
-        return config;
-    }
+    public void GetConfig(EModeConfiguration configName, out ModeConfiguration_SO config)   { config = ModeConfigurationsDic[configName.ToString()]; }
+    public void GetConfigs(ref ModeConfiguration_SO[] config)                               { ModeConfigurationsDic.Values.CopyTo(config, 0); }
 
-    public SO_Character GetCharacterConfig(ECharacterConfiguration configName)
-    {
-        SO_Character config;
-        CharacterConfigurationsDic.TryGetValue(configName.ToString(), out config);
-        return config;
-    }
+    public void GetConfig(EMapConfiguration configName, out MapConfiguration_SO config)     { config = MapsConfigurationsDic[configName.ToString()]; }
+    public void GetConfigs(ref MapConfiguration_SO[] config)                                { MapsConfigurationsDic.Values.CopyTo(config, 0); }
 
-    public MapConfiguration_SO GetMapConfig(EMapConfiguration configName)
-    {
-        MapConfiguration_SO config;
-        MapsConfigurationsDic.TryGetValue(configName.ToString(), out config);
-        return config;
-    }
-
-#if UNITY_EDITOR
-    public void AddArenaConfiguration()
-    {
-        ArenaConfiguration config = new ArenaConfiguration();
-        ArenaConfigurations.Add(config);
-    }
-
-    public void RemoveArenaConfiguration(ArenaConfiguration config)
-    {
-        ArenaConfigurations.Remove(config);
-    }
-
-    public void AddModeConfiguration()
-    {
-        ModeConfiguration config = new ModeConfiguration();
-        ModeConfigurations.Add(config);
-    }
-
-    public void RemoveModeConfiguration(ModeConfiguration config)
-    {
-        ModeConfigurations.Remove(config);
-    }
-
-    public void AddCharacterConfiguration()
-    {
-        CharacterConfiguration config = new CharacterConfiguration();
-        CharacterConfigurations.Add(config);
-    }
-
-    public void RemoveCharacterConfiguration(CharacterConfiguration config)
-    {
-        CharacterConfigurations.Remove(config);
-    }
-
-    public void AddMapConfiguration()
-    {
-        MapConfiguration config = new MapConfiguration();
-        MapsConfigurations.Add(config);
-    }
-
-    public void RemoveMapConfiguration(MapConfiguration config)
-    {
-        MapsConfigurations.Remove(config);
-    }
-#endif
+    public void GetConfig(ECharacterConfiguration configName, out PlayerController config)  { config = CharacterConfigurationsDic[configName.ToString()]; }
+    public void GetConfigs(ref PlayerController[] config)                                   { CharacterConfigurationsDic.Values.CopyTo(config, 0); }
 }
 
 [System.Serializable]
@@ -143,7 +81,7 @@ public struct ModeConfiguration
 public struct CharacterConfiguration
 {
     public string Name;
-    public SO_Character Configuration;
+    public PlayerController Configuration;
 }
 
 [System.Serializable]

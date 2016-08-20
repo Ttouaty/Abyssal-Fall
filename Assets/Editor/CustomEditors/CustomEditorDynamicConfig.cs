@@ -73,7 +73,7 @@ public class CustomEditorDynamicConfig : Editor
                         EditorGUILayout.BeginVertical("box");
                         {
                             config.Name = EditorGUILayout.TextField("Character Name: ", config.Name);
-                            config.Configuration = (SO_Character)EditorGUILayout.ObjectField(config.Configuration, typeof(SO_Character), false);
+                            config.Configuration = (PlayerController)EditorGUILayout.ObjectField(config.Configuration, typeof(PlayerController), false);
                         }
                         EditorGUILayout.EndVertical();
 
@@ -98,17 +98,26 @@ public class CustomEditorDynamicConfig : Editor
 
                 for (var r = 0; r < characterConfigToRemove.Count; ++r)
                 {
-                    _myTarget.RemoveCharacterConfiguration(characterConfigToRemove[r]);
+                    RemoveCharacterConfiguration(characterConfigToRemove[r]);
                 }
 
                 EditorGUILayout.Separator();
 
-                GUI.color = Color.cyan;
-                if (GUILayout.Button("Add Character Configuration"))
+                EditorGUILayout.BeginHorizontal();
                 {
-                    _myTarget.AddCharacterConfiguration();
+                    GUI.color = Color.cyan;
+                    if (GUILayout.Button("Add Character Configuration"))
+                    {
+                        AddCharacterConfiguration();
+                    }
+                    GUI.color = Color.green;
+                    if (GUILayout.Button("Generate Character Configuration Enum"))
+                    {
+                        SaveCharactersEnums();
+                    }
+                    GUI.color = _defaultColor;
                 }
-                GUI.color = _defaultColor;
+                EditorGUILayout.EndHorizontal();
             }
             EditorGUILayout.EndVertical();
             #endregion
@@ -152,17 +161,26 @@ public class CustomEditorDynamicConfig : Editor
 
                 for (var r = 0; r < arenaConfigToRemove.Count; ++r)
                 {
-                    _myTarget.RemoveArenaConfiguration(arenaConfigToRemove[r]);
+                    RemoveArenaConfiguration(arenaConfigToRemove[r]);
                 }
 
                 EditorGUILayout.Separator();
 
-                GUI.color = Color.cyan;
-                if (GUILayout.Button("Add Arena Configuration"))
+                EditorGUILayout.BeginHorizontal();
                 {
-                    _myTarget.AddArenaConfiguration();
+                    GUI.color = Color.cyan;
+                    if (GUILayout.Button("Add Arena Configuration"))
+                    {
+                        AddArenaConfiguration();
+                    }
+                    GUI.color = Color.green;
+                    if (GUILayout.Button("Generate Arena Configuration Enum"))
+                    {
+                        SaveArenasEnums();
+                    }
+                    GUI.color = _defaultColor;
                 }
-                GUI.color = _defaultColor;
+                EditorGUILayout.EndHorizontal();
             }
             EditorGUILayout.EndVertical();
             #endregion
@@ -206,17 +224,26 @@ public class CustomEditorDynamicConfig : Editor
 
                 for (var r = 0; r < modeConfigToRemove.Count; ++r)
                 {
-                    _myTarget.RemoveModeConfiguration(modeConfigToRemove[r]);
+                    RemoveModeConfiguration(modeConfigToRemove[r]);
                 }
 
                 EditorGUILayout.Separator();
 
-                GUI.color = Color.cyan;
-                if (GUILayout.Button("Add Mode Configuration"))
+                EditorGUILayout.BeginHorizontal();
                 {
-                    _myTarget.AddModeConfiguration();
+                    GUI.color = Color.cyan;
+                    if (GUILayout.Button("Add Mode Configuration"))
+                    {
+                        AddModeConfiguration();
+                    }
+                    GUI.color = Color.green;
+                    if (GUILayout.Button("Generate Mode Configuration Enum"))
+                    {
+                        SaveModesEnums();
+                    }
+                    GUI.color = _defaultColor;
                 }
-                GUI.color = _defaultColor;
+                EditorGUILayout.EndHorizontal();
             }
             EditorGUILayout.EndVertical();
             #endregion
@@ -261,29 +288,38 @@ public class CustomEditorDynamicConfig : Editor
 
                 for (var r = 0; r < mapConfigToRemove.Count; ++r)
                 {
-                    _myTarget.RemoveMapConfiguration(mapConfigToRemove[r]);
+                    RemoveMapConfiguration(mapConfigToRemove[r]);
                 }
 
                 EditorGUILayout.Separator();
 
-                GUI.color = Color.cyan;
-                if (GUILayout.Button("Add Map Configuration"))
+                EditorGUILayout.BeginHorizontal();
                 {
-                    _myTarget.AddMapConfiguration();
+                    GUI.color = Color.cyan;
+                    if (GUILayout.Button("Add Map Configuration"))
+                    {
+                        AddMapConfiguration();
+                    }
+                    GUI.color = Color.green;
+                    if (GUILayout.Button("Generate Map Configuration Enum"))
+                    {
+                        SaveMapsEnums();
+                    }
+                    GUI.color = _defaultColor;
                 }
-                GUI.color = _defaultColor;
+                EditorGUILayout.EndHorizontal();
             }
             EditorGUILayout.EndVertical();
             #endregion
             EditorGUILayout.Separator();
 
             GUI.color = Color.green;
-            if(GUILayout.Button("Save and Generate Enums", titleStyle))
+            if(GUILayout.Button("Generate All Enums", titleStyle))
             {
-                SaveCharactersEnums("ECharacterConfiguration", _myTarget.CharacterConfigurations);
-                SaveArenasEnums("EArenaConfiguration", _myTarget.ArenaConfigurations);
-                SaveModesEnums("EModeConfiguration", _myTarget.ModeConfigurations);
-                SaveMapsEnums("EMapConfiguration", _myTarget.MapsConfigurations);
+                SaveCharactersEnums();
+                SaveArenasEnums();
+                SaveModesEnums();
+                SaveMapsEnums();
                 AssetDatabase.Refresh();
             }
             GUI.color = _defaultColor;
@@ -294,43 +330,83 @@ public class CustomEditorDynamicConfig : Editor
         SceneView.RepaintAll();
     }
 
-    void SaveCharactersEnums(string fileName, List<CharacterConfiguration> configs)
+    void AddArenaConfiguration()
+    {
+        _myTarget.ArenaConfigurations.Add(new ArenaConfiguration());
+    }
+
+    void RemoveArenaConfiguration(ArenaConfiguration config)
+    {
+        _myTarget.ArenaConfigurations.Remove(config);
+    }
+
+    void AddModeConfiguration()
+    {
+        _myTarget.ModeConfigurations.Add(new ModeConfiguration());
+    }
+
+    void RemoveModeConfiguration(ModeConfiguration config)
+    {
+        _myTarget.ModeConfigurations.Remove(config);
+    }
+
+    void AddCharacterConfiguration()
+    {
+        _myTarget.CharacterConfigurations.Add(new CharacterConfiguration());
+    }
+
+    void RemoveCharacterConfiguration(CharacterConfiguration config)
+    {
+        _myTarget.CharacterConfigurations.Remove(config);
+    }
+
+    void AddMapConfiguration()
+    {
+        _myTarget.MapsConfigurations.Add(new MapConfiguration());
+    }
+
+    void RemoveMapConfiguration(MapConfiguration config)
+    {
+        _myTarget.MapsConfigurations.Remove(config);
+    }
+
+    void SaveCharactersEnums()
     {
         List<string> content = new List<string>();
-        for (int i = 0; i < configs.Count; ++i)
+        for (int i = 0; i < _myTarget.CharacterConfigurations.Count; ++i)
         {
-            content.Add(configs[i].Name);
+            content.Add(_myTarget.CharacterConfigurations[i].Name);
         }
-        SaveEnumFile("ECharacterConfiguration", content);
+        SaveFile("ECharacterConfiguration", content);
     }
-    void SaveArenasEnums(string fileName, List<ArenaConfiguration> configs)
+    void SaveArenasEnums()
     {
         List<string> content = new List<string>();
-        for (int i = 0; i < configs.Count; ++i)
+        for (int i = 0; i < _myTarget.ArenaConfigurations.Count; ++i)
         {
-            content.Add(configs[i].Name);
+            content.Add(_myTarget.ArenaConfigurations[i].Name);
         }
-        SaveEnumFile("EArenaConfiguration", content);
+        SaveFile("EArenaConfiguration", content);
     }
-    void SaveModesEnums(string fileName, List<ModeConfiguration> configs)
+    void SaveModesEnums()
     {
         List<string> content = new List<string>();
-        for (int i = 0; i < configs.Count; ++i)
+        for (int i = 0; i < _myTarget.ModeConfigurations.Count; ++i)
         {
-            content.Add(configs[i].Name);
+            content.Add(_myTarget.ModeConfigurations[i].Name);
         }
-        SaveEnumFile("EModeConfiguration", content);
+        SaveFile("EModeConfiguration", content);
     }
-    void SaveMapsEnums(string fileName, List<MapConfiguration> configs)
+    void SaveMapsEnums()
     {
         List<string> content = new List<string>();
-        for (int i = 0; i < configs.Count; ++i)
+        for (int i = 0; i < _myTarget.MapsConfigurations.Count; ++i)
         {
-            content.Add(configs[i].Name);
+            content.Add(_myTarget.MapsConfigurations[i].Name);
         }
-        SaveEnumFile("EMapConfiguration", content);
+        SaveFile("EMapConfiguration", content);
     }
-    void SaveEnumFile (string fileName, List<string> fileContent)
+    void SaveFile (string fileName, List<string> fileContent)
     {
         string[] enumFile = new string[] {
             "public enum " + fileName,
@@ -339,23 +415,21 @@ public class CustomEditorDynamicConfig : Editor
             "}"
         };
         File.WriteAllLines(Application.dataPath + "/Scripts/DynamicConfig/" + fileName + ".cs", enumFile);
+        AssetDatabase.Refresh();
     }
 
     void SetDefaultGUIBackgroundColor()
     {
         GUI.backgroundColor = _defaultBackgroundColor;
     }
-
     void SetGUIBackgroundColor(Color color)
     {
         GUI.backgroundColor = color;
     }
-
     void SetDefaultGUIColor()
     {
         GUI.color = _defaultColor;
     }
-
     void SetGUIColor(Color color)
     {
         GUI.color = color;

@@ -1,4 +1,4 @@
 public enum EArenaConfiguration
 {
-   Aerial,Hell,
+   Aerial,Hell
 }

@@ -135,13 +135,13 @@ public class PlayerController : MonoBehaviour
 		_stunTime.onFinish = OnStunOver;
 		_stunTime.onProgress = OnStunActive;
 
-		GameManager.Instance.OnPlayerWin.AddListener(OnPlayerWin);
+        // GameManager.Instance.OnPlayerWin.AddListener(OnPlayerWin); // Removed temporarily
 
-		_maxSpeed.x = _maxSpeed.x * _characterData.CharacterStats.speed / 3;
+        _maxSpeed.x = _maxSpeed.x * _characterData.CharacterStats.speed / 3;
 
 		if (GetComponentInChildren<GroundCheck>() == null)
 		{
-			Debug.LogWarning("no GroundCheck found in player: "+gameObject.name+"\nCreating one.");
+			Debug.LogWarning("no GroundCheck found in player: " + gameObject.name + "\nCreating one.");
 			GameObject tempGo = new GameObject();
 			Instantiate(tempGo);
 			tempGo.transform.parent = transform;
@@ -294,10 +294,10 @@ public class PlayerController : MonoBehaviour
 		_animator.SetTrigger("Death");
 		_audioSource.PlayOneShot(_characterData.SoundList.OnDeath);
 		_isDead = true;
-		GameManager.Instance.OnPlayerDeath.Invoke(gameObject);
-	}
+        // GameManager.Instance.OnPlayerDeath.Invoke(gameObject); // Removed temporarily
+    }
 
-	public void Eject(Vector3 direction, float stunTime)
+    public void Eject(Vector3 direction, float stunTime)
 	{
 		if (direction.y > 0)
 			IsGrounded= false;

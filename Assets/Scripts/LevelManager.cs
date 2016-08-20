@@ -15,32 +15,40 @@ public class LevelManager : GenericSingleton<LevelManager>
     public ArenaConfiguration_SO            CurrentArenaConfig;
     public ModeConfiguration_SO             CurrentModeConfig;
     public MapConfiguration_SO              CurrentMapConfig;
-    public float                            LoadingProgress         = 0.0f;
+    public float                            LoadingProgress;
 
     /* Defined Scenes */
     public SceneField SCENE_LOADING;
     public SceneField SCENE_MENU;
+    public SceneField SCENE_COUNTDOWN;
+    public SceneField SCENE_END_STAGE;
+    public SceneField SCENE_END_GAME;
 
     /* Events */
     public LoadEvent OnLoadStart;
     public LoadEvent OnLoadProgress;
     public LoadEvent OnLoadEnd;
 
+    /* States */
     private bool _bIsLoading = false;
+    public bool IsLoading { get { return _bIsLoading;  } }
     private bool _bIsOnMenu = false;
+    public bool IsOnMenu { get { return _bIsOnMenu; } }
 
     void Awake ()
     {
-        if (SCENE_LOADING.IsNull)
-        {
-            Debug.LogError("SCENE_LOADING must be provided !");
-            Debug.Break();
-        }
+        CheckScenes();
+    }
 
-        if (SCENE_MENU.IsNull)
+    void CheckScenes ()
+    {
+        SceneField[] scenes = new SceneField[] { SCENE_LOADING, SCENE_MENU, SCENE_COUNTDOWN, SCENE_END_STAGE, SCENE_END_GAME };
+        for(int i = 0; i < scenes.Length; ++i)
         {
-            Debug.LogError("SCENE_MENU must be provided !");
-            Debug.Break();
+            if(scenes[i].IsNull)
+            {
+                Debug.LogError(scenes[i] + " must be provided !");
+            }
         }
     }
 
@@ -69,20 +77,19 @@ public class LevelManager : GenericSingleton<LevelManager>
         }
     }
 
-    IEnumerator LoadAsyncScene(string scene, Action<AsyncOperation> callback = null)
+    public void ToggleMenu ()
     {
-        AsyncOperation async = Application.LoadLevelAdditiveAsync(scene);
-        while (!async.isDone)
+        if(_bIsOnMenu)
         {
-            if(callback != null)
-            {
-                callback.Invoke(async);
-            }
-            yield return null;
+            CloseMenu();
+        }
+        else
+        {
+            OpenMenu();
         }
     }
 
-    public void StartLevel(EArenaConfiguration arena, EModeConfiguration mode, EMapConfiguration map)
+    public void StartLevel(GameConfiguration config)
     {
         if (!_bIsLoading)
         {
@@ -93,9 +100,9 @@ public class LevelManager : GenericSingleton<LevelManager>
                 Application.UnloadLevel(CurrentArenaConfig.BackgroundLevel);
             }
 
-            CurrentArenaConfig = MainManager.Instance.DYNAMIC_CONFIG.GetArenaConfig(arena);
-            CurrentModeConfig = MainManager.Instance.DYNAMIC_CONFIG.GetModeConfig(mode);
-            CurrentMapConfig = MainManager.Instance.DYNAMIC_CONFIG.GetMapConfig(map);
+            MainManager.Instance.DYNAMIC_CONFIG.GetConfig(config.ArenaConfiguration, out CurrentArenaConfig);
+            MainManager.Instance.DYNAMIC_CONFIG.GetConfig(config.ModeConfiguration, out CurrentModeConfig);
+            MainManager.Instance.DYNAMIC_CONFIG.GetConfig(config.MapConfiguration, out CurrentMapConfig);
 
             MainManager.Instance.GAME_OBJECT_POOL.DropAll();
 
@@ -109,15 +116,15 @@ public class LevelManager : GenericSingleton<LevelManager>
             newPoolToLoad.Quantity = Mathf.CeilToInt(CurrentMapConfig.MapSize.x * CurrentMapConfig.MapSize.y);
             MainManager.Instance.GAME_OBJECT_POOL.AddPool(newPoolToLoad);
 
-            for(int i = 0; i < GameManager.Instance.nbPlayers; ++i)
+            for (int i = 0; i < GameManager.Instance.nbPlayers; ++i)
             {
                 Player player = GameManager.Instance.RegisteredPlayers[i];
-                if(player != null)
+                if (player != null)
                 {
                     PoolConfiguration[] assets = player.CharacterUsed._characterData.OtherAssetsToLoad;
-                    for(int j = 0; j < assets.Length; ++j)
+                    for (int j = 0; j < assets.Length; ++j)
                     {
-                        MainManager.Instance.GAME_OBJECT_POOL.AddPool(assets[i]);
+                        MainManager.Instance.GAME_OBJECT_POOL.AddPool(assets[j]);
                     }
                 }
             }
@@ -128,6 +135,19 @@ public class LevelManager : GenericSingleton<LevelManager>
             }
 
             StartCoroutine(LoadLevel());
+        }
+    }
+
+    private IEnumerator LoadAsyncScene(string scene, Action<AsyncOperation> callback = null)
+    {
+        AsyncOperation async = Application.LoadLevelAdditiveAsync(scene);
+        while (!async.isDone)
+        {
+            if(callback != null)
+            {
+                callback.Invoke(async);
+            }
+            yield return null;
         }
     }
 
@@ -192,7 +212,8 @@ public class LevelManager : GenericSingleton<LevelManager>
     {
         if (_bIsOnMenu)
         {
-            ArenaConfiguration_SO arenaConfig = MainManager.Instance.DYNAMIC_CONFIG.GetArenaConfig(arena);
+            ArenaConfiguration_SO arenaConfig;
+            MainManager.Instance.DYNAMIC_CONFIG.GetConfig(arena, out arenaConfig);
             yield return StartCoroutine(LoadAsyncScene(arenaConfig.BackgroundLevel, callback));
             if (CurrentArenaConfig != null)
             {

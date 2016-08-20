@@ -17,8 +17,8 @@ public class CameraManager : MonoBehaviour
 		
 		_basePosition = transform.position;
 
-		GameManager.Instance.OnPlayerWin.AddListener(OnPlayerWin);
-		Reset();
+        // GameManager.Instance.OnPlayerWin.AddListener(OnPlayerWin); // Removed temporarily
+        Reset();
 		StartCoroutine(SmoothZoom());
 	}
 
@@ -94,13 +94,13 @@ public class CameraManager : MonoBehaviour
 		winner.GetComponent<PlayerController>()._animator.SetTrigger("Win");
 		yield return new WaitForSeconds(3);
 		int winnerId = winner.GetComponent<PlayerController>()._playerRef.PlayerNumber -1;
-		EndStageScreen endScreen = GameManager.Instance.EndStageScreen.GetComponent<EndStageScreen>();
-		endScreen.ShowPanel();
-		yield return endScreen.StartCoroutine(endScreen.StartCountdown(winnerId));
-
-		Reset();
-		// GameManager.Instance.Arena.ClearArena();
-		GameManager.Instance.Restart();
+		// EndStageScreen endScreen = GameManager.Instance.EndStageScreen.GetComponent<EndStageScreen>();
+		// endScreen.ShowPanel();
+		// yield return endScreen.StartCoroutine(endScreen.StartCountdown(winnerId));
+        // 
+		// Reset();
+		// // GameManager.Instance.Arena.ClearArena();
+		// GameManager.Instance.Restart();
 
 		yield return null;
 	}

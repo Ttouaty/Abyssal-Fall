@@ -305,21 +305,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef2e0cb63a492a54f80877755c53e31b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OnZoom:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: ZoomEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  OnPlayerDeath:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: PlayerEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  OnPlayerWin:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: PlayerEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  CountdownScreen: {fileID: 0}
-  EndStageScreen: {fileID: 0}
-  PlayersRefs: []
   OnGroundDrop: {fileID: 8300000, guid: a5e0aacf1fb3c994ba6d4fd5c9af7a1d, type: 3}
   OnObstacleDrop: {fileID: 8300000, guid: d05465f2e1c26454d9e730102f99e657, type: 3}
   OnThree: {fileID: 8300000, guid: 9871689d8bbe1e841b3856c5f91c4d5c, type: 3}
@@ -329,7 +314,10 @@ MonoBehaviour:
   AudioSource: {fileID: 664798914}
   GameLoop: {fileID: 664798913}
   nbPlayers: 0
-  isInDebugMode: 0
+  CurrentGameConfiguration:
+    ArenaConfiguration: 0
+    ModeConfiguration: 0
+    MapConfiguration: 0
 --- !u!1 &1003786147
 GameObject:
   m_ObjectHideFlags: 0
@@ -409,14 +397,24 @@ MonoBehaviour:
   ModeConfigurations:
   - Name: FreeForAll
     Configuration: {fileID: 11400000, guid: ae73c736c3cc5de42b56d0d31bf30add, type: 2}
+  MapsConfigurations:
+  - Name: TestArena16x16
+    Configuration: {fileID: 11400000, guid: 854a887594ad4344b882d597429bea69, type: 2}
+  - Name: TestArena20x20
+    Configuration: {fileID: 11400000, guid: 85cdedd28d69be24481bc066f26eb0fc, type: 2}
+  - Name: TestArena26x26
+    Configuration: {fileID: 11400000, guid: 5a08234ca185dec40854553cfc65563d, type: 2}
+  - Name: TestArena32x32
+    Configuration: {fileID: 11400000, guid: fd88cf5cde8c66a4597460b7ab25be76, type: 2}
   CharacterConfigurations:
   - Name: Viking
-    Configuration: {fileID: 11400000, guid: 24a0a06ce55a2b54794e14afa7bd9465, type: 2}
+    Configuration: {fileID: 11478206, guid: 3ec6965eb1188ff418e7a841ee9f4263, type: 2}
   - Name: Ninja
-    Configuration: {fileID: 11400000, guid: 914bd4a5d4534224b8bcf6e2301ddcfd, type: 2}
-  MapsConfigurations:
-  - Name: TestArena
-    Configuration: {fileID: 11400000, guid: 854a887594ad4344b882d597429bea69, type: 2}
+    Configuration: {fileID: 11448426, guid: 9b85bde0b5dc1d74b8ec37b4561a265f, type: 2}
+  - Name: Tank
+    Configuration: {fileID: 11478206, guid: 3ec6965eb1188ff418e7a841ee9f4263, type: 2}
+  - Name: Magicienne
+    Configuration: {fileID: 11478206, guid: 3ec6965eb1188ff418e7a841ee9f4263, type: 2}
 --- !u!4 &1127726023
 Transform:
   m_ObjectHideFlags: 0
@@ -736,11 +734,20 @@ MonoBehaviour:
   CurrentMapConfig: {fileID: 0}
   LoadingProgress: 0
   SCENE_LOADING:
-    _sceneAsset: {fileID: 102900000, guid: e54ac6572ab434944b41e654e6870d14, type: 3}
-    _sceneName: Scene_Loading
+    SceneAsset: {fileID: 102900000, guid: e54ac6572ab434944b41e654e6870d14, type: 3}
+    SceneName: Scene_Loading
   SCENE_MENU:
-    _sceneAsset: {fileID: 102900000, guid: df9dfe5c567cb0c4794bfcc807f5ce19, type: 3}
-    _sceneName: Scene_Menu
+    SceneAsset: {fileID: 102900000, guid: 912108c867554294098390564114cb4e, type: 3}
+    SceneName: Scene_Menu
+  SCENE_COUNTDOWN:
+    SceneAsset: {fileID: 102900000, guid: c0cc6cb3dbbc7144893a34b3d3a1c071, type: 3}
+    SceneName: Scene_Countdown
+  SCENE_END_STAGE:
+    SceneAsset: {fileID: 102900000, guid: 399b36e1aa9d62d4eb550a8a5b4a4e99, type: 3}
+    SceneName: Scene_EndStage
+  SCENE_END_GAME:
+    SceneAsset: {fileID: 102900000, guid: 02e54f0e3d8e88d4a844ebc111606543, type: 3}
+    SceneName: Scene_EndGame
   OnLoadStart:
     m_PersistentCalls:
       m_Calls: []
