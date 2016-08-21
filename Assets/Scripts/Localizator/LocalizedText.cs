@@ -17,6 +17,10 @@ namespace Localizator
 
         void Start()
         {
+            if (LanguageManager.Instance == null)
+            {
+                LanguageManager.CreateInstance();
+            }
             LanguageManager.Instance.OnChangeLanguage.AddListener(OnChangeLanguage);
             OnChangeLanguage();
         }
@@ -24,11 +28,6 @@ namespace Localizator
         public void SetText (string fragment)
         {
             Fragment = fragment;
-        }
-
-        public void SetText (EFragmentsEnum fragment)
-        {
-            SetText(fragment.ToString());
         }
 
         public void OnChangeLanguage()

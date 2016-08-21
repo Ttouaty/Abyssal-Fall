@@ -2,54 +2,86 @@
 using System.Collections;
 
 [RequireComponent(typeof(Rigidbody))]
-public class Tile : MonoBehaviour {
+public class Tile : MonoBehaviour, IPoolable
+{
+	private float       _timeLeft  = 0.8f;
+	private bool        _isTouched = false;
+    private bool        _isFalling = false;
+    private Rigidbody   _rigidB;
 
-	[SerializeField]
-	private float _timeLeft = 0.8f;
+    void Awake()
+    {
+        _rigidB = GetComponent<Rigidbody>();
+    }
 
-	private Rigidbody _rigidB;
-	private bool _isTouched = false;
+    void Update ()
+    {
+        if(_isFalling && transform.position.y < -200)
+        {
+            GameObjectPool.AddObjectIntoPool(gameObject);
+        }
+    }
 
-	void Start () 
-	{
-		_rigidB = GetComponent<Rigidbody>();
-		_rigidB.isKinematic = true;
-	}
+    public void OnGetFromPool()
+    {
+        _rigidB.isKinematic = true;
+        _isTouched = false;
+        _isFalling = false;
+    }
 
-	public void ActivateFall()
+    public void OnReturnToPool()
+    {
+        TimeManager.OnPause.RemoveListener(OnPause);
+        TimeManager.OnResume.RemoveListener(OnResume);
+        _rigidB.isKinematic = true;
+    }
+
+    void OnPause(float value)
+    {
+        if (_isFalling)
+            _rigidB.isKinematic = true;
+    }
+
+    void OnResume(float value)
+    {
+        if(_isFalling)
+            _rigidB.isKinematic = false;
+    }
+
+    public void SetTimeLeft(float value)
+    {
+        _timeLeft = value;
+    }
+
+    public void ActivateFall()
 	{
 		if (_isTouched)
 			return;
 
-		_isTouched = true;
+        TimeManager.OnPause.AddListener(OnPause);
+        TimeManager.OnResume.AddListener(OnResume);
+
+        _isTouched = true;
 		StartCoroutine(FallCoroutine());
 	}
 
 	IEnumerator FallCoroutine()
 	{
-		while (_timeLeft > 0)
-		{
-			_timeLeft -= Time.deltaTime;
-			yield return new WaitForEndOfFrame();
-		}
+        while(_timeLeft > 0)
+        {
+            _timeLeft -= TimeManager.DeltaTime;
+            yield return null;
+        }
 
 		Fall();
 	}
 
-	//public void ReduceTime()
-	//{
-	//	_timeLeft -= Time.deltaTime;
-	//	if (_timeLeft <= 0)
-	//	{
-	//		Fall();
-	//	}
-	//}
-
 	private void Fall()
-	{
-		_rigidB.isKinematic = false;
+    {
+        _isFalling = true;
+        _rigidB.isKinematic = false;
         Ground groundComponent = GetComponent<Ground>();
-        if(groundComponent != null)
+        if (groundComponent != null)
         {
             if(groundComponent.Obstacle != null)
             {

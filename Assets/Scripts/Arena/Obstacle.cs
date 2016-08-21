@@ -1,27 +1,83 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Obstacle : MonoBehaviour
+[RequireComponent(typeof(Rigidbody))]
+public class Obstacle : MonoBehaviour, IPoolable
 {
-	[SerializeField]
-	private bool _isTouched;
-	[SerializeField]
-	private GameObject _particleSystem;
-	private Rigidbody _rigidB;
+    [SerializeField]
+    private GameObject  _particleSystem;
+    private bool        _isTouched = false;
+    private bool        _isFalling = false;
+    private Rigidbody   _rigidB;
 
-	public void OnDropped ()
+    void Awake ()
+    {
+        _rigidB = GetComponent<Rigidbody>();
+    }
+
+    void Update()
+    {
+        if (_isFalling && transform.position.y < -200)
+        {
+            GameObjectPool.AddObjectIntoPool(gameObject);
+        }
+    }
+
+    public void OnGetFromPool()
+    {
+        _rigidB.isKinematic = true;
+        _isTouched = false;
+        _isFalling = false;
+    }
+
+    public void OnReturnToPool()
+    {
+        TimeManager.OnPause.RemoveListener(OnPause);
+        TimeManager.OnResume.RemoveListener(OnResume);
+        _rigidB.isKinematic = true;
+    }
+
+    void OnPause(float value)
+    {
+        if (_isFalling)
+            _rigidB.isKinematic = true;
+    }
+
+    void OnResume(float value)
+    {
+        if (_isFalling)
+            _rigidB.isKinematic = false;
+    }
+
+    public void OnDropped ()
 	{
 		_particleSystem.SetActive(true);
         GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
-	}
+    }
 
-	public void ActivateFall()
+    public void ActivateFall()
 	{
 		if (_isTouched)
 			return;
 
-		_rigidB = GetComponent<Rigidbody>();
-		_isTouched = true;
-		_rigidB.isKinematic = false;
-	}
+        TimeManager.OnPause.AddListener(OnPause);
+        TimeManager.OnResume.AddListener(OnResume);
+
+        _isTouched = true;
+        Fall();
+    }
+
+    private void Fall()
+    {
+        _isFalling = true;
+        _rigidB.isKinematic = false;
+        Ground groundComponent = GetComponent<Ground>();
+        if (groundComponent != null)
+        {
+            if (groundComponent.Obstacle != null)
+            {
+                groundComponent.Obstacle.ActivateFall();
+            }
+        }
+    }
 }

@@ -29,22 +29,24 @@ public class CameraShake : MonoBehaviour
 
 	void Update()
 	{
+        if(!TimeManager.IsPaused)
+        {
+            //It may seem like trash code, but it is efficient.
+            transform.position = transform.position - _oldShakeOffset;
+            _oldShakeOffset = _shakeOffset;
+            transform.position = transform.position + _shakeOffset;
+            _shakeOffset = Vector3.zero;
 
-		//It may seem like trash code, but it is efficient.
-		transform.position = transform.position - _oldShakeOffset;
-		_oldShakeOffset = _shakeOffset;
-		transform.position = transform.position + _shakeOffset;
-		_shakeOffset = Vector3.zero;
-
-		if (shakeDuration > 0 && _isShaking)
-		{
-			_shakeOffset = Random.insideUnitSphere * shakeAmount;
-			shakeDuration -= Time.deltaTime * decreaseFactor;
-		}
-		else if(_isShaking)
-		{
-			_isShaking = false;
-			shakeDuration = 0f;
-		}
+            if (shakeDuration > 0 && _isShaking)
+            {
+                _shakeOffset = Random.insideUnitSphere * shakeAmount;
+                shakeDuration -= TimeManager.DeltaTime * decreaseFactor;
+            }
+            else if (_isShaking)
+            {
+                _isShaking = false;
+                shakeDuration = 0f;
+            }
+        }
 	}
 }

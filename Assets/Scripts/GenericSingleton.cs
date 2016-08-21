@@ -16,7 +16,7 @@ public abstract class GenericSingleton<T> : MonoBehaviour where T : Component
 		}
 	}
 
-	public virtual void OnLevelWasLoaded()
+	protected virtual void OnLevelWasLoaded()
 	{
 		if (_instance == null)
 		{
@@ -26,4 +26,6 @@ public abstract class GenericSingleton<T> : MonoBehaviour where T : Component
 			Destroy(gameObject);
 		}
 	}
+
+    public virtual void Init() { }
 }

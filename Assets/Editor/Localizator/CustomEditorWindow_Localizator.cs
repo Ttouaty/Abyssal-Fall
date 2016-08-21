@@ -85,7 +85,15 @@ namespace Localizator
 
             List<SystemLanguage> languageToRemove = new List<SystemLanguage>();
 
-			if (!WorkspaceExists())
+            EditorGUILayout.BeginVertical();
+            {
+                GUILayout.Label("Localization Editor Workspace v" + LanguageManager.VERSION, titleStyle);
+            }
+            EditorGUILayout.EndVertical();
+
+            EditorGUILayout.Separator();
+
+            if (!WorkspaceExists())
             {
                 EditorGUILayout.BeginHorizontal("box", GUILayout.Height(titleStyle.lineHeight));
                 {
@@ -111,14 +119,6 @@ namespace Localizator
             }
 			else
 			{
-				EditorGUILayout.BeginVertical();
-				{
-					GUILayout.Label("Localization Editor Workspace", titleStyle);
-				}
-				EditorGUILayout.EndVertical();
-
-				EditorGUILayout.Separator();
-
 				EditorGUILayout.BeginHorizontal();
 				{
 					EditorGUILayout.BeginVertical(GUILayout.Width(position.width * 0.5f - 10));
@@ -164,11 +164,18 @@ namespace Localizator
                             EditorGUILayout.BeginHorizontal("box");
                             {
                                 EditorGUILayout.LabelField("Change Default Language");
-                                ELanguagesEnum oldLang = (ELanguagesEnum)Enum.Parse(typeof(ELanguagesEnum), DefaultLanguage.ToString());
-                                SystemLanguage lang = (SystemLanguage)Enum.Parse(typeof(SystemLanguage), EditorGUILayout.EnumPopup(oldLang).ToString());
-                                if(!lang.Equals(DefaultLanguage))
+                                List<string> list = new List<string>();
+                                foreach (KeyValuePair<SystemLanguage, string> value in _localizationDatabaseFiles)
                                 {
-                                    DefaultLanguage = lang;
+                                    list.Add(value.Key.ToString());
+                                }
+                                string[] langs = list.ToArray();
+
+                                int index = list.IndexOf(DefaultLanguage.ToString());
+                                int selected = EditorGUILayout.Popup(index, langs);
+                                if(selected != index)
+                                {
+                                    DefaultLanguage = (SystemLanguage)Enum.Parse(typeof(SystemLanguage), langs[selected]);
                                 }
                             }
                             EditorGUILayout.EndHorizontal();
@@ -305,17 +312,6 @@ namespace Localizator
                 lines.Add(value.Key.ToString());
             }
 
-            List<string> languageFile = new List<string>() {
-                    "namespace Localizator",
-                    "{",
-                    "   public enum ELanguagesEnum",
-                    "   {",
-                    "       " + string.Join(", ", lines.ToArray()),
-                    "   }",
-                    "}"
-                };
-            File.WriteAllLines(Localizator.Path.ELanguagesEnumPath, languageFile.ToArray());
-
             AssetDatabase.Refresh();
 		}
 
@@ -351,17 +347,6 @@ namespace Localizator
             {
                 File.Delete(Localizator.Path.EFragmentsEnumPath);
             }
-
-            List<string> enumFile = new List<string>() {
-                "namespace Localizator",
-                "{",
-                "   public enum EFragmentsEnum",
-                "   {",
-                "       none, " + string.Join(", ", lines.ToArray()),
-                "   }",
-                "}"
-            };
-            File.WriteAllLines(Localizator.Path.EFragmentsEnumPath, enumFile.ToArray());
 
             SaveWorkspace();
 		}

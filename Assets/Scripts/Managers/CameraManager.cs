@@ -61,7 +61,7 @@ public class CameraManager : MonoBehaviour
 		// Thanks unity doc for distance calculation :)
 		while(timer < 1)
 		{
-			timer += Time.deltaTime;
+			timer += TimeManager.DeltaTime;
 			_camera.transform.position = Vector3.Lerp(_camera.transform.position, endPosition, timer);
 			yield return null;
 		}
@@ -85,7 +85,7 @@ public class CameraManager : MonoBehaviour
 		float timer = 0;
 		while(timer < 1)
 		{
-			timer += Time.deltaTime * (1 / _cameraWinZoomSpeed);
+			timer += TimeManager.DeltaTime * (1 / _cameraWinZoomSpeed);
 			transform.position = Vector3.Lerp(startPos, endPos, timer);
 			transform.LookAt(winner.transform);
 			yield return null;

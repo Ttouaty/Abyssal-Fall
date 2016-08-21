@@ -24,7 +24,7 @@ public class IntCooldown : CoolDown {
 
 	protected override void Update()
 	{
-		if (Interval / Time.deltaTime < 1)
+		if (Interval / TimeManager.DeltaTime < 1)
 			Debug.LogWarning("IntCoolDown linked to object " + parent.name + " has skipped a OnProgress() due to framerate too low.");
 
 		if (_nextTimeStamp <= Time.time)

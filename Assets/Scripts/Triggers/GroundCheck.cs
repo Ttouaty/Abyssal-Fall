@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class GroundCheck : MonoBehaviour {
-
+public class GroundCheck : MonoBehaviour
+{
 	private Rigidbody _rigidB;
 	private PlayerController _playerRef;
 
@@ -24,7 +24,7 @@ public class GroundCheck : MonoBehaviour {
 
 	void CheckForGround()
 	{
-		if (_playerRef.IsGrounded)
+		if (_playerRef.IsGrounded && !TimeManager.IsPaused)
 		{
 			_rigidB.velocity = _rigidB.velocity.ZeroY();
 

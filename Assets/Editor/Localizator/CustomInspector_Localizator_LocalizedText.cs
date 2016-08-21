@@ -49,7 +49,6 @@ namespace Localizator
                 {
                     _target.Fragment = _rootLines[_selectedIndex];
 
-#if UNITY_EDITOR
                     if(Application.isPlaying)
                     {
                         _target.OnChangeLanguage();
@@ -60,9 +59,6 @@ namespace Localizator
                         _target.gameObject.SetActive(false);
                         _target.gameObject.SetActive(true);
                     }
-#else
-                    _target.OnChangeLanguage();
-#endif
                 }
             }
         }

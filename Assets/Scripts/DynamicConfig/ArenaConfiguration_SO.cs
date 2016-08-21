@@ -8,5 +8,5 @@ public class ArenaConfiguration_SO : ScriptableObject
     public GameObject Ground;
     public GameObject Obstacle;
     public PoolConfiguration[] OtherAssetsToLoad;
-    public string BackgroundLevel;
+    public SceneField BackgroundLevel;
 }

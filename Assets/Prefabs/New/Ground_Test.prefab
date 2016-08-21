@@ -9,11 +9,11 @@ GameObject:
   m_Component:
   - 4: {fileID: 489832}
   - 33: {fileID: 3304664}
-  - 65: {fileID: 6525938}
   - 23: {fileID: 2398152}
+  - 65: {fileID: 6525938}
+  - 54: {fileID: 5482188}
   - 114: {fileID: 11475648}
   - 114: {fileID: 11422588}
-  - 54: {fileID: 5482188}
   - 114: {fileID: 11460622}
   m_Layer: 8
   m_Name: Ground_Test
@@ -78,7 +78,7 @@ Rigidbody:
   m_Drag: 0
   m_AngularDrag: .0500000007
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
@@ -118,7 +118,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fa3d0fadeb2ca846ad293cf06016227, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _timeLeft: .800000012
 --- !u!114 &11475648
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -147,6 +146,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: m_Layer
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_IsKinematic
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

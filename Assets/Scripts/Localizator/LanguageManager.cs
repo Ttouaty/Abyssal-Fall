@@ -18,7 +18,7 @@ namespace Localizator
 
 	public class LanguageManager : MonoBehaviour
 	{
-		public const string VERSION = "1.0.0";
+		public const string VERSION = "1.3.0";
         public static SystemLanguage DefaultLanguage = SystemLanguage.Unknown;
 
         private static LanguageManager _instance;
@@ -29,10 +29,6 @@ namespace Localizator
 				if (_instance == null)
                 {
                     _instance = GameObject.FindObjectOfType<LanguageManager>();
-                    if(_instance == null && Application.isPlaying)
-                    {
-                        CreateInstance();
-                    }
                 }
 				return _instance;
 			}
@@ -130,7 +126,7 @@ namespace Localizator
             {
                 return target;
             }
-            return "Unknown Label <" + id + ">";
+            return "Not_Found_" + id;
 		}
 	}
 }

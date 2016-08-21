@@ -9,7 +9,7 @@ public class Player
 	public int JoystickNumber = 0;
 	[HideInInspector]
 	public int SkinNumber = 0; //the index of the material used by the playerMesh
-	public float Score = 0;
+	public int Score = 0;
 	public bool isReady
 	{
 		get{ return _ready; }

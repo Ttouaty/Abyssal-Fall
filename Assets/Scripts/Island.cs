@@ -23,6 +23,10 @@ public class Island : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-		transform.position = new Vector3(transform.position.x, _initialY + _amplitude * Mathf.Sin(_speed * (Time.time - _delay)), transform.position.z);
+		transform.position = new Vector3(
+            transform.position.x, 
+            _initialY + _amplitude * Mathf.Sin(_speed * (TimeManager.CurrentTime - _delay)), 
+            transform.position.z
+        );
 	}
 }

@@ -7,14 +7,11 @@ public class CoolDownManager : GenericSingleton<CoolDownManager>
 	private List<CoolDown> _managedCoolDowns = new List<CoolDown>();
 
 	private CoolDown[] _arrayCooldown;
-	void Awake()
-	{
-		_arrayCooldown = new CoolDown[0];
-	}
 
-	void Start () {
-	
-	}
+	void Start ()
+    {
+        _arrayCooldown = new CoolDown[0];
+    }
 
 	void Update()
 	{

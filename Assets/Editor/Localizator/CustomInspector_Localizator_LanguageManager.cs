@@ -12,12 +12,11 @@ namespace Localizator
     {
         public override void OnInspectorGUI()
         {
-            string currentLanguage = LanguageManager.Instance.CurrentLanguage.ToString();
-            ELanguagesEnum targetLanguage = (ELanguagesEnum)Enum.Parse(typeof(ELanguagesEnum), currentLanguage);
+            SystemLanguage targetLanguage = LanguageManager.Instance.CurrentLanguage;
 
             if(Application.isPlaying)
             {
-                targetLanguage = (ELanguagesEnum)EditorGUILayout.EnumPopup("Current Language", targetLanguage);
+                targetLanguage = (SystemLanguage)EditorGUILayout.EnumPopup("Current Language", targetLanguage);
                 LanguageManager.Instance.CurrentLanguage = (SystemLanguage)Enum.Parse(typeof(SystemLanguage), targetLanguage.ToString());
             }
             else

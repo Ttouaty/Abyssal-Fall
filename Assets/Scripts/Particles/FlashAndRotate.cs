@@ -33,6 +33,6 @@ public class FlashAndRotate : MonoBehaviour
 		_rotationDone = Mathf.Lerp(_rotationDone, _rotation, eT / (_particles.duration + _particles.startLifetime));
 		transform.rotation = Quaternion.AngleAxis(_rotationDone, _rotationAxis);
 		
-		eT += Time.deltaTime;
+		eT += TimeManager.DeltaTime;
 	}
 }

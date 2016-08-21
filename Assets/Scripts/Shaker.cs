@@ -22,7 +22,7 @@ public class Shaker : MonoBehaviour
 		while(duration > 0)
 		{
 			transform.position = originalPosition + Random.insideUnitSphere * shakeAmount;
-			duration -= Time.deltaTime * decreaseFactor;
+			duration -= TimeManager.DeltaTime * decreaseFactor;
 			yield return null;
 		}
 		transform.localPosition = originalPosition;

@@ -21,7 +21,7 @@ public class GameObjectPool : GenericSingleton<GameObjectPool>
 	*********/
     public const string VERSION = "2.3.0";
 
-    public static T GetAvailableObject<T>(string poolName) where T : Component
+    public static T GetAvailableObject<T>(string poolName) where T : IPoolable
     {
         GameObject go = GetAvailableObject(poolName);
         return go.GetComponent<T>();
@@ -38,9 +38,16 @@ public class GameObjectPool : GenericSingleton<GameObjectPool>
                 {
                     GameObject go = pool.Reserve[0];
                     go.transform.parent = null;
-                    go.gameObject.SetActive(true);
+                    go.SetActive(true);
                     pool.Reserve.RemoveAt(0);
-                    return go.gameObject;
+
+                    IPoolable iPoolable = go.GetComponent<IPoolable>();
+                    if(iPoolable != null)
+                    {
+                        iPoolable.OnGetFromPool();
+                    }
+
+                    return go;
                 }
                 else
                 {
@@ -62,6 +69,12 @@ public class GameObjectPool : GenericSingleton<GameObjectPool>
         if (poolableComponent != null)
         {
             poolableComponent.AddToPool();
+
+            IPoolable iPoolable = go.GetComponent<IPoolable>();
+            if (iPoolable != null)
+            {
+                iPoolable.OnReturnToPool();
+            }
         }
         else
         {
@@ -117,11 +130,11 @@ public class GameObjectPool : GenericSingleton<GameObjectPool>
     {
         if (bInitOnLoad)
         {
-            Init();
+            Start_Implementation();
         }
     }
 
-    public IEnumerator Init()
+    public IEnumerator Start_Implementation()
     {
         if (bCanLoad)
         {
@@ -132,6 +145,16 @@ public class GameObjectPool : GenericSingleton<GameObjectPool>
 
     public void AddPool(GameObject prefab, int quantity = 1000)
     {
+        for(int i = 0; i < Pools.Count; ++i)
+        {
+            if(Pools[i].Prefab.name.Equals(prefab.name))
+            {
+                Pool poolToAdd = Pools[i];
+                poolToAdd.Quantity += quantity;
+                Pools[i] = poolToAdd;
+                return;
+            }
+        }
         Pool pool = new Pool();
         pool.Prefab = prefab;
         pool.Quantity = quantity;

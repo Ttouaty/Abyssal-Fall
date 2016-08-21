@@ -9,6 +9,7 @@ public struct SceneField
 {
     public Object SceneAsset;
     public string SceneName;
+    public GameObject SceneRoot;
 
     public bool IsNull
     {

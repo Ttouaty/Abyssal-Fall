@@ -112,7 +112,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1275877639}
-  m_RootOrder: 3
+  m_RootOrder: 4
 --- !u!114 &498654668
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -124,6 +124,60 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 901796a436f4f6340ac1e6e6672d2851, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &626856037
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 626856038}
+  - 114: {fileID: 626856039}
+  m_Layer: 0
+  m_Name: TimeManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &626856038
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 626856037}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1275877639}
+  m_RootOrder: 3
+--- !u!114 &626856039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 626856037}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddd20d16b4cf47542b7cb2baa17ba070, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onPause:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: TimeEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  onResume:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: TimeEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  onTimeScaleChange:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: TimeEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  timeScale: 1
+  deltaTime: 0
+  currentTime: 0
 --- !u!1 &664798911
 GameObject:
   m_ObjectHideFlags: 0
@@ -153,7 +207,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1275877639}
-  m_RootOrder: 5
+  m_RootOrder: 0
 --- !u!82 &664798913
 AudioSource:
   m_ObjectHideFlags: 0
@@ -314,10 +368,19 @@ MonoBehaviour:
   AudioSource: {fileID: 664798914}
   GameLoop: {fileID: 664798913}
   nbPlayers: 0
+  OnPlayerDeath:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: GameEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  OnPlayerWin:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: GameEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   CurrentGameConfiguration:
     ArenaConfiguration: 0
     ModeConfiguration: 0
-    MapConfiguration: 0
+    MapConfiguration: 1
+    NumberOfStages: 5
 --- !u!1 &1003786147
 GameObject:
   m_ObjectHideFlags: 0
@@ -426,7 +489,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1275877639}
-  m_RootOrder: 1
+  m_RootOrder: 2
 --- !u!1 &1238131358
 GameObject:
   m_ObjectHideFlags: 0
@@ -491,7 +554,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1275877639}
-  m_RootOrder: 0
+  m_RootOrder: 7
 --- !u!1 &1275877638
 GameObject:
   m_ObjectHideFlags: 0
@@ -517,13 +580,14 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1238131360}
-  - {fileID: 1127726023}
+  - {fileID: 664798912}
   - {fileID: 1661495781}
+  - {fileID: 1127726023}
+  - {fileID: 626856038}
   - {fileID: 498654667}
   - {fileID: 1864334900}
-  - {fileID: 664798912}
   - {fileID: 1003786149}
+  - {fileID: 1238131360}
   m_Father: {fileID: 1511463442}
   m_RootOrder: 1
 --- !u!1 &1511463441
@@ -570,6 +634,7 @@ MonoBehaviour:
   GAME_OBJECT_POOL: {fileID: 0}
   DYNAMIC_CONFIG: {fileID: 0}
   LEVEL_MANAGER: {fileID: 0}
+  TIME_MANAGER: {fileID: 0}
   SOUND_MANAGER: {fileID: 0}
   LOADING_MANAGER: {fileID: 0}
   GAME_MANAGER: {fileID: 0}
@@ -717,7 +782,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1275877639}
-  m_RootOrder: 2
+  m_RootOrder: 1
 --- !u!114 &1661495782
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -729,25 +794,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1dfb4f3fce6bc134a8dcd82bd783535f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CurrentScenes: []
   CurrentArenaConfig: {fileID: 0}
   CurrentModeConfig: {fileID: 0}
   CurrentMapConfig: {fileID: 0}
-  LoadingProgress: 0
-  SCENE_LOADING:
+  SceneLoading:
     SceneAsset: {fileID: 102900000, guid: e54ac6572ab434944b41e654e6870d14, type: 3}
     SceneName: Scene_Loading
-  SCENE_MENU:
-    SceneAsset: {fileID: 102900000, guid: 912108c867554294098390564114cb4e, type: 3}
+    SceneRoot: {fileID: 0}
+  SceneMenu:
+    SceneAsset: {fileID: 102900000, guid: df9dfe5c567cb0c4794bfcc807f5ce19, type: 3}
     SceneName: Scene_Menu
-  SCENE_COUNTDOWN:
+    SceneRoot: {fileID: 0}
+  SceneCountdown:
     SceneAsset: {fileID: 102900000, guid: c0cc6cb3dbbc7144893a34b3d3a1c071, type: 3}
     SceneName: Scene_Countdown
-  SCENE_END_STAGE:
+    SceneRoot: {fileID: 0}
+  ScenePause:
+    SceneAsset: {fileID: 102900000, guid: 221c4d3f9a27b0e46b8c106cc055da1a, type: 3}
+    SceneName: Scene_Pause
+    SceneRoot: {fileID: 0}
+  SceneEndStage:
     SceneAsset: {fileID: 102900000, guid: 399b36e1aa9d62d4eb550a8a5b4a4e99, type: 3}
     SceneName: Scene_EndStage
-  SCENE_END_GAME:
+    SceneRoot: {fileID: 0}
+  SceneEndGame:
     SceneAsset: {fileID: 102900000, guid: 02e54f0e3d8e88d4a844ebc111606543, type: 3}
     SceneName: Scene_EndGame
+    SceneRoot: {fileID: 0}
   OnLoadStart:
     m_PersistentCalls:
       m_Calls: []
@@ -798,4 +872,4 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1275877639}
-  m_RootOrder: 4
+  m_RootOrder: 5

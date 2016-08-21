@@ -3,12 +3,11 @@ using System.Collections;
 
 public class KillPlane : MonoBehaviour
 {
-	void OnTriggerEnter(Collider colli)
-	{
-		if (colli.tag == "Player")
+	void OnTriggerEnter(Collider col)
+    {
+        if (col.tag == "Player")
 		{
-			colli.GetComponent<PlayerController>().Kill();
+			col.GetComponent<PlayerController>().Kill();
 		}
 	}
-	
 }

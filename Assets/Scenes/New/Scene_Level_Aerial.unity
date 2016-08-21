@@ -8234,6 +8234,7 @@ Transform:
   - {fileID: 1220924765}
   - {fileID: 700560248}
   - {fileID: 1069884238}
+  - {fileID: 1472024810}
   m_Father: {fileID: 1519767434}
   m_RootOrder: 2
 --- !u!1 &1272146084
@@ -9438,6 +9439,33 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1454682457}
   m_Mesh: {fileID: 4300000, guid: de8ced955859c264b995e7b809b4416c, type: 3}
+--- !u!1 &1472024809
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1472024810}
+  m_Layer: 0
+  m_Name: SpecialsRoot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1472024810
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1472024809}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1269547801}
+  m_RootOrder: 3
 --- !u!1 &1519767433
 GameObject:
   m_ObjectHideFlags: 0
@@ -9484,11 +9512,13 @@ MonoBehaviour:
     type: 2}
   _currentModeConfig: {fileID: 11400000, guid: 82a6f628a6cd35b42bd46311d783ea5a, type: 2}
   _currentMapConfig: {fileID: 11400000, guid: 85cdedd28d69be24481bc066f26eb0fc, type: 2}
-  ArenaRoot: {fileID: 1269547801}
+  TileScale: 1.50999999
   position: {x: 0, y: 0, z: 0}
+  ArenaRoot: {fileID: 1269547801}
   TilesRoot: {fileID: 1220924765}
   ObstaclesRoot: {fileID: 700560248}
   PlayersRoot: {fileID: 1069884238}
+  SpecialsRoot: {fileID: 1472024810}
 --- !u!1 &1523759871
 GameObject:
   m_ObjectHideFlags: 0

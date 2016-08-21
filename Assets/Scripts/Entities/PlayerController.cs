@@ -150,11 +150,36 @@ public class PlayerController : MonoBehaviour
 		}
 
 		CustomStart();
-	}
 
-	protected void Update()
+        TimeManager.OnPause.AddListener(OnPause);
+        TimeManager.OnResume.AddListener(OnResume);
+        TimeManager.OnTimeScaleChange.AddListener(OnTimeScaleChange);
+    }
+
+    void OnDestroy()
+    {
+        TimeManager.OnPause.RemoveListener(OnPause);
+        TimeManager.OnResume.RemoveListener(OnResume);
+    }
+
+    void OnPause(float timeScale)
+    {
+        _animator.speed = timeScale;
+    }
+
+    void OnResume(float timeScale)
+    {
+        _animator.speed = timeScale;
+    }
+
+    void OnTimeScaleChange(float timeScale)
+    {
+        _animator.speed = timeScale;
+    }
+
+    protected void Update()
 	{
-		if (_isDead)
+		if (_isDead || TimeManager.IsPaused)
 			return;
 
 		ProcessCoolDowns();
@@ -185,8 +210,8 @@ public class PlayerController : MonoBehaviour
 	#region Processes
 	private void ProcessOrientation()
 	{
-		_activeDirection.x = Mathf.Lerp(_activeDirection.x, InputManager.GetAxis("x", _playerRef.JoystickNumber), 15 * Time.deltaTime);
-		_activeDirection.z = Mathf.Lerp(_activeDirection.z, InputManager.GetAxis("y", _playerRef.JoystickNumber), 15 * Time.deltaTime);
+		_activeDirection.x = Mathf.Lerp(_activeDirection.x, InputManager.GetAxis("x", _playerRef.JoystickNumber), 15 * TimeManager.DeltaTime);
+		_activeDirection.z = Mathf.Lerp(_activeDirection.z, InputManager.GetAxis("y", _playerRef.JoystickNumber), 15 * TimeManager.DeltaTime);
 		transform.LookAt(transform.position + (Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized) * _activeDirection), Vector3.up);
 	}
 
@@ -206,7 +231,7 @@ public class PlayerController : MonoBehaviour
 	{
 		if (!IsGrounded)
 		{
-			_stunTime.Add(Time.deltaTime); //decrease Stun only if grounded
+			_stunTime.Add(TimeManager.DeltaTime); //decrease Stun only if grounded
 		}
 		
 		_allowInput = false;
@@ -250,7 +275,7 @@ public class PlayerController : MonoBehaviour
 		}
 		else
 		{
-			_activeSpeed.y += _acceleration.y * Time.deltaTime * Physics.gravity.magnitude;
+			_activeSpeed.y += _acceleration.y * TimeManager.DeltaTime * Physics.gravity.magnitude;
 			_activeSpeed.y = Mathf.Clamp(_activeSpeed.y, -_maxSpeed.y, _maxSpeed.y * 10f);
 		}
 		ApplyFriction();
@@ -260,8 +285,8 @@ public class PlayerController : MonoBehaviour
 	{
 		if (IsGrounded)
 		{
-			_activeSpeed.x = _activeSpeed.x.Reduce(_friction * Time.deltaTime);
-			_activeSpeed.z = _activeSpeed.z.Reduce(_friction * Time.deltaTime);
+			_activeSpeed.x = _activeSpeed.x.Reduce(_friction * TimeManager.DeltaTime);
+			_activeSpeed.z = _activeSpeed.z.Reduce(_friction * TimeManager.DeltaTime);
 		}
 	}
 
@@ -275,9 +300,9 @@ public class PlayerController : MonoBehaviour
 	}
 
 	private void ApplyCharacterFinalVelocity()
-	{
-		_rigidB.velocity = _activeSpeed;
-		_animator.SetFloat("Speed", Mathf.Abs(_activeSpeed.x) + Mathf.Abs(_activeSpeed.z));
+    {
+        transform.position += _activeSpeed * TimeManager.DeltaTime;
+        _animator.SetFloat("Speed", Mathf.Abs(_activeSpeed.x) + Mathf.Abs(_activeSpeed.z));
 	}
 
 
@@ -294,7 +319,7 @@ public class PlayerController : MonoBehaviour
 		_animator.SetTrigger("Death");
 		_audioSource.PlayOneShot(_characterData.SoundList.OnDeath);
 		_isDead = true;
-        // GameManager.Instance.OnPlayerDeath.Invoke(gameObject); // Removed temporarily
+        GameManager.Instance.OnPlayerDeath.Invoke(_playerRef);
     }
 
     public void Eject(Vector3 direction, float stunTime)

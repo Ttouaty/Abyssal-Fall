@@ -9,7 +9,11 @@ public struct GameConfiguration
     public EArenaConfiguration ArenaConfiguration;
     public EModeConfiguration ModeConfiguration;
     public EMapConfiguration MapConfiguration;
+    public int NumberOfStages;
 }
+
+[System.Serializable]
+public class GameEvent : UnityEvent<Player> { }
 
 public class GameManager : GenericSingleton<GameManager>
 {
@@ -29,33 +33,76 @@ public class GameManager : GenericSingleton<GameManager>
 	[HideInInspector]
 	public int nbPlayers = 0;
 
+    public GameEvent OnPlayerDeath;
+    public GameEvent OnPlayerWin;
+
     [Space()]
     public GameConfiguration  CurrentGameConfiguration;
 
+    private int _currentStage = 0;
+    public int CurrentStage { get { return _currentStage; } }
+    private List<Player> _alivePlayers;
+
+    void Start ()
+    {
+        OnPlayerDeath.AddListener(OnPlayerDeath_Listener);
+    }
+
+    void OnPlayerDeath_Listener(Player player)
+    {
+        if(_alivePlayers.IndexOf(player) >= 0)
+        {
+            _alivePlayers.Remove(player);
+            
+            if(_alivePlayers.Count == 1)
+            {
+                // Win !!!
+                ++_alivePlayers[0].Score;
+                OnPlayerWin.Invoke(_alivePlayers[0]);
+
+                if(_alivePlayers[0].Score == CurrentGameConfiguration.NumberOfStages)
+                {
+                    EndGameManager.Instance.WinnerId = _alivePlayers[0].PlayerNumber;
+                    EndGameManager.Instance.Open();
+                }
+                else
+                {
+                    EndStageManager.Instance.Open();
+                    ResetAlivePlayers();
+                    ++_currentStage;
+                }
+            }
+        }
+    }
+
 	public static void StartGame()
 	{
-		Instance.Init();
+        Instance.Init();
 		InProgress = true;
 	}
 
-	public static void ResetRegisteredPlayers()
-	{
-		Instance.RegisteredPlayers = new Player[4];
-		Instance.nbPlayers = 0;
-	}
-	// Use this for initialization
-	private void Init ()
-	{
-		OnAllLoadablesLoaded();
-	}
+	public override void Init ()
+    {
+        ResetAlivePlayers();
+        _currentStage = 1;
+        LevelManager.Instance.StartLevel(CurrentGameConfiguration);
+    }
 
-	public void Restart ()
-	{
-        OnAllLoadablesLoaded();
-	}
+    public static void ResetRegisteredPlayers()
+    {
+        Instance.RegisteredPlayers = new Player[4];
+        Instance.nbPlayers = 0;
+    }
 
-	void OnAllLoadablesLoaded()
-	{
-		LevelManager.Instance.StartLevel(CurrentGameConfiguration);
-	}
+    public void ResetAlivePlayers ()
+    {
+        _alivePlayers = new List<Player>();
+        for (int i = 0; i < RegisteredPlayers.Length; ++i)
+        {
+            if (RegisteredPlayers[i] != null)
+            {
+                _alivePlayers.Add(RegisteredPlayers[i]);
+            }
+        }
+    }
 }
