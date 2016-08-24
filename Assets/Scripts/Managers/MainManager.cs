@@ -4,16 +4,16 @@ using System.Collections.Generic;
 
 public class MainManager : GenericSingleton<MainManager>
 {
-    public GameObjectPool       GAME_OBJECT_POOL;
-    public DynamicConfig        DYNAMIC_CONFIG;
-    public LevelManager         LEVEL_MANAGER;
-    public TimeManager          TIME_MANAGER;
-    public SoundManager         SOUND_MANAGER;
-    public LoadingScreen    LOADING_MANAGER;
-    public GameManager          GAME_MANAGER;
-    public ArenaManager         ARENA_MANAGER;
-    public InputManager         INPUT_MANAGER;
-    public CoolDownManager      COOLDOWN_MANAGER;
+    [HideInInspector] public GameObjectPool       GAME_OBJECT_POOL;
+	[HideInInspector] public DynamicConfig DYNAMIC_CONFIG;
+	[HideInInspector] public LevelManager LEVEL_MANAGER;
+	[HideInInspector] public TimeManager TIME_MANAGER;
+	[HideInInspector] public SoundManager SOUND_MANAGER;
+	[HideInInspector] public LoadingScreen LOADING_MANAGER;
+	[HideInInspector] public GameManager GAME_MANAGER;
+	[HideInInspector] public ArenaManager ARENA_MANAGER;
+	[HideInInspector] public InputManager INPUT_MANAGER;
+	[HideInInspector] public CoolDownManager COOLDOWN_MANAGER;
 
     void Awake ()
     {
@@ -32,7 +32,7 @@ public class MainManager : GenericSingleton<MainManager>
         }
         if (DYNAMIC_CONFIG == null)
         {
-            Debug.LogError("[public DynamiConfig DYNAMIC_CONFIG] is Required to launch the game");
+            Debug.LogError("[public DynamicConfig DYNAMIC_CONFIG] is Required to launch the game");
             Debug.Break();
         }
         if (LEVEL_MANAGER == null)
