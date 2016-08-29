@@ -83,12 +83,13 @@ public class CustomEditorGameObjectPool : Editor
                             EditorGUILayout.EndHorizontal();
 
                             Rect progressBarRect = GUILayoutUtility.GetRect(300, 25);
-                            EditorGUI.ProgressBar(progressBarRect, pool.Reserve != null ? (float)pool.Reserve.Count / (float)pool.Quantity : 0, "");
+                            EditorGUI.ProgressBar(progressBarRect, pool.Reserve != null && pool.Quantity > 0 ? (float)pool.Reserve.Count / (float)pool.Quantity : 0, "");
 
                             if (pool.bIsOpen)
                             {
                                 GUILayout.Space(8);
 
+                                pool.Name = EditorGUILayout.TextField("Name: ", pool.Name);
                                 pool.Prefab = (GameObject)EditorGUILayout.ObjectField("Prefab: ", pool.Prefab, typeof(GameObject), false);
                                 pool.Quantity = EditorGUILayout.IntField("Quantity: ", pool.Quantity);
                                 EditorGUILayout.BeginHorizontal();

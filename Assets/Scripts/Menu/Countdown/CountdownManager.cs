@@ -14,12 +14,7 @@ public class CountdownManager : GenericSingleton<CountdownManager>
         }
     }
 
-    public void StartCountdown ()
-    {
-        StartCoroutine(Countdown());
-    }
-
-    IEnumerator Countdown ()
+    public IEnumerator Countdown ()
     {
         TimeManager.Pause();
         for (int i = 0; i < Images.Length; ++i)
@@ -30,7 +25,6 @@ public class CountdownManager : GenericSingleton<CountdownManager>
             Images[i].gameObject.SetActive(false);
         }
         TimeManager.Resume();
-
         MenuPauseManager.Instance.CanPause = true;
     }
 

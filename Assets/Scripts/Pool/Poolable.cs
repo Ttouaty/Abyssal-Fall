@@ -3,6 +3,7 @@
 public class Poolable : MonoBehaviour
 {
 	public Pool Pool;
+    public bool IsInPool = false;
 	
 	public void AddToPool ()
     {
@@ -13,5 +14,6 @@ public class Poolable : MonoBehaviour
         gameObject.transform.rotation = Quaternion.identity;
         gameObject.transform.localRotation = Quaternion.identity;
         gameObject.gameObject.SetActive(false);
+        IsInPool = true;
     }
 }

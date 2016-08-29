@@ -10,7 +10,7 @@ public class MenuPanel : MonoBehaviour {
 	
 	void Start()
 	{
-		if(transform.parent.GetComponent<MenuPanel>() != null)
-			ParentMenu = transform.parent.GetComponent<MenuPanel>();
+		    if(transform.parent.GetComponent<MenuPanel>() != null)
+			    ParentMenu = transform.parent.GetComponent<MenuPanel>();
 	}
 }

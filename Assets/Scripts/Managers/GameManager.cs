@@ -6,10 +6,10 @@ using System.Collections.Generic;
 [System.Serializable]
 public struct GameConfiguration
 {
-    public EArenaConfiguration ArenaConfiguration;
-    public EModeConfiguration ModeConfiguration;
-    public EMapConfiguration MapConfiguration;
-    public int NumberOfStages;
+	public EArenaConfiguration ArenaConfiguration;
+	public EModeConfiguration ModeConfiguration;
+	public EMapConfiguration MapConfiguration;
+	public int NumberOfStages;
 }
 
 [System.Serializable]
@@ -18,6 +18,25 @@ public class GameEvent : UnityEvent<Player> { }
 public class GameManager : GenericSingleton<GameManager>
 {
 	public static bool InProgress = false;
+
+	private AGameRules _gameRules;
+	public AGameRules GameRules 
+	{
+		get 
+		{
+			return _gameRules;
+		}
+		set
+		{
+			OnPlayerDeath.RemoveListener(_gameRules.OnPlayerDeath_Listener);
+			OnPlayerWin.RemoveListener(_gameRules.OnPlayerWin_Listener);
+
+			_gameRules = value;
+
+			OnPlayerDeath.AddListener(_gameRules.OnPlayerDeath_Listener);
+			OnPlayerWin.AddListener(_gameRules.OnPlayerWin_Listener);
+		}
+	}
 
 	public AudioClip OnGroundDrop;
 	public AudioClip OnObstacleDrop;
@@ -33,76 +52,48 @@ public class GameManager : GenericSingleton<GameManager>
 	[HideInInspector]
 	public int nbPlayers = 0;
 
-    public GameEvent OnPlayerDeath;
-    public GameEvent OnPlayerWin;
+	public GameEvent OnPlayerDeath;
+	public GameEvent OnPlayerWin;
 
-    [Space()]
-    public GameConfiguration  CurrentGameConfiguration;
+	[Space()]
+	public GameConfiguration  CurrentGameConfiguration;
 
-    private int _currentStage = 0;
-    public int CurrentStage { get { return _currentStage; } }
-    private List<Player> _alivePlayers;
+	public int CurrentStage = 0;
+	private List<Player> _alivePlayers;
+	public List<Player> AlivePlayers { get { return _alivePlayers; } }
 
-    void Start ()
-    {
-        OnPlayerDeath.AddListener(OnPlayerDeath_Listener);
-    }
-
-    void OnPlayerDeath_Listener(Player player)
-    {
-        if(_alivePlayers.IndexOf(player) >= 0)
-        {
-            _alivePlayers.Remove(player);
-            
-            if(_alivePlayers.Count == 1)
-            {
-                // Win !!!
-                ++_alivePlayers[0].Score;
-                OnPlayerWin.Invoke(_alivePlayers[0]);
-
-                if(_alivePlayers[0].Score == CurrentGameConfiguration.NumberOfStages)
-                {
-                    EndGameManager.Instance.WinnerId = _alivePlayers[0].PlayerNumber;
-                    EndGameManager.Instance.Open();
-                }
-                else
-                {
-                    EndStageManager.Instance.Open();
-                    ResetAlivePlayers();
-                    ++_currentStage;
-                }
-            }
-        }
-    }
-
-	public static void StartGame()
+	public void StartGame()
 	{
-        Instance.Init();
+		ResetAlivePlayers();
+		// DEBUG en attendant que la sélection de la map soit dispo
+		switch (_alivePlayers.Count)
+		{
+			case 2: CurrentGameConfiguration.MapConfiguration = EMapConfiguration.TestArena20x20; break;
+			case 3: CurrentGameConfiguration.MapConfiguration = EMapConfiguration.TestArena26x26; break;
+			case 4: CurrentGameConfiguration.MapConfiguration = EMapConfiguration.TestArena32x32; break;
+		}
+
+		CurrentStage = 1;
+		LevelManager.Instance.StartLevel(CurrentGameConfiguration);
+
 		InProgress = true;
 	}
 
-	public override void Init ()
-    {
-        ResetAlivePlayers();
-        _currentStage = 1;
-        LevelManager.Instance.StartLevel(CurrentGameConfiguration);
-    }
+	public static void ResetRegisteredPlayers()
+	{
+		Instance.RegisteredPlayers = new Player[4];
+		Instance.nbPlayers = 0;
+	}
 
-    public static void ResetRegisteredPlayers()
-    {
-        Instance.RegisteredPlayers = new Player[4];
-        Instance.nbPlayers = 0;
-    }
-
-    public void ResetAlivePlayers ()
-    {
-        _alivePlayers = new List<Player>();
-        for (int i = 0; i < RegisteredPlayers.Length; ++i)
-        {
-            if (RegisteredPlayers[i] != null)
-            {
-                _alivePlayers.Add(RegisteredPlayers[i]);
-            }
-        }
-    }
+	public void ResetAlivePlayers ()
+	{
+		_alivePlayers = new List<Player>();
+		for (int i = 0; i < RegisteredPlayers.Length; ++i)
+		{
+			if (RegisteredPlayers[i] != null)
+			{
+				_alivePlayers.Add(RegisteredPlayers[i]);
+			}
+		}
+	}
 }

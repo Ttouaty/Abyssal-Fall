@@ -11,6 +11,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20adcf750d6889e488dbb9968145e077, type: 3}
   m_Name: Mode_FreeForAll
   m_EditorClassIdentifier: 
-  DefaultArenaSize: 10
-  AdditionalBlocksPerPlayer: 3
-  FakePlayers: 2
+  IsMatchRoundBased: 1
+  NumberOfRounds: 5
+  MatchDuration: 180
+  CanFalledTilesRespawn: 0
+  TileRegerationTime: 0
+  PointsPerKill: 0
+  PointsPerSuicide: 0
+  TimeBeforeSuicide: 5
+  CanPlayerRespawn: 0
+  RespawnZones: []
+  Behaviours:
+  - Behaviour: {fileID: 11435838, guid: 7293972aaaab09d429d65f357eb0208e, type: 2}
+    Frequency: 2
+  AdditionalPoolsToLoad: []

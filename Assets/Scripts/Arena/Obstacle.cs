@@ -32,8 +32,8 @@ public class Obstacle : MonoBehaviour, IPoolable
 
     public void OnReturnToPool()
     {
-        TimeManager.OnPause.RemoveListener(OnPause);
-        TimeManager.OnResume.RemoveListener(OnResume);
+        TimeManager.Instance.OnPause.RemoveListener(OnPause);
+        TimeManager.Instance.OnResume.RemoveListener(OnResume);
         _rigidB.isKinematic = true;
     }
 
@@ -60,8 +60,10 @@ public class Obstacle : MonoBehaviour, IPoolable
 		if (_isTouched)
 			return;
 
-        TimeManager.OnPause.AddListener(OnPause);
-        TimeManager.OnResume.AddListener(OnResume);
+        ArenaManager.Instance.RemoveObstacle(this);
+
+        TimeManager.Instance.OnPause.AddListener(OnPause);
+        TimeManager.Instance.OnResume.AddListener(OnResume);
 
         _isTouched = true;
         Fall();

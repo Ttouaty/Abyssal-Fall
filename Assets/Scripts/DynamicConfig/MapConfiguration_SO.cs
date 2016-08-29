@@ -9,4 +9,5 @@ public class MapConfiguration_SO : ScriptableObject
 {
     public TextAsset MapFile;
     public Vector2 MapSize;
+    public ABaseBehaviour[] Behaviours;
 }

@@ -4,66 +4,47 @@ using System.Collections.Generic;
 
 public class MainManager : GenericSingleton<MainManager>
 {
-    public GameObjectPool       GAME_OBJECT_POOL;
-    public DynamicConfig        DYNAMIC_CONFIG;
-    public LevelManager         LEVEL_MANAGER;
-    public TimeManager          TIME_MANAGER;
-    public SoundManager         SOUND_MANAGER;
-    public LoadingScreen    LOADING_MANAGER;
-    public GameManager          GAME_MANAGER;
-    public ArenaManager         ARENA_MANAGER;
-    public InputManager         INPUT_MANAGER;
-    public CoolDownManager      COOLDOWN_MANAGER;
+	public GameObjectPool       GAME_OBJECT_POOL;
+	public DynamicConfig        DYNAMIC_CONFIG;
+	public LevelManager         LEVEL_MANAGER;
+	public TimeManager          TIME_MANAGER;
+	public InputManager         INPUT_MANAGER;
+	public CoolDownManager      COOLDOWN_MANAGER;
+	public GameManager          GAME_MANAGER;
+	public SoundManager         SOUND_MANAGER;
+	public LoadingScreen        LOADING_MANAGER;
+	public ArenaManager         ARENA_MANAGER;
 
-    void Awake ()
-    {
-        GAME_OBJECT_POOL    = GameObjectPool.Instance;
-        DYNAMIC_CONFIG      = DynamicConfig.Instance;
-        LEVEL_MANAGER       = LevelManager.Instance;
-        INPUT_MANAGER       = InputManager.Instance;
-        COOLDOWN_MANAGER    = CoolDownManager.Instance;
-        GAME_MANAGER        = GameManager.Instance;
-        TIME_MANAGER        = TimeManager.Instance;
+	void Start ()
+	{
+		GAME_OBJECT_POOL    = GameObjectPool.Instance;
+		DYNAMIC_CONFIG      = DynamicConfig.Instance;
+		LEVEL_MANAGER       = LevelManager.Instance;
+		TIME_MANAGER        = TimeManager.Instance;
+		INPUT_MANAGER       = InputManager.Instance;
+		COOLDOWN_MANAGER    = CoolDownManager.Instance;
+		GAME_MANAGER        = GameManager.Instance;
 
-        if (GAME_OBJECT_POOL == null)
-        {
-            Debug.LogError("[public GameObjectPool GAME_OBJECT_POOL] is Required to launch the game");
-            Debug.Break();
-        }
-        if (DYNAMIC_CONFIG == null)
-        {
-            Debug.LogError("[public DynamiConfig DYNAMIC_CONFIG] is Required to launch the game");
-            Debug.Break();
-        }
-        if (LEVEL_MANAGER == null)
-        {
-            Debug.LogError("[public LevelManager LEVEL_MANAGER] is Required to launch the game");
-            Debug.Break();
-        }
-        if (INPUT_MANAGER == null)
-        {
-            Debug.LogError("[public InputManager INPUT_MANAGER] is Required to launch the game");
-            Debug.Break();
-        }
-        if (COOLDOWN_MANAGER == null)
-        {
-            Debug.LogError("[public CoolDownManager COOLDOWN_MANAGER] is Required to launch the game");
-            Debug.Break();
-        }
-        if (GAME_MANAGER == null)
-        {
-            Debug.LogError("[public GameManager GAME_MANAGER] is Required to launch the game");
-            Debug.Break();
-        }
-        if (TIME_MANAGER == null)
-        {
-            Debug.LogError("[public TimeManager TIME_MANAGER] is Required to launch the game");
-            Debug.Break();
-        }
-    }
+		Dictionary<string, Object> dic = new Dictionary<string, Object>()
+		{
+			{ "GAME_OBJECT_POOL", GAME_OBJECT_POOL },
+			{ "DYNAMIC_CONFIG", DYNAMIC_CONFIG },
+			{ "LEVEL_MANAGER", LEVEL_MANAGER },
+			{ "INPUT_MANAGER", INPUT_MANAGER },
+			{ "COOLDOWN_MANAGER", COOLDOWN_MANAGER },
+			{ "GAME_MANAGER", GAME_MANAGER },
+			{ "TIME_MANAGER", TIME_MANAGER }
+		};
 
-    void Start ()
-    {
-        LEVEL_MANAGER.OpenMenu();
-    }
+		foreach(KeyValuePair<string, Object> value in dic)
+		{
+			if(value.Value == null)
+			{
+				Debug.LogError("[" + value.Key + "] is Required to launch the game");
+				Debug.Break();
+			}
+		}
+
+		LEVEL_MANAGER.OpenMenu(true);
+	}
 }

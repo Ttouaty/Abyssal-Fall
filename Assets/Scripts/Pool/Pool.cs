@@ -12,13 +12,21 @@ public struct Pool
 	public int QuantityLoaded;
 	public GameObject Root;
 	public List<GameObject> Reserve;
-	public string Name
-	{
-		get
-		{
-			return IsNull() ? "Unkown Pool" : Prefab.name;
-		}
-	}
+    public string Name;
+
+    public Pool (GameObject prefab = null, int quantity = 0)
+    {
+        Name            = prefab != null ? prefab.name : "Unkown Pool";
+        Prefab          = prefab;
+        Quantity        = quantity;
+
+        _GOPInstance    = null;
+
+        bIsOpen         = false;
+        QuantityLoaded  = 0;
+        Root            = null;
+        Reserve         = new List<GameObject>();
+    }
 
 	public void Drop()
 	{
@@ -68,18 +76,12 @@ public struct Pool
 	{
 		for (int i = 0; i < quantityPerFrame; ++i)
 		{
-			GameObject go = GameObject.Instantiate(Prefab);
-			go.transform.parent = Root.transform;
-			go.gameObject.SetActive(false);
-			go.name = Name + "_" + QuantityLoaded.ToString();
-			go.GetComponent<Poolable>().Pool = this;
+			GameObject go       = GameObject.Instantiate(Prefab);
+			go.name             = Name + "_" + QuantityLoaded.ToString();
+            Poolable poolable   = go.GetComponent<Poolable>();
+            poolable.Pool       = this;
 
-			go.transform.position = Vector3.zero;
-			go.transform.localPosition = Vector3.zero;
-			go.transform.rotation = Quaternion.identity;
-			go.transform.localRotation = Quaternion.identity;
-
-			Reserve.Add(go);
+            poolable.AddToPool();
 
 			++QuantityLoaded;
 			++GameObjectPool.Instance.ElementsLoaded;

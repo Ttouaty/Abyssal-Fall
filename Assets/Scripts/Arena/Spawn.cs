@@ -14,7 +14,7 @@ public class Spawn : MonoBehaviour
         {
             tileComponent.enabled = false;
         }
-        GetComponent<MeshRenderer>().material.color = Color.red;
+        GetComponent<MeshRenderer>().material.color = Color.green;
 	}
 
     void OnDestroy ()

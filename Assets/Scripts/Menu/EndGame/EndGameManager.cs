@@ -20,6 +20,8 @@ public class EndGameManager : GenericSingleton<EndGameManager>
                 {
                     if (InputManager.GetButtonDown("Dash", player.JoystickNumber))
                     {
+                        MainManager.Instance.LEVEL_MANAGER.UnloadScene(LevelManager.Instance.CurrentArenaConfig.BackgroundLevel);
+                        MainManager.Instance.LEVEL_MANAGER.CurrentArenaConfig = null;
                         MainManager.Instance.LEVEL_MANAGER.OpenMenu();
                     }
                 }

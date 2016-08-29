@@ -22,26 +22,26 @@ namespace Localizator
 		#region Initialization
 		private static Dictionary<SystemLanguage, string> _localizationDatabaseFiles = null;
 
-        private static SystemLanguage _defaultLanguage = SystemLanguage.Unknown;
-        public static SystemLanguage DefaultLanguage
-        {
-            get
-            {
-                if(_defaultLanguage == SystemLanguage.Unknown && File.Exists(Path.DefaultLanguageFilePath))
-                {
-                    _defaultLanguage = (SystemLanguage)Enum.Parse(typeof(SystemLanguage), File.ReadAllText(Path.DefaultLanguageFilePath));
-                }
-                return _defaultLanguage;
-            }
-            set
-            {
-                File.WriteAllLines(Path.DefaultLanguageFilePath, new string[] { value.ToString() });
-                _defaultLanguage = value;
-            }
-        }
+		private static SystemLanguage _defaultLanguage = SystemLanguage.Unknown;
+		public static SystemLanguage DefaultLanguage
+		{
+			get
+			{
+				if(_defaultLanguage == SystemLanguage.Unknown && File.Exists(Path.DefaultLanguageFilePath))
+				{
+					_defaultLanguage = (SystemLanguage)Enum.Parse(typeof(SystemLanguage), File.ReadAllText(Path.DefaultLanguageFilePath));
+				}
+				return _defaultLanguage;
+			}
+			set
+			{
+				File.WriteAllLines(Path.DefaultLanguageFilePath, new string[] { value.ToString() });
+				_defaultLanguage = value;
+			}
+		}
 
-        private SystemLanguage _currentDefaultLanguage = SystemLanguage.Unknown;
-        private Color _defaultColor;
+		private SystemLanguage _currentDefaultLanguage = SystemLanguage.Unknown;
+		private Color _defaultColor;
 		private Vector2 _scrollPositionLanguagesAdd;
 		private Vector2 _scrollPositionLanguagesEdit;
 
@@ -51,10 +51,10 @@ namespace Localizator
 			LoadWorkspace();
 		}
 
-        void OnFocus ()
-        {
-            Repaint();
-        }
+		void OnFocus ()
+		{
+			Repaint();
+		}
 		#endregion
 
 		#region GUI
@@ -78,45 +78,45 @@ namespace Localizator
 			leftMiddleStyle.fontSize = 15;
 			leftMiddleStyle.fontStyle = FontStyle.Bold;
 
-            GUIStyle enumPopup = new GUIStyle("popup");
-            enumPopup.alignment = TextAnchor.MiddleCenter;
-            enumPopup.fontSize = 20;
-            enumPopup.fontStyle = FontStyle.Bold;
+			GUIStyle enumPopup = new GUIStyle("popup");
+			enumPopup.alignment = TextAnchor.MiddleCenter;
+			enumPopup.fontSize = 20;
+			enumPopup.fontStyle = FontStyle.Bold;
 
-            List<SystemLanguage> languageToRemove = new List<SystemLanguage>();
+			List<SystemLanguage> languageToRemove = new List<SystemLanguage>();
 
-            EditorGUILayout.BeginVertical();
-            {
-                GUILayout.Label("Localization Editor Workspace v" + LanguageManager.VERSION, titleStyle);
-            }
-            EditorGUILayout.EndVertical();
+			EditorGUILayout.BeginVertical();
+			{
+				GUILayout.Label("Localization Editor Workspace v" + LanguageManager.VERSION, titleStyle);
+			}
+			EditorGUILayout.EndVertical();
 
-            EditorGUILayout.Separator();
+			EditorGUILayout.Separator();
 
-            if (!WorkspaceExists())
-            {
-                EditorGUILayout.BeginHorizontal("box", GUILayout.Height(titleStyle.lineHeight));
-                {
-                    GUILayout.Label("Select Default Language:", titleStyle);
-                    EditorGUILayout.BeginVertical();
-                    {
-                        GUILayout.FlexibleSpace();
-                        _currentDefaultLanguage = (SystemLanguage)EditorGUILayout.EnumPopup(_currentDefaultLanguage);
-                        GUILayout.FlexibleSpace();
-                    }
-                    EditorGUILayout.EndVertical();
-                }
-                EditorGUILayout.EndHorizontal();
-                if(!_currentDefaultLanguage.Equals(SystemLanguage.Unknown))
-                {
-                    GUI.color = Color.green;
-                    if (GUILayout.Button("Create Localization Workspace", titleStyle))
-                    {
-                        CreateWorkspace();
-                    }
-                    GUI.color = _defaultColor;
-                }
-            }
+			if (!WorkspaceExists())
+			{
+				EditorGUILayout.BeginHorizontal("box", GUILayout.Height(titleStyle.lineHeight));
+				{
+					GUILayout.Label("Select Default Language:", titleStyle);
+					EditorGUILayout.BeginVertical();
+					{
+						GUILayout.FlexibleSpace();
+						_currentDefaultLanguage = (SystemLanguage)EditorGUILayout.EnumPopup(_currentDefaultLanguage);
+						GUILayout.FlexibleSpace();
+					}
+					EditorGUILayout.EndVertical();
+				}
+				EditorGUILayout.EndHorizontal();
+				if(!_currentDefaultLanguage.Equals(SystemLanguage.Unknown))
+				{
+					GUI.color = Color.green;
+					if (GUILayout.Button("Create Localization Workspace", titleStyle))
+					{
+						CreateWorkspace();
+					}
+					GUI.color = _defaultColor;
+				}
+			}
 			else
 			{
 				EditorGUILayout.BeginHorizontal();
@@ -161,44 +161,44 @@ namespace Localizator
 						GUILayout.Label("Options", centeredMediumStyle);
 						EditorGUILayout.BeginVertical("box");
 						{
-                            EditorGUILayout.BeginHorizontal("box");
-                            {
-                                EditorGUILayout.LabelField("Change Default Language");
-                                List<string> list = new List<string>();
-                                foreach (KeyValuePair<SystemLanguage, string> value in _localizationDatabaseFiles)
-                                {
-                                    list.Add(value.Key.ToString());
-                                }
-                                string[] langs = list.ToArray();
+							EditorGUILayout.BeginHorizontal("box");
+							{
+								EditorGUILayout.LabelField("Change Default Language");
+								List<string> list = new List<string>();
+								foreach (KeyValuePair<SystemLanguage, string> value in _localizationDatabaseFiles)
+								{
+									list.Add(value.Key.ToString());
+								}
+								string[] langs = list.ToArray();
 
-                                int index = list.IndexOf(DefaultLanguage.ToString());
-                                int selected = EditorGUILayout.Popup(index, langs);
-                                if(selected != index)
-                                {
-                                    DefaultLanguage = (SystemLanguage)Enum.Parse(typeof(SystemLanguage), langs[selected]);
-                                }
-                            }
-                            EditorGUILayout.EndHorizontal();
-                            EditorGUILayout.Separator();
-                            EditorGUILayout.BeginHorizontal("box");
-                            {
-                                EditorGUILayout.LabelField("Language Manager");
-                                if(LanguageManager.Instance == null)
-                                {
-                                    if(GUILayout.Button("Create"))
-                                    {
-                                        LanguageManager.CreateInstance();
-                                    }
-                                }
-                                else
-                                {
-                                    if(GUILayout.Button("Select"))
-                                    {
-                                        Selection.activeGameObject = LanguageManager.Instance.gameObject;
-                                    }
-                                }
-                            }
-                            EditorGUILayout.EndHorizontal();
+								int index = list.IndexOf(DefaultLanguage.ToString());
+								int selected = EditorGUILayout.Popup(index, langs);
+								if(selected != index)
+								{
+									DefaultLanguage = (SystemLanguage)Enum.Parse(typeof(SystemLanguage), langs[selected]);
+								}
+							}
+							EditorGUILayout.EndHorizontal();
+							EditorGUILayout.Separator();
+							EditorGUILayout.BeginHorizontal("box");
+							{
+								EditorGUILayout.LabelField("Language Manager");
+								if(LanguageManager.Instance == null)
+								{
+									if(GUILayout.Button("Create"))
+									{
+										LanguageManager.CreateInstance();
+									}
+								}
+								else
+								{
+									if(GUILayout.Button("Select"))
+									{
+										Selection.activeGameObject = LanguageManager.Instance.gameObject;
+									}
+								}
+							}
+							EditorGUILayout.EndHorizontal();
 						}
 						EditorGUILayout.EndVertical();
 					}
@@ -242,12 +242,12 @@ namespace Localizator
 								{
 									CustomEditorWindow_Localizator_EditLang.Backup(value.Key.ToString());
 								}
-                                GUI.color = value.Key.Equals(DefaultLanguage) ? Color.gray : Color.red;
-                                if (GUILayout.Button("Delete", GUILayout.ExpandWidth(true), GUILayout.MaxWidth(150), GUILayout.ExpandHeight(true)) && !value.Key.Equals(DefaultLanguage))
-                                {
-                                    languageToRemove.Add(value.Key);
-                                }
-                                GUI.color = _defaultColor;
+								GUI.color = value.Key.Equals(DefaultLanguage) ? Color.gray : Color.red;
+								if (GUILayout.Button("Delete", GUILayout.ExpandWidth(true), GUILayout.MaxWidth(150), GUILayout.ExpandHeight(true)) && !value.Key.Equals(DefaultLanguage))
+								{
+									languageToRemove.Add(value.Key);
+								}
+								GUI.color = _defaultColor;
 							}
 							EditorGUILayout.EndHorizontal();
 						}
@@ -262,34 +262,34 @@ namespace Localizator
 				}
 			}
 		}
-        #endregion
+		#endregion
 
-        #region Utils
-        public void CreateWorkspace(bool bOpenRoot = true)
+		#region Utils
+		public void CreateWorkspace(bool bOpenRoot = true)
 		{
 			if (!WorkspaceExists())
 			{
-                Directory.CreateDirectory(Localizator.Path.WorkspaceRootPath);
+				Directory.CreateDirectory(Localizator.Path.WorkspaceRootPath);
 				Directory.CreateDirectory(Localizator.Path.DatabaseRootPath);
 				Directory.CreateDirectory(Localizator.Path.BackupRootPath);
 				Directory.CreateDirectory(Localizator.Path.GeneratedFilesRootPath);
 				Directory.CreateDirectory(Localizator.Path.ScriptRootPath);
 
-                DefaultLanguage = _currentDefaultLanguage;
+				DefaultLanguage = _currentDefaultLanguage;
 
 				_localizationDatabaseFiles = new Dictionary<SystemLanguage, string>();
-                _localizationDatabaseFiles.Add(DefaultLanguage, DefaultLanguage.ToString() + ".csv");
+				_localizationDatabaseFiles.Add(DefaultLanguage, DefaultLanguage.ToString() + ".csv");
 
-                SaveRootFile();
-                SaveLocalizationFile(DefaultLanguage.ToString());
+				SaveRootFile();
+				SaveLocalizationFile(DefaultLanguage.ToString());
 				SaveWorkspace();
 
-                LanguageManager.CreateInstance();
+				LanguageManager.CreateInstance();
 
-                if(bOpenRoot)
-                {
-                    EditorWindow.GetWindow<CustomEditorWindow_Localizator_EditRoot>("Edit Root", true, typeof(CustomEditorWindow_Localizator));
-                }
+				if(bOpenRoot)
+				{
+					EditorWindow.GetWindow<CustomEditorWindow_Localizator_EditRoot>("Edit Root", true, typeof(CustomEditorWindow_Localizator));
+				}
 			}
 			AssetDatabase.Refresh();
 		}
@@ -306,13 +306,13 @@ namespace Localizator
 			bf.Serialize(file, _localizationDatabaseFiles);
 			file.Close();
 
-            List<string> lines = new List<string>();
-            foreach (KeyValuePair<SystemLanguage, string> value in _localizationDatabaseFiles)
-            {
-                lines.Add(value.Key.ToString());
-            }
+			List<string> lines = new List<string>();
+			foreach (KeyValuePair<SystemLanguage, string> value in _localizationDatabaseFiles)
+			{
+				lines.Add(value.Key.ToString());
+			}
 
-            AssetDatabase.Refresh();
+			AssetDatabase.Refresh();
 		}
 
 		static void LoadWorkspace()
@@ -324,7 +324,7 @@ namespace Localizator
 				_localizationDatabaseFiles = (Dictionary<SystemLanguage, string>)bf.Deserialize(file);
 				file.Close();
 
-                SaveWorkspace();
+				SaveWorkspace();
 			}
 		}
 
@@ -335,20 +335,20 @@ namespace Localizator
 			{
 				foreach (string value in values)
 				{
-                    if(value != null && !value.Equals(""))
-                    {
-                        lines.Add(value);
-                    }
+					if(value != null && !value.Equals(""))
+					{
+						lines.Add(value);
+					}
 				}
 			}
 			File.WriteAllLines(Localizator.Path.DatabaseRootPath + "Root.csv", lines.ToArray());
 
-            if(File.Exists(Localizator.Path.EFragmentsEnumPath))
-            {
-                File.Delete(Localizator.Path.EFragmentsEnumPath);
-            }
+			if(File.Exists(Localizator.Path.EFragmentsEnumPath))
+			{
+				File.Delete(Localizator.Path.EFragmentsEnumPath);
+			}
 
-            SaveWorkspace();
+			SaveWorkspace();
 		}
 
 		public static void SaveLocalizationFile(string lang, Dictionary<string, string> values = null)
@@ -361,7 +361,7 @@ namespace Localizator
 					lines.Add(new string[]{ value.Key, value.Value });
 				}
 			}
-            CSVTools.Write(Localizator.Path.DatabaseRootPath + lang + ".csv", lines);
+			CSVTools.Write(Localizator.Path.DatabaseRootPath + lang + ".csv", lines);
 
 			SaveWorkspace();
 		}
@@ -369,10 +369,10 @@ namespace Localizator
 		static void DeleteLocalizationFile(SystemLanguage lang)
 		{
 			_localizationDatabaseFiles.Remove(lang);
-            CustomEditorWindow_Localizator_EditLang.Backup(lang.ToString());
-            File.Delete(Localizator.Path.DatabaseRootPath + lang.ToString() + ".csv");
+			CustomEditorWindow_Localizator_EditLang.Backup(lang.ToString());
+			File.Delete(Localizator.Path.DatabaseRootPath + lang.ToString() + ".csv");
 
-            SaveWorkspace();
+			SaveWorkspace();
 		}
 		#endregion
 	}

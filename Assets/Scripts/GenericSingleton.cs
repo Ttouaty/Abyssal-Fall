@@ -27,5 +27,5 @@ public abstract class GenericSingleton<T> : MonoBehaviour where T : Component
 		}
 	}
 
-    public virtual void Init() { }
+	public virtual void Init() { }
 }

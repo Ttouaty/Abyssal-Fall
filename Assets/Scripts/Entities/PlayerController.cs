@@ -97,29 +97,29 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
-    protected void Awake ()
-    {
-        _audioSource = GetComponent<AudioSource>();
-        _transf = transform;
-        _rigidB = GetComponent<Rigidbody>();
-    }
+	protected void Awake ()
+	{
+		_audioSource = GetComponent<AudioSource>();
+		_transf = transform;
+		_rigidB = GetComponent<Rigidbody>();
+	}
 
 	public void Init(Player player)
 	{
-        //Debug.Log("remove that part from player code !");
-        ////CHEESE
-        //_playerRef = new Player();
-        //_playerRef.SkinNumber = 0;
-        //_playerRef.JoystickNumber = 1;
-        ////CHEESE END
+		//Debug.Log("remove that part from player code !");
+		////CHEESE
+		//_playerRef = new Player();
+		//_playerRef.SkinNumber = 0;
+		//_playerRef.JoystickNumber = 1;
+		////CHEESE END
 
-        _playerRef = player;
+		_playerRef = player;
 
-        //Instantiates player mesh and retrieves its props and particles
-        GameObject playerMesh = Instantiate(_characterData.CharacterModel.gameObject, _transf.position, _characterData.CharacterModel.transform.rotation) as GameObject;
+		//Instantiates player mesh and retrieves its props and particles
+		GameObject playerMesh = Instantiate(_characterData.CharacterModel.gameObject, _transf.position, _characterData.CharacterModel.transform.rotation) as GameObject;
 		playerMesh.transform.parent = _transf.FindChild("CharacterModel");
 
-        _transf.GetComponentInChildren<CharacterModel>().Reskin(_characterData.CharacterMaterials[_playerRef.SkinNumber]);
+		_transf.GetComponentInChildren<CharacterModel>().Reskin(_characterData.CharacterMaterials[_playerRef.SkinNumber]);
 
 		_animator = _transf.GetComponentInChildren<Animator>();
 		_playerProp = transform.GetComponentInChildren<PlayerProp>();
@@ -135,9 +135,9 @@ public class PlayerController : MonoBehaviour
 		_stunTime.onFinish = OnStunOver;
 		_stunTime.onProgress = OnStunActive;
 
-        // GameManager.Instance.OnPlayerWin.AddListener(OnPlayerWin); // Removed temporarily
+		// GameManager.Instance.OnPlayerWin.AddListener(OnPlayerWin); // Removed temporarily
 
-        _maxSpeed.x = _maxSpeed.x * _characterData.CharacterStats.speed / 3;
+		_maxSpeed.x = _maxSpeed.x * _characterData.CharacterStats.speed / 3;
 
 		if (GetComponentInChildren<GroundCheck>() == null)
 		{
@@ -151,33 +151,34 @@ public class PlayerController : MonoBehaviour
 
 		CustomStart();
 
-        TimeManager.OnPause.AddListener(OnPause);
-        TimeManager.OnResume.AddListener(OnResume);
-        TimeManager.OnTimeScaleChange.AddListener(OnTimeScaleChange);
-    }
+		TimeManager.Instance.OnPause.AddListener(OnPause);
+		TimeManager.Instance.OnResume.AddListener(OnResume);
+		TimeManager.Instance.OnTimeScaleChange.AddListener(OnTimeScaleChange);
+	}
 
-    void OnDestroy()
-    {
-        TimeManager.OnPause.RemoveListener(OnPause);
-        TimeManager.OnResume.RemoveListener(OnResume);
-    }
+	void OnDestroy()
+	{
+		TimeManager.Instance.OnPause.RemoveListener(OnPause);
+		TimeManager.Instance.OnResume.RemoveListener(OnResume);
+		TimeManager.Instance.OnTimeScaleChange.RemoveListener(OnTimeScaleChange);
+	}
 
-    void OnPause(float timeScale)
-    {
-        _animator.speed = timeScale;
-    }
+	void OnPause(float timeScale)
+	{
+		_animator.speed = timeScale;
+	}
 
-    void OnResume(float timeScale)
-    {
-        _animator.speed = timeScale;
-    }
+	void OnResume(float timeScale)
+	{
+		_animator.speed = timeScale;
+	}
 
-    void OnTimeScaleChange(float timeScale)
-    {
-        _animator.speed = timeScale;
-    }
+	void OnTimeScaleChange(float timeScale)
+	{
+		_animator.speed = timeScale;
+	}
 
-    protected void Update()
+	protected void Update()
 	{
 		if (_isDead || TimeManager.IsPaused)
 			return;
@@ -187,7 +188,7 @@ public class PlayerController : MonoBehaviour
 		if (_allowInput)
 			ProcessInputs();
 
-        ProcessActiveSpeed();
+		ProcessActiveSpeed();
 		if (_allowInput)
 			ProcessOrientation();
 		ApplyCharacterFinalVelocity();
@@ -300,9 +301,9 @@ public class PlayerController : MonoBehaviour
 	}
 
 	private void ApplyCharacterFinalVelocity()
-    {
-        transform.position += _activeSpeed * TimeManager.DeltaTime;
-        _animator.SetFloat("Speed", Mathf.Abs(_activeSpeed.x) + Mathf.Abs(_activeSpeed.z));
+	{
+		transform.position += _activeSpeed * TimeManager.DeltaTime;
+		_animator.SetFloat("Speed", Mathf.Abs(_activeSpeed.x) + Mathf.Abs(_activeSpeed.z));
 	}
 
 
@@ -313,16 +314,16 @@ public class PlayerController : MonoBehaviour
 		Debug.LogWarning("No default special Action defined in PlayerController, use a child class to code a special Action: "+gameObject.name);
 	}
 
-    public void Kill()
+	public void Kill()
 	{
 		Debug.Log("Player is DED!");
 		_animator.SetTrigger("Death");
 		_audioSource.PlayOneShot(_characterData.SoundList.OnDeath);
 		_isDead = true;
-        GameManager.Instance.OnPlayerDeath.Invoke(_playerRef);
-    }
+		GameManager.Instance.OnPlayerDeath.Invoke(_playerRef);
+	}
 
-    public void Eject(Vector3 direction, float stunTime)
+	public void Eject(Vector3 direction, float stunTime)
 	{
 		if (direction.y > 0)
 			IsGrounded= false;

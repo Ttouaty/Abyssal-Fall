@@ -111,8 +111,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1275877639}
-  m_RootOrder: 4
+  m_Father: {fileID: 1511463442}
+  m_RootOrder: 5
 --- !u!114 &498654668
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -150,8 +150,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1275877639}
-  m_RootOrder: 3
+  m_Father: {fileID: 1511463442}
+  m_RootOrder: 4
 --- !u!114 &626856039
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -163,15 +163,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddd20d16b4cf47542b7cb2baa17ba070, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  onPause:
+  OnPause:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: TimeEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  onResume:
+  OnResume:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: TimeEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  onTimeScaleChange:
+  OnTimeScaleChange:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: TimeEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
@@ -206,8 +206,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1275877639}
-  m_RootOrder: 0
+  m_Father: {fileID: 1511463442}
+  m_RootOrder: 1
 --- !u!82 &664798913
 AudioSource:
   m_ObjectHideFlags: 0
@@ -381,6 +381,7 @@ MonoBehaviour:
     ModeConfiguration: 0
     MapConfiguration: 1
     NumberOfStages: 5
+  CurrentStage: 0
 --- !u!1 &1003786147
 GameObject:
   m_ObjectHideFlags: 0
@@ -423,8 +424,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1275877639}
-  m_RootOrder: 6
+  m_Father: {fileID: 1511463442}
+  m_RootOrder: 7
 --- !u!1 &1127726021
 GameObject:
   m_ObjectHideFlags: 0
@@ -459,7 +460,7 @@ MonoBehaviour:
     Configuration: {fileID: 11400000, guid: 52c2f425a4a35674bab2a563f9c07ad6, type: 2}
   ModeConfigurations:
   - Name: FreeForAll
-    Configuration: {fileID: 11400000, guid: ae73c736c3cc5de42b56d0d31bf30add, type: 2}
+    Configuration: {fileID: 11447392, guid: 5a36af83d1ed17e4e8a223af374cd8ab, type: 2}
   MapsConfigurations:
   - Name: TestArena16x16
     Configuration: {fileID: 11400000, guid: 854a887594ad4344b882d597429bea69, type: 2}
@@ -476,7 +477,7 @@ MonoBehaviour:
     Configuration: {fileID: 11448426, guid: 9b85bde0b5dc1d74b8ec37b4561a265f, type: 2}
   - Name: Tank
     Configuration: {fileID: 11478206, guid: 3ec6965eb1188ff418e7a841ee9f4263, type: 2}
-  - Name: Magicienne
+  - Name: Wizard
     Configuration: {fileID: 11478206, guid: 3ec6965eb1188ff418e7a841ee9f4263, type: 2}
 --- !u!4 &1127726023
 Transform:
@@ -488,8 +489,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1275877639}
-  m_RootOrder: 2
+  m_Father: {fileID: 1511463442}
+  m_RootOrder: 3
 --- !u!1 &1238131358
 GameObject:
   m_ObjectHideFlags: 0
@@ -543,6 +544,7 @@ MonoBehaviour:
     QuantityLoaded: 0
     Root: {fileID: 0}
     Reserve: []
+    Name: 
 --- !u!4 &1238131360
 Transform:
   m_ObjectHideFlags: 0
@@ -553,43 +555,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1275877639}
-  m_RootOrder: 7
---- !u!1 &1275877638
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 1275877639}
-  m_Layer: 0
-  m_Name: Managers
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1275877639
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1275877638}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 664798912}
-  - {fileID: 1661495781}
-  - {fileID: 1127726023}
-  - {fileID: 626856038}
-  - {fileID: 498654667}
-  - {fileID: 1864334900}
-  - {fileID: 1003786149}
-  - {fileID: 1238131360}
   m_Father: {fileID: 1511463442}
-  m_RootOrder: 1
+  m_RootOrder: 8
 --- !u!1 &1511463441
 GameObject:
   m_ObjectHideFlags: 0
@@ -599,6 +566,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 1511463442}
   - 114: {fileID: 1511463443}
+  - 114: {fileID: 1511463444}
   m_Layer: 0
   m_Name: Scene_Root
   m_TagString: Untagged
@@ -617,7 +585,14 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1614391831}
-  - {fileID: 1275877639}
+  - {fileID: 664798912}
+  - {fileID: 1661495781}
+  - {fileID: 1127726023}
+  - {fileID: 626856038}
+  - {fileID: 498654667}
+  - {fileID: 1864334900}
+  - {fileID: 1003786149}
+  - {fileID: 1238131360}
   m_Father: {fileID: 0}
   m_RootOrder: 0
 --- !u!114 &1511463443
@@ -635,12 +610,25 @@ MonoBehaviour:
   DYNAMIC_CONFIG: {fileID: 0}
   LEVEL_MANAGER: {fileID: 0}
   TIME_MANAGER: {fileID: 0}
-  SOUND_MANAGER: {fileID: 0}
-  LOADING_MANAGER: {fileID: 0}
-  GAME_MANAGER: {fileID: 0}
-  ARENA_MANAGER: {fileID: 0}
   INPUT_MANAGER: {fileID: 0}
   COOLDOWN_MANAGER: {fileID: 0}
+  GAME_MANAGER: {fileID: 0}
+  SOUND_MANAGER: {fileID: 0}
+  LOADING_MANAGER: {fileID: 0}
+  ARENA_MANAGER: {fileID: 0}
+--- !u!114 &1511463444
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1511463441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 051868a713f8bb947994e43c43f35fda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StreamFilePath: test.txt
+  Result: 
 --- !u!1 &1614391830
 GameObject:
   m_ObjectHideFlags: 0
@@ -781,8 +769,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1275877639}
-  m_RootOrder: 1
+  m_Father: {fileID: 1511463442}
+  m_RootOrder: 2
 --- !u!114 &1661495782
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -821,6 +809,10 @@ MonoBehaviour:
   SceneEndGame:
     SceneAsset: {fileID: 102900000, guid: 02e54f0e3d8e88d4a844ebc111606543, type: 3}
     SceneName: Scene_EndGame
+    SceneRoot: {fileID: 0}
+  SceneGUI:
+    SceneAsset: {fileID: 102900000, guid: 1732b263dd13edd4a92fecf4f0936e10, type: 3}
+    SceneName: Scene_GUI
     SceneRoot: {fileID: 0}
   OnLoadStart:
     m_PersistentCalls:
@@ -871,5 +863,5 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1275877639}
-  m_RootOrder: 5
+  m_Father: {fileID: 1511463442}
+  m_RootOrder: 6

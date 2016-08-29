@@ -29,8 +29,8 @@ public class CustomEditorSoundManager : Editor
 	}
 
 	public override void OnInspectorGUI ()
-    {
-        SetGUIBackgroundColor(Color.white * 0.75f);
+	{
+		SetGUIBackgroundColor(Color.white * 0.75f);
 		EditorGUILayout.BeginVertical("box");
 		{
 			SetGUIBackgroundColor(Color.white);

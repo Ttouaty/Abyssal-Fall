@@ -4,14 +4,18 @@ using System.Collections;
 [RequireComponent(typeof(Rigidbody))]
 public class Tile : MonoBehaviour, IPoolable
 {
-	private float       _timeLeft  = 0.8f;
-	private bool        _isTouched = false;
-    private bool        _isFalling = false;
-    private Rigidbody   _rigidB;
+	private float           _timeLeft  = 0.8f;
+    private float           _timeLeftSave;
+	private bool            _isTouched = false;
+    private bool            _isFalling = false;
+    private Rigidbody       _rigidB;
+    private MeshRenderer    _renderer;
 
     void Awake()
     {
-        _rigidB = GetComponent<Rigidbody>();
+        _rigidB         = GetComponent<Rigidbody>();
+        _renderer       = GetComponent<MeshRenderer>();
+        _timeLeftSave   = _timeLeft;
     }
 
     void Update ()
@@ -25,14 +29,15 @@ public class Tile : MonoBehaviour, IPoolable
     public void OnGetFromPool()
     {
         _rigidB.isKinematic = true;
+        _renderer.material.color = Color.white; // Debug to see falling ground feedback
         _isTouched = false;
         _isFalling = false;
     }
 
     public void OnReturnToPool()
     {
-        TimeManager.OnPause.RemoveListener(OnPause);
-        TimeManager.OnResume.RemoveListener(OnResume);
+        TimeManager.Instance.OnPause.RemoveListener(OnPause);
+        TimeManager.Instance.OnResume.RemoveListener(OnResume);
         _rigidB.isKinematic = true;
     }
 
@@ -51,6 +56,7 @@ public class Tile : MonoBehaviour, IPoolable
     public void SetTimeLeft(float value)
     {
         _timeLeft = value;
+        _timeLeftSave = _timeLeft;
     }
 
     public void ActivateFall()
@@ -58,8 +64,10 @@ public class Tile : MonoBehaviour, IPoolable
 		if (_isTouched)
 			return;
 
-        TimeManager.OnPause.AddListener(OnPause);
-        TimeManager.OnResume.AddListener(OnResume);
+        ArenaManager.Instance.RemoveTile(this);
+
+        TimeManager.Instance.OnPause.AddListener(OnPause);
+        TimeManager.Instance.OnResume.AddListener(OnResume);
 
         _isTouched = true;
 		StartCoroutine(FallCoroutine());
@@ -67,8 +75,13 @@ public class Tile : MonoBehaviour, IPoolable
 
 	IEnumerator FallCoroutine()
 	{
+        MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
+
+        // Debug to see falling ground feedback
+        Color color = meshRenderer.material.color;
         while(_timeLeft > 0)
         {
+            meshRenderer.material.color = Color.Lerp(Color.red, color, _timeLeft / _timeLeftSave);
             _timeLeft -= TimeManager.DeltaTime;
             yield return null;
         }

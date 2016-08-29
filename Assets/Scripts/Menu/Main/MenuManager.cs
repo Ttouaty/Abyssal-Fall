@@ -7,12 +7,14 @@ public class MenuManager : GenericSingleton<MenuManager>
 {
 	[HideInInspector]
 	public Canvas _canvas;
-    public GameObject Loading;
-    public Image LoadingOut;
+	public GameObject MiniLoading;
+	public Image LoadingIn;
+	public Image LoadingOut;
+	public GameObject SplashScreens;
 
-    [SerializeField]
+	[SerializeField]
 	private GameObject _isartLogo;
-    [SerializeField]
+	[SerializeField]
 	private LoadingBar _loadBar;
 
 	[SerializeField]
@@ -23,25 +25,28 @@ public class MenuManager : GenericSingleton<MenuManager>
 	//public string[] debugNames;
 	private MenuPanel[] _menuArray;
 
-	private bool _isListeningForInput = false;
-	private bool[] _controllerAlreadyInUse = new bool[12];
+	private bool _isListeningForInput                               = false;
+	private bool[] _controllerAlreadyInUse                          = new bool[12];
+	private float timeCancelActivated                               = 0.5f;
+	private float timeCancelHeld                                    = 0;
 	private CharacterSlotsContainer _characterSlotsContainerRef;
+	private RawImage[] _splashscreens;
+	private Coroutine _miniLoadingCoroutine;
 
 	void Awake()
 	{
 		_canvas                         = GetComponentInChildren<Canvas>();
 		_canvas.worldCamera             = Camera.main;
-        _menuArray                      = GetComponentsInChildren<MenuPanel>();
-        _loadBar                        = GetComponentInChildren<LoadingBar>();
-        _characterSlotsContainerRef     = GetComponentInChildren<CharacterSlotsContainer>();
-    }
+		_menuArray                      = GetComponentsInChildren<MenuPanel>();
+		_loadBar                        = GetComponentInChildren<LoadingBar>();
+		_characterSlotsContainerRef     = GetComponentInChildren<CharacterSlotsContainer>();
+		_splashscreens                  = SplashScreens.GetComponentsInChildren<RawImage>();
+	}
 
 	void Start()
 	{
-        Loading.SetActive(false);
+		MiniLoading.SetActive(false);
 		_activeMenu = _menuArray[0];
-
-		StartCoroutine(FadeIsartLogo());
 
 		for (int i = 0; i < _menuArray.Length; ++i)
 		{
@@ -52,8 +57,6 @@ public class MenuManager : GenericSingleton<MenuManager>
 		}
 	}
 
-	private float timeCancelHeld = 0;
-	private float timeCancelActivated = 0.5f;
 	void Update()
 	{
 		timeCancelHeld = Mathf.Clamp(timeCancelHeld + (Input.GetButton("Cancel") ? Time.deltaTime : -Time.deltaTime), 0, timeCancelActivated);
@@ -72,31 +75,29 @@ public class MenuManager : GenericSingleton<MenuManager>
 			for (int i = -1; i < Input.GetJoystickNames().Length; i++)
 			{
 				if (i != -1)
-                {
-                    if (Input.GetJoystickNames()[i] == "")//ignores unplugged controllers but tests for keyboard
-                        continue;
-                }
-
-                if (InputManager.GetButtonDown("Start", i + 1) && !_controllerAlreadyInUse[i + 1]) //if new controller presses start
 				{
-                    Debug.Log("JOYSTICK NUMBER: " + (i + 1) + " PRESSED START");
+					if (Input.GetJoystickNames()[i] == "")//ignores unplugged controllers but tests for keyboard
+						continue;
+				}
+
+				if (InputManager.GetButtonDown("Start", i + 1) && !_controllerAlreadyInUse[i + 1]) //if new controller presses start
+				{
+					Debug.Log("JOYSTICK NUMBER: " + (i + 1) + " PRESSED START");
 					RegisterNewPlayer(i + 1);
 				}
 			}
 			_StartButton.interactable = GameManager.Instance.nbPlayers >= 2 && !GameManager.InProgress && AllPlayersReady();
 		}
-    }
 
-    IEnumerator LoadPreview (EArenaConfiguration levelName)
-    {
-        Loading.SetActive(true);
-        LoadingOut.GetComponent<Image>().fillAmount = 0;
-        yield return StartCoroutine(LevelManager.Instance.LoadLevelPreview(levelName, (AsyncOperation async) =>
-        {
-            LoadingOut.GetComponent<Image>().fillAmount = async.progress;
-        }));
-        Loading.SetActive(false);
-    }
+		if (Input.GetKeyDown(KeyCode.Alpha1))
+		{
+			LoadPreview(EArenaConfiguration.Aerial);
+		}
+		else if (Input.GetKeyDown(KeyCode.Alpha2))
+		{
+			LoadPreview(EArenaConfiguration.Hell);
+		}
+	}
 
 	bool AllPlayersReady()
 	{
@@ -108,7 +109,6 @@ public class MenuManager : GenericSingleton<MenuManager>
 					return false;
 			}
 		}
-
 		return true;
 	}
 
@@ -132,7 +132,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 	public void StartGame()
 	{
 		Debug.Log("game started");
-		GameManager.StartGame();
+		GameManager.Instance.StartGame();
 		// SpawnFallingGround.instance.Init();
 		DeactivateMenu();
 	}
@@ -162,17 +162,17 @@ public class MenuManager : GenericSingleton<MenuManager>
 		StopAllCoroutines();
 		StartCoroutine(SendOut(_activeMenu));
 
-        if (newMenu == null)
-        {
-            _activeMenu = null;
-            return;
-        }
+		if (newMenu == null)
+		{
+			_activeMenu = null;
+			return;
+		}
 
-        if (newMenu.MenuName == "Lobby")
-        {
-            _isListeningForInput = true;
-        }
-        else
+		if (newMenu.MenuName == "Lobby")
+		{
+			_isListeningForInput = true;
+		}
+		else
 		{
 			ResetPlayers();
 			_characterSlotsContainerRef.CancelAllSelections(true);
@@ -227,33 +227,83 @@ public class MenuManager : GenericSingleton<MenuManager>
 		}
 	}
 
-	IEnumerator FadeIsartLogo()
+	public void FadeSplashscreens (bool shouldShowSplashscreens)
+	{
+		StartCoroutine(FadeSplashscreens_Implementation(shouldShowSplashscreens));
+	}
+
+	IEnumerator FadeSplashscreens_Implementation(bool shouldShowSplashscreens)
 	{
 		SetActiveButtons(GetMenuPanel("Main"), false);
+		Color color;
+		int i = 0;
 
-        _loadBar.SetPercent(0);
-        yield return StartCoroutine(LevelManager.Instance.LoadLevelPreview(EArenaConfiguration.Aerial, (AsyncOperation async) =>
-        {
-            _loadBar.SetPercent(async.progress);
-        }));
+		for (i = 0; i < _splashscreens.Length; ++i)
+		{
+			color = _splashscreens[i].color;
+			color.a = 0;
+			_splashscreens[i].color = color;
+		}
 
-        OnLoadEnd(1.0f);
-
-        _isartLogo.GetComponent<RawImage>().CrossFadeAlpha(0, 1, false);
+		if (shouldShowSplashscreens)
+		{
+			for (i = 0; i < _splashscreens.Length; ++i)
+			{
+				color = _splashscreens[i].color;
+				color.a = 1;
+				_splashscreens[i].color = color;
+				yield return new WaitForSeconds(2);
+				_splashscreens[i].CrossFadeAlpha(0, 2, false);
+				yield return new WaitForSeconds(2);
+			}
+		}
+		yield return StartCoroutine(LoadPreview_Implementation(EArenaConfiguration.Aerial));
+		Destroy(SplashScreens, 0);
 		SetActiveButtons(GetMenuPanel("Main"), true);
-		Destroy(_isartLogo, 1);
 	}
 
-	void OnLoadEnd(float progress)
+	public void LoadPreview(EArenaConfiguration levelName)
 	{
-		_loadBar.SetPercent(progress);
-		StartCoroutine(MoveObjectOverTime(_loadBar.gameObject, Vector3.down * Screen.height, 0.5f));
-		Destroy(_loadBar.gameObject, 2);
+		if(_miniLoadingCoroutine != null)
+		{
+			StopCoroutine(_miniLoadingCoroutine);
+		}
+		_miniLoadingCoroutine = StartCoroutine(LoadPreview_Implementation(levelName));
 	}
 
-	void OnLoadProgress(float progress)
+	IEnumerator LoadPreview_Implementation(EArenaConfiguration levelName)
 	{
-		_loadBar.SetPercent(progress);
+		MiniLoading.SetActive(true);
+		Image loadingInImage = LoadingIn.GetComponent<Image>();
+		Image loadingOutImage = LoadingOut.GetComponent<Image>();
+
+		Color color             = Color.white;
+		color.a                 = 1.0f;
+		loadingOutImage.color   = color;
+		loadingInImage.color    = color;
+
+		loadingOutImage.fillAmount = 0.0f;
+		yield return StartCoroutine(LevelManager.Instance.LoadLevelPreview(levelName, (AsyncOperation async) =>
+		{
+			loadingOutImage.fillAmount = async.progress;
+		}));
+		loadingOutImage.fillAmount = 1.0f;
+
+		float timer = 1.0f;
+		while(timer > 0)
+		{
+			timer                  -= Time.deltaTime;
+			color.a                 = Mathf.Lerp(1.0f, 0.0f, 1.0f - timer);
+			loadingOutImage.color   = color;
+			loadingInImage.color    = color;
+			yield return null;
+		}
+
+		MiniLoading.SetActive(false);
+
+		color.a                 = 1.0f;
+		loadingOutImage.color   = color;
+		loadingInImage.color    = color;
 	}
 
 	IEnumerator MoveObjectOverTime(GameObject go, Vector3 offset, float time)
