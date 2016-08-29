@@ -28,8 +28,11 @@ public class GameManager : GenericSingleton<GameManager>
 		}
 		set
 		{
-			OnPlayerDeath.RemoveListener(_gameRules.OnPlayerDeath_Listener);
-			OnPlayerWin.RemoveListener(_gameRules.OnPlayerWin_Listener);
+			if(_gameRules != null)
+			{
+				OnPlayerDeath.RemoveListener(_gameRules.OnPlayerDeath_Listener);
+				OnPlayerWin.RemoveListener(_gameRules.OnPlayerWin_Listener);
+			}
 
 			_gameRules = value;
 
