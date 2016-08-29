@@ -74,18 +74,16 @@ public class CharacterSlot : MonoBehaviour
 		if (Selected)
 			return;
 
+
+		if (Mathf.Abs(InputManager.GetAxis("x", _joyToListen)) < 0.5f)
+		{
+			_switchCharacterCooldown.Set(0);
+			_canSwitchCharacter = true;
+		}
+
 		if (_canSwitchCharacter)
 		{
-			if (_joyToListen == 0)
-			{ 
-				if (Mathf.Abs(InputManager.GetAxis("x", _joyToListen)) > 0.5f)
-					ChangeCharacter((int)Mathf.Sign(InputManager.GetAxis("x", _joyToListen)));
-			}
-			else
-			{
-				if (Mathf.Abs(InputManager.GetAxis("x", _joyToListen)) > 0.9f)
-					ChangeCharacter((int) Mathf.Sign(InputManager.GetAxis("x", _joyToListen)));
-			}
+			ChangeCharacter((int)Mathf.Sign(InputManager.GetAxis("x", _joyToListen)));
 		}
 
 		if (InputManager.GetButtonDown(3, _joyToListen))

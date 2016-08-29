@@ -10,12 +10,11 @@ public enum InputMethod
 	Held
 }
 
-public class InputCallback : MonoBehaviour
+public class InputButton : MonoBehaviour
 {
-	public InputButton InputToListen;
+	public InputEnum InputToListen;
 	[Space()]
 	public UnityEvent Callback;
-
 
 	public InputMethod InputType;
 	public float TimeToHold = 0.5f;
@@ -24,21 +23,21 @@ public class InputCallback : MonoBehaviour
 	public bool ListenToAllJoysticks = true;
 	public List<int> JoysticksToListen = new List<int>(); 
 	
-	private float _timeHeld;
+	protected float _timeHeld;
 	private bool _waitForRelease;
 	private bool _isCallbackActivatedThisFrame = false;
 	private bool _isInputDown = false;
 
-	void Start()
+	protected virtual void Start()
 	{
 		if (InputToListen == null)
-			Debug.LogWarning("InputCallback \""+gameObject.name+"\" doesn't listen any [Input].\nThe callback will never launch.");
+			Debug.LogWarning("InputButton \""+gameObject.name+"\" doesn't listen any [Input].\nThe callback will never launch.");
 		if(!ListenToAllJoysticks && JoysticksToListen.Count == 0)
-			Debug.LogWarning("InputCallback \"" + gameObject.name + "\" doesn't listen any [Controller].\nThe callback will never launch.");
+			Debug.LogWarning("InputButton \"" + gameObject.name + "\" doesn't listen any [Controller].\nThe callback will never launch.");
 
 	}
 
-	void Update()
+	protected virtual void Update()
 	{
 		_isCallbackActivatedThisFrame = false;
 		if (ListenToAllJoysticks)
@@ -71,14 +70,15 @@ public class InputCallback : MonoBehaviour
 				LaunchCallback();
 		}
 		else
-		{
 			_isInputDown = InputManager.GetButtonHeld(InputToListen, joystickNumber);
-		}
 
-		if (_isInputDown && !_waitForRelease)
-			_timeHeld += Time.deltaTime;
+		if (_isInputDown)
+		{ 
+			if(!_waitForRelease)
+				_timeHeld += Time.deltaTime;
+		}
 		else
-			_timeHeld.Reduce(Time.deltaTime);
+			_timeHeld = _timeHeld.Reduce(Time.deltaTime);
 
 		if (_timeHeld > TimeToHold)
 			LaunchCallback();
@@ -91,7 +91,6 @@ public class InputCallback : MonoBehaviour
 		if (!CanLoop)
 			_waitForRelease = true;
 		_timeHeld = 0;
-		Debug.Log("Callback");
 		Callback.Invoke();
 	}
 }

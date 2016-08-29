@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-public enum InputButton
+public enum InputEnum
 {
 	A = 0,
 	B = 1,
@@ -27,7 +27,7 @@ public class InputManager : GenericSingleton<InputManager>
 	}
 
 	#region GetButtonDown
-	public static bool GetButtonDown(InputButton buttonName, int JoystickNumber = -1)
+	public static bool GetButtonDown(InputEnum buttonName, int JoystickNumber = -1)
 	{
 		return GetButtonDown((int)buttonName, JoystickNumber);
 	}
@@ -54,7 +54,7 @@ public class InputManager : GenericSingleton<InputManager>
 	#endregion
 
 	#region GetButtonUp
-	public static bool GetButtonUp(InputButton buttonName, int JoystickNumber = -1)
+	public static bool GetButtonUp(InputEnum buttonName, int JoystickNumber = -1)
 	{
 		return GetButtonUp((int)buttonName, JoystickNumber);
 	}
@@ -82,7 +82,7 @@ public class InputManager : GenericSingleton<InputManager>
 	#endregion
 
 	#region GetButtonHeld
-	public static bool GetButtonHeld(InputButton buttonName, int JoystickNumber = -1)
+	public static bool GetButtonHeld(InputEnum buttonName, int JoystickNumber = -1)
 	{
 		return GetButtonHeld((int)buttonName, JoystickNumber);
 	}

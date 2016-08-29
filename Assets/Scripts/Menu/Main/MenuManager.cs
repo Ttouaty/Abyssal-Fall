@@ -39,6 +39,10 @@ public class MenuManager : GenericSingleton<MenuManager>
 	void Start()
 	{
         Loading.SetActive(false);
+
+		_menuArray = GetComponentsInChildren<MenuPanel>();
+		_loadBar = GetComponentInChildren<LoadingBar>();
+
 		_activeMenu = _menuArray[0];
 
 		StartCoroutine(FadeIsartLogo());
@@ -56,17 +60,6 @@ public class MenuManager : GenericSingleton<MenuManager>
 	private float timeCancelActivated = 0.5f;
 	void Update()
 	{
-		timeCancelHeld = Mathf.Clamp(timeCancelHeld + (Input.GetButton("Cancel") ? Time.deltaTime : -Time.deltaTime), 0, timeCancelActivated);
-		if (timeCancelHeld == timeCancelActivated && !GameManager.InProgress)
-		{
-			timeCancelHeld = 0;
-			if (_activeMenu.ParentMenu != null)
-			{
-				MakeTransition(_activeMenu.ParentMenu);
-				if (_activeMenu.MenuName == "Main")
-					_activeMenu.ParentMenu = null;
-			}
-		}
 		if (_isListeningForInput)
 		{
 			for (int i = -1; i < Input.GetJoystickNames().Length; i++)
@@ -83,7 +76,6 @@ public class MenuManager : GenericSingleton<MenuManager>
 					RegisterNewPlayer(i + 1);
 				}
 			}
-			_StartButton.interactable = GameManager.Instance.nbPlayers >= 2 && !GameManager.InProgress && AllPlayersReady();
 		}
     }
 
@@ -149,6 +141,16 @@ public class MenuManager : GenericSingleton<MenuManager>
 		return null;
 	}
 
+	public void MenuReturn()
+	{
+		Debug.Log("return called!");
+		if (_activeMenu.ParentMenu != null)
+		{
+			Debug.Log("return made!");
+			MakeTransition(_activeMenu.ParentMenu);
+		}
+	}
+
 	public void MakeTransition(string newMenu)
 	{
 		MakeTransition(GetMenuPanel(newMenu));
@@ -178,7 +180,12 @@ public class MenuManager : GenericSingleton<MenuManager>
 			_characterSlotsContainerRef.CancelAllSelections(true);
 		}
 
-		newMenu.ParentMenu = _activeMenu;
+		if (newMenu == null)
+		{
+			_activeMenu = null;
+			return;
+		}
+
 		SetActiveButtons(newMenu, true);
 		StartCoroutine(SendIn(newMenu));
 		newMenu.PreSelectedButton.Select();

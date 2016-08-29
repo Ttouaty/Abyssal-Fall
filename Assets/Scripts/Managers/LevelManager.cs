@@ -131,11 +131,12 @@ public class LevelManager : GenericSingleton<LevelManager>
                 Player player = GameManager.Instance.RegisteredPlayers[i];
                 if (player != null)
                 {
-                    PoolConfiguration[] assets = player.CharacterUsed._characterData.OtherAssetsToLoad;
-                    for (int j = 0; j < assets.Length; ++j)
-                    {
-                        MainManager.Instance.GAME_OBJECT_POOL.AddPool(assets[j]);
-                    }
+					Debug.LogWarning("Attention, bout de code commenté, (error:  player.CharacterUsed._characterData has no definition for OtherAssetsToLoad)");
+					//PoolConfiguration[] assets = player.CharacterUsed._characterData.OtherAssetsToLoad;
+					//for (int j = 0; j < assets.Length; ++j)
+					//{
+					//	MainManager.Instance.GAME_OBJECT_POOL.AddPool(assets[j]);
+					//}
                 }
             }
 
