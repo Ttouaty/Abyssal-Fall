@@ -41,6 +41,23 @@ public class GameManager : GenericSingleton<GameManager>
 
     private int _currentStage = 0;
     public int CurrentStage { get { return _currentStage; } }
+
+	public bool AreAllPlayerReady
+	{
+		get
+		{
+			if (nbPlayers == 0)
+				return false;
+
+			for (int i = 0; i < nbPlayers; ++i)
+			{
+				if (!RegisteredPlayers[i].isReady)
+					return false;
+			}
+			return true;
+		}
+	}
+
     private List<Player> _alivePlayers;
 
     void Start ()

@@ -5,11 +5,6 @@ using UnityEngine.UI;
 public class MenuPanel : MonoBehaviour {
 	public string MenuName;
 	public Button PreSelectedButton;
-	[HideInInspector]
+	[Space]
 	public MenuPanel ParentMenu;
-	
-	void Start()
-	{
-		ParentMenu = transform.parent.GetComponent<MenuPanel>();
-	}
 }

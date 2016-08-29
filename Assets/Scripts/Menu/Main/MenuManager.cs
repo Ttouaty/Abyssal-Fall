@@ -19,10 +19,15 @@ public class MenuManager : GenericSingleton<MenuManager>
 	private Button _StartButton;
 
 	private MenuPanel _activeMenu;
-
-	//public string[] debugNames;
 	private MenuPanel[] _menuArray;
 
+	private Transform _metaContainer;
+
+	private Transform _leftMenuAnchor;
+	private Transform _centerMenuAnchor;
+	private Transform _rightMenuAnchor;
+
+	private ReturnButton _returnGroupRef;
 	private bool _isListeningForInput = false;
 	private bool[] _controllerAlreadyInUse = new bool[12];
 	private CharacterSlotsContainer _characterSlotsContainerRef;
@@ -34,7 +39,13 @@ public class MenuManager : GenericSingleton<MenuManager>
         _menuArray                      = GetComponentsInChildren<MenuPanel>();
         _loadBar                        = GetComponentInChildren<LoadingBar>();
         _characterSlotsContainerRef     = GetComponentInChildren<CharacterSlotsContainer>();
-    }
+		_returnGroupRef					= GetComponentInChildren<ReturnButton>();
+		_metaContainer					= _canvas.transform.FindChild("Meta");
+
+		_leftMenuAnchor		= _metaContainer.Find("LeftMenuAnchor");
+		_centerMenuAnchor	= _metaContainer.Find("CenterMenuAnchor");
+		_rightMenuAnchor	= _metaContainer.Find("RightMenuAnchor");
+	}
 
 	void Start()
 	{
@@ -60,6 +71,9 @@ public class MenuManager : GenericSingleton<MenuManager>
 	private float timeCancelActivated = 0.5f;
 	void Update()
 	{
+		//Only display return arrow if there is a menu to return to.
+		_returnGroupRef.gameObject.SetActive(_activeMenu.ParentMenu != null);
+
 		if (_isListeningForInput)
 		{
 			for (int i = -1; i < Input.GetJoystickNames().Length; i++)
@@ -70,7 +84,7 @@ public class MenuManager : GenericSingleton<MenuManager>
                         continue;
                 }
 
-                if (InputManager.GetButtonDown("Start", i + 1) && !_controllerAlreadyInUse[i + 1]) //if new controller presses start
+                if (InputManager.GetButtonDown(InputEnum.A, i + 1) && !_controllerAlreadyInUse[i + 1]) //if new controller presses start
 				{
                     Debug.Log("JOYSTICK NUMBER: " + (i + 1) + " PRESSED START");
 					RegisterNewPlayer(i + 1);
@@ -143,26 +157,25 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	public void MenuReturn()
 	{
-		Debug.Log("return called!");
 		if (_activeMenu.ParentMenu != null)
-		{
-			Debug.Log("return made!");
-			MakeTransition(_activeMenu.ParentMenu);
-		}
+			MakeTransition(_activeMenu.ParentMenu, false);
 	}
 
 	public void MakeTransition(string newMenu)
 	{
-		MakeTransition(GetMenuPanel(newMenu));
+		MakeTransition(GetMenuPanel(newMenu), true);
 	}
 
-	public void MakeTransition(MenuPanel newMenu)
+	public void MakeTransition(MenuPanel newMenu, bool forward = true)
 	{
 		timeCancelHeld = 0;
 		_isListeningForInput = false;
 		SetActiveButtons(_activeMenu, false);
 		StopAllCoroutines();
-		StartCoroutine(SendOut(_activeMenu));
+		if (forward)
+			StartCoroutine(SendOutLeft(_activeMenu));
+		else
+			StartCoroutine(SendOutRight(_activeMenu));
 
         if (newMenu == null)
         {
@@ -187,7 +200,11 @@ public class MenuManager : GenericSingleton<MenuManager>
 		}
 
 		SetActiveButtons(newMenu, true);
-		StartCoroutine(SendIn(newMenu));
+		if (forward)
+			StartCoroutine(SendInRight(newMenu));
+		else
+			StartCoroutine(SendInLeft(newMenu));
+
 		newMenu.PreSelectedButton.Select();
 		_activeMenu = newMenu;
 	}
@@ -208,28 +225,36 @@ public class MenuManager : GenericSingleton<MenuManager>
 		Application.Quit();
 	}
 
-	IEnumerator SendOut(MenuPanel targetMenu)
+	IEnumerator SendOutLeft(MenuPanel targetMenu)
 	{
-		float eT = 0;
-		float timeTaken = 0.7f;
-
-		while (eT < timeTaken)
-		{
-			eT += Time.deltaTime;
-			targetMenu.transform.position = Vector3.Lerp(targetMenu.transform.position, _canvas.transform.position - _canvas.transform.right * _canvas.pixelRect.width / _canvas.referencePixelsPerUnit * 5, eT / timeTaken);
-			yield return null;
-		}
+		yield return StartCoroutine(MovePanelOverTime(targetMenu, _centerMenuAnchor.position, _leftMenuAnchor.position));
 	}
 
-	IEnumerator SendIn(MenuPanel targetMenu)
+	IEnumerator SendOutRight(MenuPanel targetMenu)
+	{
+		yield return StartCoroutine(MovePanelOverTime(targetMenu, _centerMenuAnchor.position, _rightMenuAnchor.position));
+	}
+
+	IEnumerator SendInRight(MenuPanel targetMenu)
+	{
+		yield return StartCoroutine(MovePanelOverTime(targetMenu, _rightMenuAnchor.position, _centerMenuAnchor.position));
+	}
+
+	IEnumerator SendInLeft(MenuPanel targetMenu)
+	{
+		yield return StartCoroutine(MovePanelOverTime(targetMenu, _leftMenuAnchor.position, _centerMenuAnchor.position));
+	}
+
+	IEnumerator MovePanelOverTime(MenuPanel targetMenu, Vector3 start, Vector3 end)
 	{
 		float eT = 0;
 		float timeTaken = 0.7f;
 
+		targetMenu.transform.position = start;
 		while (eT < timeTaken)
 		{
 			eT += Time.deltaTime;
-			targetMenu.transform.position = Vector3.Lerp(targetMenu.transform.position, _canvas.transform.position, eT / timeTaken);
+			targetMenu.transform.position = Vector3.Lerp(targetMenu.transform.position, end, eT / timeTaken);
 			yield return null;
 		}
 	}
@@ -279,7 +304,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 	{
 		if (instant)
 		{
-			Instance.StartCoroutine(Instance.SendOut(Instance._activeMenu));
+			Instance.StartCoroutine(Instance.SendOutLeft(Instance._activeMenu));
 			Instance.gameObject.SetActive(false);
 		}
 		else
@@ -308,6 +333,6 @@ public class MenuManager : GenericSingleton<MenuManager>
 			_activeMenu.transform.position = _canvas.transform.position;
 		}
 		else
-			StartCoroutine(SendIn(GetMenuPanel(activeMenu)));
+			StartCoroutine(SendInRight(GetMenuPanel(activeMenu)));
 	}
 }

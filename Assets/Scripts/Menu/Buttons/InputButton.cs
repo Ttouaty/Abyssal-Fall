@@ -21,7 +21,7 @@ public class InputButton : MonoBehaviour
 	public bool CanLoop = false;
 
 	public bool ListenToAllJoysticks = true;
-	public List<int> JoysticksToListen = new List<int>(); 
+	public int[] JoysticksToListen = new int[12]; 
 	
 	protected float _timeHeld;
 	private bool _waitForRelease;
@@ -31,9 +31,11 @@ public class InputButton : MonoBehaviour
 	protected virtual void Start()
 	{
 		if (InputToListen == null)
-			Debug.LogWarning("InputButton \""+gameObject.name+"\" doesn't listen any [Input].\nThe callback will never launch.");
-		if(!ListenToAllJoysticks && JoysticksToListen.Count == 0)
-			Debug.LogWarning("InputButton \"" + gameObject.name + "\" doesn't listen any [Controller].\nThe callback will never launch.");
+			Debug.LogWarning("InputButton \""+gameObject.name+"\" doesn't listen to any [Input].\nThe callback will never launch.");
+		if (!ListenToAllJoysticks && JoysticksToListen.Length == 0) { 
+			Debug.LogWarning("InputButton \"" + gameObject.name + "\" doesn't listen to any [Controller].");
+			JoysticksToListen = new int[12];
+		}
 
 	}
 
@@ -44,9 +46,10 @@ public class InputButton : MonoBehaviour
 			TestInput();
 		else
 		{ 
-			for(int i = 0; i < JoysticksToListen.Count; ++i)
+			for(int i = 0; i < JoysticksToListen.Length; ++i)
 			{
-				TestInput(JoysticksToListen[i]);
+				if (JoysticksToListen[i] != null)
+					TestInput(JoysticksToListen[i]);
 			}
 		}
 	}
@@ -85,12 +88,20 @@ public class InputButton : MonoBehaviour
 		
 	}
 
-	void LaunchCallback()
+	protected virtual void LaunchCallback()
 	{
 		_isCallbackActivatedThisFrame = true;
 		if (!CanLoop)
 			_waitForRelease = true;
 		_timeHeld = 0;
+		
 		Callback.Invoke();
+	}
+
+	void OnEnable()
+	{
+		_isInputDown = false;
+		_timeHeld = 0;
+		_waitForRelease = false;
 	}
 }

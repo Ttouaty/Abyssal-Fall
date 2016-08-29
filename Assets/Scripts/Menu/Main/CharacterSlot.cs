@@ -35,12 +35,12 @@ public class CharacterSlot : MonoBehaviour
 			return _availableCharacters[_selectedCharacterIndex];
 		}
 	}
-
-	public int GetSelectedSkin
+	
+	public Material GetSelectedSkin
 	{
 		get
 		{
-			return _selectedSkinIndex;
+			return _availableCharacters[_selectedCharacterIndex].CharacterRef._characterData.CharacterMaterials[_selectedSkinIndex];
 		}
 	}
 
@@ -68,7 +68,7 @@ public class CharacterSlot : MonoBehaviour
 		if (!Open)
 			return;
 
-		if (InputManager.GetButtonDown(1, _joyToListen) && Selected)
+		if (InputManager.GetButtonDown(InputEnum.B, _joyToListen) && Selected)
 			CancelCharacterSelection();
 
 		if (Selected)
@@ -81,15 +81,17 @@ public class CharacterSlot : MonoBehaviour
 			_canSwitchCharacter = true;
 		}
 
-		if (_canSwitchCharacter)
+		if (_canSwitchCharacter && Mathf.Abs(InputManager.GetAxis("x", _joyToListen)) > 0.7f)
 		{
 			ChangeCharacter((int)Mathf.Sign(InputManager.GetAxis("x", _joyToListen)));
 		}
 
-		if (InputManager.GetButtonDown(3, _joyToListen))
+		if (InputManager.GetButtonDown(InputEnum.X, _joyToListen))
+			ChangeSkin(-1);
+		if (InputManager.GetButtonDown(InputEnum.Y, _joyToListen))
 			ChangeSkin(1);
 
-		if (InputManager.GetButtonDown(0, _joyToListen))
+		if (InputManager.GetButtonDown(InputEnum.A, _joyToListen))
 			SelectCharacter();
 
 	}
@@ -112,6 +114,7 @@ public class CharacterSlot : MonoBehaviour
         if (_selectedCharacterModel != null)
 			Destroy(_selectedCharacterModel);
 
+		GetSelectedCharacter.CharacterRef._characterData.CharacterModel.Reskin(GetSelectedSkin);
 		_selectedCharacterModel = (GameObject)Instantiate(GetSelectedCharacter.CharacterRef._characterData.CharacterModel.gameObject, transform.position - transform.up * 30, transform.rotation * Quaternion.FromToRotation(Vector3.right, Vector3.left));
 		_selectedCharacterModel.transform.parent = transform;
 		_selectedModelTargetPosition = _selectedCharacterModel.transform.position;
