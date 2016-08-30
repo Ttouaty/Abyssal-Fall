@@ -3,34 +3,41 @@ using System.Collections;
 using UnityEngine.UI;
 
 public class GrowAndFade : MonoBehaviour {
+	public float AnimationTime = 0.3f;
+	public Vector3 TargetScale = new Vector3(1.5f,1.5f,1.5f);
+	[Space]
+	public bool DublicateSprite = true;
+	public bool IsDetached = true;
 
-	
-	void Start () 
+	public void Activate()
 	{
-		StartCoroutine(UpdateCoroutine());
-	}
-	
-	
-	void Update () {
-		
+		if (DublicateSprite)
+		{
+			GameObject particle = (GameObject)Instantiate(gameObject, transform.position, Quaternion.identity);
+			if (!IsDetached) 
+				particle.transform.SetParent(transform.parent);
+			particle.transform.localScale = transform.localScale;
+			particle.transform.localRotation = transform.localRotation;
+			StartCoroutine(ActivateCoroutine(particle.GetComponent<Image>()));
+		}
+		else
+			StartCoroutine(ActivateCoroutine(GetComponent<Image>()));
+
 	}
 
-	IEnumerator UpdateCoroutine()
+	IEnumerator ActivateCoroutine(Image target)
 	{
-		float totalTime = 0.3f;
-		float targetStamp = Time.time + totalTime;
+		float targetStamp = Time.time + AnimationTime;
 
-		float targetScale = 1.5f;
-
-		GetComponent<Image>().CrossFadeAlpha(0.5f, 0, false);
-		GetComponent<Image>().CrossFadeAlpha(0, totalTime, false);
+		target.CrossFadeAlpha(0.5f, 0, false);
+		target.CrossFadeAlpha(0, AnimationTime, false);
 
 		while (Time.time < targetStamp)
 		{
-			transform.localScale = Vector3.Lerp(transform.localScale, Vector3.one * targetScale, 0.05f);
+			target.transform.localScale = Vector3.Lerp(target.transform.localScale, TargetScale, 0.05f);
 			yield return null;
 		}
-		Destroy(gameObject);
+		Destroy(target);
 	}
 
 }

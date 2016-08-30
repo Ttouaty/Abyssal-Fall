@@ -63,11 +63,13 @@ public class CharacterSlot : MonoBehaviour
 
 	}
 
+	int frameDelay = 1; // security for opening a slot.
 	void Update()
 	{
 		if (!Open)
 			return;
-
+		if (frameDelay-- >= 0)
+			return;
 		if (InputManager.GetButtonDown(InputEnum.B, _joyToListen) && Selected)
 			CancelCharacterSelection();
 
@@ -129,7 +131,8 @@ public class CharacterSlot : MonoBehaviour
 			StopCoroutine(_activeCoroutineRef);
 
 		Selected = false;
-		GameManager.Instance.RegisteredPlayers[_playerIndex].UnReady();
+		if (GameManager.Instance.RegisteredPlayers[_playerIndex] != null)
+			GameManager.Instance.RegisteredPlayers[_playerIndex].UnReady();
 		Debug.Log("cancel selection");
 
 		_activeCoroutineRef = StartCoroutine(SlideCharacterModelOut());
@@ -179,6 +182,7 @@ public class CharacterSlot : MonoBehaviour
 	{
 		_wheelRef.gameObject.SetActive(false);
 		Open = false;
+		frameDelay = 1;
 		Debug.Log("SLOT: " + name + " Closed");
 	}
 	

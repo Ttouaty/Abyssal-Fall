@@ -26,12 +26,6 @@ public class ReturnButton : InputButton {
 
 	protected override void LaunchCallback()
 	{
-		GameObject particle = (GameObject)Instantiate(SpriteB.gameObject, SpriteB.transform.position, Quaternion.identity);
-		particle.transform.SetParent(transform.parent);
-		particle.transform.localScale = SpriteB.transform.localScale;	
-		particle.transform.localRotation = SpriteB.transform.localRotation;
-		particle.AddComponent<GrowAndFade>();
-
 		base.LaunchCallback();
 	}
 }
