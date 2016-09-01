@@ -33,7 +33,7 @@ public class InputButton : MonoBehaviour
 		if (InputToListen == null)
 			Debug.LogWarning("InputButton \""+gameObject.name+"\" doesn't listen to any [Input].\nThe callback will never launch.");
 		if (!ListenToAllJoysticks && JoysticksToListen.Length == 0) { 
-			Debug.LogWarning("InputButton \"" + gameObject.name + "\" doesn't listen to any [Controller].");
+			//Debug.LogWarning("InputButton \"" + gameObject.name + "\" doesn't listen to any [Controller].");
 			JoysticksToListen = new int[12];
 		}
 

@@ -11,7 +11,6 @@ public class CharacterSelectButton : InputButton
 	}
 	protected override void Update()
 	{
-		Debug.Log(GameManager.Instance.nbPlayers);
 		// Fait a l'arrache mais c'est pas très grave :p
 
 		if (Input.GetKeyDown(KeyCode.P))

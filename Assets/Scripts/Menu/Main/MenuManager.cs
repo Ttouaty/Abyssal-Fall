@@ -207,8 +207,15 @@ public class MenuManager : GenericSingleton<MenuManager>
 		}
 
 		SetActiveButtons(newMenu, true);
-		if (newMenu.PreSelectedButton != null)
-			newMenu.PreSelectedButton.Select();
+
+		if (newMenu.LastButtonSelected == null)
+		{
+			if (newMenu.PreSelectedButton != null)
+				newMenu.PreSelectedButton.Select();
+		}
+		else
+			newMenu.LastButtonSelected.Select();
+
 		_activeMenu = newMenu;
 
 	}
@@ -240,7 +247,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 	IEnumerator MovePanelOverTime(MenuPanel targetMenu, Vector3 start, Vector3 end)
 	{
 		float eT = 0;
-		float timeTaken = 0.7f;
+		float timeTaken = 0.3f;
 
 		targetMenu.transform.position = start;
 		while (eT < timeTaken)
