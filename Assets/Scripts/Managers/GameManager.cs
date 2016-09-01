@@ -19,6 +19,23 @@ public class GameManager : GenericSingleton<GameManager>
 {
 	public static bool InProgress = false;
 
+	public bool AreAllPlayerReady
+	{
+		get
+		{
+			if (nbPlayers == 0)
+				return false;
+
+			for (int i = 0; i < nbPlayers; ++i)
+			{
+				if (!RegisteredPlayers[i].isReady)
+					return false;
+			}
+			return true;
+		}
+	}
+
+
 	private AGameRules _gameRules;
 	public AGameRules GameRules 
 	{

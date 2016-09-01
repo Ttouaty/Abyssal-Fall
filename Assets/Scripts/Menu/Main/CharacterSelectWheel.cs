@@ -56,7 +56,7 @@ public class CharacterSelectWheel : MonoBehaviour
 	void Update()
 	{
 		transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(0, _selectedCharacterIndex * _rotationBetweenArtworks, 0), 0.15f);
-
+		
 		for (int i = 0; i < _characterArtworkList.Count; ++i)
 		{
 			tempColor = _characterArtworkList[i].color;

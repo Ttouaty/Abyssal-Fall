@@ -282,10 +282,10 @@ namespace UnityEngine.EventSystems
             ProcessDrag(leftButtonData.buttonData);
 
             // Now process right / middle clicks
-            ProcessMousePress(mouseData.GetButtonState(PointerEventData.InputButton.Right).eventData);
-            ProcessDrag(mouseData.GetButtonState(PointerEventData.InputButton.Right).eventData.buttonData);
-            ProcessMousePress(mouseData.GetButtonState(PointerEventData.InputButton.Middle).eventData);
-            ProcessDrag(mouseData.GetButtonState(PointerEventData.InputButton.Middle).eventData.buttonData);
+			ProcessMousePress(mouseData.GetButtonState(PointerEventData.InputButton.Right).eventData);
+			ProcessDrag(mouseData.GetButtonState(PointerEventData.InputButton.Right).eventData.buttonData);
+			ProcessMousePress(mouseData.GetButtonState(PointerEventData.InputButton.Middle).eventData);
+			ProcessDrag(mouseData.GetButtonState(PointerEventData.InputButton.Middle).eventData.buttonData);
 
             if (!Mathf.Approximately(leftButtonData.buttonData.scrollDelta.sqrMagnitude, 0.0f))
             {
