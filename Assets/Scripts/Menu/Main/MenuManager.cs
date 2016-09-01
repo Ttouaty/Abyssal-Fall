@@ -13,12 +13,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 	public GameObject SplashScreens;
 
 	[SerializeField]
-	private GameObject _isartLogo;
-	[SerializeField]
 	private LoadingBar _loadBar;
-
-	[SerializeField]
-	private Button _StartButton;
 
 	private MenuPanel _activeMenu;
 	private MenuPanel[] _menuArray;
