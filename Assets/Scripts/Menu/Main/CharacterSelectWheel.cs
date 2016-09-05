@@ -21,7 +21,6 @@ public class CharacterSelectWheel : MonoBehaviour
 	private static float _alphaThresholdAngleMax = 180;
 
 	private SelectableCharacter[] _availableCharacters;
-	private float _targetAngle;
 	private int _selectedCharacterIndex = 0;
 	private int _selectedSkinIndex = 0;
 
@@ -77,7 +76,6 @@ public class CharacterSelectWheel : MonoBehaviour
 
 	public void Generate(SelectableCharacter[] availableCharacters)
 	{
-		_targetAngle = 0;
 		_availableCharacters = availableCharacters;
 		_rotationBetweenArtworks = 360 / _availableCharacters.Length;
 		if (!_generated)
@@ -128,7 +126,6 @@ public class CharacterSelectWheel : MonoBehaviour
 	public void ScrollToIndex(int newIndex)
 	{
 		_selectedCharacterIndex = newIndex;
-		_targetAngle = _selectedCharacterIndex * _rotationBetweenArtworks;
 		_selectedCharacterData.Controller = _availableCharacters[_selectedCharacterIndex].CharacterRef;
 	}
 

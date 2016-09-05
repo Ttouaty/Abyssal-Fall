@@ -64,7 +64,7 @@ public class Tile : MonoBehaviour, IPoolable
 		if (_isTouched)
 			return;
 
-        ArenaManager.Instance.RemoveTile(this);
+		//ArenaManager.Instance.RemoveTile(this);
 
         TimeManager.Instance.OnPause.AddListener(OnPause);
         TimeManager.Instance.OnResume.AddListener(OnResume);

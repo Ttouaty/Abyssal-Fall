@@ -30,9 +30,8 @@ public class InputButton : MonoBehaviour
 
 	protected virtual void Start()
 	{
-		if (InputToListen == null)
-			Debug.LogWarning("InputButton \""+gameObject.name+"\" doesn't listen to any [Input].\nThe callback will never launch.");
-		if (!ListenToAllJoysticks && JoysticksToListen.Length == 0) { 
+		if (!ListenToAllJoysticks && JoysticksToListen.Length == 0) 
+		{ 
 			//Debug.LogWarning("InputButton \"" + gameObject.name + "\" doesn't listen to any [Controller].");
 			JoysticksToListen = new int[12];
 		}
@@ -48,7 +47,7 @@ public class InputButton : MonoBehaviour
 		{ 
 			for(int i = 0; i < JoysticksToListen.Length; ++i)
 			{
-				if (JoysticksToListen[i] != null)
+				if (!JoysticksToListen[i].Equals(null))
 					TestInput(JoysticksToListen[i]);
 			}
 		}

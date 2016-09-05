@@ -12,9 +12,6 @@ public class MenuManager : GenericSingleton<MenuManager>
 	public Image LoadingOut;
 	public GameObject SplashScreens;
 
-	[SerializeField]
-	private LoadingBar _loadBar;
-
 	private MenuPanel _activeMenu;
 	private MenuPanel[] _menuArray;
 
@@ -35,11 +32,9 @@ public class MenuManager : GenericSingleton<MenuManager>
 		_canvas                         = GetComponentInChildren<Canvas>();
 		_canvas.worldCamera             = Camera.main;
 		_menuArray                      = GetComponentsInChildren<MenuPanel>();
-		_loadBar                        = GetComponentInChildren<LoadingBar>();
 		_characterSlotsContainerRef     = GetComponentInChildren<CharacterSlotsContainer>();
 		_splashscreens                  = SplashScreens.GetComponentsInChildren<RawImage>();
         _menuArray                      = GetComponentsInChildren<MenuPanel>();
-        _loadBar                        = GetComponentInChildren<LoadingBar>();
         _characterSlotsContainerRef     = GetComponentInChildren<CharacterSlotsContainer>();
 		_returnGroupRef					= GetComponentInChildren<ReturnButton>();
 		_metaContainer					= _canvas.transform.FindChild("Meta");
@@ -54,7 +49,6 @@ public class MenuManager : GenericSingleton<MenuManager>
 		MiniLoading.SetActive(false);
 
 		_menuArray = GetComponentsInChildren<MenuPanel>();
-		_loadBar = GetComponentInChildren<LoadingBar>();
 
 		_activeMenu = _menuArray[0];
 

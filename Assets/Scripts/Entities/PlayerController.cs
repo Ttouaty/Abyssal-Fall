@@ -106,12 +106,7 @@ public class PlayerController : MonoBehaviour
 
 	public void Init(Player player)
 	{
-		//Debug.Log("remove that part from player code !");
-		////CHEESE
-		//_playerRef = new Player();
-		//_playerRef.SkinNumber = 0;
-		//_playerRef.JoystickNumber = 1;
-		////CHEESE END
+		
 
 		_playerRef = player;
 
@@ -253,6 +248,7 @@ public class PlayerController : MonoBehaviour
 
 		if (InputManager.GetButtonDown("Special", _playerRef.JoystickNumber) && _canSpecial)
 		{
+			_specialCooldown.Set(_characterData.CharacterStats.specialCooldown);
 			SpecialAction();
 		}
 	}
@@ -289,6 +285,8 @@ public class PlayerController : MonoBehaviour
 			_activeSpeed.x = _activeSpeed.x.Reduce(_friction * TimeManager.DeltaTime);
 			_activeSpeed.z = _activeSpeed.z.Reduce(_friction * TimeManager.DeltaTime);
 		}
+
+		//_activeSpeed = _activeSpeed.magnitude * (_activeSpeed.normalized - _activeColliPoint.normal * Vector3.Dot(_activeSpeed.normalized, _activeColliPoint.normal));
 	}
 
 	public void ContactGround()
@@ -302,7 +300,8 @@ public class PlayerController : MonoBehaviour
 
 	private void ApplyCharacterFinalVelocity()
 	{
-		transform.position += _activeSpeed * TimeManager.DeltaTime;
+		//transform.position += _activeSpeed * TimeManager.DeltaTime;
+		_rigidB.velocity = _activeSpeed;
 		_animator.SetFloat("Speed", Mathf.Abs(_activeSpeed.x) + Mathf.Abs(_activeSpeed.z));
 	}
 
@@ -333,6 +332,7 @@ public class PlayerController : MonoBehaviour
 		direction = direction.normalized * (oldMagnitude * 3 / _characterData.CharacterStats.resistance);
 		
 		_activeSpeed = direction;
+		_rigidB.velocity = _activeSpeed;
 		
 		_stunTime.Set(stunTime);
 	}
@@ -383,9 +383,27 @@ public class PlayerController : MonoBehaviour
 		PlayerCollisionHandler(colli);
 	}
 
+	private ContactPoint _activeColliPoint;
+	private bool _isWallColliding;
 	protected void OnCollisionStay(Collision colli)
 	{
 		PlayerCollisionHandler(colli);
+
+		if (colli.gameObject.layer == LayerMask.NameToLayer("Wall"))
+		{
+			_isWallColliding = true;
+			_activeColliPoint = colli.contacts[0];
+		}
+		//for (int i = 0; i < colli.contacts.Length; i++)
+		//{
+		//	//Debug.DrawRay(transform.position, colli.contacts[i].point - transform.position, Color.red, 1);
+		//	Debug.DrawRay(colli.contacts[i].point, colli.contacts[i].normal, Color.red, 1);
+		//}
+	}
+
+	protected void OnCollisionExit()
+	{
+		_isWallColliding = false;
 	}
 
 	protected virtual void PlayerCollisionHandler(Collision colli)

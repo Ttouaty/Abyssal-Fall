@@ -84,6 +84,7 @@ public class GameManager : GenericSingleton<GameManager>
 
 	public void StartGame()
 	{
+		Debug.Log("ass");
 		ResetAlivePlayers();
 		// DEBUG en attendant que la sélection de la map soit dispo
 		switch (_alivePlayers.Count)

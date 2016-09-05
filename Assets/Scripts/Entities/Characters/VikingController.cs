@@ -7,7 +7,6 @@ public class VikingController : PlayerController
 	{
 		_animator.SetTrigger("Throw");
 		_audioSource.PlayOneShot(_characterData.SoundList.OnSpecialActivate);
-		_specialCooldown.Set(_characterData.CharacterStats.specialCooldown);
 		_playerProp.PropRenderer.enabled = false;
 		GameObject hammer = GameObjectPool.GetAvailableObject("Hammer");
         hammer.GetComponent<Hammer>().Launch(transform.position + transform.forward, transform.forward, _playerRef.PlayerNumber);
