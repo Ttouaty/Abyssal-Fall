@@ -1,10 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using System.Collections.Generic;
+
+struct SelectedCharacters
+{
+	public int characterIndex;
+	public int skinIndex;
+}
 
 public class CharacterSlot : MonoBehaviour
 {
 	private static SelectableCharacter[] _availableCharacters;
+	private static List<SelectedCharacters> _selectedCharacters = new List<SelectedCharacters>();
 	public static ParticleSystem OnCharacterSelectedParticles;
 	
 
@@ -100,8 +108,13 @@ public class CharacterSlot : MonoBehaviour
 
 	void SelectCharacter()
 	{
+		if (CheckIfCharacterIsAvailable())
+		{
+			Debug.Log("Ce personnage et ce skin sont déja selectionné.");
+			return;
+		}
 		if (_activeCoroutineRef != null)
-		StopCoroutine(_activeCoroutineRef);
+			StopCoroutine(_activeCoroutineRef);
 		GameManager.Instance.RegisteredPlayers[_playerIndex].Ready(_wheelRef.SelectedPlayerController);
 		
 		//PLACEMENT DES PARTICULES A L'ARRACHE
@@ -123,6 +136,17 @@ public class CharacterSlot : MonoBehaviour
 
 		Selected = true;
 		_activeCoroutineRef = StartCoroutine(SlideCharacterModelIn());
+	}
+
+	bool CheckIfCharacterIsAvailable()
+	{
+		for (int i = 0; i < _selectedCharacters.Count; ++i)
+		{
+			if (_selectedCharacterIndex == _selectedCharacters[i].characterIndex &&
+				_selectedSkinIndex == _selectedCharacters[i].skinIndex)
+				return false;
+		}
+		return true;
 	}
 
 	public void CancelCharacterSelection()
