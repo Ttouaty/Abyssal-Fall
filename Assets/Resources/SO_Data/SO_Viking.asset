@@ -20,14 +20,14 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 9f141fb44803574409bba210e5f1f83d, type: 2}
   CharacterStats:
     strength: 3
-    specialCooldown: 3
+    specialCooldown: 2
     speed: 3
     resistance: 3
   Dash:
     endingLag: .300000012
-    force: {x: 7, y: 7}
+    force: {x: 7, y: 5}
     ImpactEjection: {x: 5, y: 5}
-    inProgress: 0
+    inProgress: 1
   SoundList:
     OnDashStart: {fileID: 0}
     OnDashEnd: {fileID: 0}
@@ -35,5 +35,6 @@ MonoBehaviour:
     OnSpecialActivate: {fileID: 0}
     OnHit: {fileID: 0}
   OtherAssetsToLoad:
-  - Prefab: {fileID: 143516, guid: 07e1f478976236e489c448a02c52c28a, type: 2}
+  - Name: 
+    Prefab: {fileID: 143516, guid: 07e1f478976236e489c448a02c52c28a, type: 2}
     Quantity: 20

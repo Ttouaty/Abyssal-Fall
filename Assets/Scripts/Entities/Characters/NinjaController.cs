@@ -14,6 +14,7 @@ public class NinjaController : PlayerController {
 		specialCooldown.onFinish += OnFantomFinish;
 		specialCooldown.Set(SpecialLength);
 		//TODO : ANIM
+		_ghostParticles.Clear();
 		_ghostParticles.Play();
 		gameObject.layer = LayerMask.NameToLayer("PlayerGhost");
 	}
@@ -21,6 +22,7 @@ public class NinjaController : PlayerController {
 	private void OnFantomActive()
 	{
 		_rigidB.velocity = _rigidB.velocity.ZeroY();
+		_activeSpeed = _activeSpeed.ZeroY();
 		IsGrounded = true;
 	}
 

@@ -206,8 +206,8 @@ public class PlayerController : MonoBehaviour
 	#region Processes
 	private void ProcessOrientation()
 	{
-		_activeDirection.x = Mathf.Lerp(_activeDirection.x, InputManager.GetAxis("x", _playerRef.JoystickNumber), 15 * TimeManager.DeltaTime);
-		_activeDirection.z = Mathf.Lerp(_activeDirection.z, InputManager.GetAxis("y", _playerRef.JoystickNumber), 15 * TimeManager.DeltaTime);
+		_activeDirection.x = Mathf.Lerp(_activeDirection.x, InputManager.GetAxis("x", _playerRef.JoystickNumber), 20 * TimeManager.DeltaTime);
+		_activeDirection.z = Mathf.Lerp(_activeDirection.z, InputManager.GetAxis("y", _playerRef.JoystickNumber), 20 * TimeManager.DeltaTime);
 		transform.LookAt(transform.position + (Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized) * _activeDirection), Vector3.up);
 	}
 
@@ -246,11 +246,16 @@ public class PlayerController : MonoBehaviour
 			StartCoroutine(ActivateDash());
 		}
 
-		if (InputManager.GetButtonDown("Special", _playerRef.JoystickNumber) && _canSpecial)
+		if (SpecialActivation())
 		{
 			_specialCooldown.Set(_characterData.CharacterStats.specialCooldown);
 			SpecialAction();
 		}
+	}
+
+	protected virtual bool SpecialActivation()
+	{
+		return InputManager.GetButtonDown("Special", _playerRef.JoystickNumber) && _canSpecial;
 	}
 
 	private void ProcessActiveSpeed()
@@ -383,27 +388,9 @@ public class PlayerController : MonoBehaviour
 		PlayerCollisionHandler(colli);
 	}
 
-	private ContactPoint _activeColliPoint;
-	private bool _isWallColliding;
 	protected void OnCollisionStay(Collision colli)
 	{
 		PlayerCollisionHandler(colli);
-
-		if (colli.gameObject.layer == LayerMask.NameToLayer("Wall"))
-		{
-			_isWallColliding = true;
-			_activeColliPoint = colli.contacts[0];
-		}
-		//for (int i = 0; i < colli.contacts.Length; i++)
-		//{
-		//	//Debug.DrawRay(transform.position, colli.contacts[i].point - transform.position, Color.red, 1);
-		//	Debug.DrawRay(colli.contacts[i].point, colli.contacts[i].normal, Color.red, 1);
-		//}
-	}
-
-	protected void OnCollisionExit()
-	{
-		_isWallColliding = false;
 	}
 
 	protected virtual void PlayerCollisionHandler(Collision colli)

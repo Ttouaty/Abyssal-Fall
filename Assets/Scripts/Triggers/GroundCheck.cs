@@ -45,6 +45,5 @@ public class GroundCheck : MonoBehaviour
 			else
 				_playerRef.IsGrounded = false;
 		}
-		Debug.Log(_checkDistance);
 	}
 }

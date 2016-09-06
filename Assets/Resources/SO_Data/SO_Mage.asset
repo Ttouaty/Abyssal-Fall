@@ -9,21 +9,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6709b90a5db50264aa37f582427c3be2, type: 3}
-  m_Name: SO_Ninja
+  m_Name: SO_Mage
   m_EditorClassIdentifier: 
-  IngameName: Vaznir The Assassin
-  CharacterModel: {fileID: 11453866, guid: 4cc52c0f75a5bf34eb5e7a7463e30859, type: 2}
+  IngameName: Enchantora The Witch
+  CharacterModel: {fileID: 11475656, guid: 3d4a50b86d93dbd4b91acbc922964100, type: 2}
   CharacterMaterials:
-  - {fileID: 2100000, guid: 42c419f8648a5f8498d342a565a0c213, type: 2}
+  - {fileID: 2100000, guid: a6e8202b05519ec4e9488f6f40a8cd2b, type: 2}
+  - {fileID: 2100000, guid: aac45e70a54774947a27bb81cb09d98c, type: 2}
   - {fileID: 2100000, guid: 2085d6d318e9139479838deb44ecb229, type: 2}
-  - {fileID: 2100000, guid: 0347f43d680c4ec41aa2e15fb5d71a74, type: 2}
   CharacterStats:
     strength: 3
-    specialCooldown: 7
-    speed: 4
+    specialCooldown: 3
+    speed: 3
     resistance: 2
   Dash:
-    endingLag: .100000001
+    endingLag: .300000012
     force: {x: 7, y: 5}
     ImpactEjection: {x: 5, y: 5}
     inProgress: 0
