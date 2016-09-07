@@ -28,7 +28,7 @@ public class NinjaController : PlayerController {
 
 	private void OnFantomFinish()
 	{
-		gameObject.layer = LayerMask.NameToLayer("Default");
+		gameObject.layer = LayerMask.NameToLayer("PlayerDefault");
 		_ghostParticles.Stop();
 	}
 

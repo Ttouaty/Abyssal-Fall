@@ -119,8 +119,21 @@ public class InputManager : GenericSingleton<InputManager>
 	{
 		return Input.GetAxisRaw(axisName + "_" + JoystickNumber);
 	}
+
+	public static Vector2 GetStickDirection(int JoystickNumber = 0)
+	{
+		if (StickIsNeutral(JoystickNumber))
+			return Vector2.zero;
+		return new Vector2(GetAxis("x", JoystickNumber), GetAxis("y", JoystickNumber)).normalized;
+	}
+
+	public static bool StickIsNeutral(int JoystickNumber = 0)
+	{
+		return Input.GetAxisRaw("x_" + JoystickNumber) == 0 && Input.GetAxisRaw("y_" + JoystickNumber) == 0;
+	}
 	#endregion
 
+	
 	
 
 }

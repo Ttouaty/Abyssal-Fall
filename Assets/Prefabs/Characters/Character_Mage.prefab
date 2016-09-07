@@ -12,7 +12,7 @@ GameObject:
   - 136: {fileID: 13665158}
   - 82: {fileID: 8238140}
   - 114: {fileID: 11443824}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Character_Mage
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -57,7 +57,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 130986}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 18.3500004, y: 4.46999979, z: -19.7700005}
+  m_LocalPosition: {x: 15.96, y: 2.44000006, z: -6.65999985}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 406250}
@@ -101,7 +101,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 80
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!82 &8238140
 AudioSource:
@@ -203,9 +203,17 @@ MonoBehaviour:
   _playerProp: {fileID: 0}
   _characterData: {fileID: 11400000, guid: 853866ac5103e4944bf840503898067e, type: 2}
   _specialMaxChargeTime: 1
-  _specialChargeSpeed: 5
-  _specialChargeSpeedIncrease: 1.20000005
+  _specialChargeSpeed: 10
+  _specialChargeSpeedIncrease: 1.5
   _specialMinRange: 3
+  _explosionDelay: .699999988
+  _explosionRadius: 4
+  _explosionEjection: {x: 7, y: 7}
+  _explosionStunTime: .400000006
+  _preExposionParticles: {fileID: 19886566, guid: 6a329cdce9866254ba230f1bca1b6018,
+    type: 2}
+  _explosionParticles: {fileID: 19818876, guid: 6c7b02a7943bb1a4b97106fa84f23b8c,
+    type: 2}
 --- !u!136 &13665158
 CapsuleCollider:
   m_ObjectHideFlags: 1

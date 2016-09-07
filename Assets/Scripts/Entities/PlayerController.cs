@@ -26,7 +26,7 @@ public struct PlayerAudioList
 [Serializable]
 public class Stats
 {
-	[Range(1,5)]
+	[Range(1, 5)]
 	public int strength = 3;
 	[Range(0, 30)]
 	public float specialCooldown = 3;
@@ -76,7 +76,8 @@ public class PlayerController : MonoBehaviour
 
 	protected TimeCooldown _specialCooldown;
 	protected TimeCooldown _stunTime; //Secondes of stun on Hit
-	
+	protected TimeCooldown _invulTime; //Secondes of invulnerability
+
 
 	protected bool _allowInput = true;
 	protected bool _isStunned = false;
@@ -97,7 +98,7 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
-	protected void Awake ()
+	protected void Awake()
 	{
 		_audioSource = GetComponent<AudioSource>();
 		_transf = transform;
@@ -106,7 +107,7 @@ public class PlayerController : MonoBehaviour
 
 	public void Init(Player player)
 	{
-		
+
 
 		_playerRef = player;
 
@@ -120,7 +121,7 @@ public class PlayerController : MonoBehaviour
 		_playerProp = transform.GetComponentInChildren<PlayerProp>();
 
 		if (_playerProp == null)
-			Debug.LogError("No player prop found in playermesh: "+gameObject.name+" !");
+			Debug.LogError("No player prop found in playermesh: " + gameObject.name + " !");
 
 		_characterData.Dash.inProgress = false; // security because sometimes dash is activated, lolwutomfgrektbbq
 		_specialCooldown = new TimeCooldown(this);
@@ -129,6 +130,10 @@ public class PlayerController : MonoBehaviour
 		_stunTime = new TimeCooldown(this);
 		_stunTime.onFinish = OnStunOver;
 		_stunTime.onProgress = OnStunActive;
+
+		_invulTime = new TimeCooldown(this);
+		_invulTime.onFinish = OnStunOver;
+		_invulTime.onProgress = OnStunActive;
 
 		// GameManager.Instance.OnPlayerWin.AddListener(OnPlayerWin); // Removed temporarily
 
@@ -206,8 +211,15 @@ public class PlayerController : MonoBehaviour
 	#region Processes
 	private void ProcessOrientation()
 	{
-		_activeDirection.x = Mathf.Lerp(_activeDirection.x, InputManager.GetAxis("x", _playerRef.JoystickNumber), 20 * TimeManager.DeltaTime);
-		_activeDirection.z = Mathf.Lerp(_activeDirection.z, InputManager.GetAxis("y", _playerRef.JoystickNumber), 20 * TimeManager.DeltaTime);
+		if (!InputManager.StickIsNeutral(_playerRef.JoystickNumber))
+		{
+			//_activeDirection.x = Mathf.Lerp(_activeDirection.x, InputManager.GetAxis("x", _playerRef.JoystickNumber), 0.3f);
+			//_activeDirection.z = Mathf.Lerp(_activeDirection.z, InputManager.GetAxis("y", _playerRef.JoystickNumber), 0.3f);
+			_activeDirection.x = InputManager.GetAxis("x", _playerRef.JoystickNumber);
+			_activeDirection.z = InputManager.GetAxis("y", _playerRef.JoystickNumber);
+			_activeDirection.Normalize();
+		}
+
 		transform.LookAt(transform.position + (Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized) * _activeDirection), Vector3.up);
 	}
 
@@ -229,9 +241,19 @@ public class PlayerController : MonoBehaviour
 		{
 			_stunTime.Add(TimeManager.DeltaTime); //decrease Stun only if grounded
 		}
-		
+
 		_allowInput = false;
 		_isStunned = true;
+	}
+
+	protected virtual void OnInvulOver()
+	{
+		_isInvul = false;
+	}
+
+	protected virtual void OnInvulActive()
+	{
+		_isInvul = true;
 	}
 
 	private void ProcessCoolDowns()
@@ -264,7 +286,7 @@ public class PlayerController : MonoBehaviour
 		{
 			if (_allowInput)
 			{
-				
+
 #if UNITY_EDITOR
 				_activeSpeed.x = _maxSpeed.x * InputManager.GetAxisRaw("x", _playerRef.JoystickNumber);
 				_activeSpeed.z = _maxSpeed.x * InputManager.GetAxisRaw("y", _playerRef.JoystickNumber);
@@ -315,7 +337,7 @@ public class PlayerController : MonoBehaviour
 
 	protected virtual void SpecialAction()
 	{
-		Debug.LogWarning("No default special Action defined in PlayerController, use a child class to code a special Action: "+gameObject.name);
+		Debug.LogWarning("No default special Action defined in PlayerController, use a child class to code a special Action: " + gameObject.name);
 	}
 
 	public void Kill()
@@ -327,30 +349,36 @@ public class PlayerController : MonoBehaviour
 		GameManager.Instance.OnPlayerDeath.Invoke(_playerRef);
 	}
 
-	public void Eject(Vector3 direction, float stunTime)
+	public void Eject(Vector3 direction)
 	{
 		if (direction.y > 0)
-			IsGrounded= false;
+			IsGrounded = false;
 
 		float oldMagnitude = direction.magnitude;
 		_characterData.CharacterStats.resistance = _characterData.CharacterStats.resistance == 0 ? 1 : _characterData.CharacterStats.resistance;
-		direction = direction.normalized * (oldMagnitude * 3 / _characterData.CharacterStats.resistance);
-		
+		direction = direction.normalized * (oldMagnitude * (6 - _characterData.CharacterStats.resistance) / 3);
+		 
 		_activeSpeed = direction;
 		_rigidB.velocity = _activeSpeed;
-		
-		_stunTime.Set(stunTime);
+
 	}
 
-	public void Damage(Vector3 direction, float stunTime)
+	public void Damage(Vector3 direction, float stunTime, bool isInvul = true)
 	{
 		if (_isInvul)
 			return;
-		Eject(direction, stunTime);
+
+		Eject(direction);
+		_stunTime.Set(stunTime);
+		if (isInvul)
+			_invulTime.Add(stunTime);
 		_activeDirection = -direction.ZeroY();
 		_audioSource.PlayOneShot(_characterData.SoundList.OnHit);
 		_animator.SetTrigger("Stun_Start");
 	}
+
+	public void AddStun(float stunTime) { _stunTime.Add(stunTime); }
+	public void SetStun(float stunTime) { _stunTime.Set(stunTime); }
 
 
 	protected virtual IEnumerator ActivateDash()
@@ -359,7 +387,8 @@ public class PlayerController : MonoBehaviour
 		_isInvul = true;
 		_allowInput = false;
 
-		Eject(Quaternion.FromToRotation(Vector3.right,transform.forward) * _characterData.Dash.force, _characterData.Dash.endingLag);
+		Eject(Quaternion.FromToRotation(Vector3.right, transform.forward) * _characterData.Dash.force);
+		_stunTime.Add(_characterData.Dash.endingLag);
 
 		_animator.SetTrigger("Dash_Start");
 		_audioSource.PlayOneShot(_characterData.SoundList.OnDashStart);
@@ -371,7 +400,7 @@ public class PlayerController : MonoBehaviour
 			yield return null;
 		}
 
-		gameObject.layer = LayerMask.NameToLayer("Default");
+		gameObject.layer = LayerMask.NameToLayer("PlayerDefault");
 
 		_isInvul = false;
 
@@ -398,7 +427,7 @@ public class PlayerController : MonoBehaviour
 		if (colli.gameObject.tag == "Player" && _characterData.Dash.inProgress)
 		{
 			colli.transform.GetComponent<PlayerController>()
-				.Damage(Quaternion.FromToRotation(Vector3.right, 
+				.Damage(Quaternion.FromToRotation(Vector3.right,
 				(colli.transform.position - transform.position).ZeroY().normalized) * _characterData.Dash.ImpactEjection * (_characterData.CharacterStats.strength / 3),
 				0.3f);
 		}
