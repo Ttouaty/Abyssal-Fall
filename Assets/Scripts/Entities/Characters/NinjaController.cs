@@ -17,6 +17,7 @@ public class NinjaController : PlayerController {
 		_ghostParticles.Clear();
 		_ghostParticles.Play();
 		gameObject.layer = LayerMask.NameToLayer("PlayerGhost");
+		_rigidB.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
 	}
 
 	private void OnFantomActive()
@@ -29,6 +30,8 @@ public class NinjaController : PlayerController {
 	private void OnFantomFinish()
 	{
 		gameObject.layer = LayerMask.NameToLayer("PlayerDefault");
+		_rigidB.constraints = RigidbodyConstraints.FreezeRotation;
+
 		_ghostParticles.Stop();
 	}
 

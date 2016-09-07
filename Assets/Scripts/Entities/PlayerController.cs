@@ -225,8 +225,10 @@ public class PlayerController : MonoBehaviour
 
 	protected virtual void OnSpecialReset()
 	{
-		_playerProp.PropRenderer.enabled = true;
-		_playerProp.PropRespawnParticles.Play();
+		if (_playerProp.PropRenderer != null)
+			_playerProp.PropRenderer.enabled = true;
+		if (_playerProp.PropRespawnParticles != null)
+			_playerProp.PropRespawnParticles.Play();
 	}
 
 	protected virtual void OnStunOver()
@@ -353,14 +355,9 @@ public class PlayerController : MonoBehaviour
 	{
 		if (direction.y > 0)
 			IsGrounded = false;
-
-		float oldMagnitude = direction.magnitude;
-		_characterData.CharacterStats.resistance = _characterData.CharacterStats.resistance == 0 ? 1 : _characterData.CharacterStats.resistance;
-		direction = direction.normalized * (oldMagnitude * (6 - _characterData.CharacterStats.resistance) / 3);
-		 
+		
 		_activeSpeed = direction;
 		_rigidB.velocity = _activeSpeed;
-
 	}
 
 	public void Damage(Vector3 direction, float stunTime, bool isInvul = true)
@@ -368,11 +365,16 @@ public class PlayerController : MonoBehaviour
 		if (_isInvul)
 			return;
 
+		float oldMagnitude = direction.magnitude;		
+		_characterData.CharacterStats.resistance = _characterData.CharacterStats.resistance == 0 ? 1 : _characterData.CharacterStats.resistance;
+		direction = direction.normalized * (oldMagnitude * (6 - _characterData.CharacterStats.resistance) / 3);
+
 		Eject(direction);
-		_stunTime.Set(stunTime);
+		if(stunTime > 0)
+			_stunTime.Set(stunTime);
 		if (isInvul)
-			_invulTime.Add(stunTime);
-		_activeDirection = -direction.ZeroY();
+			_invulTime.Add(stunTime * 1.2f);
+		_activeDirection = -direction.ZeroY().normalized;
 		_audioSource.PlayOneShot(_characterData.SoundList.OnHit);
 		_animator.SetTrigger("Stun_Start");
 	}
@@ -387,7 +389,7 @@ public class PlayerController : MonoBehaviour
 		_isInvul = true;
 		_allowInput = false;
 
-		Eject(Quaternion.FromToRotation(Vector3.right, transform.forward) * _characterData.Dash.force);
+		Eject(Quaternion.FromToRotation(Vector3.right, _activeDirection) * _characterData.Dash.force);
 		_stunTime.Add(_characterData.Dash.endingLag);
 
 		_animator.SetTrigger("Dash_Start");
