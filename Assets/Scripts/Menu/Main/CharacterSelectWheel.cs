@@ -85,6 +85,15 @@ public class CharacterSelectWheel : MonoBehaviour
 				GenerateCharacter(i);
 			}
 		}
+		else
+		{
+			for (int i = 0; i < _characterArtworkList.Count; i++)
+			{
+				tempColor = _characterArtworkList[i].color;
+				tempColor.a = 0;
+				_characterArtworkList[i].color = tempColor;
+			}
+		}
 		_generated = true;
 		_selectedCharacterData.SelectedSkinIndex = _selectedSkinIndex;
 		_selectedCharacterData.Controller = _availableCharacters[_selectedCharacterIndex].CharacterRef;

@@ -31,7 +31,7 @@ public class FlashAndRotate : MonoBehaviour
 	void Update()
 	{
 		_rotationDone = Mathf.Lerp(_rotationDone, _rotation, eT / (_particles.duration + _particles.startLifetime));
-		transform.rotation = Quaternion.AngleAxis(_rotationDone, _rotationAxis);
+		transform.rotation = Quaternion.AngleAxis(_rotationDone, _rotationAxis) * transform.rotation;
 		
 		eT += TimeManager.DeltaTime;
 	}

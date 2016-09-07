@@ -1609,17 +1609,23 @@ MonoBehaviour:
     - {fileID: 21300000, guid: 923c02165befcce4e92119a6deee76fa, type: 3}
     - {fileID: 21300000, guid: f1c204b77dd19df4596cec934627498f, type: 3}
     InfoImage: {fileID: 0}
-  - CharacterRef: {fileID: 11448426, guid: 9b85bde0b5dc1d74b8ec37b4561a265f, type: 2}
+  - CharacterRef: {fileID: 11474260, guid: 9b85bde0b5dc1d74b8ec37b4561a265f, type: 2}
     ArtWorks:
     - {fileID: 21300000, guid: 984123f61a4e42446bb4cfaa31afef68, type: 3}
     - {fileID: 21300000, guid: e03a185ab9f2efb45ac90ef8776aaacd, type: 3}
     - {fileID: 21300000, guid: b6f3f8bb3fcaa5047b2027c108428cf2, type: 3}
     InfoImage: {fileID: 0}
-  - CharacterRef: {fileID: 11448426, guid: 9b85bde0b5dc1d74b8ec37b4561a265f, type: 2}
+  - CharacterRef: {fileID: 11443824, guid: e44733f7405603a42b6ee4b52dd53d53, type: 2}
     ArtWorks:
-    - {fileID: 21300000, guid: 984123f61a4e42446bb4cfaa31afef68, type: 3}
-    - {fileID: 21300000, guid: e03a185ab9f2efb45ac90ef8776aaacd, type: 3}
-    - {fileID: 21300000, guid: b6f3f8bb3fcaa5047b2027c108428cf2, type: 3}
+    - {fileID: 21300000, guid: ee6a7d58d26992342bb8349a42d3c5f7, type: 3}
+    - {fileID: 21300000, guid: 77bb18aaa6d81c646a9eaba8e3e2e324, type: 3}
+    - {fileID: 21300000, guid: 00407b9b576a4a542ac5dcac7b05a767, type: 3}
+    InfoImage: {fileID: 0}
+  - CharacterRef: {fileID: 11405882, guid: ba7fed6ca79414f4c93aa9bb12b559b9, type: 2}
+    ArtWorks:
+    - {fileID: 21300000, guid: 35e31dc974256bd4ebb343e5289b9add, type: 3}
+    - {fileID: 21300000, guid: 1f2b5197fd36d8e46a5730f4a2828ef5, type: 3}
+    - {fileID: 21300000, guid: 564c1ec91956bb449b84a5584525824a, type: 3}
     InfoImage: {fileID: 0}
 --- !u!114 &11411528
 MonoBehaviour:
@@ -2237,7 +2243,6 @@ MonoBehaviour:
   LoadingIn: {fileID: 11451784}
   LoadingOut: {fileID: 11489012}
   SplashScreens: {fileID: 122090}
-  _loadBar: {fileID: 0}
 --- !u!114 &11433972
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3196,8 +3201,8 @@ MonoBehaviour:
   Callback:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 11433352}
-        m_MethodName: MenuReturn
+      - m_Target: {fileID: 11460852}
+        m_MethodName: Activate
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3207,8 +3212,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 11460852}
-        m_MethodName: Activate
+      - m_Target: {fileID: 11433352}
+        m_MethodName: MenuReturn
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

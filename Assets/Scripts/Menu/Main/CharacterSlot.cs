@@ -108,7 +108,7 @@ public class CharacterSlot : MonoBehaviour
 
 	void SelectCharacter()
 	{
-		if (CheckIfCharacterIsAvailable())
+		if (!CheckIfCharacterIsAvailable())
 		{
 			Debug.Log("Ce personnage et ce skin sont déja selectionné.");
 			return;
@@ -122,9 +122,9 @@ public class CharacterSlot : MonoBehaviour
 		Vector3 camDirection = (Camera.main.transform.position - transform.position).normalized;
 
 		ParticleSystem spawnParticles = (ParticleSystem) Instantiate(OnCharacterSelectedParticles, transform.position + camDirection * 1.5f, Quaternion.identity);
-		spawnParticles.transform.rotation = transform.rotation;
-        spawnParticles.GetComponent<FlashAndRotate>()._rotationAxis = -transform.up;
         spawnParticles.transform.parent = MenuManager.Instance.transform;
+		spawnParticles.transform.rotation = Quaternion.LookRotation(transform.forward, transform.up);
+        spawnParticles.GetComponent<FlashAndRotate>()._rotationAxis = transform.forward;
 
         if (_selectedCharacterModel != null)
 			Destroy(_selectedCharacterModel);
