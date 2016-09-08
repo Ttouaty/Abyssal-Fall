@@ -21,7 +21,7 @@ public class CharacterSlot : MonoBehaviour
 	private int _selectedCharacterIndex = 0;
 	private int _selectedSkinIndex = 0;
 
-	private int _joyToListen;
+	private int _joyToListen; 
 	private int _playerIndex;
 	[HideInInspector]
 	public bool Open = false;
@@ -32,7 +32,6 @@ public class CharacterSlot : MonoBehaviour
 
 	private CharacterSelectWheel _wheelRef;
 	private GameObject _selectedCharacterModel;
-	private Vector3 _selectedModelTargetPosition;
 
 	private Coroutine _activeCoroutineRef;
 
@@ -71,7 +70,7 @@ public class CharacterSlot : MonoBehaviour
 
 	}
 
-	int frameDelay = 1; // security for opening a slot.
+	int frameDelay = 1; // security for opening a slot. (prevents openning && selecting character in 1 frame)
 	void Update()
 	{
 		if (!Open)
@@ -132,7 +131,6 @@ public class CharacterSlot : MonoBehaviour
 		GetSelectedCharacter.CharacterRef._characterData.CharacterModel.Reskin(GetSelectedSkin);
 		_selectedCharacterModel = (GameObject)Instantiate(GetSelectedCharacter.CharacterRef._characterData.CharacterModel.gameObject, transform.position - transform.up * 30, transform.rotation * Quaternion.FromToRotation(Vector3.right, Vector3.left));
 		_selectedCharacterModel.transform.parent = transform;
-		_selectedModelTargetPosition = _selectedCharacterModel.transform.position;
 
 		Selected = true;
 		_activeCoroutineRef = StartCoroutine(SlideCharacterModelIn());

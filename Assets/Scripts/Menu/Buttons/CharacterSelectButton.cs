@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class CharacterSelectButton : InputButton
+public class CharacterSelectButton : InputListener
 {
 	protected override void Start()
 	{

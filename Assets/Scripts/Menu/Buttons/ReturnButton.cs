@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class ReturnButton : InputButton {
+public class ReturnButton : InputListener {
 
 	private Image CircleFill;
 

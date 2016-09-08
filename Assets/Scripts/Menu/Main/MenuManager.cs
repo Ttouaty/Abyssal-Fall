@@ -151,8 +151,6 @@ public class MenuManager : GenericSingleton<MenuManager>
 	private void SetActiveButtons(MenuPanel target, bool active)
 	{
 		Button[] buttons = target.GetComponentsInChildren<Button>();
-		//if (active)
-		//	buttons[0].Select();
 		for (int i = 0; i < buttons.Length; ++i)
 		{
 			buttons[i].interactable = active;
@@ -198,14 +196,14 @@ public class MenuManager : GenericSingleton<MenuManager>
 			_characterSlotsContainerRef.CancelAllSelections(true);
 		}
 
-		SetActiveButtons(newMenu, true);
+		SetActiveButtons(newMenu, true); // Attention peux poser des problemes si on veux avoirs des boutons verrouillés
 
 		if (newMenu.LastButtonSelected == null)
 		{
 			if (newMenu.PreSelectedButton != null)
 				newMenu.PreSelectedButton.Select();
 		}
-		else
+		else 
 			newMenu.LastButtonSelected.Select();
 
 		_activeMenu = newMenu;

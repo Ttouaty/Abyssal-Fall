@@ -9,16 +9,21 @@ public class GrowAndFade : MonoBehaviour {
 	public bool DublicateSprite = true;
 	public bool IsDetached = true;
 
+	[HideInInspector]
+	public bool IsLocked = false;
+
 	public void Activate()
 	{
+		if (IsLocked)
+			return;
 		if (DublicateSprite)
 		{
 			GameObject particle = (GameObject)Instantiate(gameObject, transform.position, Quaternion.identity);
-			if (!IsDetached) 
-				particle.transform.SetParent(transform.parent);
+			particle.transform.SetParent(MenuManager.Instance._canvas.transform);
 			particle.transform.localScale = transform.localScale;
 			particle.transform.localRotation = transform.localRotation;
-			StartCoroutine(ActivateCoroutine(particle.GetComponent<Image>()));
+			particle.GetComponent<GrowAndFade>().DublicateSprite = false;
+			particle.GetComponent<GrowAndFade>().Activate();
 		}
 		else
 			StartCoroutine(ActivateCoroutine(GetComponent<Image>()));
@@ -37,7 +42,7 @@ public class GrowAndFade : MonoBehaviour {
 			target.transform.localScale = Vector3.Lerp(target.transform.localScale, TargetScale, 0.05f);
 			yield return null;
 		}
-		Destroy(target);
+		Destroy(target.gameObject);
 	}
 
 }
