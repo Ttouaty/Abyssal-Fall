@@ -9,7 +9,7 @@ public class VikingController : PlayerController
 		_audioSource.PlayOneShot(_characterData.SoundList.OnSpecialActivate);
 		_playerProp.PropRenderer.enabled = false;
 		GameObject hammer = GameObjectPool.GetAvailableObject("Hammer");
-        hammer.GetComponent<Hammer>().Launch(transform.position + transform.forward, transform.forward, _playerRef.PlayerNumber);
+        hammer.GetComponent<Hammer>().Launch(transform.position + transform.forward, transform.forward, _dmgDealerSelf);
         hammer.transform.parent = ArenaManager.Instance.SpecialsRoot;
     }
 }

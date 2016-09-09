@@ -7,7 +7,7 @@ public class Hammer : MonoBehaviour {
 	public AudioClip OnHitPlayer;
 	public AudioClip OnHitObstacle;
 
-	private int _playerNumber;
+	private DamageDealer _playerShooting;
 	[SerializeField]
 	private int _speed = 10;
 	[SerializeField]
@@ -22,13 +22,13 @@ public class Hammer : MonoBehaviour {
 		GetComponent<Collider>().isTrigger = true;
 	}
 
-	public void Launch(Vector3 Position, Vector3 Direction, int ShooterNumber)
+	public void Launch(Vector3 Position, Vector3 Direction, DamageDealer Shooter)
 	{
 		if (_rigidB == null)
 			_rigidB = GetComponent<Rigidbody>();
 
 		gameObject.SetActive(true);
-		_playerNumber = ShooterNumber;
+		_playerShooting = Shooter;
 
 		transform.localScale = Vector3.one * 2;
 		transform.position = Position;
@@ -51,10 +51,10 @@ public class Hammer : MonoBehaviour {
 	{
 		if (Collider.tag == "Player")
 		{
-			if (Collider.GetComponent<PlayerController>()._playerRef.PlayerNumber == _playerNumber || Collider.GetComponent<PlayerController>()._isInvul)
+			if (Collider.gameObject.GetInstanceID() == _playerShooting.gameObject.GetInstanceID() || Collider.GetComponent<PlayerController>()._isInvul)
 				return;
 
-			Collider.GetComponent<PlayerController>().Damage(_rigidB.velocity + Vector3.up * 3, _stunInflicted);
+			Collider.GetComponent<PlayerController>().Damage(_rigidB.velocity + Vector3.up * 3, _stunInflicted, _playerShooting);
 			// explosion particules
 			_audioSource.PlayOneShot(OnHitPlayer);
 			this.Stop();

@@ -108,6 +108,7 @@ public class InputListener : MonoBehaviour
 
 		if (InputMethodUsed == InputMethod.Down)
 		{
+			Debug.Log("testing for: "+InputToListen.ToString());
 			if (InputManager.GetButtonDown(InputToListen, joystickNumber))
 				LaunchCallback();
 		}

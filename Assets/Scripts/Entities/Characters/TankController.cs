@@ -56,7 +56,8 @@ public class TankController : PlayerController {
 				colli.transform.GetComponent<PlayerController>()
 					.Damage(Quaternion.FromToRotation(Vector3.right,
 					(colli.transform.position - transform.position).ZeroY().normalized + _rigidB.velocity.normalized * 1.5f) * _specialPushBack * (_characterData.CharacterStats.strength / 3),
-					_specialStun);
+					_specialStun,
+					_dmgDealerSelf);
 			}
 		}
 	}

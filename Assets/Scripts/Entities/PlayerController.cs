@@ -36,7 +36,7 @@ public class Stats
 	public int resistance = 3;
 }
 
-[RequireComponent(typeof(Rigidbody), typeof(AudioSource))]
+[RequireComponent(typeof(Rigidbody), typeof(AudioSource), typeof(DamageDealer))]
 public class PlayerController : MonoBehaviour
 {
 	[HideInInspector]
@@ -75,9 +75,22 @@ public class PlayerController : MonoBehaviour
 	public SO_Character _characterData;
 
 	protected TimeCooldown _specialCooldown;
-	protected TimeCooldown _stunTime; //Secondes of stun on Hit
-	protected TimeCooldown _invulTime; //Secondes of invulnerability
+	protected TimeCooldown _stunTime; //Seconds of stun on Hit
+	protected TimeCooldown _invulTime; //Seconds of invulnerability
 
+	protected DamageDealer _dmgDealerSelf;
+	[HideInInspector]
+	private DamageDealer _lastDamageDealer;
+	public DamageDealer LastDamageDealer
+	{
+		get { return _lastDamageDealer; }
+		set
+		{
+			_lastDamageDealerTimeOut.Set(5);
+			_lastDamageDealer = value;
+		}
+	}
+	private TimeCooldown _lastDamageDealerTimeOut;
 
 	protected bool _allowInput = true;
 	protected bool _isStunned = false;
@@ -107,8 +120,6 @@ public class PlayerController : MonoBehaviour
 
 	public void Init(Player player)
 	{
-
-
 		_playerRef = player;
 
 		//Instantiates player mesh and retrieves its props and particles
@@ -132,9 +143,11 @@ public class PlayerController : MonoBehaviour
 		_stunTime.onProgress = OnStunActive;
 
 		_invulTime = new TimeCooldown(this);
-		_invulTime.onFinish = OnStunOver;
-		_invulTime.onProgress = OnStunActive;
+		_invulTime.onFinish = OnInvulOver;
+		_invulTime.onProgress = OnInvulActive;
 
+		_lastDamageDealerTimeOut = new TimeCooldown(this);
+		_lastDamageDealerTimeOut.onFinish = OnLastDamageDealerTimeOut;
 		// GameManager.Instance.OnPlayerWin.AddListener(OnPlayerWin); // Removed temporarily
 
 		_maxSpeed.x = _maxSpeed.x * _characterData.CharacterStats.speed / 3;
@@ -148,34 +161,19 @@ public class PlayerController : MonoBehaviour
 			tempGo.AddComponent(typeof(GroundCheck));
 			tempGo.transform.position = _transf.position - Vector3.up;
 		}
+		_dmgDealerSelf = GetComponent<DamageDealer>();
+		if (_dmgDealerSelf == null)
+			_dmgDealerSelf = gameObject.AddComponent<DamageDealer>();
 
-		CustomStart();
+		_dmgDealerSelf.InGameName = _characterData.IngameName;
+		_dmgDealerSelf.Icon = _characterData.Icon;
 
 		TimeManager.Instance.OnPause.AddListener(OnPause);
 		TimeManager.Instance.OnResume.AddListener(OnResume);
 		TimeManager.Instance.OnTimeScaleChange.AddListener(OnTimeScaleChange);
-	}
 
-	void OnDestroy()
-	{
-		TimeManager.Instance.OnPause.RemoveListener(OnPause);
-		TimeManager.Instance.OnResume.RemoveListener(OnResume);
-		TimeManager.Instance.OnTimeScaleChange.RemoveListener(OnTimeScaleChange);
-	}
+		CustomStart();
 
-	void OnPause(float timeScale)
-	{
-		_animator.speed = timeScale;
-	}
-
-	void OnResume(float timeScale)
-	{
-		_animator.speed = timeScale;
-	}
-
-	void OnTimeScaleChange(float timeScale)
-	{
-		_animator.speed = timeScale;
 	}
 
 	protected void Update()
@@ -199,28 +197,32 @@ public class PlayerController : MonoBehaviour
 	protected virtual void CustomStart() { }
 	protected virtual void CustomUpdate() { }
 
-	protected virtual void OnPlayerWin(GameObject player)
+	#region EventCallbacks
+	void OnDestroy()
 	{
-		_allowInput = false;
-		_activeSpeed = Vector3.zero;
-		enabled = false;
-		_animator.SetTrigger("Reset");
+		TimeManager.Instance.OnPause.RemoveListener(OnPause);
+		TimeManager.Instance.OnResume.RemoveListener(OnResume);
+		TimeManager.Instance.OnTimeScaleChange.RemoveListener(OnTimeScaleChange);
 	}
 
-
-	#region Processes
-	private void ProcessOrientation()
+	void OnPause(float timeScale)
 	{
-		if (!InputManager.StickIsNeutral(_playerRef.JoystickNumber))
-		{
-			//_activeDirection.x = Mathf.Lerp(_activeDirection.x, InputManager.GetAxis("x", _playerRef.JoystickNumber), 0.3f);
-			//_activeDirection.z = Mathf.Lerp(_activeDirection.z, InputManager.GetAxis("y", _playerRef.JoystickNumber), 0.3f);
-			_activeDirection.x = InputManager.GetAxis("x", _playerRef.JoystickNumber);
-			_activeDirection.z = InputManager.GetAxis("y", _playerRef.JoystickNumber);
-			_activeDirection.Normalize();
-		}
+		_animator.speed = timeScale;
+	}
 
-		transform.LookAt(transform.position + (Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized) * _activeDirection), Vector3.up);
+	void OnResume(float timeScale)
+	{
+		_animator.speed = timeScale;
+	}
+
+	void OnTimeScaleChange(float timeScale)
+	{
+		_animator.speed = timeScale;
+	}
+
+	private void OnLastDamageDealerTimeOut()
+	{
+		LastDamageDealer = null;
 	}
 
 	protected virtual void OnSpecialReset()
@@ -256,6 +258,31 @@ public class PlayerController : MonoBehaviour
 	protected virtual void OnInvulActive()
 	{
 		_isInvul = true;
+	}
+
+	protected virtual void OnPlayerWin(GameObject player)
+	{
+		_allowInput = false;
+		_activeSpeed = Vector3.zero;
+		enabled = false;
+		_animator.SetTrigger("Reset");
+	}
+	#endregion
+
+
+	#region Processes
+	private void ProcessOrientation()
+	{
+		if (!InputManager.StickIsNeutral(_playerRef.JoystickNumber) && _isStunned)
+		{
+			//_activeDirection.x = Mathf.Lerp(_activeDirection.x, InputManager.GetAxis("x", _playerRef.JoystickNumber), 0.3f);
+			//_activeDirection.z = Mathf.Lerp(_activeDirection.z, InputManager.GetAxis("y", _playerRef.JoystickNumber), 0.3f);
+			_activeDirection.x = InputManager.GetAxis("x", _playerRef.JoystickNumber);
+			_activeDirection.z = InputManager.GetAxis("y", _playerRef.JoystickNumber);
+			_activeDirection.Normalize();
+		}
+
+		transform.LookAt(transform.position + (Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized) * _activeDirection), Vector3.up);
 	}
 
 	private void ProcessCoolDowns()
@@ -355,25 +382,28 @@ public class PlayerController : MonoBehaviour
 	{
 		if (direction.y > 0)
 			IsGrounded = false;
-		
+
 		_activeSpeed = direction;
 		_rigidB.velocity = _activeSpeed;
 	}
 
-	public void Damage(Vector3 direction, float stunTime, bool isInvul = true)
+	public void Damage(Vector3 direction, float stunTime, DamageDealer Sender)
 	{
 		if (_isInvul)
 			return;
 
-		float oldMagnitude = direction.magnitude;		
+		LastDamageDealer = Sender;
+
+		Debug.Log("Character \"" + _characterData.IngameName + "\" was damaged by: \"" + Sender.InGameName + "\"");
+
+		float oldMagnitude = direction.magnitude;
 		_characterData.CharacterStats.resistance = _characterData.CharacterStats.resistance == 0 ? 1 : _characterData.CharacterStats.resistance;
 		direction = direction.normalized * (oldMagnitude * (6 - _characterData.CharacterStats.resistance) / 3);
 
 		Eject(direction);
-		if(stunTime > 0)
+		if (stunTime > 0)
 			_stunTime.Set(stunTime);
-		if (isInvul)
-			_invulTime.Add(stunTime * 1.2f);
+		_invulTime.Add(stunTime * 1.2f);
 		_activeDirection = -direction.ZeroY().normalized;
 		_audioSource.PlayOneShot(_characterData.SoundList.OnHit);
 		_animator.SetTrigger("Stun_Start");
@@ -431,7 +461,7 @@ public class PlayerController : MonoBehaviour
 			colli.transform.GetComponent<PlayerController>()
 				.Damage(Quaternion.FromToRotation(Vector3.right,
 				(colli.transform.position - transform.position).ZeroY().normalized) * _characterData.Dash.ImpactEjection * (_characterData.CharacterStats.strength / 3),
-				0.3f);
+				0.3f, _dmgDealerSelf);
 		}
 		//else if (colli.gameObject.layer == LayerMask.NameToLayer("Wall") && _characterData.Dash.inProgress)
 		//{

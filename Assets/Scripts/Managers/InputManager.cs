@@ -19,7 +19,7 @@ public class InputManager : GenericSingleton<InputManager>
 {
 	//  Buttons						0		1		 2			3		4		5		6		7
 	private string[] InputNames = { "Dash", "Cancel", "Special", null, null, null, "Select", "Start" };
-	private KeyCode[] KeyboardControls = { KeyCode.J, KeyCode.L, KeyCode.K, KeyCode.M, KeyCode.None, KeyCode.None, KeyCode.Return, KeyCode.Space };
+	private KeyCode[] KeyboardControls = { KeyCode.H, KeyCode.J, KeyCode.K, KeyCode.L, KeyCode.None, KeyCode.None, KeyCode.Return, KeyCode.Space };
 
 	private static int GetButtonNumber(string buttonName) 
 	{

@@ -94,8 +94,7 @@ public class MageController : PlayerController
 
 		for (int i = 0; i < foundPlayers.Length; i++)
 		{
-			Debug.Log(foundPlayers[i].name);
-			foundPlayers[i].GetComponent<PlayerController>().Damage(Quaternion.FromToRotation(Vector3.right, (foundPlayers[i].transform.position - position).ZeroY().normalized) * _explosionEjection, _explosionStunTime);
+			foundPlayers[i].GetComponent<PlayerController>().Damage(Quaternion.FromToRotation(Vector3.right, (foundPlayers[i].transform.position - position).ZeroY().normalized) * _explosionEjection, _explosionStunTime, _dmgDealerSelf);
 		}
 
 
