@@ -1,15 +1,22 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
-public class GUITimer : MonoBehaviour 
+
+public class GUITimer : MonoBehaviour
 {
+	[System.Serializable]
+	public class OnCompleteEvent : UnityEvent { }
+
 	private float                           _baseTimer;
 	private float                           _currentTimer;
 	private Coroutine                       _coroutine;
 	private bool                            _bIsWarning         = false;
 	private Localizator.LocalizedText       _timerDisplay;
 
+	public OnCompleteEvent                  OnCompleteCallback;
 	public float                            LimitBeforeWarning;
 
 	void Awake ()
@@ -51,6 +58,8 @@ public class GUITimer : MonoBehaviour
 
 			yield return null;
 		}
+
+		OnCompleteCallback.Invoke();
 	}
 
 	IEnumerator Warning_Implementation ()

@@ -118,7 +118,7 @@ BoxCollider:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 116038}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -153,6 +153,8 @@ MonoBehaviour:
     QuantityLoaded: 0
     Root: {fileID: 0}
     Reserve: []
+    Name: 
+  IsInPool: 0
 --- !u!198 &19842138
 ParticleSystem:
   m_ObjectHideFlags: 1
@@ -1245,6 +1247,10 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_IsKinematic
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_IsTrigger
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 
 public class GUIManager : GenericSingleton<GUIManager>
@@ -28,7 +29,12 @@ public class GUIManager : GenericSingleton<GUIManager>
 	public void RunRoundCount ()
 	{
 		RoundCount.gameObject.SetActive(true);
-		RoundCount.SetRound(0);
+		UpdateRoundCount(0);
+	}
+
+	public void UpdateRoundCount (int round)
+	{
+		RoundCount.SetRound(round);
 	}
 
 	public void StopRoundCount ()

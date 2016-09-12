@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public abstract class GenericSingleton<T> : MonoBehaviour where T : Component
+public abstract class GenericSingleton<T> : MonoBehaviour, IInitializable where T : Component
 {
 	protected static T _instance;
 	public static T Instance
@@ -28,4 +28,9 @@ public abstract class GenericSingleton<T> : MonoBehaviour where T : Component
 	}
 
 	public virtual void Init() { }
+}
+
+public interface IInitializable
+{
+	void Init ();
 }

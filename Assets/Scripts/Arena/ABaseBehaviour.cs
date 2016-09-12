@@ -15,13 +15,7 @@ public abstract class ABaseBehaviour : MonoBehaviour
 	[HideInInspector] public float  Frequency       = 1.0f;
 	[HideInInspector] public bool   Active          = false;
 
-	private ArenaConfiguration_SO   _configuration;
 	private Coroutine               _coroutine;
-
-	protected virtual void Start()
-	{
-		_configuration = MainManager.Instance.LEVEL_MANAGER.CurrentArenaConfig;
-	}
 
 	public void Run()
 	{
@@ -33,9 +27,9 @@ public abstract class ABaseBehaviour : MonoBehaviour
 		Active = true;
 	}
 
-	public void Stop()
+	public void Stop ()
 	{
-		if(_coroutine != null)
+		if (_coroutine != null)
 		{
 			StopCoroutine(_coroutine);
 			_coroutine = null;

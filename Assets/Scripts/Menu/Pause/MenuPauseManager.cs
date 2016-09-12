@@ -32,7 +32,6 @@ public class MenuPauseManager : GenericSingleton<MenuPauseManager>
             {
                 ScoresFields[i].CurrentPlayer = GameManager.Instance.RegisteredPlayers[i];
             }
-            Debug.Log("Init slot " + i);
             ScoresFields[i].Init();
         }
     }

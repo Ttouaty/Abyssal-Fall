@@ -107,41 +107,39 @@ public class CustomEditorAGameRules : Editor
 
 			EditorGUILayout.BeginVertical("box");
 			{
-				_target.IsMatchRoundBased = EditorGUILayout.BeginToggleGroup("IsMatchRoundBased", _target.IsMatchRoundBased);
+				_target.IsMatchRoundBased = EditorGUILayout.BeginToggleGroup("Is Match Round Based", _target.IsMatchRoundBased);
 				EditorGUILayout.EndToggleGroup();
 				GUI.enabled = _target.IsMatchRoundBased;
-				_target.NumberOfRounds = EditorGUILayout.IntField("NumberOfRounds", _target.NumberOfRounds);
+				_target.NumberOfRounds = EditorGUILayout.IntField("Number Of Rounds", _target.NumberOfRounds);
 				GUI.enabled = !_target.IsMatchRoundBased;
-				_target.MatchDuration = EditorGUILayout.IntField("MatchDuration", _target.MatchDuration);
+				_target.MatchDuration = EditorGUILayout.IntField("Match Duration", _target.MatchDuration);
 				GUI.enabled = true;
 			}
 			EditorGUILayout.EndVertical();
 
 			EditorGUILayout.BeginVertical("box");
 			{
-				_target.CanFalledTilesRespawn = EditorGUILayout.BeginToggleGroup("CanFalledTilesRespawn", _target.CanFalledTilesRespawn);
+				_target.CanFalledTilesRespawn = EditorGUILayout.BeginToggleGroup("Can Falled Tiles Respawn", _target.CanFalledTilesRespawn);
 				EditorGUILayout.EndToggleGroup();
 				GUI.enabled = _target.CanFalledTilesRespawn;
-				_target.TileRegerationTime = EditorGUILayout.IntField("TileRegerationTime", _target.TileRegerationTime);
+				_target.TileRegerationTime = EditorGUILayout.IntField("Tile Regeration Time", _target.TileRegerationTime);
 				GUI.enabled = true;
 			}
 			EditorGUILayout.EndVertical();
 
 			EditorGUILayout.BeginVertical("box");
 			{
-				_target.CanPlayerRespawn = EditorGUILayout.BeginToggleGroup("CanPlayerRespawn", _target.CanPlayerRespawn);
+				_target.CanPlayerRespawn = EditorGUILayout.BeginToggleGroup("Can Player Respawn", _target.CanPlayerRespawn);
 				EditorGUILayout.EndToggleGroup();
 
-				_target.PointsPerKill = EditorGUILayout.IntField("PointsPerKill", _target.PointsPerKill);
+				_target.PointsGainPerKill = EditorGUILayout.IntField("Points Gain Per Kill", _target.PointsGainPerKill);
 
 				GUI.enabled = _target.CanPlayerRespawn;
-				_target.PointsPerSuicide = EditorGUILayout.IntField("PointsPerSuicide", _target.PointsPerSuicide);
-				_target.TimeBeforeSuicide = EditorGUILayout.IntField("PointsPerSuicide", _target.TimeBeforeSuicide);
+				_target.PointsLoosePerSuicide = EditorGUILayout.IntField("Points Loose Per Suicide", _target.PointsLoosePerSuicide);
+				_target.TimeBeforeSuicide = EditorGUILayout.IntField("Time Before Suicide", _target.TimeBeforeSuicide);
 				GUI.enabled = true;
 			}
 			EditorGUILayout.EndVertical();
-
-			EditorGUILayout.Separator();
 
 			_behavioursList.DoLayoutList();
 

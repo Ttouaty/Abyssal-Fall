@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -13,7 +14,9 @@ public struct GameConfiguration
 }
 
 [System.Serializable]
-public class GameEvent : UnityEvent<Player> { }
+public class GameEventDeath : UnityEvent<PlayerController, PlayerController> { }
+[System.Serializable]
+public class GameEventWin : UnityEvent { }
 
 public class GameManager : GenericSingleton<GameManager>
 {
@@ -52,18 +55,18 @@ public class GameManager : GenericSingleton<GameManager>
 
 	[HideInInspector]
 	public Player[] RegisteredPlayers = new Player[4];
-	[HideInInspector]
+	// [HideInInspector]
 	public int nbPlayers = 0;
 
-	public GameEvent OnPlayerDeath;
-	public GameEvent OnPlayerWin;
+	public GameEventDeath OnPlayerDeath;
+	public GameEventWin OnPlayerWin;
 
 	[Space()]
 	public GameConfiguration  CurrentGameConfiguration;
 
 	public int CurrentStage = 0;
-	private List<Player> _alivePlayers;
-	public List<Player> AlivePlayers { get { return _alivePlayers; } }
+	private List<PlayerController> _alivePlayers;
+	public List<PlayerController> AlivePlayers { get { return _alivePlayers; } }
 
 	public void StartGame()
 	{
@@ -90,12 +93,12 @@ public class GameManager : GenericSingleton<GameManager>
 
 	public void ResetAlivePlayers ()
 	{
-		_alivePlayers = new List<Player>();
+		_alivePlayers = new List<PlayerController>();
 		for (int i = 0; i < RegisteredPlayers.Length; ++i)
 		{
 			if (RegisteredPlayers[i] != null)
 			{
-				_alivePlayers.Add(RegisteredPlayers[i]);
+				_alivePlayers.Add(RegisteredPlayers[i].Controller);
 			}
 		}
 	}
