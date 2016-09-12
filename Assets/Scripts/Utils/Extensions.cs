@@ -106,4 +106,26 @@ public static class ListExtensions
 			return el;
 		}
 	}
+
+	public static void Add<T> (this IList<T> list, List<T> elements)
+	{
+		if(elements != null)
+		{
+			for (int i = 0; i < elements.Count; ++i)
+			{
+				list.Add(elements[i]);
+			}
+		}
+	}
+
+	public static void Add<T> (this IList<T> list, params T[] elements)
+	{
+		if(elements != null)
+		{
+			for (int i = 0; i < elements.Length; ++i)
+			{
+				list.Add(elements[i]);
+			}
+		}
+	}
 }

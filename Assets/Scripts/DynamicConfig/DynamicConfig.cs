@@ -6,17 +6,17 @@ public class DynamicConfig : GenericSingleton<DynamicConfig>
 {
 	public const string VERSION = "1.1.0";
 
-	public List<ArenaConfiguration> ArenaConfigurations;
-	public Dictionary<string, ArenaConfiguration_SO> ArenaConfigurationsDic;
+	public List<ArenaConfiguration>						ArenaConfigurations;
+	public Dictionary<string, ArenaConfiguration_SO>	ArenaConfigurationsDic;
 
-	public List<AGameRulesConfiguration> ModeConfigurations;
-	public Dictionary<string, AGameRules> ModeConfigurationsDic;
+	public List<AGameRulesConfiguration>				ModeConfigurations;
+	public Dictionary<string, AGameRules>				ModeConfigurationsDic;
 
-	public List<MapConfiguration> MapsConfigurations;
-	public Dictionary<string, MapConfiguration_SO> MapsConfigurationsDic;
+	public List<MapConfiguration>						MapsConfigurations;
+	public Dictionary<string, MapConfiguration_SO>		MapsConfigurationsDic;
 
-	public List<CharacterConfiguration> CharacterConfigurations;
-	public Dictionary<string, PlayerController> CharacterConfigurationsDic;
+	public List<CharacterConfiguration>					CharacterConfigurations;
+	public Dictionary<string, PlayerController>			CharacterConfigurationsDic;
 
 	void Awake ()
 	{

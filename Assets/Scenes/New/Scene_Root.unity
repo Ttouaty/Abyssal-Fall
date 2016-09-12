@@ -371,14 +371,15 @@ MonoBehaviour:
   OnPlayerDeath:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: GameEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    m_TypeName: GameEventDeath, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   OnPlayerWin:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: GameEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    m_TypeName: GameEventWin, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   CurrentGameConfiguration:
     ArenaConfiguration: 0
-    ModeConfiguration: 0
+    ModeConfiguration: 1
     MapConfiguration: 1
     NumberOfStages: 5
   CurrentStage: 0
@@ -461,6 +462,8 @@ MonoBehaviour:
   ModeConfigurations:
   - Name: FreeForAll
     Configuration: {fileID: 11447392, guid: 5a36af83d1ed17e4e8a223af374cd8ab, type: 2}
+  - Name: DeathMatch
+    Configuration: {fileID: 11400950, guid: cd444bbd3142854479db73929f463a28, type: 2}
   MapsConfigurations:
   - Name: TestArena16x16
     Configuration: {fileID: 11400000, guid: 854a887594ad4344b882d597429bea69, type: 2}

@@ -19,13 +19,14 @@ public class Player
 	private bool _ready;
 
 	private PlayerController _characterUsed;
-    public PlayerController CharacterUsed
-    {
-        get
-        {
-            return _characterUsed;
-        }
-    }
+	public PlayerController CharacterUsed
+	{
+		get
+		{
+			return _characterUsed;
+		}
+	}
+	public PlayerController Controller;
 
 	public Player()
 	{

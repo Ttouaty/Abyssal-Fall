@@ -207,6 +207,8 @@ public class LevelManager : GenericSingleton<LevelManager>
 		}
 	}
 
+	private Dictionary<SceneField, Action> _defaultScenesToLoad = new Dictionary<SceneField, Action>();
+
 	private IEnumerator LoadLevel()
 	{
 		yield return StartCoroutine(LoadScene(SceneLoading, true));
@@ -249,52 +251,29 @@ public class LevelManager : GenericSingleton<LevelManager>
 		// BUILD LEVEL
 		MainManager.Instance.LOADING_MANAGER.SetStateText("build_level");
 
-		// Load background level
-		yield return StartCoroutine(LoadScene(CurrentArenaConfig.BackgroundLevel, true, (AsyncOperation async) =>
-		{
-			_loadingProgress = 0.7f + async.progress * 0.05f;
-			OnLoadProgress.Invoke(_loadingProgress);
-		}));
+		_defaultScenesToLoad.Clear();
+		_defaultScenesToLoad.Add(CurrentArenaConfig.BackgroundLevel, null);
+		_defaultScenesToLoad.Add(SceneCountdown, () => { CountdownManager.Instance.Init(); });
+		_defaultScenesToLoad.Add(ScenePause, () => { MenuPauseManager.Instance.Init(); });
+		_defaultScenesToLoad.Add(SceneEndStage, () => { EndStageManager.Instance.Init(); });
+		_defaultScenesToLoad.Add(SceneEndGame, () => { EndGameManager.Instance.Init(); });
+		_defaultScenesToLoad.Add(SceneGUI, () => { GUIManager.Instance.Init(); });
 
-		// Load Pause Menu
-		yield return StartCoroutine(LoadScene(SceneCountdown, true, (AsyncOperation async) =>
+		_loadingProgress = 0.7f;
+		float stepPerScene = (1.0f - 0.7f) / _defaultScenesToLoad.Count;
+		foreach(KeyValuePair<SceneField, Action> value in _defaultScenesToLoad)
 		{
-			_loadingProgress = 0.75f + async.progress * 0.05f;
-			OnLoadProgress.Invoke(_loadingProgress);
-		}));
-		CountdownManager.Instance.Init();
+			yield return StartCoroutine(LoadScene(value.Key, true, (AsyncOperation async) =>
+			{
+				_loadingProgress += async.progress * stepPerScene;
+				OnLoadProgress.Invoke(_loadingProgress);
+			}));
 
-		// Load Pause Menu
-		yield return StartCoroutine(LoadScene(ScenePause, true, (AsyncOperation async) =>
-		{
-			_loadingProgress = 0.80f + async.progress * 0.05f;
-			OnLoadProgress.Invoke(_loadingProgress);
-		}));
-		MenuPauseManager.Instance.Init();
-
-		// Load End Stage Menu
-		yield return StartCoroutine(LoadScene(SceneEndStage, true, (AsyncOperation async) =>
-		{
-			_loadingProgress = 0.85f + async.progress * 0.05f;
-			OnLoadProgress.Invoke(_loadingProgress);
-		}));
-		EndStageManager.Instance.Init();
-
-		// Load End Game Menu
-		yield return StartCoroutine(LoadScene(SceneEndGame, true, (AsyncOperation async) =>
-		{
-			_loadingProgress = 0.90f + async.progress * 0.05f;
-			OnLoadProgress.Invoke(_loadingProgress);
-		}));
-		EndGameManager.Instance.Init();
-
-		// GUI Menu
-		yield return StartCoroutine(LoadScene(SceneGUI, true, (AsyncOperation async) =>
-		{
-			_loadingProgress = 0.95f + async.progress * 0.05f;
-			OnLoadProgress.Invoke(_loadingProgress);
-		}));
-		GUIManager.Instance.Init();
+			if(value.Value != null) 
+			{
+				value.Value();
+			}
+		}
 
 		_loadingProgress = 1.0f;
 		OnLoadProgress.Invoke(_loadingProgress);
