@@ -10,7 +10,7 @@ public class FreeForAll_GameRules : AGameRules
 		GUIManager.Instance.RunRoundCount();
 	}
 
-	public override void OnPlayerDeath_Listener (PlayerController player, PlayerController killer)
+	public override void OnPlayerDeath_Listener (Player player, Player killer)
 	{
 		base.OnPlayerDeath_Listener(player, killer);
 
@@ -22,22 +22,29 @@ public class FreeForAll_GameRules : AGameRules
 			if (GameManager.Instance.AlivePlayers.Count == 1)
 			{
 				// Increment score
-				GameManager.Instance.AlivePlayers[0]._playerRef.Score += PointsGainPerKill;
+				GameManager.Instance.AlivePlayers[0].Score += PointsGainPerKill;
 				// Invoke win event
 				GameManager.Instance.OnPlayerWin.Invoke();
 			}
 		}
 	}
 
+	public override void RespawnFalledTiles (Tile tile)
+	{
+		base.RespawnFalledTiles(tile);
+		GameObjectPool.AddObjectIntoPool(tile.gameObject);
+	}
+
 	public override void OnPlayerWin_Listener ()
 	{
 		base.OnPlayerWin_Listener();
 
-		PlayerController winner = GameManager.Instance.AlivePlayers[0];
+		Player winner = GameManager.Instance.AlivePlayers[0];
+		winner.Controller.Freeze();
 
-		if (winner._playerRef.Score == GameManager.Instance.CurrentGameConfiguration.NumberOfStages)
+		if (winner.Score == GameManager.Instance.CurrentGameConfiguration.NumberOfStages)
 		{
-			EndGameManager.Instance.WinnerId = GameManager.Instance.AlivePlayers[0]._playerRef.PlayerNumber;
+			EndGameManager.Instance.WinnerId = GameManager.Instance.AlivePlayers[0].PlayerNumber;
 			EndGameManager.Instance.Open();
 			GUIManager.Instance.StopRoundCount();
 		}

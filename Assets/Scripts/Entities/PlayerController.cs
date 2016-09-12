@@ -118,6 +118,19 @@ public class PlayerController : MonoBehaviour
 		_rigidB = GetComponent<Rigidbody>();
 	}
 
+	public void Freeze ()
+	{
+		_allowInput = false;
+		_rigidB.velocity = Vector3.zero;
+		_activeSpeed = Vector3.zero;
+		_animator.SetTrigger("Reset");
+	}
+
+	public void UnFreeze ()
+	{
+		_allowInput = true;
+	}
+
 	public void Init(Player player)
 	{
 		_playerRef = player;
@@ -273,7 +286,7 @@ public class PlayerController : MonoBehaviour
 	#region Processes
 	private void ProcessOrientation()
 	{
-		if (!InputManager.StickIsNeutral(_playerRef.JoystickNumber) && _isStunned)
+		if (!InputManager.StickIsNeutral(_playerRef.JoystickNumber) && !_isStunned)
 		{
 			//_activeDirection.x = Mathf.Lerp(_activeDirection.x, InputManager.GetAxis("x", _playerRef.JoystickNumber), 0.3f);
 			//_activeDirection.z = Mathf.Lerp(_activeDirection.z, InputManager.GetAxis("y", _playerRef.JoystickNumber), 0.3f);
@@ -320,8 +333,8 @@ public class PlayerController : MonoBehaviour
 				_activeSpeed.x = _maxSpeed.x * InputManager.GetAxisRaw("x", _playerRef.JoystickNumber);
 				_activeSpeed.z = _maxSpeed.x * InputManager.GetAxisRaw("y", _playerRef.JoystickNumber);
 #else
-				_activeSpeed.x = _maxSpeed.x * InputManager.GetAxis("x", _playerRef.JoystickNumber) ;
-				_activeSpeed.z = _maxSpeed.x * InputManager.GetAxis("y", _playerRef.JoystickNumber) ;
+				_activeSpeed.x = _maxSpeed.x * InputManager.GetAxis("x", _playerRef.JoystickNumber);
+				_activeSpeed.z = _maxSpeed.x * InputManager.GetAxis("y", _playerRef.JoystickNumber);
 #endif
 				_activeSpeed = Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized) * _activeSpeed.normalized * _maxSpeed.x;
 			}
@@ -375,7 +388,7 @@ public class PlayerController : MonoBehaviour
 		_animator.SetTrigger("Death");
 		_audioSource.PlayOneShot(_characterData.SoundList.OnDeath);
 		_isDead = true;
-		GameManager.Instance.OnPlayerDeath.Invoke(_playerRef);
+		GameManager.Instance.OnPlayerDeath.Invoke(_playerRef, null);
 	}
 
 	public void Eject(Vector3 direction)

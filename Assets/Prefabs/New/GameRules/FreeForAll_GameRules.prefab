@@ -44,14 +44,14 @@ MonoBehaviour:
   MatchDuration: 180
   CanFalledTilesRespawn: 0
   TileRegerationTime: 0
-  PointsPerKill: 0
-  PointsPerSuicide: 0
+  PointsGainPerKill: 1
+  PointsLoosePerSuicide: 0
   TimeBeforeSuicide: 5
   CanPlayerRespawn: 0
   RespawnZones: []
   Behaviours:
   - Behaviour: {fileID: 11435838, guid: 7293972aaaab09d429d65f357eb0208e, type: 2}
-    Frequency: 2
+    Frequency: 1
   AdditionalPoolsToLoad: []
 --- !u!1001 &100100000
 Prefab:
@@ -71,7 +71,7 @@ Prefab:
         type: 2}
     - target: {fileID: 0}
       propertyPath: Behaviours.Array.data[0].Frequency
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

@@ -18,6 +18,10 @@ public class Player
 
 	private bool _ready;
 
+	// PlayerController Prefab Model
+	public PlayerController Controller;
+
+	// PlayerController Instantiated
 	private PlayerController _characterUsed;
 	public PlayerController CharacterUsed
 	{
@@ -26,7 +30,6 @@ public class Player
 			return _characterUsed;
 		}
 	}
-	public PlayerController Controller;
 
 	public Player()
 	{

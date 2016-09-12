@@ -12,24 +12,24 @@ public class DeathMatch_GameRules : AGameRules
 		GUIManager.Instance.Timer.OnCompleteCallback.AddListener(OnPlayerWin_Listener);
 	}
 
-	public override void OnPlayerDeath_Listener (PlayerController player, PlayerController killer)
+	public override void OnPlayerDeath_Listener (Player player, Player killer)
 	{
 		base.OnPlayerDeath_Listener(player, killer);
 
 		if (killer != null)
 		{
-			killer._playerRef.Score += PointsGainPerKill;
-			--player._playerRef.Score;
+			killer.Score += PointsGainPerKill;
+			--player.Score;
 		}
 		else
 		{
-			player._playerRef.Score -= PointsLoosePerSuicide;
+			player.Score -= PointsLoosePerSuicide;
 		}
 
 		RespawnPlayer(player);
 	}
 
-	private void RespawnPlayer (PlayerController player)
+	private void RespawnPlayer (Player player)
 	{
 		IEnumerable<Tile> tilesEnumerator = ArenaManager.Instance.Tiles.Where((Tile t) => t.Obstacle == null && !t.IsFalling/* && !t.IsSpawn*/);
 		List<Tile> tiles = new List<Tile>(tilesEnumerator);
@@ -45,13 +45,13 @@ public class DeathMatch_GameRules : AGameRules
 
 			Spawn spawn = tile.gameObject.AddComponent<Spawn>();
 
-			spawn.SpawnPlayer(player);
-			player._animator.SetTrigger("Reset");
-			player._isDead = false;
+			spawn.SpawnPlayer(player.CharacterUsed);
+			player.CharacterUsed._animator.SetTrigger("Reset");
+			player.CharacterUsed._isDead = false;
 		}
 	}
 
-	private IEnumerator RespawnPlayer_Retry (PlayerController player, float delay)
+	private IEnumerator RespawnPlayer_Retry (Player player, float delay)
 	{
 		yield return new WaitForSeconds(delay);
 		RespawnPlayer(player);

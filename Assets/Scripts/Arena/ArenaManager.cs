@@ -189,6 +189,7 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 					Debug.Break();
 				}
 				_spawns[i].SpawnPlayer(playerController);
+				playerController.UnFreeze();
 			}
 		}
 
@@ -254,6 +255,8 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 					}
 					tileComp.SetTimeLeft(0.8f); // TODO -> Regler dans l'inspecteur
 					_tiles.Add(tileComp);
+					tileComp.SpawnComponent = null;
+					tileComp.enabled = true;
 
 
 					if (type == ETileType.SPAWN)
@@ -355,7 +358,7 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 
 		while (timer < 1)
 		{
-			timer += TimeManager.DeltaTime * 2;
+			timer += TimeManager.DeltaTime * 5;
 			float y = Mathf.Lerp(initialY, 0, timer);
 			element.transform.position = new Vector3(element.transform.position.x, y, element.transform.position.z);
 			yield return null;

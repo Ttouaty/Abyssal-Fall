@@ -46,7 +46,7 @@ public abstract class AGameRules : MonoBehaviour
 		tile.ActivateRespawn();
 	}
 
-	public virtual void OnPlayerDeath_Listener (PlayerController player, PlayerController killer)
+	public virtual void OnPlayerDeath_Listener (Player player, Player killer)
 	{
 		// On player death common stuff
 	}

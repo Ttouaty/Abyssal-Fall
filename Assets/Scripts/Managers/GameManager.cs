@@ -14,7 +14,7 @@ public struct GameConfiguration
 }
 
 [System.Serializable]
-public class GameEventDeath : UnityEvent<PlayerController, PlayerController> { }
+public class GameEventDeath : UnityEvent<Player, Player> { }
 [System.Serializable]
 public class GameEventWin : UnityEvent { }
 
@@ -82,8 +82,9 @@ public class GameManager : GenericSingleton<GameManager>
 	public GameConfiguration  CurrentGameConfiguration;
 
 	public int CurrentStage = 0;
-	private List<PlayerController> _alivePlayers;
-	public List<PlayerController> AlivePlayers { get { return _alivePlayers; } }
+	[SerializeField]
+	private List<Player> _alivePlayers;
+	public List<Player> AlivePlayers { get { return _alivePlayers; } }
 
 	public void StartGame()
 	{
@@ -110,12 +111,12 @@ public class GameManager : GenericSingleton<GameManager>
 
 	public void ResetAlivePlayers ()
 	{
-		_alivePlayers = new List<PlayerController>();
+		_alivePlayers = new List<Player>();
 		for (int i = 0; i < RegisteredPlayers.Length; ++i)
 		{
 			if (RegisteredPlayers[i] != null)
 			{
-				_alivePlayers.Add(RegisteredPlayers[i].Controller);
+				_alivePlayers.Add(RegisteredPlayers[i]);
 			}
 		}
 	}

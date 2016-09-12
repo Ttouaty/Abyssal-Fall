@@ -39,6 +39,7 @@ public class Tile : MonoBehaviour, IPoolable
 		_renderer.material.color = Color.white; // Debug to see falling ground feedback
 		_isTouched = false;
 		_isFalling = false;
+		StopAllCoroutines();
 	}
 
 	public void OnReturnToPool()
@@ -46,6 +47,7 @@ public class Tile : MonoBehaviour, IPoolable
 		TimeManager.Instance.OnPause.RemoveListener(OnPause);
 		TimeManager.Instance.OnResume.RemoveListener(OnResume);
 		_rigidB.isKinematic = true;
+		StopAllCoroutines();
 	}
 
 	void OnPause(float value)
