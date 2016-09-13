@@ -35,11 +35,11 @@ public class CharacterSlot : MonoBehaviour
 
 	private Coroutine _activeCoroutineRef;
 
-	public SelectableCharacter GetSelectedCharacter
+	public WheelSelectableCharacter GetSelectedCharacter
 	{
 		get
 		{
-			return _availableCharacters[_selectedCharacterIndex];
+			return _wheelRef.GetSelectedElement();
 		}
 	}
 	
@@ -47,7 +47,7 @@ public class CharacterSlot : MonoBehaviour
 	{
 		get
 		{
-			return _availableCharacters[_selectedCharacterIndex].CharacterRef._characterData.CharacterMaterials[_selectedSkinIndex];
+			return _wheelRef.GetSelectedSkin();
 		}
 	}
 
@@ -62,7 +62,8 @@ public class CharacterSlot : MonoBehaviour
 
 		_wheelRef = new GameObject().AddComponent<CharacterSelectWheel>();
 		_wheelRef.transform.SetParent(transform);
-		_wheelRef.transform.position = transform.position + transform.forward * CharacterSelectWheel._wheelRadius;
+		_wheelRef.transform.localScale = Vector3.one;
+		_wheelRef.transform.position = transform.position + transform.forward * _wheelRef._wheelRadius;
 		_wheelRef.gameObject.name = "characterWheel";
 
 		_switchCharacterCooldown = new TimeCooldown(this);
@@ -114,10 +115,9 @@ public class CharacterSlot : MonoBehaviour
 		}
 		if (_activeCoroutineRef != null)
 			StopCoroutine(_activeCoroutineRef);
-		GameManager.Instance.RegisteredPlayers[_playerIndex].Ready(_wheelRef.SelectedPlayerController);
+		GameManager.Instance.RegisteredPlayers[_playerIndex].Ready(_wheelRef.GetSelectedElement().Controller, _wheelRef._selectedSkinIndex);
 		
 		//PLACEMENT DES PARTICULES A L'ARRACHE
-
 		Vector3 camDirection = (Camera.main.transform.position - transform.position).normalized;
 
 		ParticleSystem spawnParticles = (ParticleSystem) Instantiate(OnCharacterSelectedParticles, transform.position + camDirection * 1.5f, Quaternion.identity);
@@ -128,8 +128,8 @@ public class CharacterSlot : MonoBehaviour
         if (_selectedCharacterModel != null)
 			Destroy(_selectedCharacterModel);
 
-		GetSelectedCharacter.CharacterRef._characterData.CharacterModel.Reskin(GetSelectedSkin);
-		_selectedCharacterModel = (GameObject)Instantiate(GetSelectedCharacter.CharacterRef._characterData.CharacterModel.gameObject, transform.position - transform.up * 30, transform.rotation * Quaternion.FromToRotation(Vector3.right, Vector3.left));
+		_wheelRef.GetSelectedElement().Controller._characterData.CharacterModel.Reskin(GetSelectedSkin);
+		_selectedCharacterModel = (GameObject)Instantiate(_wheelRef.GetSelectedElement().Controller._characterData.CharacterModel.gameObject, transform.position - transform.up * 30, transform.rotation * Quaternion.FromToRotation(Vector3.right, Vector3.left));
 		_selectedCharacterModel.transform.parent = transform;
 
 		Selected = true;
@@ -202,9 +202,12 @@ public class CharacterSlot : MonoBehaviour
 
 	public void CloseSlot()
 	{
+		_wheelRef.Reset();
 		_wheelRef.gameObject.SetActive(false);
 		Open = false;
 		frameDelay = 1;
+		_selectedCharacterIndex = 0;
+		_selectedSkinIndex = 0;
 		Debug.Log("SLOT: " + name + " Closed");
 	}
 	
@@ -223,7 +226,7 @@ public class CharacterSlot : MonoBehaviour
 			_selectedSkinIndex = _availableCharacters[_selectedCharacterIndex].CharacterRef._characterData.CharacterMaterials.Length - 1;
 
 		//transform.GetChild(_selectedCharacterIndex).GetChild(_selectedSkinIndex).gameObject.SetActive(true);
-		_wheelRef.ChangeActiveCharacterSkin(_availableCharacters[_selectedCharacterIndex].ArtWorks[_selectedSkinIndex]);
+		_wheelRef.ChangeActiveCharacterSkin(_availableCharacters[_selectedCharacterIndex].ArtWorks[_selectedSkinIndex], _selectedSkinIndex);
 
 	}
 

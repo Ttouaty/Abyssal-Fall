@@ -20,10 +20,7 @@ public class CharacterSelectButton : InputListener
 			JoysticksToListen[i] = GameManager.Instance.RegisteredPlayers[i].JoystickNumber;
 		}
 
-		if (GetComponent<Button>() != null)
-		{
-			GetComponent<Button>().interactable = GameManager.Instance.AreAllPlayerReady && GameManager.Instance.nbPlayers >= 2;
-		}
+		gameObject.SetActive(GameManager.Instance.AreAllPlayerReady && GameManager.Instance.nbPlayers >= 2);
 
  		base.Update();
 
