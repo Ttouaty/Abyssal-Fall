@@ -44,10 +44,10 @@ public class Player
 		Score = 0;
 	}
 
-	public void Ready(CharacterSelectionData linkedCharacter)
+	public void Ready(PlayerController linkedCharacter, int indexSkinUsed)
 	{
-		_characterUsed = linkedCharacter.Controller;
-		SkinNumber = linkedCharacter.SelectedSkinIndex;
+		_characterUsed = linkedCharacter;
+		SkinNumber = indexSkinUsed;
 		isReady = true;
 	}
 

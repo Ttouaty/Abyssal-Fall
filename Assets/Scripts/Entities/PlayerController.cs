@@ -279,10 +279,11 @@ public class PlayerController : MonoBehaviour
 			//_activeDirection.z = Mathf.Lerp(_activeDirection.z, InputManager.GetAxis("y", _playerRef.JoystickNumber), 0.3f);
 			_activeDirection.x = InputManager.GetAxis("x", _playerRef.JoystickNumber);
 			_activeDirection.z = InputManager.GetAxis("y", _playerRef.JoystickNumber);
+			_activeDirection = Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized) * _activeDirection;
 			_activeDirection.Normalize();
 		}
 
-		transform.LookAt(transform.position + (Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized) * _activeDirection), Vector3.up);
+		transform.LookAt(transform.position + _activeDirection, Vector3.up);
 	}
 
 	private void ProcessCoolDowns()

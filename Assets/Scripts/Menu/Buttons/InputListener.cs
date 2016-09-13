@@ -81,7 +81,7 @@ public class InputListener : MonoBehaviour
 				_timeHeld = 0;
 			} 
 		}
-		else if (Vector3.Dot(_tempStickPosition, directionToListen) > 1 - AxisPrecision)
+		else if (Vector3.Dot(_tempStickPosition, directionToListen) > 1 - AxisPrecision && _tempStickPosition.magnitude > stickActivateThreshold)
 		{
 			if (CanLoop)
 			{
