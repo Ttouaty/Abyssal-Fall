@@ -29,13 +29,30 @@ public static class Vector3Extensions
 			return 0;
 		return Mathf.Sign(number) * (Mathf.Abs(number) - amount);
 	}
+}
 
+public static class IntExtensions
+{
 	public static int Reduce(this int number, int amount)
 	{
 		if (Mathf.Abs(number) < Mathf.Abs(amount))
+		{
+			number = 0;
 			return 0;
-		return ((int)Mathf.Sign(number)) * (Mathf.Abs(number) - amount);
+		}
+		number = ((int)Mathf.Sign(number)) * (Mathf.Abs(number) - amount);
+		return number;
 	}
+
+	public static int LoopAround(this int number, int min, int max)
+	{
+		if (number > max)
+			number = number - max + min - 1;
+		else if (number < min)
+			number = number - min + max + 1;
+		return number;
+	}
+
 }
 
 public static class ListExtensions

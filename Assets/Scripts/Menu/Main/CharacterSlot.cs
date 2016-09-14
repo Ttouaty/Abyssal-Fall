@@ -62,8 +62,8 @@ public class CharacterSlot : MonoBehaviour
 
 		_wheelRef = new GameObject().AddComponent<CharacterSelectWheel>();
 		_wheelRef.transform.SetParent(transform);
-		_wheelRef.transform.localScale = Vector3.one;
-		_wheelRef.transform.position = transform.position + transform.forward * _wheelRef._wheelRadius;
+		_wheelRef.transform.position = transform.position;
+
 		_wheelRef.gameObject.name = "characterWheel";
 
 		_switchCharacterCooldown = new TimeCooldown(this);

@@ -10,4 +10,7 @@ public class ArenaConfiguration_SO : ScriptableObject
     public PoolConfiguration[] AdditionalPoolsToLoad;
     public SceneField BackgroundLevel;
     public BehaviourConfiguration[] Behaviours;
+	public Sprite Artwork;
+	public EArenaConfiguration TargetMapEnum;
+	public MapConfiguration_SO[] MapConfigs;
 }

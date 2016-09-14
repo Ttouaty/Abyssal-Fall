@@ -52,7 +52,11 @@ public class DynamicConfig : GenericSingleton<DynamicConfig>
 
 	public void GetConfig(EArenaConfiguration configName, out ArenaConfiguration_SO config)	{ config = ArenaConfigurationsDic[configName.ToString()]; }
 	public void GetConfig(string configName, out ArenaConfiguration_SO config)				{ config = ArenaConfigurationsDic[configName]; }
-	public void GetConfigs(ref ArenaConfiguration_SO[] config)								{ ArenaConfigurationsDic.Values.CopyTo(config, 0); }
+	public void GetConfigs(ref ArenaConfiguration_SO[] config)								
+	{
+		config = new ArenaConfiguration_SO[ArenaConfigurationsDic.Values.Count];
+		ArenaConfigurationsDic.Values.CopyTo(config, 0); 
+	}
 
 	public void GetConfig(EModeConfiguration configName, out AGameRules config)				{ config = ModeConfigurationsDic[configName.ToString()]; }
 	public void GetConfig(string configName, out AGameRules config)							{ config = ModeConfigurationsDic[configName]; }

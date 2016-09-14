@@ -21,8 +21,15 @@ public class MenuWheel<T> : MonoBehaviour where T : WheelSelectable
 	protected Color _tempColor;
 	protected float _tempElementAngle;
 
+	protected virtual void Start()
+	{
+		transform.position = transform.position + transform.forward * _wheelRadius;
+	}
+
 	public virtual void Generate(T[] elementsToAdd) 
 	{
+		transform.localScale = Vector3.one;
+
 		_selectedElementIndex = 0;
 		for (int i = 0; i < _elementList.Count; i++)
 		{
@@ -35,10 +42,11 @@ public class MenuWheel<T> : MonoBehaviour where T : WheelSelectable
 		for (int i = 0; i < elementsToAdd.Length; i++)
 		{
 			_elementList.Add(elementsToAdd[i]);
-			elementsToAdd[i].Generate(transform, transform.position - transform.forward * _wheelRadius, transform.parent.GetComponent<RectTransform>().sizeDelta * 0.8f);
-
+			elementsToAdd[i].Generate(transform, transform.position - transform.forward * _wheelRadius, transform.parent.GetComponent<RectTransform>().sizeDelta);
 			elementsToAdd[i].transform.RotateAround(transform.position, transform.up, -_rotationBetweenElements * i);
 		}
+
+		ScrollToIndex(_selectedElementIndex);
 	}
 
 	public virtual T GetSelectedElement()
@@ -78,6 +86,18 @@ public class MenuWheel<T> : MonoBehaviour where T : WheelSelectable
 	public void ScrollToIndex(int newIndex)
 	{
 		_selectedElementIndex = newIndex;
+		_selectedElementIndex = _selectedElementIndex.LoopAround(0, _elementList.Count - 1);
+		_elementList[_selectedElementIndex].transform.SetAsLastSibling();
+	}
+
+	public void ScrollLeft()
+	{
+		ScrollToIndex(--_selectedElementIndex);
+	}
+
+	public void ScrollRight()
+	{
+		ScrollToIndex(++_selectedElementIndex);
 	}
 
 	public virtual void Reset()
