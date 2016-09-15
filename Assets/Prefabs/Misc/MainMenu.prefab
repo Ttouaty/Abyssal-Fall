@@ -1516,6 +1516,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 224: {fileID: 22441666}
+  - 222: {fileID: 22279028}
   m_Layer: 5
   m_Name: Wheel Container
   m_TagString: Untagged
@@ -2314,6 +2315,17 @@ MonoBehaviour:
   Callback:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 11426802}
+        m_MethodName: SendSelectionToGameManager
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 11433352}
         m_MethodName: StartGame
         m_Mode: 1
@@ -5836,6 +5848,17 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 11426802}
+        m_MethodName: SendSelectionToGameManager
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 11433352}
         m_MethodName: StartGame
         m_Mode: 1
@@ -7014,6 +7037,12 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 102704}
+--- !u!222 &22279028
+CanvasRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 172192}
 --- !u!222 &22279228
 CanvasRenderer:
   m_ObjectHideFlags: 1
@@ -7963,7 +7992,7 @@ RectTransform:
   m_GameObject: {fileID: 172192}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: .600000024, y: .600000024, z: .75}
+  m_LocalScale: {x: .600000024, y: .600000024, z: .600000024}
   m_Children:
   - {fileID: 22417162}
   - {fileID: 22460980}
@@ -8431,14 +8460,14 @@ RectTransform:
   m_GameObject: {fileID: 115372}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: .870000005}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 22441666}
   m_RootOrder: 1
   m_AnchorMin: {x: .5, y: .5}
   m_AnchorMax: {x: .5, y: .5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 640, y: 360}
+  m_SizeDelta: {x: 650, y: 375}
   m_Pivot: {x: .5, y: .5}
 --- !u!224 &22462288
 RectTransform:

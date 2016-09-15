@@ -33,9 +33,14 @@ public class MapSelectWheel : MenuWheel<WheelSelectable>
 			_elementList[i].gameObject.name = "Arena_" + _configRefs[i].TargetMapEnum.ToString();
 		}
 	}
-
+	
 	public EArenaConfiguration GetSelectedElement()
 	{
 		return _configRefs[_selectedElementIndex].TargetMapEnum;
+	}
+
+	public void SendSelectionToGameManager()
+	{
+		GameManager.Instance.CurrentGameConfiguration.ArenaConfiguration = GetSelectedElement();
 	}
 }

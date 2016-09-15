@@ -57,7 +57,6 @@ public class MenuWheel<T> : MonoBehaviour where T : WheelSelectable
 	protected virtual void Update()
 	{
 		transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(0, _selectedElementIndex * _rotationBetweenElements, 0), 0.15f);
-
 		for (int i = 0; i < _elementList.Count; ++i)
 		{
 			_tempColor = _elementList[i].color;

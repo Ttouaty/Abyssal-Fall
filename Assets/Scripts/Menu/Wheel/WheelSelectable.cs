@@ -14,7 +14,6 @@ public class WheelSelectable : Image
 		rectTransform.sizeDelta = newSizeDelta;
 		rectTransform.localRotation = Quaternion.identity;
 		rectTransform.position = position;
-
 		color = new Color(color.r, color.g, color.b, 0);
 	}
 }
