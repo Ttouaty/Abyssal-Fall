@@ -34,7 +34,7 @@ public class MapSelectWheel : MenuWheel<WheelSelectable>
 		}
 	}
 	
-	public EArenaConfiguration GetSelectedElement()
+	public new EArenaConfiguration GetSelectedElement()
 	{
 		return _configRefs[_selectedElementIndex].TargetMapEnum;
 	}
