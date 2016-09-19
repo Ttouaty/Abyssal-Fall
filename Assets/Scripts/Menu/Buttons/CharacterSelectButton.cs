@@ -9,20 +9,17 @@ public class CharacterSelectButton : InputListener
  		base.Start();
 		this.ListenToAllJoysticks = false;
 	}
+
 	protected override void Update()
 	{
-		// Fait a l'arrache mais c'est pas très grave :p
-
-		if (Input.GetKeyDown(KeyCode.P))
-			base.LaunchCallback();
 		for(int i = 0; i < GameManager.Instance.nbPlayers; ++i)
 		{
 			JoysticksToListen[i] = GameManager.Instance.RegisteredPlayers[i].JoystickNumber;
 		}
 
-		gameObject.SetActive(GameManager.Instance.AreAllPlayerReady && GameManager.Instance.nbPlayers >= 2);
-
- 		base.Update();
+		SetVisibility(GameManager.Instance.AreAllPlayerReady && GameManager.Instance.nbPlayers >= 2);
+		if (GameManager.Instance.AreAllPlayerReady && GameManager.Instance.nbPlayers >= 2) //doublon mais fuk :p
+ 			base.Update();
 
 	}
 
@@ -30,5 +27,13 @@ public class CharacterSelectButton : InputListener
 	{
 		if (GameManager.Instance.AreAllPlayerReady)
 			base.LaunchCallback();
+	}
+
+	public void SetVisibility(bool isVisible)
+	{
+		GetComponent<Image>().enabled = isVisible;
+		
+		transform.GetChild(0).gameObject.SetActive(isVisible);
+		
 	}
 }

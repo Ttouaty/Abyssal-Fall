@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.Events;
 using System.Collections.Generic;
 
 struct SelectedCharacters
@@ -27,6 +28,9 @@ public class CharacterSlot : MonoBehaviour
 	public bool Open = false;
 	[HideInInspector]
 	public bool Selected = false;
+
+	public UnityEvent OnSlotOpen;
+	public UnityEvent OnSlotClose;
 
 	private bool _canSwitchCharacter = true;
 
@@ -193,6 +197,7 @@ public class CharacterSlot : MonoBehaviour
 	public void OpenSlot(int playerNumber, int joyToListen)
 	{
 		Open = true;
+		OnSlotOpen.Invoke();
 		_joyToListen = joyToListen;
 		_playerIndex = playerNumber;
 		_wheelRef.gameObject.SetActive(true);
@@ -203,6 +208,7 @@ public class CharacterSlot : MonoBehaviour
 	public void CloseSlot()
 	{
 		_wheelRef.Reset();
+		OnSlotClose.Invoke();
 		_wheelRef.gameObject.SetActive(false);
 		Open = false;
 		frameDelay = 1;
