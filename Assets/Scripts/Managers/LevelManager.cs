@@ -172,9 +172,10 @@ public class LevelManager : GenericSingleton<LevelManager>
 		}
 		else
 		{
-			Application.LoadLevelAdditive(SceneMenu);
+			Application.LoadLevelAdditive(scene);
 		}
 		CurrentScenes.Add(scene);
+		Debug.Log(scene.SceneAsset);
 	}
 
 	private IEnumerator LoadAsyncScene(SceneField scene, Action<AsyncOperation> callback = null)
@@ -194,8 +195,10 @@ public class LevelManager : GenericSingleton<LevelManager>
 	{
 		if(CurrentScenes.IndexOf(scene) >= 0)
 		{
-			Application.UnloadLevel(scene);
 			CurrentScenes.Remove(scene);
+			scene.SceneRoot = GameObject.Find(scene.SceneName);
+			Destroy(scene.SceneRoot);
+			// Application.UnloadLevel(scene);
 		}
 	}
 

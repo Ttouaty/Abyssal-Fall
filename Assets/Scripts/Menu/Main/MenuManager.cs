@@ -34,8 +34,8 @@ public class MenuManager : GenericSingleton<MenuManager>
 		_menuArray                      = GetComponentsInChildren<MenuPanel>();
 		_characterSlotsContainerRef     = GetComponentInChildren<CharacterSlotsContainer>();
 		_splashscreens                  = SplashScreens.GetComponentsInChildren<RawImage>();
-        _menuArray                      = GetComponentsInChildren<MenuPanel>();
-        _characterSlotsContainerRef     = GetComponentInChildren<CharacterSlotsContainer>();
+		_menuArray                      = GetComponentsInChildren<MenuPanel>();
+		_characterSlotsContainerRef     = GetComponentInChildren<CharacterSlotsContainer>();
 		_returnGroupRef					= GetComponentInChildren<ReturnButton>();
 		_metaContainer					= _canvas.transform.FindChild("Meta");
 
@@ -64,8 +64,11 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	void Update()
 	{
-		//Only display return arrow if there is a menu to return to.
-		_returnGroupRef.gameObject.SetActive(_activeMenu.ParentMenu != null);
+		if(_activeMenu != null)
+		{
+			//Only display return arrow if there is a menu to return to.
+			_returnGroupRef.gameObject.SetActive(_activeMenu.ParentMenu != null);
+		}
 
 		if (_isListeningForInput)
 		{
@@ -77,7 +80,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 						continue;
 				}
 
-                if (InputManager.GetButtonDown(InputEnum.A, i + 1) && !_controllerAlreadyInUse[i + 1]) //if new controller presses A
+				if (InputManager.GetButtonDown(InputEnum.A, i + 1) && !_controllerAlreadyInUse[i + 1]) //if new controller presses A
 				{
 					Debug.Log("JOYSTICK NUMBER: " + (i + 1) + " PRESSED START");
 					RegisterNewPlayer(i + 1);
@@ -182,7 +185,8 @@ public class MenuManager : GenericSingleton<MenuManager>
 				StartCoroutine(SendInLeft(newMenu));
 			}
 		}
-		else if (newMenu == null)
+		
+		if (newMenu == null)
 		{
 			_activeMenu = null;
 			yield break;
@@ -224,14 +228,20 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	IEnumerator SendInRight(MenuPanel targetMenu)
 	{
-		targetMenu.gameObject.SetActive(true);
-		yield return StartCoroutine(MovePanelOverTime(targetMenu, _rightMenuAnchor.position, _centerMenuAnchor.position));
+		if(targetMenu != null)
+		{
+			targetMenu.gameObject.SetActive(true);
+			yield return StartCoroutine(MovePanelOverTime(targetMenu, _rightMenuAnchor.position, _centerMenuAnchor.position));
+		}
 	}
 
 	IEnumerator SendInLeft(MenuPanel targetMenu)
 	{
-		targetMenu.gameObject.SetActive(true);
-		yield return StartCoroutine(MovePanelOverTime(targetMenu, _leftMenuAnchor.position, _centerMenuAnchor.position));
+		if (targetMenu != null)
+		{
+			targetMenu.gameObject.SetActive(true);
+			yield return StartCoroutine(MovePanelOverTime(targetMenu, _leftMenuAnchor.position, _centerMenuAnchor.position));
+		}
 	}
 
 	IEnumerator MovePanelOverTime(MenuPanel targetMenu, Vector3 start, Vector3 end)

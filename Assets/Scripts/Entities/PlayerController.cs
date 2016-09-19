@@ -141,6 +141,7 @@ public class PlayerController : MonoBehaviour
 
 		_transf.GetComponentInChildren<CharacterModel>().Reskin(_characterData.CharacterMaterials[_playerRef.SkinNumber]);
 
+		_rigidB = GetComponent<Rigidbody>();
 		_animator = _transf.GetComponentInChildren<Animator>();
 		_playerProp = transform.GetComponentInChildren<PlayerProp>();
 

@@ -29,7 +29,7 @@ public class GUIManager : GenericSingleton<GUIManager>
 	public void RunRoundCount ()
 	{
 		RoundCount.gameObject.SetActive(true);
-		UpdateRoundCount(0);
+		UpdateRoundCount(GameManager.Instance.CurrentStage);
 	}
 
 	public void UpdateRoundCount (int round)
