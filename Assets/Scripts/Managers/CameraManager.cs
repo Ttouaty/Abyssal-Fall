@@ -1,108 +1,106 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
-public class CameraManager : MonoBehaviour
+public class CameraManager : GenericSingleton<CameraManager>
 {
 	private Vector3 _basePosition;
-	[SerializeField]
-	private float _cameraWinZoomSpeed = 3;
-	private Vector3 _target;
 	private Camera _camera;
-	private float _cameraOffset = 5;
-	public void Start()
+	private Transform _focalPoint; //FocalPoint is the point the camera is looking at, it can move away from the center point.
+	private Transform _centerPoint; //CenterPoint is the base of the camera, the default. It will not move ingame and is used as a anchor for every cameraMovement;
+
+	private Coroutine _activeMovementCoroutine;
+
+	private AnimationCurve _easeOutCurve = AnimationCurve.EaseInOut(0,0,1,1);
+	private List<Transform> _targetsTracked;
+
+	public float Distance;
+	public float CentroidCoefficient = 0.8f;
+
+	private Vector3 _targetsCentroid = Vector3.zero;
+
+	protected override void Awake()
+	{
+		base.Awake();
+		Distance = Vector3.Distance(transform.position, transform.parent.position);
+	}
+
+	void Start()
+	{
+		Init();
+	}
+
+	public override void Init()
 	{
 		_camera = GetComponent<Camera>();
-
-		InitPosition();
-		
-		_basePosition = transform.position;
-
-        // GameManager.Instance.OnPlayerWin.AddListener(OnPlayerWin); // Removed temporarily
-        Reset();
-		StartCoroutine(SmoothZoom());
+		_focalPoint = transform.parent;
+		_centerPoint = _focalPoint.parent;
 	}
 
-	private void InitPosition()
+	void Update()
 	{
-		RecalculateTarget();
-		
-		float distanceToArena = Vector3.Distance(_target, _camera.transform.position);
-		_camera.transform.position = _target - _camera.transform.forward * distanceToArena;
-		transform.LookAt(_target);
-	}
+		_targetsCentroid = Vector3.zero;
 
-	private void RecalculateTarget()
-	{
-        // Vector3 directionToCam = (transform.position - GameManager.Instance.Arena.transform.position).ZeroY().normalized;
-        // _target = GameManager.Instance.Arena.transform.position + directionToCam * (Arena.instance.Size * 0.25f * (Mathf.Cos((_camera.transform.rotation.eulerAngles.x) * Mathf.Deg2Rad)));
-        _target = transform.forward * 10.0f;
-
-    }
-
-	public void Reset ()
-	{
-		StopAllCoroutines();
-		transform.position = _basePosition;
-		transform.LookAt(_target);
-		InitPosition();
-	}
-
-	public void OnZoom()
-	{
-		StartCoroutine(SmoothZoom());
-	}
-
-	IEnumerator SmoothZoom ()
-	{
-		RecalculateTarget();
-		float timer = 0;
-		//Vector3 endPosition = _camera.transform.forward * 3 + _camera.transform.transform.position;
-		Vector3 endPosition = _target - _camera.transform.forward * (((40 * Mathf.Sin((_camera.transform.rotation.eulerAngles.x) *Mathf.Deg2Rad)) * 0.5f / Mathf.Tan(Camera.main.fieldOfView * 0.5f * Mathf.Deg2Rad)) + _cameraOffset);
-		// Thanks unity doc for distance calculation :)
-		while(timer < 1)
+		for (int i = 0; i < _targetsTracked.Count; i++)
 		{
-			timer += TimeManager.DeltaTime;
-			_camera.transform.position = Vector3.Lerp(_camera.transform.position, endPosition, timer);
-			yield return null;
+			_targetsCentroid += _targetsTracked[i].position;
 		}
-		yield return null;
+
+		_targetsCentroid /= _targetsTracked.Count;
+
+
+		transform.localPosition = - transform.forward * Distance;
+		FollowCentroid();
 	}
 
-	public void OnPlayerWin (GameObject winner)
+	private void FollowCentroid()
 	{
-		StartCoroutine(ZoomOnWinner(winner));
+		//double lerp FTW !
+		_focalPoint.position = Vector3.Lerp(_focalPoint.position, Vector3.Lerp(_centerPoint.position, _centerPoint.position - _targetsCentroid, CentroidCoefficient), 0.1f); 
 	}
 
-	IEnumerator ZoomOnWinner (GameObject winner)
+	public void ClearTrackedTargets()
 	{
-		winner.GetComponent<PlayerController>()._playerProp.PropRenderer.enabled = false;
+		_targetsTracked.Clear();
+	}
 
-		Vector3 startPos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-		winner.transform.Rotate(Vector3.up, Vector3.Angle(winner.transform.position, transform.position));
+	public void AddTargetToTrack(Transform newTarget)
+	{
+		_targetsTracked.Add(newTarget);
+	}
 
-		Vector3 endPos = winner.transform.position + winner.transform.forward * 6 + winner.transform.up * 5;
-
-		float timer = 0;
-		while(timer < 1)
+	public void SetCenterPoint(Transform newCenterPoint, float time = 0)
+	{
+		if (time == 0)
 		{
-			timer += TimeManager.DeltaTime * (1 / _cameraWinZoomSpeed);
-			transform.position = Vector3.Lerp(startPos, endPos, timer);
-			transform.LookAt(winner.transform);
+			_centerPoint.position = newCenterPoint.position;
+			//_focalPoint.rotation = _focalPoint.rotation;
+		}
+		else
+		{
+			//RotateLerp(_centerPoint, newCenterPoint, 1);
+			MoveLerp(_centerPoint, newCenterPoint, time);
+		}
+	}
+
+	private void MoveLerp(Transform start, Transform target, float time)
+	{
+		if (_activeMovementCoroutine != null)
+			StopCoroutine(_activeMovementCoroutine);
+		_activeMovementCoroutine = StartCoroutine(MoveOverTimeCoroutine(start, target, time));
+	}
+
+	private IEnumerator MoveOverTimeCoroutine(Transform target, Transform end, float time)
+	{
+		float targetTime = Time.time + time;
+		Vector3 startpos = target.position;
+		while (targetTime > Time.time)
+		{
+			target.position = Vector3.Lerp(startpos, end.position, _easeOutCurve.Evaluate(Time.time % (targetTime - time) / time));
 			yield return null;
 		}
 
-		winner.GetComponent<PlayerController>()._animator.SetTrigger("Win");
-		yield return new WaitForSeconds(3);
-		int winnerId = winner.GetComponent<PlayerController>()._playerRef.PlayerNumber -1;
-		// EndStageScreen endScreen = GameManager.Instance.EndStageScreen.GetComponent<EndStageScreen>();
-		// endScreen.ShowPanel();
-		// yield return endScreen.StartCoroutine(endScreen.StartCountdown(winnerId));
-        // 
-		// Reset();
-		// // GameManager.Instance.Arena.ClearArena();
-		// GameManager.Instance.Restart();
-
-		yield return null;
+		target.position = end.position;
 	}
-
 }

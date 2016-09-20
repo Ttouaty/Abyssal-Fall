@@ -29,6 +29,8 @@ public static class Vector3Extensions
 			return 0;
 		return Mathf.Sign(number) * (Mathf.Abs(number) - amount);
 	}
+
+	
 }
 
 public static class IntExtensions
