@@ -27,9 +27,11 @@ public class MenuManager : GenericSingleton<MenuManager>
 	private RawImage[] _splashscreens;
 	private Coroutine _miniLoadingCoroutine;
 
-	void Awake()
+	protected override void Awake()
 	{
-		_canvas                         = GetComponentInChildren<Canvas>();
+		base.Awake();
+
+		_canvas = GetComponentInChildren<Canvas>();
 		_canvas.worldCamera             = Camera.main;
 		_menuArray                      = GetComponentsInChildren<MenuPanel>();
 		_characterSlotsContainerRef     = GetComponentInChildren<CharacterSlotsContainer>();

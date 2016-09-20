@@ -18,8 +18,9 @@ public class DynamicConfig : GenericSingleton<DynamicConfig>
 	public List<CharacterConfiguration>					CharacterConfigurations;
 	public Dictionary<string, PlayerController>			CharacterConfigurationsDic;
 
-	void Awake ()
+	protected override void Awake ()
 	{
+		base.Awake();
 		ArenaConfigurationsDic      = new Dictionary<string, ArenaConfiguration_SO>();
 		ModeConfigurationsDic       = new Dictionary<string, AGameRules>();
 		MapsConfigurationsDic       = new Dictionary<string, MapConfiguration_SO>();

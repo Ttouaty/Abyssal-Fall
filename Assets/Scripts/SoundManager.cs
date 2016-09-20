@@ -28,8 +28,10 @@ public class SoundManager : GenericSingleton<SoundManager>
 	private Dictionary<string, AudioClip> SoundMap;
 
 
-    void Awake()
+	protected override void Awake()
 	{
+		base.Awake();
+
 		// Générer un canal audio par valeur dans l'enum EAudioSourcePistes
 		_audioSourceChanels = new Dictionary<string, AudioSource>();
 		_audioSourceChanels.Add(DEFAULT_CHANEL_NAME, gameObject.AddComponent<AudioSource>()); // Add Default chanel

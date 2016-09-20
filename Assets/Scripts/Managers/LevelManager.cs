@@ -44,8 +44,10 @@ public class LevelManager : GenericSingleton<LevelManager>
 	public bool                             IsOnMenu                    { get { return _bIsOnMenu; } }
 	#endregion
 
-	void Awake()
+	protected override void Awake()
 	{
+		base.Awake();
+
 		Dictionary<string, SceneField> scenes = new Dictionary<string, SceneField> {
 			{ "SCENE_LOADING", SceneLoading },
 			{ "SCENE_MENU", SceneMenu },
