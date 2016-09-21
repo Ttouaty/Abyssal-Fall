@@ -5,25 +5,28 @@ using System.Collections.Generic;
 
 public class CameraManager : GenericSingleton<CameraManager>
 {
-	private Vector3 _basePosition;
+	private AnimationCurve _easeOutCurve = AnimationCurve.EaseInOut(0,0,1,1);
 	private Camera _camera;
 	private Transform _focalPoint; //FocalPoint is the point the camera is looking at, it can move away from the center point.
 	private Transform _centerPoint; //CenterPoint is the base of the camera, the default. It will not move ingame and is used as a anchor for every cameraMovement;
 
 	private Coroutine _activeMovementCoroutine;
 
-	private AnimationCurve _easeOutCurve = AnimationCurve.EaseInOut(0,0,1,1);
-	private List<Transform> _targetsTracked;
 
-	public float Distance;
-	public float CentroidCoefficient = 0.8f;
 
+	private float _distance;
+	private float _verticalOffset;
+
+	public float MinDistance = 5;
+	public float CentroidCoefficient = 1f;
+
+	private List<Transform> _targetsTracked = new List<Transform>();
 	private Vector3 _targetsCentroid = Vector3.zero;
 
 	protected override void Awake()
 	{
 		base.Awake();
-		Distance = Vector3.Distance(transform.position, transform.parent.position);
+		_distance = Vector3.Distance(transform.position, transform.parent.position);
 	}
 
 	void Start()
@@ -40,6 +43,23 @@ public class CameraManager : GenericSingleton<CameraManager>
 
 	void Update()
 	{
+		if (_targetsTracked.Count != 0)
+		{
+			CalculateTargetsCentroid();
+			CalculateTargetsDistance();
+		}
+
+		Debug.DrawRay(_centerPoint.position, _targetsCentroid - _centerPoint.position, Color.red, 1);
+
+		transform.localPosition = - transform.forward * _distance;
+		
+		FollowCentroid();
+
+		Debug.DrawRay(transform.position, transform.forward * _distance, Color.blue, 0.2f);
+	}
+
+	private void CalculateTargetsCentroid()
+	{
 		_targetsCentroid = Vector3.zero;
 
 		for (int i = 0; i < _targetsTracked.Count; i++)
@@ -48,16 +68,33 @@ public class CameraManager : GenericSingleton<CameraManager>
 		}
 
 		_targetsCentroid /= _targetsTracked.Count;
+	}
 
+	private Vector3 _farthestPosition;
+	private float _tempDistance;
+	private void CalculateTargetsDistance()
+	{
+		_tempDistance = 0;
+		_farthestPosition = Vector3.zero;
+		for (int i = 0; i < _targetsTracked.Count; i++)
+		{
+			if (Vector3.Distance(_farthestPosition, _targetsCentroid) > _tempDistance)
+			{
+				_farthestPosition = _targetsTracked[i].position;
+				_tempDistance = Vector3.Distance(_farthestPosition, _targetsCentroid);
+			}
+		}
 
-		transform.localPosition = - transform.forward * Distance;
-		FollowCentroid();
+		_distance = _tempDistance * 0.5f / Mathf.Tan(_camera.fieldOfView * 0.5f * Mathf.Deg2Rad) * 2f;
+		if (_distance < MinDistance)
+			_distance = MinDistance;
+		_verticalOffset = _distance * 0.25f;
 	}
 
 	private void FollowCentroid()
 	{
 		//double lerp FTW !
-		_focalPoint.position = Vector3.Lerp(_focalPoint.position, Vector3.Lerp(_centerPoint.position, _centerPoint.position - _targetsCentroid, CentroidCoefficient), 0.1f); 
+		_focalPoint.position = Vector3.Lerp(_focalPoint.position, Vector3.Lerp(_centerPoint.position, _targetsCentroid, CentroidCoefficient) - transform.forward.ZeroY().normalized * _verticalOffset, 0.1f);
 	}
 
 	public void ClearTrackedTargets()

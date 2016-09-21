@@ -135,6 +135,12 @@ public class PlayerController : MonoBehaviour
 	{
 		_playerRef = player;
 
+		if (_characterData == null)
+		{
+			Debug.Log("No SO_Character found for character "+gameObject.name+". Seriously ?");
+			return;
+		}
+
 		//Instantiates player mesh and retrieves its props and particles
 		GameObject playerMesh = Instantiate(_characterData.CharacterModel.gameObject, _transf.position, _characterData.CharacterModel.transform.rotation) as GameObject;
 		playerMesh.transform.parent = _transf.FindChild("CharacterModel");
@@ -162,7 +168,7 @@ public class PlayerController : MonoBehaviour
 
 		_lastDamageDealerTimeOut = new TimeCooldown(this);
 		_lastDamageDealerTimeOut.onFinish = OnLastDamageDealerTimeOut;
-		// GameManager.Instance.OnPlayerWin.AddListener(OnPlayerWin); // Removed temporarily
+		GameManager.Instance.OnPlayerWin.AddListener(OnPlayerWin);
 
 		_maxSpeed.x = _maxSpeed.x * _characterData.CharacterStats.speed / 3;
 
@@ -185,6 +191,8 @@ public class PlayerController : MonoBehaviour
 		TimeManager.Instance.OnPause.AddListener(OnPause);
 		TimeManager.Instance.OnResume.AddListener(OnResume);
 		TimeManager.Instance.OnTimeScaleChange.AddListener(OnTimeScaleChange);
+
+		CameraManager.Instance.AddTargetToTrack(transform);
 
 		CustomStart();
 
@@ -274,7 +282,7 @@ public class PlayerController : MonoBehaviour
 		_isInvul = true;
 	}
 
-	protected virtual void OnPlayerWin(GameObject player)
+	protected virtual void OnPlayerWin()
 	{
 		_allowInput = false;
 		_activeSpeed = Vector3.zero;
