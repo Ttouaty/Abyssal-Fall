@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -55,6 +56,7 @@ public class LevelManager : GenericSingleton<LevelManager>
 			{ "SCENE_PAUSE", ScenePause },
 			{ "SCENE_END_STAGE", SceneEndStage },
 			{ "SCENE_END_GAME", SceneEndGame },
+			{ "SCENE_GUI", SceneGUI }
 		};
 
 		foreach (KeyValuePair<string, SceneField> value in scenes)
@@ -174,15 +176,14 @@ public class LevelManager : GenericSingleton<LevelManager>
 		}
 		else
 		{
-			Application.LoadLevelAdditive(scene);
+			SceneManager.LoadScene(scene, LoadSceneMode.Additive);
 		}
 		CurrentScenes.Add(scene);
-		Debug.Log(scene.SceneAsset);
 	}
 
 	private IEnumerator LoadAsyncScene(SceneField scene, Action<AsyncOperation> callback = null)
 	{
-		AsyncOperation async = Application.LoadLevelAdditiveAsync(scene);
+		AsyncOperation async = SceneManager.LoadSceneAsync(scene, LoadSceneMode.Additive);
 		while (!async.isDone)
 		{
 			if(callback != null)
@@ -198,9 +199,7 @@ public class LevelManager : GenericSingleton<LevelManager>
 		if(CurrentScenes.IndexOf(scene) >= 0)
 		{
 			CurrentScenes.Remove(scene);
-			scene.SceneRoot = GameObject.Find(scene.SceneName);
-			Destroy(scene.SceneRoot);
-			// Application.UnloadLevel(scene);
+			SceneManager.UnloadScene(scene);
 		}
 	}
 

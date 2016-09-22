@@ -24,14 +24,9 @@ namespace Localizator
 			_text = GetComponent<Text>();
 		}
 
-		void Start()
+		void Start ()
 		{
-			if (LanguageManager.Instance == null)
-			{
-				LanguageManager.CreateInstance();
-			}
 			LanguageManager.Instance.OnChangeLanguage.AddListener(OnChangeLanguage);
-			OnChangeLanguage();
 		}
 
 		public void SetText (string fragment, params KeyValuePair<string, string>[] replace)

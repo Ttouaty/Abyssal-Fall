@@ -15,8 +15,10 @@ public class MainManager : GenericSingleton<MainManager>
 	public LoadingScreen        LOADING_MANAGER;
 	public ArenaManager         ARENA_MANAGER;
 
-	void Start ()
+	protected override void Awake ()
 	{
+		base.Awake();
+
 		GAME_OBJECT_POOL    = GameObjectPool.Instance;
 		DYNAMIC_CONFIG      = DynamicConfig.Instance;
 		LEVEL_MANAGER       = LevelManager.Instance;

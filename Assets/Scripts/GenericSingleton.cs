@@ -22,9 +22,6 @@ public abstract class GenericSingleton<T> : MonoBehaviour, IInitializable where 
 		{
 			_instance = this as T;
 		}
-		else {
-			Destroy(gameObject);
-		}
 	}
 
 	public virtual void Init() { }

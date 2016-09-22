@@ -48,12 +48,6 @@ namespace Localizator
 		{
 			get
 			{
-				#if UNITY_EDITOR
-				if(!Application.isPlaying && System.IO.File.Exists(Path.DefaultLanguageFilePath))
-				{
-					_currentLanguage = (SystemLanguage)System.Enum.Parse(typeof(SystemLanguage), System.IO.File.ReadAllText(Path.DefaultLanguageFilePath));
-				}
-				#endif
 				return _currentLanguage;
 			}
 			set
@@ -68,10 +62,11 @@ namespace Localizator
 			}
 		}
 
-		public LocalizationTextChangeEvent OnChangeLanguage = new LocalizationTextChangeEvent();
+		public LocalizationTextChangeEvent OnChangeLanguage;
 
 		void Awake ()
 		{
+			_instance = this;
 			StartCoroutine(Awake_Implementation());
 		}
 

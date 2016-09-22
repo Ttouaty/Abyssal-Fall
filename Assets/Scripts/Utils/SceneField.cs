@@ -7,7 +7,7 @@ using UnityEditor;
 [System.Serializable]
 public struct SceneField
 {
-    public Object SceneAsset;
+    public SceneAsset SceneAsset;
     public string SceneName;
     public GameObject SceneRoot;
 
