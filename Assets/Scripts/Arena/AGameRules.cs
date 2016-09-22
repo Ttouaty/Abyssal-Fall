@@ -35,14 +35,13 @@ public abstract class AGameRules : MonoBehaviour
 
 	public virtual void RespawnFalledTiles (Tile tile)
 	{
-		tile.gameObject.SetActive(false);
+		tile.PrepareRespawn();
 		StartCoroutine(RespawnFalledTiles_Implementation(tile));
 	}
 
 	protected virtual IEnumerator RespawnFalledTiles_Implementation (Tile tile)
 	{
 		yield return new WaitForSeconds(TileRegerationTime);
-		tile.gameObject.SetActive(true);
 		tile.ActivateRespawn();
 	}
 

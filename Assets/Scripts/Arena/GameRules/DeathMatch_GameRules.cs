@@ -46,8 +46,8 @@ public class DeathMatch_GameRules : AGameRules
 			Spawn spawn = tile.gameObject.AddComponent<Spawn>();
 
 			spawn.SpawnPlayer(player.CharacterUsed);
-			player.CharacterUsed._animator.SetTrigger("Reset");
-			player.CharacterUsed._isDead = false;
+			player.Controller._animator.SetTrigger("Reset");
+			player.Controller._isDead = false;
 		}
 	}
 
