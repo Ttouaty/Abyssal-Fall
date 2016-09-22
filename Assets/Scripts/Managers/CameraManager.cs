@@ -47,15 +47,15 @@ public class CameraManager : GenericSingleton<CameraManager>
 		{
 			CalculateTargetsCentroid();
 			CalculateTargetsDistance();
-		}
 
-		Debug.DrawRay(_centerPoint.position, _targetsCentroid - _centerPoint.position, Color.red, 1);
+			Debug.DrawRay(_centerPoint.position, _targetsCentroid - _centerPoint.position, Color.red, 1);
 
-		transform.localPosition = - transform.forward * _distance;
+			transform.localPosition = - transform.forward * _distance;
 		
-		FollowCentroid();
+			FollowCentroid();
 
-		Debug.DrawRay(transform.position, transform.forward * _distance, Color.blue, 0.2f);
+			Debug.DrawRay(transform.position, transform.forward * _distance, Color.blue, 0.2f);
+		}
 	}
 
 	private void CalculateTargetsCentroid()
