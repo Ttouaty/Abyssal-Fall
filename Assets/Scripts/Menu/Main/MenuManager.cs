@@ -296,6 +296,9 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 		SplashScreens.transform.Find("Background_black").GetComponent<Image>().CrossFadeAlpha(0, 1, false);
 		Destroy(SplashScreens, 1);
+
+		yield return StartCoroutine(WaitForFixedCamera());
+
 		SetActiveButtons(GetMenuPanel("Main"), true);
 		_activeMenu.PreSelectedButton.Select();
 	}
@@ -373,6 +376,14 @@ public class MenuManager : GenericSingleton<MenuManager>
 		MakeTransition((MenuPanel) null);
 		yield return new WaitForSeconds(1);
 		gameObject.SetActive(false);
+	}
+
+	private IEnumerator WaitForFixedCamera()
+	{
+		while (CameraManager.Instance.IsMoving)
+		{
+			yield return null;
+		}
 	}
 
 	public static void ActivateMenu(bool instant = false, string activeMenu = "Main")

@@ -13,7 +13,7 @@ struct SelectedCharacters
 public class CharacterSlot : MonoBehaviour
 {
 	private static SelectableCharacter[] _availableCharacters;
-	private static List<SelectedCharacters> _selectedCharacters = new List<SelectedCharacters>();
+	private static bool[,] _selectedCharacters = new bool[4,4];
 	public static ParticleSystem OnCharacterSelectedParticles;
 	
 
@@ -66,8 +66,8 @@ public class CharacterSlot : MonoBehaviour
 
 		_wheelRef = new GameObject().AddComponent<CharacterSelectWheel>();
 		_wheelRef.transform.SetParent(transform);
+		_wheelRef.transform.localRotation = Quaternion.identity;
 		_wheelRef.transform.position = transform.position;
-
 		_wheelRef.gameObject.name = "characterWheel";
 
 		_switchCharacterCooldown = new TimeCooldown(this);
@@ -135,17 +135,16 @@ public class CharacterSlot : MonoBehaviour
 		_wheelRef.GetSelectedElement().Controller._characterData.CharacterModel.Reskin(GetSelectedSkin);
 		_selectedCharacterModel = (GameObject)Instantiate(_wheelRef.GetSelectedElement().Controller._characterData.CharacterModel.gameObject, transform.position - transform.up * 30, transform.rotation * Quaternion.FromToRotation(Vector3.right, Vector3.left));
 		_selectedCharacterModel.transform.parent = transform;
-
+		_selectedCharacters[_selectedCharacterIndex, _selectedSkinIndex] = true;
 		Selected = true;
 		_activeCoroutineRef = StartCoroutine(SlideCharacterModelIn());
 	}
 
 	bool CheckIfCharacterIsAvailable()
 	{
-		for (int i = 0; i < _selectedCharacters.Count; ++i)
+		for (int i = 0; i < _selectedCharacters.Length; ++i)
 		{
-			if (_selectedCharacterIndex == _selectedCharacters[i].characterIndex &&
-				_selectedSkinIndex == _selectedCharacters[i].skinIndex)
+			if (_selectedCharacters[_selectedCharacterIndex,_selectedSkinIndex])
 				return false;
 		}
 		return true;
@@ -156,6 +155,7 @@ public class CharacterSlot : MonoBehaviour
 		if (_activeCoroutineRef != null)
 			StopCoroutine(_activeCoroutineRef);
 
+		_selectedCharacters[_selectedCharacterIndex, _selectedSkinIndex] = false;
 		Selected = false;
 		if (GameManager.Instance.RegisteredPlayers[_playerIndex] != null)
 			GameManager.Instance.RegisteredPlayers[_playerIndex].UnReady();
@@ -184,7 +184,7 @@ public class CharacterSlot : MonoBehaviour
 
 		while (targetTime > Time.time)
 		{
-			_selectedCharacterModel.transform.position = Vector3.Lerp(_selectedCharacterModel.transform.position, targetPosition, 0.1f);
+			_selectedCharacterModel.transform.position = Vector3.Lerp(_selectedCharacterModel.transform.position, targetPosition, 0.15f);
 			yield return null;
 		}
 
@@ -203,6 +203,9 @@ public class CharacterSlot : MonoBehaviour
 		_joyToListen = joyToListen;
 		_playerIndex = playerNumber;
 		_wheelRef.gameObject.SetActive(true);
+		_wheelRef.transform.SetParent(transform);
+		_wheelRef.transform.localRotation = Quaternion.identity;
+		_wheelRef.transform.position = transform.position;
 		_wheelRef.Generate(_availableCharacters);
 		Debug.Log("SLOT: " + name + " Opened, Listening to gamePad n°: " + joyToListen);
 	}

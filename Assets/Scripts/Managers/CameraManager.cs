@@ -11,8 +11,8 @@ public class CameraManager : GenericSingleton<CameraManager>
 	private Transform _centerPoint; //CenterPoint is the base of the camera, the default. It will not move ingame and is used as a anchor for every cameraMovement;
 
 	private Coroutine _activeMovementCoroutine;
-
-
+	[HideInInspector]
+	public bool IsMoving = false;
 
 	private float _distance;
 	private float _verticalOffset;
@@ -32,6 +32,7 @@ public class CameraManager : GenericSingleton<CameraManager>
 	void Start()
 	{
 		Init();
+		previousPosition = transform.position;
 	}
 
 	public override void Init()
@@ -41,8 +42,11 @@ public class CameraManager : GenericSingleton<CameraManager>
 		_centerPoint = _focalPoint.parent;
 	}
 
+	Vector3 previousPosition;
 	void Update()
 	{
+		IsMoving = (transform.position - previousPosition).magnitude > 0.05f;
+		previousPosition = transform.position;
 		if (_targetsTracked.Count != 0)
 		{
 			CalculateTargetsCentroid();

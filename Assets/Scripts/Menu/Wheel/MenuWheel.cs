@@ -22,14 +22,17 @@ public class MenuWheel<T> : MonoBehaviour where T : WheelSelectable
 	protected Color _tempColor;
 	protected float _tempElementAngle;
 
+	private bool Offseted = false;
+
 	protected virtual void Start()
 	{
-		transform.position = transform.position + transform.forward * _wheelRadius;
+
 	}
 
-	public virtual void Generate(T[] elementsToAdd) 
+	public virtual void Generate(T[] elementsToAdd)
 	{
 		transform.localScale = Vector3.one;
+		transform.position = transform.position + transform.forward * _wheelRadius;
 
 		_selectedElementIndex = 0;
 		for (int i = 0; i < _elementList.Count; i++)
