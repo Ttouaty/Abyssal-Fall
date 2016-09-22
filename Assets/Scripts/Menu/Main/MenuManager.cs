@@ -176,8 +176,6 @@ public class MenuManager : GenericSingleton<MenuManager>
 		if (_activeMenu != null)
 		{ 
 			SetActiveButtons(_activeMenu, false);
-
-			Debug.Log("C'EST LA LE BUG");
 			StopAllCoroutines();
 			if (forward)
 			{
