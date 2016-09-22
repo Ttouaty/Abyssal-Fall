@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.Events;
 using System.Collections.Generic;
 
 struct SelectedCharacters
@@ -27,6 +28,9 @@ public class CharacterSlot : MonoBehaviour
 	public bool Open = false;
 	[HideInInspector]
 	public bool Selected = false;
+
+	public UnityEvent OnSlotOpen;
+	public UnityEvent OnSlotClose;
 
 	private bool _canSwitchCharacter = true;
 
@@ -155,7 +159,6 @@ public class CharacterSlot : MonoBehaviour
 		Selected = false;
 		if (GameManager.Instance.RegisteredPlayers[_playerIndex] != null)
 			GameManager.Instance.RegisteredPlayers[_playerIndex].UnReady();
-		Debug.Log("cancel selection");
 
 		_activeCoroutineRef = StartCoroutine(SlideCharacterModelOut());
 
@@ -168,9 +171,10 @@ public class CharacterSlot : MonoBehaviour
 
 		while (targetTime > Time.time)
 		{
-			_selectedCharacterModel.transform.position = Vector3.Lerp(_selectedCharacterModel.transform.position, targetPosition, 0.1f);
+			_selectedCharacterModel.transform.position = Vector3.Lerp(_selectedCharacterModel.transform.position, targetPosition, 0.15f);
 			yield return null;
 		}
+		_selectedCharacterModel.transform.position = targetPosition;
 	}
 
 	IEnumerator SlideCharacterModelOut()
@@ -183,6 +187,8 @@ public class CharacterSlot : MonoBehaviour
 			_selectedCharacterModel.transform.position = Vector3.Lerp(_selectedCharacterModel.transform.position, targetPosition, 0.1f);
 			yield return null;
 		}
+
+		_selectedCharacterModel.transform.position = targetPosition;
 	}
 
 	void AllowSwitchCharacter()
@@ -193,6 +199,7 @@ public class CharacterSlot : MonoBehaviour
 	public void OpenSlot(int playerNumber, int joyToListen)
 	{
 		Open = true;
+		OnSlotOpen.Invoke();
 		_joyToListen = joyToListen;
 		_playerIndex = playerNumber;
 		_wheelRef.gameObject.SetActive(true);
@@ -203,6 +210,7 @@ public class CharacterSlot : MonoBehaviour
 	public void CloseSlot()
 	{
 		_wheelRef.Reset();
+		OnSlotClose.Invoke();
 		_wheelRef.gameObject.SetActive(false);
 		Open = false;
 		frameDelay = 1;

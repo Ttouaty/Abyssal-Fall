@@ -16,7 +16,7 @@ public abstract class GenericSingleton<T> : MonoBehaviour, IInitializable where 
 		}
 	}
 
-	protected virtual void OnLevelWasLoaded()
+	protected virtual void Awake()
 	{
 		if (_instance == null)
 		{

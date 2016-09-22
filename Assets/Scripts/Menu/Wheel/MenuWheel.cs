@@ -5,8 +5,9 @@ using UnityEngine.UI;
 
 public class MenuWheel<T> : MonoBehaviour where T : WheelSelectable
 {
-	
+
 	public float _wheelRadius = 3;
+	public float _rotateSpeed = 0.2f;
 
 	protected float _alphaThresholdAngleMin = 20;
 	protected float _alphaThresholdAngleMax = 150;
@@ -56,7 +57,7 @@ public class MenuWheel<T> : MonoBehaviour where T : WheelSelectable
 
 	protected virtual void Update()
 	{
-		transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(0, _selectedElementIndex * _rotationBetweenElements, 0), 0.15f);
+		transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(0, _selectedElementIndex * _rotationBetweenElements, 0), _rotateSpeed);
 		for (int i = 0; i < _elementList.Count; ++i)
 		{
 			_tempColor = _elementList[i].color;
@@ -69,7 +70,7 @@ public class MenuWheel<T> : MonoBehaviour where T : WheelSelectable
 			else
 				_tempColor.a = (_alphaThresholdAngleMax - _tempElementAngle) / _alphaThresholdAngleMax;
 
-			_elementList[i].color = Color.Lerp(_elementList[i].color, _tempColor, 0.1f);
+			_elementList[i].color = Color.Lerp(_elementList[i].color, _tempColor, _rotateSpeed);
 		}
 		RotateElementsFacingCam();
 	}
@@ -78,7 +79,7 @@ public class MenuWheel<T> : MonoBehaviour where T : WheelSelectable
 	{
 		for (int i = 0; i < _elementList.Count; ++i)
 		{
-			_elementList[i].transform.rotation = Quaternion.LookRotation(-Camera.main.transform.forward, Camera.main.transform.up);
+			_elementList[i].transform.rotation = Quaternion.LookRotation(Camera.main.transform.forward, Camera.main.transform.up);
 		}
 	}
 

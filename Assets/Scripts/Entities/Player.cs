@@ -18,10 +18,10 @@ public class Player
 
 	private bool _ready;
 
-	// PlayerController Prefab Model
+	// PlayerController Instantiated
 	public PlayerController Controller;
 
-	// PlayerController Instantiated
+	// PlayerController Prefab Model
 	private PlayerController _characterUsed;
 	public PlayerController CharacterUsed
 	{
