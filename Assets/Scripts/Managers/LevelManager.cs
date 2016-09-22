@@ -15,6 +15,7 @@ public class LevelManager : GenericSingleton<LevelManager>
 	private bool                            _bIsLoading                 = false;
 	private bool                            _bIsOnMenu                  = false;
 	private float                           _loadingProgress            = 0.0f;
+	ArenaConfiguration_SO                   _oldArenaConfig				= null;
 	#endregion
 	#region public
 	public List<SceneField>                 CurrentScenes               = new List<SceneField>();
@@ -114,10 +115,7 @@ public class LevelManager : GenericSingleton<LevelManager>
 		{
 			_bIsLoading = true;
 
-			if (CurrentArenaConfig != null)
-			{
-				UnloadScene(CurrentArenaConfig.BackgroundLevel);
-			}
+			_oldArenaConfig = CurrentArenaConfig;
 
 			MainManager.Instance.DYNAMIC_CONFIG.GetConfig(config.ArenaConfiguration, out CurrentArenaConfig);
 			MainManager.Instance.DYNAMIC_CONFIG.GetConfig(config.ModeConfiguration, out CurrentModeConfig);
@@ -220,6 +218,12 @@ public class LevelManager : GenericSingleton<LevelManager>
 		if (_bIsOnMenu)
 		{
 			CloseMenu();
+		}
+
+		if (_oldArenaConfig != null)
+		{
+			UnloadScene(_oldArenaConfig.BackgroundLevel);
+			_oldArenaConfig = null;
 		}
 
 		MainManager.Instance.LOADING_MANAGER = LoadingScreen.Instance;

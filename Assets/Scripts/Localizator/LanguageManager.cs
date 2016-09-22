@@ -62,11 +62,13 @@ namespace Localizator
 			}
 		}
 
-		public LocalizationTextChangeEvent OnChangeLanguage;
+		public LocalizationTextChangeEvent		OnChangeLanguage;
+		public bool								bIsLoaded { get; private set; }
 
 		void Awake ()
 		{
 			_instance = this;
+			bIsLoaded = false;
 			StartCoroutine(Awake_Implementation());
 		}
 
@@ -79,7 +81,7 @@ namespace Localizator
 			_currentDictionary = new Dictionary<string, string>();
 			_languagesDictionaries = new Dictionary<SystemLanguage, Dictionary<string, string>>();
 
-			LoadLanguage();
+			StartCoroutine(LoadLanguage_Implementation());
 		}
 
 		public void LoadLanguage()
@@ -123,6 +125,10 @@ namespace Localizator
 				_currentDictionary = target;
 			}
 
+			if(!bIsLoaded)
+			{
+				bIsLoaded = true;
+			}
 			OnChangeLanguage.Invoke();
 		}
 

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Localizator
@@ -27,6 +28,10 @@ namespace Localizator
 		void Start ()
 		{
 			LanguageManager.Instance.OnChangeLanguage.AddListener(OnChangeLanguage);
+			if(LanguageManager.Instance.bIsLoaded)
+			{
+				OnChangeLanguage();
+			}
 		}
 
 		public void SetText (string fragment, params KeyValuePair<string, string>[] replace)

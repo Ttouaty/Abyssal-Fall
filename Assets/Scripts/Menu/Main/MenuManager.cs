@@ -294,6 +294,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 		yield return StartCoroutine(LoadPreview_Implementation(EArenaConfiguration.Aerial));
 		Destroy(SplashScreens, 0);
 		SetActiveButtons(GetMenuPanel("Main"), true);
+		_activeMenu.PreSelectedButton.Select();
 	}
 
 	public void LoadPreview(EArenaConfiguration levelName)

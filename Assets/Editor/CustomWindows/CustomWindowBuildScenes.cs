@@ -22,6 +22,7 @@ public class CustomWindowBuildScenes : EditorWindow
 
 	private ReorderableList list;
 	private List<string> _scenes;
+	private string _currentOpenedScene = "";
 
 	void OnFocus ()
 	{
@@ -73,7 +74,7 @@ public class CustomWindowBuildScenes : EditorWindow
 				AddSceneToBuildSettings(element);
 			}
 
-			GUI.enabled = true;
+			GUI.enabled = EditorSceneManager.GetActiveScene() != EditorSceneManager.GetSceneByPath(element);
 			if (GUI.Button(new Rect(rect.x + rect.width * 0.7f, rect.y, rect.width * 0.1f - 5, EditorGUIUtility.singleLineHeight), "~"))
 			{
 				MergeSceneToBuildSettings(element);
@@ -84,6 +85,7 @@ public class CustomWindowBuildScenes : EditorWindow
 				EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
 				EditorSceneManager.OpenScene(element);
 			}
+			GUI.enabled = true;
 			GUI.backgroundColor = Color.white;
 		};
 	}
@@ -135,8 +137,7 @@ public class CustomWindowBuildScenes : EditorWindow
 
 	void MergeSceneToBuildSettings (string scene)
 	{
-		Scene sceneToMerge = EditorSceneManager.GetSceneByPath(scene);
-		EditorSceneManager.MergeScenes(sceneToMerge, EditorSceneManager.GetActiveScene());
+		EditorSceneManager.OpenScene(scene, OpenSceneMode.Additive);
 	}
 
 	void RemoveSceneToBuildSettings (string scene)

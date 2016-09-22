@@ -122,6 +122,7 @@ public class PlayerController : MonoBehaviour
 	{
 		_allowInput = false;
 		_rigidB.velocity = Vector3.zero;
+		_rigidB.isKinematic = true;
 		_activeSpeed = Vector3.zero;
 		_animator.SetTrigger("Reset");
 	}
@@ -129,6 +130,7 @@ public class PlayerController : MonoBehaviour
 	public void UnFreeze ()
 	{
 		_allowInput = true;
+		_rigidB.isKinematic = false;
 	}
 
 	public void Init(Player player)
