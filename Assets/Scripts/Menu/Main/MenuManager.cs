@@ -53,6 +53,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 		_menuArray = GetComponentsInChildren<MenuPanel>();
 
 		_activeMenu = _menuArray[0];
+		_activeMenu.PreSelectedButton.Select();
 
 		for (int i = 0; i < _menuArray.Length; ++i)
 		{
@@ -286,13 +287,15 @@ public class MenuManager : GenericSingleton<MenuManager>
 				color = _splashscreens[i].color;
 				color.a = 1;
 				_splashscreens[i].color = color;
-				yield return new WaitForSeconds(2);
-				_splashscreens[i].CrossFadeAlpha(0, 2, false);
-				yield return new WaitForSeconds(2);
+				yield return new WaitForSeconds(1);
+				_splashscreens[i].CrossFadeAlpha(0, 1, false);
+				yield return new WaitForSeconds(1);
 			}
 		}
 		yield return StartCoroutine(LoadPreview_Implementation(EArenaConfiguration.Aerial));
-		Destroy(SplashScreens, 0);
+
+		SplashScreens.transform.Find("Background_black").GetComponent<Image>().CrossFadeAlpha(0, 1, false);
+		Destroy(SplashScreens, 1);
 		SetActiveButtons(GetMenuPanel("Main"), true);
 		_activeMenu.PreSelectedButton.Select();
 	}

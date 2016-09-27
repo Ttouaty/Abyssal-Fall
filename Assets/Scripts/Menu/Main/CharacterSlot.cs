@@ -159,7 +159,6 @@ public class CharacterSlot : MonoBehaviour
 		Selected = false;
 		if (GameManager.Instance.RegisteredPlayers[_playerIndex] != null)
 			GameManager.Instance.RegisteredPlayers[_playerIndex].UnReady();
-		Debug.Log("cancel selection");
 
 		_activeCoroutineRef = StartCoroutine(SlideCharacterModelOut());
 
@@ -172,9 +171,10 @@ public class CharacterSlot : MonoBehaviour
 
 		while (targetTime > Time.time)
 		{
-			_selectedCharacterModel.transform.position = Vector3.Lerp(_selectedCharacterModel.transform.position, targetPosition, 0.1f);
+			_selectedCharacterModel.transform.position = Vector3.Lerp(_selectedCharacterModel.transform.position, targetPosition, 0.15f);
 			yield return null;
 		}
+		_selectedCharacterModel.transform.position = targetPosition;
 	}
 
 	IEnumerator SlideCharacterModelOut()
@@ -187,6 +187,8 @@ public class CharacterSlot : MonoBehaviour
 			_selectedCharacterModel.transform.position = Vector3.Lerp(_selectedCharacterModel.transform.position, targetPosition, 0.1f);
 			yield return null;
 		}
+
+		_selectedCharacterModel.transform.position = targetPosition;
 	}
 
 	void AllowSwitchCharacter()

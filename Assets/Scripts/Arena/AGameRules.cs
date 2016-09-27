@@ -4,6 +4,11 @@ using System.Collections.Generic;
 
 public abstract class AGameRules : MonoBehaviour 
 {
+
+	/*
+	 * Il faut remplacer tout les ints & bool  par des IntRule & BoolRule
+	 * & il faut faire suivre les custom editors
+	 */
 	public bool IsMatchRoundBased = true;
 	public int NumberOfRounds = 5;
 	public int MatchDuration = 180;
