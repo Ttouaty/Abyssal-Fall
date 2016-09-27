@@ -5,6 +5,7 @@ using UnityEngine.UI;
 //Automaticaly added to playercontrollers, this class just serves as a identifier for harmful objects.
 public class DamageDealer : MonoBehaviour 
 {
+	public Player PlayerRef;
 	public string InGameName;
 	public Image Icon;
 }

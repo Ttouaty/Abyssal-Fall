@@ -62,10 +62,13 @@ public class Tile : MonoBehaviour, IPoolable
 			_rigidB.isKinematic = false;
 	}
 
-	public void SetTimeLeft(float value)
+	public void SetTimeLeft(float value, bool bSaveResult = true)
 	{
 		_timeLeft = value;
-		_timeLeftSave = _timeLeft;
+		if(bSaveResult)
+		{
+			_timeLeftSave = _timeLeft;
+		}
 	}
 
 	public void PrepareRespawn ()
@@ -97,6 +100,7 @@ public class Tile : MonoBehaviour, IPoolable
 		transform.position = targetPosition;
 		_canFall = true;
 		_isTouched = false;
+		_timeLeft = _timeLeftSave;
 	}
 
 	public void ActivateFall()

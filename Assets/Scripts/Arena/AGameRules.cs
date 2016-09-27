@@ -53,6 +53,7 @@ public abstract class AGameRules : MonoBehaviour
 	public virtual void OnPlayerDeath_Listener (Player player, Player killer)
 	{
 		// On player death common stuff
+		CameraManager.Instance.RemoveTargetToTrack(player.Controller.transform);
 	}
 
 	public virtual void OnPlayerWin_Listener ()
@@ -60,5 +61,6 @@ public abstract class AGameRules : MonoBehaviour
 		// On player win common stuff
 		GameManager.Instance.ResetAlivePlayers();
 		ArenaManager.Instance.DisableBehaviours();
+		CameraManager.Instance.ClearTrackedTargets();
 	}
 }
