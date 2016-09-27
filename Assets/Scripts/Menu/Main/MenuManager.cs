@@ -58,7 +58,11 @@ public class MenuManager : GenericSingleton<MenuManager>
 		for (int i = 0; i < _menuArray.Length; ++i)
 		{
 			if (i == 0)
+			{
+				_menuArray[i].transform.position = _centerMenuAnchor.position;
+				_menuArray[i].gameObject.SetActive(true);
 				continue;
+			}
 
 			_menuArray[i].transform.position = _leftMenuAnchor.position;
 			_menuArray[i].gameObject.SetActive(false);
@@ -214,7 +218,6 @@ public class MenuManager : GenericSingleton<MenuManager>
 			newMenu.LastButtonSelected.Select();
 
 		_activeMenu = newMenu;
-
 	}
 
 	IEnumerator SendOutLeft(MenuPanel targetMenu)
@@ -259,7 +262,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 			targetMenu.transform.position = Vector3.Lerp(targetMenu.transform.position, end, eT / timeTaken);
 			yield return null;
 		}
-
+		targetMenu.transform.position = end;
 	}
 
 	public void FadeSplashscreens (bool shouldShowSplashscreens)
@@ -347,18 +350,6 @@ public class MenuManager : GenericSingleton<MenuManager>
 		loadingInImage.color    = color;
 	}
 
-	IEnumerator MoveObjectOverTime(GameObject go, Vector3 offset, float time)
-	{
-		float eT = 0;
-		Vector3 endPos = go.transform.position + offset;
-		while (eT < time)
-		{
-			eT += Time.deltaTime;
-			go.transform.position = Vector3.Lerp(go.transform.position, endPos, eT);
-			yield return null;
-		}
-	}
-
 	public static void DeactivateMenu(bool instant = false)
 	{
 		if (instant)
@@ -368,7 +359,6 @@ public class MenuManager : GenericSingleton<MenuManager>
 		}
 		else
 			Instance.StartCoroutine(Instance.DeactivateMenuCoroutine());
-		
 	}
 
 	private IEnumerator DeactivateMenuCoroutine()
@@ -386,20 +376,8 @@ public class MenuManager : GenericSingleton<MenuManager>
 		}
 	}
 
-	public static void ActivateMenu(bool instant = false, string activeMenu = "Main")
+	public void SetMode(string modeName)
 	{
-		Instance.ReactivateMenu(instant, activeMenu);
-	}
-
-	private void ReactivateMenu(bool instant = false, string activeMenu = "Main")
-	{
-		gameObject.SetActive(true);
-		if (instant)
-		{
-			MakeTransition(GetMenuPanel(activeMenu));
-			_activeMenu.transform.position = _canvas.transform.position;
-		}
-		else
-			StartCoroutine(SendInRight(GetMenuPanel(activeMenu)));
+		GameManager.Instance.CurrentGameConfiguration.ModeConfiguration = (EModeConfiguration)Enum.Parse(typeof(EModeConfiguration), modeName);
 	}
 }
