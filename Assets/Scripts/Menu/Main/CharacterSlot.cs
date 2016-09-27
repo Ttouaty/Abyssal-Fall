@@ -125,11 +125,11 @@ public class CharacterSlot : MonoBehaviour
 		Vector3 camDirection = (Camera.main.transform.position - transform.position).normalized;
 
 		ParticleSystem spawnParticles = (ParticleSystem) Instantiate(OnCharacterSelectedParticles, transform.position + camDirection * 1.5f, Quaternion.identity);
-        spawnParticles.transform.parent = MenuManager.Instance.transform;
+		spawnParticles.transform.parent = MenuManager.Instance.transform;
 		spawnParticles.transform.rotation = Quaternion.LookRotation(transform.forward, transform.up);
-        spawnParticles.GetComponent<FlashAndRotate>()._rotationAxis = transform.forward;
+		spawnParticles.GetComponent<FlashAndRotate>()._rotationAxis = transform.forward;
 
-        if (_selectedCharacterModel != null)
+		if (_selectedCharacterModel != null)
 			Destroy(_selectedCharacterModel);
 
 		_wheelRef.GetSelectedElement().Controller._characterData.CharacterModel.Reskin(GetSelectedSkin);

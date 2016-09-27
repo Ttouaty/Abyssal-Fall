@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Name: SO_Viking
   m_EditorClassIdentifier: 
   IngameName: Raghnar The Viking
+  Icon: {fileID: 0}
   CharacterModel: {fileID: 11490236, guid: c4134ab8ae5e15043ab1f2a0e6bc5451, type: 2}
   CharacterMaterials:
   - {fileID: 2100000, guid: d2f2aaaa6c3957647951af0ae0083cd7, type: 2}
@@ -24,10 +25,10 @@ MonoBehaviour:
     speed: 3
     resistance: 3
   Dash:
-    endingLag: .300000012
+    endingLag: 0.3
     force: {x: 7, y: 5}
     ImpactEjection: {x: 5, y: 5}
-    inProgress: 1
+    inProgress: 0
   SoundList:
     OnDashStart: {fileID: 0}
     OnDashEnd: {fileID: 0}
@@ -35,6 +36,6 @@ MonoBehaviour:
     OnSpecialActivate: {fileID: 0}
     OnHit: {fileID: 0}
   OtherAssetsToLoad:
-  - Name: 
+  - Name: Hammer
     Prefab: {fileID: 143516, guid: 07e1f478976236e489c448a02c52c28a, type: 2}
     Quantity: 20
