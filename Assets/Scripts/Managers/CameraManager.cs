@@ -68,7 +68,7 @@ public class CameraManager : GenericSingleton<CameraManager>
 
 		for (int i = 0; i < _targetsTracked.Count; i++)
 		{
-			_targetsCentroid += _targetsTracked[i].position;
+			_targetsCentroid += _targetsTracked[i].position.ZeroY();
 		}
 
 		_targetsCentroid /= _targetsTracked.Count;
@@ -82,10 +82,10 @@ public class CameraManager : GenericSingleton<CameraManager>
 		_farthestPosition = Vector3.zero;
 		for (int i = 0; i < _targetsTracked.Count; i++)
 		{
-			if (Vector3.Distance(_farthestPosition, _targetsCentroid) > _tempDistance)
+			if (Vector3.Distance(_farthestPosition.ZeroY(), _targetsCentroid.ZeroY()) > _tempDistance)
 			{
-				_farthestPosition = _targetsTracked[i].position;
-				_tempDistance = Vector3.Distance(_farthestPosition, _targetsCentroid);
+				_farthestPosition = _targetsTracked[i].position.ZeroY();
+				_tempDistance = Vector3.Distance(_farthestPosition.ZeroY(), _targetsCentroid.ZeroY());
 			}
 		}
 
