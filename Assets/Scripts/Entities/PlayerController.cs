@@ -118,9 +118,28 @@ public class PlayerController : MonoBehaviour
 		_rigidB = GetComponent<Rigidbody>();
 	}
 
+	public void Freeze ()
+	{
+		_allowInput = false;
+		_rigidB.velocity = Vector3.zero;
+		_activeSpeed = Vector3.zero;
+		_animator.SetTrigger("Reset");
+	}
+
+	public void UnFreeze ()
+	{
+		_allowInput = true;
+	}
+
 	public void Init(Player player)
 	{
 		_playerRef = player;
+
+		if (_characterData == null)
+		{
+			Debug.Log("No SO_Character found for character "+gameObject.name+". Seriously ?");
+			return;
+		}
 
 		//Instantiates player mesh and retrieves its props and particles
 		GameObject playerMesh = Instantiate(_characterData.CharacterModel.gameObject, _transf.position, _characterData.CharacterModel.transform.rotation) as GameObject;
@@ -128,6 +147,7 @@ public class PlayerController : MonoBehaviour
 
 		_transf.GetComponentInChildren<CharacterModel>().Reskin(_characterData.CharacterMaterials[_playerRef.SkinNumber]);
 
+		_rigidB = GetComponent<Rigidbody>();
 		_animator = _transf.GetComponentInChildren<Animator>();
 		_playerProp = transform.GetComponentInChildren<PlayerProp>();
 
@@ -148,7 +168,7 @@ public class PlayerController : MonoBehaviour
 
 		_lastDamageDealerTimeOut = new TimeCooldown(this);
 		_lastDamageDealerTimeOut.onFinish = OnLastDamageDealerTimeOut;
-		// GameManager.Instance.OnPlayerWin.AddListener(OnPlayerWin); // Removed temporarily
+		GameManager.Instance.OnPlayerWin.AddListener(OnPlayerWin);
 
 		_maxSpeed.x = _maxSpeed.x * _characterData.CharacterStats.speed / 3;
 
@@ -171,6 +191,8 @@ public class PlayerController : MonoBehaviour
 		TimeManager.Instance.OnPause.AddListener(OnPause);
 		TimeManager.Instance.OnResume.AddListener(OnResume);
 		TimeManager.Instance.OnTimeScaleChange.AddListener(OnTimeScaleChange);
+
+		CameraManager.Instance.AddTargetToTrack(transform);
 
 		CustomStart();
 
@@ -260,7 +282,7 @@ public class PlayerController : MonoBehaviour
 		_isInvul = true;
 	}
 
-	protected virtual void OnPlayerWin(GameObject player)
+	protected virtual void OnPlayerWin()
 	{
 		_allowInput = false;
 		_activeSpeed = Vector3.zero;
@@ -273,16 +295,17 @@ public class PlayerController : MonoBehaviour
 	#region Processes
 	private void ProcessOrientation()
 	{
-		if (!InputManager.StickIsNeutral(_playerRef.JoystickNumber) && _isStunned)
+		if (!InputManager.StickIsNeutral(_playerRef.JoystickNumber) && !_isStunned)
 		{
 			//_activeDirection.x = Mathf.Lerp(_activeDirection.x, InputManager.GetAxis("x", _playerRef.JoystickNumber), 0.3f);
 			//_activeDirection.z = Mathf.Lerp(_activeDirection.z, InputManager.GetAxis("y", _playerRef.JoystickNumber), 0.3f);
 			_activeDirection.x = InputManager.GetAxis("x", _playerRef.JoystickNumber);
 			_activeDirection.z = InputManager.GetAxis("y", _playerRef.JoystickNumber);
+			_activeDirection = Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized) * _activeDirection;
 			_activeDirection.Normalize();
 		}
 
-		transform.LookAt(transform.position + (Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized) * _activeDirection), Vector3.up);
+		transform.LookAt(transform.position + _activeDirection, Vector3.up);
 	}
 
 	private void ProcessCoolDowns()
@@ -320,8 +343,8 @@ public class PlayerController : MonoBehaviour
 				_activeSpeed.x = _maxSpeed.x * InputManager.GetAxisRaw("x", _playerRef.JoystickNumber);
 				_activeSpeed.z = _maxSpeed.x * InputManager.GetAxisRaw("y", _playerRef.JoystickNumber);
 #else
-				_activeSpeed.x = _maxSpeed.x * InputManager.GetAxis("x", _playerRef.JoystickNumber) ;
-				_activeSpeed.z = _maxSpeed.x * InputManager.GetAxis("y", _playerRef.JoystickNumber) ;
+				_activeSpeed.x = _maxSpeed.x * InputManager.GetAxis("x", _playerRef.JoystickNumber);
+				_activeSpeed.z = _maxSpeed.x * InputManager.GetAxis("y", _playerRef.JoystickNumber);
 #endif
 				_activeSpeed = Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized) * _activeSpeed.normalized * _maxSpeed.x;
 			}
@@ -375,7 +398,7 @@ public class PlayerController : MonoBehaviour
 		_animator.SetTrigger("Death");
 		_audioSource.PlayOneShot(_characterData.SoundList.OnDeath);
 		_isDead = true;
-		GameManager.Instance.OnPlayerDeath.Invoke(_playerRef);
+		GameManager.Instance.OnPlayerDeath.Invoke(_playerRef, null);
 	}
 
 	public void Eject(Vector3 direction)

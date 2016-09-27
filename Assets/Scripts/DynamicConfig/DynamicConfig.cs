@@ -6,20 +6,21 @@ public class DynamicConfig : GenericSingleton<DynamicConfig>
 {
 	public const string VERSION = "1.1.0";
 
-	public List<ArenaConfiguration> ArenaConfigurations;
-	public Dictionary<string, ArenaConfiguration_SO> ArenaConfigurationsDic;
+	public List<ArenaConfiguration>						ArenaConfigurations;
+	public Dictionary<string, ArenaConfiguration_SO>	ArenaConfigurationsDic;
 
-	public List<AGameRulesConfiguration> ModeConfigurations;
-	public Dictionary<string, AGameRules> ModeConfigurationsDic;
+	public List<AGameRulesConfiguration>				ModeConfigurations;
+	public Dictionary<string, AGameRules>				ModeConfigurationsDic;
 
-	public List<MapConfiguration> MapsConfigurations;
-	public Dictionary<string, MapConfiguration_SO> MapsConfigurationsDic;
+	public List<MapConfiguration>						MapsConfigurations;
+	public Dictionary<string, MapConfiguration_SO>		MapsConfigurationsDic;
 
-	public List<CharacterConfiguration> CharacterConfigurations;
-	public Dictionary<string, PlayerController> CharacterConfigurationsDic;
+	public List<CharacterConfiguration>					CharacterConfigurations;
+	public Dictionary<string, PlayerController>			CharacterConfigurationsDic;
 
-	void Awake ()
+	protected override void Awake ()
 	{
+		base.Awake();
 		ArenaConfigurationsDic      = new Dictionary<string, ArenaConfiguration_SO>();
 		ModeConfigurationsDic       = new Dictionary<string, AGameRules>();
 		MapsConfigurationsDic       = new Dictionary<string, MapConfiguration_SO>();
@@ -52,7 +53,11 @@ public class DynamicConfig : GenericSingleton<DynamicConfig>
 
 	public void GetConfig(EArenaConfiguration configName, out ArenaConfiguration_SO config)	{ config = ArenaConfigurationsDic[configName.ToString()]; }
 	public void GetConfig(string configName, out ArenaConfiguration_SO config)				{ config = ArenaConfigurationsDic[configName]; }
-	public void GetConfigs(ref ArenaConfiguration_SO[] config)								{ ArenaConfigurationsDic.Values.CopyTo(config, 0); }
+	public void GetConfigs(ref ArenaConfiguration_SO[] config)								
+	{
+		config = new ArenaConfiguration_SO[ArenaConfigurationsDic.Values.Count];
+		ArenaConfigurationsDic.Values.CopyTo(config, 0); 
+	}
 
 	public void GetConfig(EModeConfiguration configName, out AGameRules config)				{ config = ModeConfigurationsDic[configName.ToString()]; }
 	public void GetConfig(string configName, out AGameRules config)							{ config = ModeConfigurationsDic[configName]; }

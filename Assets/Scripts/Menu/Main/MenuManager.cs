@@ -27,15 +27,17 @@ public class MenuManager : GenericSingleton<MenuManager>
 	private RawImage[] _splashscreens;
 	private Coroutine _miniLoadingCoroutine;
 
-	void Awake()
+	protected override void Awake()
 	{
-		_canvas                         = GetComponentInChildren<Canvas>();
+		base.Awake();
+
+		_canvas = GetComponentInChildren<Canvas>();
 		_canvas.worldCamera             = Camera.main;
 		_menuArray                      = GetComponentsInChildren<MenuPanel>();
 		_characterSlotsContainerRef     = GetComponentInChildren<CharacterSlotsContainer>();
 		_splashscreens                  = SplashScreens.GetComponentsInChildren<RawImage>();
-        _menuArray                      = GetComponentsInChildren<MenuPanel>();
-        _characterSlotsContainerRef     = GetComponentInChildren<CharacterSlotsContainer>();
+		_menuArray                      = GetComponentsInChildren<MenuPanel>();
+		_characterSlotsContainerRef     = GetComponentInChildren<CharacterSlotsContainer>();
 		_returnGroupRef					= GetComponentInChildren<ReturnButton>();
 		_metaContainer					= _canvas.transform.FindChild("Meta");
 
@@ -51,6 +53,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 		_menuArray = GetComponentsInChildren<MenuPanel>();
 
 		_activeMenu = _menuArray[0];
+		_activeMenu.PreSelectedButton.Select();
 
 		for (int i = 0; i < _menuArray.Length; ++i)
 		{
@@ -64,8 +67,11 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	void Update()
 	{
-		//Only display return arrow if there is a menu to return to.
-		_returnGroupRef.gameObject.SetActive(_activeMenu.ParentMenu != null);
+		if(_activeMenu != null)
+		{
+			//Only display return arrow if there is a menu to return to.
+			_returnGroupRef.gameObject.SetActive(_activeMenu.ParentMenu != null);
+		}
 
 		if (_isListeningForInput)
 		{
@@ -77,7 +83,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 						continue;
 				}
 
-                if (InputManager.GetButtonDown(InputEnum.A, i + 1) && !_controllerAlreadyInUse[i + 1]) //if new controller presses A
+				if (InputManager.GetButtonDown(InputEnum.A, i + 1) && !_controllerAlreadyInUse[i + 1]) //if new controller presses A
 				{
 					Debug.Log("JOYSTICK NUMBER: " + (i + 1) + " PRESSED START");
 					RegisterNewPlayer(i + 1);
@@ -182,7 +188,8 @@ public class MenuManager : GenericSingleton<MenuManager>
 				StartCoroutine(SendInLeft(newMenu));
 			}
 		}
-		else if (newMenu == null)
+		
+		if (newMenu == null)
 		{
 			_activeMenu = null;
 			yield break;
@@ -224,14 +231,20 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	IEnumerator SendInRight(MenuPanel targetMenu)
 	{
-		targetMenu.gameObject.SetActive(true);
-		yield return StartCoroutine(MovePanelOverTime(targetMenu, _rightMenuAnchor.position, _centerMenuAnchor.position));
+		if(targetMenu != null)
+		{
+			targetMenu.gameObject.SetActive(true);
+			yield return StartCoroutine(MovePanelOverTime(targetMenu, _rightMenuAnchor.position, _centerMenuAnchor.position));
+		}
 	}
 
 	IEnumerator SendInLeft(MenuPanel targetMenu)
 	{
-		targetMenu.gameObject.SetActive(true);
-		yield return StartCoroutine(MovePanelOverTime(targetMenu, _leftMenuAnchor.position, _centerMenuAnchor.position));
+		if (targetMenu != null)
+		{
+			targetMenu.gameObject.SetActive(true);
+			yield return StartCoroutine(MovePanelOverTime(targetMenu, _leftMenuAnchor.position, _centerMenuAnchor.position));
+		}
 	}
 
 	IEnumerator MovePanelOverTime(MenuPanel targetMenu, Vector3 start, Vector3 end)
@@ -274,14 +287,20 @@ public class MenuManager : GenericSingleton<MenuManager>
 				color = _splashscreens[i].color;
 				color.a = 1;
 				_splashscreens[i].color = color;
-				yield return new WaitForSeconds(2);
-				_splashscreens[i].CrossFadeAlpha(0, 2, false);
-				yield return new WaitForSeconds(2);
+				yield return new WaitForSeconds(1);
+				_splashscreens[i].CrossFadeAlpha(0, 1, false);
+				yield return new WaitForSeconds(1);
 			}
 		}
 		yield return StartCoroutine(LoadPreview_Implementation(EArenaConfiguration.Aerial));
-		Destroy(SplashScreens, 0);
+
+		SplashScreens.transform.Find("Background_black").GetComponent<Image>().CrossFadeAlpha(0, 1, false);
+		Destroy(SplashScreens, 1);
+
+		yield return StartCoroutine(WaitForFixedCamera());
+
 		SetActiveButtons(GetMenuPanel("Main"), true);
+		_activeMenu.PreSelectedButton.Select();
 	}
 
 	public void LoadPreview(EArenaConfiguration levelName)
@@ -357,6 +376,14 @@ public class MenuManager : GenericSingleton<MenuManager>
 		MakeTransition((MenuPanel) null);
 		yield return new WaitForSeconds(1);
 		gameObject.SetActive(false);
+	}
+
+	private IEnumerator WaitForFixedCamera()
+	{
+		while (CameraManager.Instance.IsMoving)
+		{
+			yield return null;
+		}
 	}
 
 	public static void ActivateMenu(bool instant = false, string activeMenu = "Main")

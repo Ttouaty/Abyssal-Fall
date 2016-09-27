@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
-using UnityEditor;
 
 [CreateAssetMenu(fileName = "NewCharacterData", menuName = "Abyssal Fall/Character/SO_Character")]
 public class SO_Character :  ScriptableObject{
@@ -17,6 +16,6 @@ public class SO_Character :  ScriptableObject{
 
 	public PlayerAudioList SoundList;
 
-    public PoolConfiguration[] OtherAssetsToLoad;
+	public PoolConfiguration[] OtherAssetsToLoad;
 	//public string[] sounds = { "Not Used for now" };
 }

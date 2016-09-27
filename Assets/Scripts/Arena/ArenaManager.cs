@@ -21,12 +21,11 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 	private AGameRules								_currentModeConfig;
 	private MapConfiguration_SO                     _currentMapConfig;
 
-	private int                                     _mapSize;
 	private int                                     _tilesDropped;
 	private int                                     _obstaclesDropped;
 	private GameObject[]                            _players;
-	private List<GameObject>                        _tiles;
-	private List<GameObject>                        _obstacles;
+	private List<Tile>								_tiles;
+	private List<Obstacle>							_obstacles;
 	private List<ABaseBehaviour>                    _behaviours;
 	private List<Spawn>                             _spawns;
 	#endregion
@@ -43,11 +42,14 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 	public Transform                                BehavioursRoot;
 	#endregion
 	#region getter/setter
-	public List<GameObject>                         Tiles       { get { return _tiles;      } }
-	public List<GameObject>                         Obstacles   { get { return _obstacles;  } }
-	public GameObject[]                             Players     { get { return _players;    } }
-	public List<Spawn>                              Spawns      { get { return _spawns;     } }
-	public List<ABaseBehaviour>                     Behaviours  { get { return _behaviours; } }
+	public List<Tile>								Tiles				{ get { return _tiles;				} }
+	public List<Obstacle>							Obstacles			{ get { return _obstacles;			} }
+	public GameObject[]                             Players				{ get { return _players;			} }
+	public List<Spawn>                              Spawns				{ get { return _spawns;				} }
+	public List<ABaseBehaviour>                     Behaviours			{ get { return _behaviours;			} }
+	public ArenaConfiguration_SO					CurrentArenaConfig	{ get { return _currentArenaConfig;	} }
+	public AGameRules								CurrentModeConfig	{ get { return _currentModeConfig;	} }
+	public MapConfiguration_SO						CurrentMapConfig	{ get { return _currentMapConfig;	} }
 	#endregion
 
 	public override void Init ()
@@ -58,13 +60,13 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 			_currentModeConfig		= MainManager.Instance.LEVEL_MANAGER.CurrentModeConfig;
 			_currentMapConfig		= MainManager.Instance.LEVEL_MANAGER.CurrentMapConfig;
 
-			GameObject go			= new GameObject("KillPlane", typeof(KillPlane));
-			BoxCollider collider	= go.AddComponent<BoxCollider>();
-			collider.isTrigger		= true;
-			collider.size			= new Vector3(100, 5, 100);
-			go.transform.position	= new Vector3(0, -15.0f, 0);
-			go.layer				= LayerMask.NameToLayer("KillPlane");
-			go.transform.parent		= transform;
+			GameObject killPlane			= new GameObject("KillPlane", typeof(KillPlane));
+			BoxCollider collider			= killPlane.AddComponent<BoxCollider>();
+			collider.isTrigger				= true;
+			collider.size					= new Vector3(100, 5, 100);
+			killPlane.transform.position	= new Vector3(0, -15.0f, 0);
+			killPlane.layer					= LayerMask.NameToLayer("KillPlane");
+			killPlane.transform.parent		= transform;
 
 			ArenaRoot				= new GameObject("ArenaRoot").transform;
 			ArenaRoot.SetParent(transform);
@@ -94,7 +96,6 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 
 		for (int i = 0; i < roots.Length; ++i)
 		{
-			Debug.Log(roots[i]);
 			if (roots[i].childCount > 0)
 			{
 				for(int j = roots[i].childCount - 1; j >= 0; --j)
@@ -115,10 +116,9 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 
 		_tilesDropped       = 0;
 		_obstaclesDropped   = 0;
-		_mapSize            = (int)(_currentMapConfig.MapSize.y * _currentMapConfig.MapSize.x);
 
-		_tiles              = new List<GameObject>();
-		_obstacles          = new List<GameObject>();
+		_tiles              = new List<Tile>();
+		_obstacles          = new List<Obstacle>();
 		_spawns             = new List<Spawn>();
 		_behaviours         = new List<ABaseBehaviour>();
 
@@ -127,12 +127,12 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 
 	public void RemoveTile(Tile tile)
 	{
-		_tiles.Remove(tile.gameObject);
+		_tiles.Remove(tile);
 	}
 
 	public void RemoveObstacle(Obstacle obstacle)
 	{
-		_obstacles.Remove(obstacle.gameObject);
+		_obstacles.Remove(obstacle);
 	}
 
 	public void EnableBehaviours()
@@ -155,19 +155,15 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 	{
 		MenuPauseManager.Instance.CanPause = false;
 
-		List<BehaviourConfiguration[]> list = new List<BehaviourConfiguration[]>() {
-			_currentArenaConfig.Behaviours,
-			_currentModeConfig.Behaviours
-		};
-		
+		List<BehaviourConfiguration> list = new List<BehaviourConfiguration>();
+		list.Add(_currentArenaConfig.Behaviours);
+		list.Add(_currentModeConfig.Behaviours);
+
 		for(int i = 0; i < list.Count; ++i)
 		{
-			for(int j = 0; j < list[i].Length; ++j)
-			{
-				ABaseBehaviour behaviour    = Instantiate(list[i][j].Behaviour);
-				behaviour.transform.parent  = BehavioursRoot;
-				_behaviours.Add(behaviour);
-			}
+			ABaseBehaviour behaviour    = Instantiate(list[i].Behaviour);
+			behaviour.transform.parent  = BehavioursRoot;
+			_behaviours.Add(behaviour);
 		}
 
 		yield return StartCoroutine(LoadArena(animate));
@@ -185,13 +181,15 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 				if (playerController != null)
 				{
 					playerController.Init(player);
+					player.Controller = playerController;
 				}
 				else
 				{
 					Debug.LogError("No player controller");
 					Debug.Break();
 				}
-				_spawns[i].SpawnPlayer(_players[i]);
+				_spawns[i].SpawnPlayer(playerController);
+				playerController.UnFreeze();
 			}
 		}
 
@@ -202,12 +200,13 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 
 	private IEnumerator LoadArena (bool animate = true)
 	{
+		Map = ParseMapFile();
+
 		Position = new Vector3(
 			-_currentMapConfig.MapSize.x * 0.5f * TileScale + 0.5f * TileScale, 
 			Camera.main.transform.position.y + 5.0f, 
 			-_currentMapConfig.MapSize.y * 0.5f * TileScale + 0.5f * TileScale
 		);
-		Map = ParseMapFile();
 
 		CreateMap(Position);
 		yield return StartCoroutine(DropArena(Position, animate));
@@ -239,35 +238,50 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 				ETileType type = Map[y, x];
 				if (type != ETileType.HOLE)
 				{
+					// Create Tile
 					GameObject tile                 = GameObjectPool.GetAvailableObject(_currentArenaConfig.Ground.name);
 					tile.transform.localScale       = new Vector3(TileScale, TileScale, TileScale);
 					tile.transform.position         = new Vector3(x * TileScale, 0, y * TileScale) + position;
 					tile.transform.parent           = TilesRoot;
 
-					_tiles.Add(tile);
+					// Remove Spawn Comp
+					Destroy(tile.GetComponent<Spawn>());
 
-					tile.GetComponent<Tile>().SetTimeLeft(0.8f); // TODO -> Regler dans l'inspecteur
+					// Add Tile Comp
+					Tile tileComp = tile.GetComponent<Tile>();
+					if(tileComp == null)
+					{
+						tileComp = tile.AddComponent<Tile>();
+					}
+					tileComp.SetTimeLeft(0.8f); // TODO -> Regler dans l'inspecteur
+					_tiles.Add(tileComp);
+					tileComp.SpawnComponent = null;
+					tileComp.enabled = true;
+
 
 					if (type == ETileType.SPAWN)
 					{
-						Spawn spawn = tile.AddComponent<Spawn>();
-						_spawns.Add(spawn);
-						tile.GetComponent<Tile>().SetTimeLeft(1.5f); // TODO -> Regler dans l'inspecteur
+						// Add Spawn Comp
+						tileComp.SpawnComponent = tile.AddComponent<Spawn>();
+						_spawns.Add(tileComp.SpawnComponent);
+						tileComp.SetTimeLeft(1.5f);
 					}
 					else if (type == ETileType.OBSTACLE)
 					{
+						// Create Obstacle
 						GameObject obstacle             = GameObjectPool.GetAvailableObject(_currentArenaConfig.Obstacle.name);
 						obstacle.transform.localScale   = new Vector3(TileScale, TileScale, TileScale);
 						obstacle.transform.position     = new Vector3(x * TileScale, 1, y * TileScale) + position;
 						obstacle.transform.parent       = ObstaclesRoot;
 
-						_obstacles.Add(obstacle);
-
-						Ground groundComponent = tile.GetComponent<Ground>();
-						if(groundComponent != null)
+						// Add Obstacle Comp
+						Obstacle obstacleComp = obstacle.GetComponent<Obstacle>();
+						if(obstacleComp == null)
 						{
-							groundComponent.Obstacle = obstacle.GetComponent<Obstacle>();
+							obstacleComp = obstacle.AddComponent<Obstacle>();
 						}
+						tileComp.Obstacle = obstacleComp;
+						_obstacles.Add(obstacleComp);
 					}
 				}
 			}
@@ -285,7 +299,7 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 				if(animate)
 				{
 					float delay = 0.05f * Mathf.Floor(i / _currentMapConfig.MapSize.y);
-					StartCoroutine(DropGround(_tiles[i], delay, index, _tiles[i].transform.position.y));
+					StartCoroutine(DropGround(_tiles[i].gameObject, delay, index, _tiles[i].transform.position.y));
 					++index;
 				}
 				else
@@ -313,7 +327,7 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 			{
 				if(animate)
 				{
-					StartCoroutine(DropObstacle(_obstacles[i], 0.05f * index, index % 5 == 0));
+					StartCoroutine(DropObstacle(_obstacles[i].gameObject, 0.05f * index, index % 5 == 0));
 					++index;
 				}
 				else
@@ -344,7 +358,7 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 
 		while (timer < 1)
 		{
-			timer += TimeManager.DeltaTime * 2;
+			timer += TimeManager.DeltaTime * 5;
 			float y = Mathf.Lerp(initialY, 0, timer);
 			element.transform.position = new Vector3(element.transform.position.x, y, element.transform.position.z);
 			yield return null;

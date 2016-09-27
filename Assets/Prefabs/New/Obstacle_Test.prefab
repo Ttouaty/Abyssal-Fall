@@ -153,6 +153,8 @@ MonoBehaviour:
     QuantityLoaded: 0
     Root: {fileID: 0}
     Reserve: []
+    Name: 
+  IsInPool: 0
 --- !u!198 &19842138
 ParticleSystem:
   m_ObjectHideFlags: 1
@@ -1246,6 +1248,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: m_IsKinematic
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_IsTrigger
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

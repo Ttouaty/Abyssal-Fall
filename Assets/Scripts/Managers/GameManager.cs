@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -13,7 +14,9 @@ public struct GameConfiguration
 }
 
 [System.Serializable]
-public class GameEvent : UnityEvent<Player> { }
+public class GameEventDeath : UnityEvent<Player, Player> { }
+[System.Serializable]
+public class GameEventWin : UnityEvent { }
 
 public class GameManager : GenericSingleton<GameManager>
 {
@@ -69,16 +72,17 @@ public class GameManager : GenericSingleton<GameManager>
 
 	[HideInInspector]
 	public Player[] RegisteredPlayers = new Player[4];
-	[HideInInspector]
+	// [HideInInspector]
 	public int nbPlayers = 0;
 
-	public GameEvent OnPlayerDeath;
-	public GameEvent OnPlayerWin;
+	public GameEventDeath OnPlayerDeath;
+	public GameEventWin OnPlayerWin;
 
 	[Space()]
 	public GameConfiguration  CurrentGameConfiguration;
 
 	public int CurrentStage = 0;
+	[SerializeField]
 	private List<Player> _alivePlayers;
 	public List<Player> AlivePlayers { get { return _alivePlayers; } }
 

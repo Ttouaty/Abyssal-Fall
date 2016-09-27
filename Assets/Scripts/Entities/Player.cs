@@ -18,14 +18,18 @@ public class Player
 
 	private bool _ready;
 
+	// PlayerController Instantiated
+	public PlayerController Controller;
+
+	// PlayerController Prefab Model
 	private PlayerController _characterUsed;
-    public PlayerController CharacterUsed
-    {
-        get
-        {
-            return _characterUsed;
-        }
-    }
+	public PlayerController CharacterUsed
+	{
+		get
+		{
+			return _characterUsed;
+		}
+	}
 
 	public Player()
 	{
@@ -44,10 +48,10 @@ public class Player
 		Score = 0;
 	}
 
-	public void Ready(CharacterSelectionData linkedCharacter)
+	public void Ready(PlayerController linkedCharacter, int indexSkinUsed)
 	{
-		_characterUsed = linkedCharacter.Controller;
-		SkinNumber = linkedCharacter.SelectedSkinIndex;
+		_characterUsed = linkedCharacter;
+		SkinNumber = indexSkinUsed;
 		isReady = true;
 	}
 

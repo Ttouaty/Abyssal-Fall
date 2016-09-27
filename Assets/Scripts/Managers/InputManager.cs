@@ -101,7 +101,9 @@ public class InputManager : GenericSingleton<InputManager>
 	public static bool GetButtonHeld(int buttonNumber, int JoystickNumber = -1)
 	{
 		if (JoystickNumber == -1)
+		{
 			return Input.GetKey("joystick button " + buttonNumber) || Input.GetKey(Instance.KeyboardControls[buttonNumber]);
+		}
 		else if (JoystickNumber == 0)
 			return Input.GetKey(Instance.KeyboardControls[buttonNumber]);
 		else

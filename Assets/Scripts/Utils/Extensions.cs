@@ -30,12 +30,31 @@ public static class Vector3Extensions
 		return Mathf.Sign(number) * (Mathf.Abs(number) - amount);
 	}
 
+	
+}
+
+public static class IntExtensions
+{
 	public static int Reduce(this int number, int amount)
 	{
 		if (Mathf.Abs(number) < Mathf.Abs(amount))
+		{
+			number = 0;
 			return 0;
-		return ((int)Mathf.Sign(number)) * (Mathf.Abs(number) - amount);
+		}
+		number = ((int)Mathf.Sign(number)) * (Mathf.Abs(number) - amount);
+		return number;
 	}
+
+	public static int LoopAround(this int number, int min, int max)
+	{
+		if (number > max)
+			number = number - max + min - 1;
+		else if (number < min)
+			number = number - min + max + 1;
+		return number;
+	}
+
 }
 
 public static class ListExtensions
@@ -104,6 +123,28 @@ public static class ListExtensions
 			T el = list[r];
 			list.RemoveAt(r);
 			return el;
+		}
+	}
+
+	public static void Add<T> (this IList<T> list, List<T> elements)
+	{
+		if(elements != null)
+		{
+			for (int i = 0; i < elements.Count; ++i)
+			{
+				list.Add(elements[i]);
+			}
+		}
+	}
+
+	public static void Add<T> (this IList<T> list, params T[] elements)
+	{
+		if(elements != null)
+		{
+			for (int i = 0; i < elements.Length; ++i)
+			{
+				list.Add(elements[i]);
+			}
 		}
 	}
 }
