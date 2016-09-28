@@ -66,20 +66,20 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 			collider.size					= new Vector3(100, 5, 100);
 			killPlane.transform.position	= new Vector3(0, -15.0f, 0);
 			killPlane.layer					= LayerMask.NameToLayer("KillPlane");
-			killPlane.transform.parent		= transform;
+			killPlane.transform.SetParent(transform, false);
 
 			ArenaRoot				= new GameObject("ArenaRoot").transform;
-			ArenaRoot.SetParent(transform);
+			ArenaRoot.SetParent(transform, false);
 			TilesRoot				= new GameObject("TilesRoot").transform;
-			TilesRoot.SetParent(ArenaRoot);
+			TilesRoot.SetParent(ArenaRoot, false);
 			ObstaclesRoot			= new GameObject("ObstaclesRoot").transform;
-			ObstaclesRoot.SetParent(ArenaRoot);
+			ObstaclesRoot.SetParent(ArenaRoot, false);
 			PlayersRoot				= new GameObject("PlayersRoot").transform;
-			PlayersRoot.SetParent(ArenaRoot);
+			PlayersRoot.SetParent(ArenaRoot, false);
 			SpecialsRoot			= new GameObject("SpecialsRoot").transform;
-			SpecialsRoot.SetParent(ArenaRoot);
+			SpecialsRoot.SetParent(ArenaRoot, false);
 			BehavioursRoot			= new GameObject("BehavioursRoot").transform;
-			BehavioursRoot.SetParent(ArenaRoot);
+			BehavioursRoot.SetParent(ArenaRoot, false);
 
 			ResetMap(true);
 		}
@@ -214,9 +214,9 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 		Map = ParseMapFile();
 
 		Position = new Vector3(
-			-_currentMapConfig.MapSize.x * 0.5f * TileScale + 0.5f * TileScale, 
-			Camera.main.transform.position.y + 5.0f, 
-			-_currentMapConfig.MapSize.y * 0.5f * TileScale + 0.5f * TileScale
+			transform.position.x - _currentMapConfig.MapSize.x * 0.5f * TileScale + 0.5f * TileScale, 
+			Camera.main.transform.position.y + 5.0f,
+			transform.position.z - _currentMapConfig.MapSize.y * 0.5f * TileScale + 0.5f * TileScale
 		);
 
 		CreateMap(Position);
@@ -251,9 +251,9 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 				{
 					// Create Tile
 					GameObject tile                 = GameObjectPool.GetAvailableObject(_currentArenaConfig.Ground.name);
+					tile.transform.SetParent(TilesRoot, false);
 					tile.transform.localScale       = new Vector3(TileScale, TileScale, TileScale);
-					tile.transform.position         = new Vector3(x * TileScale, 0, y * TileScale) + position;
-					tile.transform.parent           = TilesRoot;
+					tile.transform.position			= new Vector3(x * TileScale, 0, y * TileScale) + position;
 
 					// Remove Spawn Comp
 					Destroy(tile.GetComponent<Spawn>());
@@ -281,9 +281,9 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 					{
 						// Create Obstacle
 						GameObject obstacle             = GameObjectPool.GetAvailableObject(_currentArenaConfig.Obstacle.name);
+						obstacle.transform.SetParent(ObstaclesRoot, false);
 						obstacle.transform.localScale   = new Vector3(TileScale, TileScale, TileScale);
 						obstacle.transform.position     = new Vector3(x * TileScale, 1, y * TileScale) + position;
-						obstacle.transform.parent       = ObstaclesRoot;
 
 						// Add Obstacle Comp
 						Obstacle obstacleComp = obstacle.GetComponent<Obstacle>();
@@ -310,14 +310,14 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 				if(animate)
 				{
 					float delay = 0.05f * Mathf.Floor(i / _currentMapConfig.MapSize.y);
-					StartCoroutine(DropGround(_tiles[i].gameObject, delay, index, _tiles[i].transform.position.y));
+					StartCoroutine(DropGround(_tiles[i].gameObject, delay, index, _tiles[i].transform.localPosition.y));
 					++index;
 				}
 				else
 				{
-					Vector3 targetPosition = _tiles[i].transform.position;
+					Vector3 targetPosition = _tiles[i].transform.localPosition;
 					targetPosition.y = 0;
-					_tiles[i].transform.position = targetPosition;
+					_tiles[i].transform.localPosition = targetPosition;
 					++_tilesDropped;
 				}
 			}
@@ -343,9 +343,9 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 				}
 				else
 				{
-					Vector3 targetPosition = _obstacles[i].transform.position;
+					Vector3 targetPosition = _obstacles[i].transform.localPosition;
 					targetPosition.y = 1.0f * TileScale;
-					_obstacles[i].transform.position = targetPosition;
+					_obstacles[i].transform.localPosition = targetPosition;
 					++_obstaclesDropped;
 				}
 			}
@@ -365,13 +365,13 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 		yield return new WaitForSeconds(delay);
 
 		float timer = -pos * 0.05f;
-		float initialY = element.transform.position.y;
+		float initialY = element.transform.localPosition.y;
 
 		while (timer < 1)
 		{
 			timer += TimeManager.DeltaTime * 5;
 			float y = Mathf.Lerp(initialY, 0, timer);
-			element.transform.position = new Vector3(element.transform.position.x, y, element.transform.position.z);
+			element.transform.localPosition = new Vector3(element.transform.localPosition.x, y, element.transform.localPosition.z);
 			yield return null;
 		}
 
@@ -385,14 +385,14 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 		yield return new WaitForSeconds(delay);
 
 		float timer = 0;
-		float initialY = element.transform.position.y;
+		float initialY = element.transform.localPosition.y;
 		element.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
 
 		while (timer < 1)
 		{
 			timer += TimeManager.DeltaTime;
 			float y = Mathf.Lerp(initialY, 1.0f * TileScale, timer);
-			element.transform.position = new Vector3(element.transform.position.x, y, element.transform.position.z);
+			element.transform.localPosition = new Vector3(element.transform.localPosition.x, y, element.transform.localPosition.z);
 			yield return null;
 		}
 

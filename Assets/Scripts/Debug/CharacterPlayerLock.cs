@@ -27,7 +27,9 @@ public class CharacterPlayerLock : MonoBehaviour
 		{
 			if (Characters[i] == null)
 				continue;
-			Characters[i]._playerRef.JoystickNumber = JoystickListening[i];
+
+			if (Characters[i].isActiveAndEnabled)
+				Characters[i]._playerRef.JoystickNumber = JoystickListening[i];
 		}
 	}
 }

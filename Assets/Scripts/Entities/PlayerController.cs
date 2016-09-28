@@ -146,8 +146,10 @@ public class PlayerController : MonoBehaviour
 		}
 
 		//Instantiates player mesh and retrieves its props and particles
-		GameObject playerMesh = Instantiate(_characterData.CharacterModel.gameObject, _transf.position, _characterData.CharacterModel.transform.rotation) as GameObject;
-		playerMesh.transform.parent = _transf.FindChild("CharacterModel");
+		GameObject playerMesh = Instantiate(_characterData.CharacterModel.gameObject) as GameObject;
+		playerMesh.transform.SetParent(_transf.FindChild("CharacterModel"));
+		playerMesh.transform.localPosition = Vector3.zero;
+		playerMesh.transform.localRotation = Quaternion.identity;
 
 		_transf.GetComponentInChildren<CharacterModel>().Reskin(_characterData.CharacterMaterials[_playerRef.SkinNumber]);
 
@@ -307,7 +309,7 @@ public class PlayerController : MonoBehaviour
 			_activeDirection.x = InputManager.GetAxis("x", _playerRef.JoystickNumber);
 			_activeDirection.z = InputManager.GetAxis("y", _playerRef.JoystickNumber);
 			_activeDirection = Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized) * _activeDirection;
-			_activeDirection.Normalize();
+			//_activeDirection.Normalize();
 		}
 
 		transform.LookAt(transform.position + _activeDirection, Vector3.up);

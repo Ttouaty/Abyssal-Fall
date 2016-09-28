@@ -72,6 +72,7 @@ public class CameraManager : GenericSingleton<CameraManager>
 		}
 
 		_targetsCentroid /= _targetsTracked.Count;
+		_targetsCentroid.y = _centerPoint.position.y;
 	}
 
 	private Vector3 _farthestPosition;
