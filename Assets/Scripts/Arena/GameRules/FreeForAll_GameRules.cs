@@ -17,7 +17,6 @@ public class FreeForAll_GameRules : AGameRules
 		if (GameManager.Instance.AlivePlayers.IndexOf(player) >= 0)
 		{
 			GameManager.Instance.AlivePlayers.Remove(player);
-
 			// Round won
 			if (GameManager.Instance.AlivePlayers.Count == 1)
 			{

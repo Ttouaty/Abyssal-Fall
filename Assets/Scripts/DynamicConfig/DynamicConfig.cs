@@ -61,15 +61,39 @@ public class DynamicConfig : GenericSingleton<DynamicConfig>
 
 	public void GetConfig(EModeConfiguration configName, out AGameRules config)				{ config = ModeConfigurationsDic[configName.ToString()]; }
 	public void GetConfig(string configName, out AGameRules config)							{ config = ModeConfigurationsDic[configName]; }
-	public void GetConfigs(ref AGameRules[] config)											{ ModeConfigurationsDic.Values.CopyTo(config, 0); }
+	public void GetConfigs(ref AGameRules[] config)
+	{
+		List<AGameRules> list = new List<AGameRules>();
+		foreach (KeyValuePair<string, AGameRules> keyAndVal in ModeConfigurationsDic)
+		{
+			list.Add(keyAndVal.Value);
+		}
+		config = list.ToArray(); 
+	}
 
 	public void GetConfig(EMapConfiguration configName, out MapConfiguration_SO config)		{ config = MapsConfigurationsDic[configName.ToString()]; }
 	public void GetConfig(string configName, out MapConfiguration_SO config)				{ config = MapsConfigurationsDic[configName]; }
-	public void GetConfigs(ref MapConfiguration_SO[] config)								{ MapsConfigurationsDic.Values.CopyTo(config, 0); }
+	public void GetConfigs(ref MapConfiguration_SO[] config)
+	{
+		List<MapConfiguration_SO> list = new List<MapConfiguration_SO>();
+		foreach (KeyValuePair<string, MapConfiguration_SO> keyAndVal in MapsConfigurationsDic)
+		{
+			list.Add(keyAndVal.Value);
+		}
+		config = list.ToArray();
+	}
 
 	public void GetConfig(ECharacterConfiguration configName, out PlayerController config)	{ config = CharacterConfigurationsDic[configName.ToString()]; }
 	public void GetConfig(string configName, out PlayerController config)					{ config = CharacterConfigurationsDic[configName]; }
-	public void GetConfigs(ref PlayerController[] config)									{ CharacterConfigurationsDic.Values.CopyTo(config, 0); }
+	public void GetConfigs(ref PlayerController[] config)
+	{
+		List<PlayerController> list = new List<PlayerController>();
+		foreach (KeyValuePair<string, PlayerController> keyAndVal in CharacterConfigurationsDic)
+		{
+			list.Add(keyAndVal.Value);
+		}
+		config = list.ToArray();
+	}
 }
 
 [System.Serializable]

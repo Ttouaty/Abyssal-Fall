@@ -48,12 +48,6 @@ namespace Localizator
 		{
 			get
 			{
-				#if UNITY_EDITOR
-				if(!Application.isPlaying && System.IO.File.Exists(Path.DefaultLanguageFilePath))
-				{
-					_currentLanguage = (SystemLanguage)System.Enum.Parse(typeof(SystemLanguage), System.IO.File.ReadAllText(Path.DefaultLanguageFilePath));
-				}
-				#endif
 				return _currentLanguage;
 			}
 			set
@@ -68,10 +62,13 @@ namespace Localizator
 			}
 		}
 
-		public LocalizationTextChangeEvent OnChangeLanguage = new LocalizationTextChangeEvent();
+		public LocalizationTextChangeEvent		OnChangeLanguage;
+		public bool								bIsLoaded { get; private set; }
 
 		void Awake ()
 		{
+			_instance = this;
+			bIsLoaded = false;
 			StartCoroutine(Awake_Implementation());
 		}
 
@@ -84,7 +81,7 @@ namespace Localizator
 			_currentDictionary = new Dictionary<string, string>();
 			_languagesDictionaries = new Dictionary<SystemLanguage, Dictionary<string, string>>();
 
-			LoadLanguage();
+			StartCoroutine(LoadLanguage_Implementation());
 		}
 
 		public void LoadLanguage()
@@ -128,6 +125,10 @@ namespace Localizator
 				_currentDictionary = target;
 			}
 
+			if(!bIsLoaded)
+			{
+				bIsLoaded = true;
+			}
 			OnChangeLanguage.Invoke();
 		}
 
@@ -149,23 +150,15 @@ namespace Localizator
 		IEnumerator LoadLangAsset_Implementation (string fileName)
 		{
 			string filePath = System.IO.Path.Combine(Path.DatabaseRootPath, fileName);
-			Debug.Log(filePath);
-			if (!System.IO.File.Exists(filePath))
+			if (filePath.Contains("://"))
 			{
-				_tmpResult = null;
+				WWW www = new WWW(filePath);
+				yield return www;
+				_tmpResult = www.text;
 			}
 			else
 			{
-				if (filePath.Contains("://"))
-				{
-					WWW www = new WWW(filePath);
-					yield return www;
-					_tmpResult = www.text;
-				}
-				else
-				{
-					_tmpResult = System.IO.File.ReadAllText(filePath);
-				}
+				_tmpResult = System.IO.File.ReadAllText(filePath);
 			}
 		}
 	}

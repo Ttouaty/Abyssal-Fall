@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEditorInternal;
 using System;
 using System.IO;
@@ -20,6 +22,7 @@ public class CustomWindowBuildScenes : EditorWindow
 
 	private ReorderableList list;
 	private List<string> _scenes;
+	private string _currentOpenedScene = "";
 
 	void OnFocus ()
 	{
@@ -55,27 +58,34 @@ public class CustomWindowBuildScenes : EditorWindow
 				GUI.backgroundColor = Color.green;
 			}
 			EditorGUI.LabelField(
-				new Rect(rect.x, rect.y, rect.width * 0.6f, EditorGUIUtility.singleLineHeight),
-				element.Split('/').Last().Split('.').First());
+				new Rect(rect.x, rect.y, rect.width * 0.5f, EditorGUIUtility.singleLineHeight),
+				element.Split('/').Last().Split('.').First()
+			);
 
 			GUI.enabled = enabled;
-			if(GUI.Button(new Rect(rect.x + rect.width * 0.6f, rect.y, rect.width * 0.1f - 5, EditorGUIUtility.singleLineHeight), "-")) 
+			if(GUI.Button(new Rect(rect.x + rect.width * 0.5f, rect.y, rect.width * 0.1f - 5, EditorGUIUtility.singleLineHeight), "-")) 
 			{
 				RemoveSceneToBuildSettings(element);
 			}
 
 			GUI.enabled = !enabled;
-			if (GUI.Button(new Rect(rect.x + rect.width * 0.7f, rect.y, rect.width * 0.1f - 5, EditorGUIUtility.singleLineHeight), "+"))
+			if (GUI.Button(new Rect(rect.x + rect.width * 0.6f, rect.y, rect.width * 0.1f - 5, EditorGUIUtility.singleLineHeight), "+"))
 			{
 				AddSceneToBuildSettings(element);
 			}
 
-			GUI.enabled = true;
+			GUI.enabled = EditorSceneManager.GetActiveScene() != EditorSceneManager.GetSceneByPath(element);
+			if (GUI.Button(new Rect(rect.x + rect.width * 0.7f, rect.y, rect.width * 0.1f - 5, EditorGUIUtility.singleLineHeight), "~"))
+			{
+				MergeSceneToBuildSettings(element);
+			}
+
 			if (GUI.Button(new Rect(rect.x + rect.width * 0.8f, rect.y, rect.width * 0.2f, EditorGUIUtility.singleLineHeight), "Open"))
 			{
-				EditorApplication.SaveCurrentSceneIfUserWantsTo();
-				EditorApplication.OpenScene(element);
+				EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
+				EditorSceneManager.OpenScene(element);
 			}
+			GUI.enabled = true;
 			GUI.backgroundColor = Color.white;
 		};
 	}
@@ -104,24 +114,30 @@ public class CustomWindowBuildScenes : EditorWindow
 		List<EditorBuildSettingsScene> scenes = new List<EditorBuildSettingsScene>(EditorBuildSettings.scenes);
 		EditorBuildSettingsScene target = null;
 		bool exists = false;
-		for(int i = 0; i < scenes.Count; ++i)
+		for (int i = 0; i < scenes.Count; ++i)
 		{
-			if(scenes[i].path == scene) {
+			if (scenes[i].path == scene)
+			{
 				exists = true;
 				target = scenes[i];
 				break;
 			}
 		}
-		if(exists) 
+		if (exists)
 		{
-			target.enabled = true;			
+			target.enabled = true;
 		}
-		else 
+		else
 		{
 			scenes.Add(new EditorBuildSettingsScene(scene, true));
 		}
 		EditorBuildSettings.scenes = scenes.ToArray();
 		Init();
+	}
+
+	void MergeSceneToBuildSettings (string scene)
+	{
+		EditorSceneManager.OpenScene(scene, OpenSceneMode.Additive);
 	}
 
 	void RemoveSceneToBuildSettings (string scene)

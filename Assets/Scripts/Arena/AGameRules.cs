@@ -4,6 +4,11 @@ using System.Collections.Generic;
 
 public abstract class AGameRules : MonoBehaviour 
 {
+
+	/*
+	 * Il faut remplacer tout les ints & bool  par des IntRule & BoolRule
+	 * & il faut faire suivre les custom editors
+	 */
 	public bool IsMatchRoundBased = true;
 	public int NumberOfRounds = 5;
 	public int MatchDuration = 180;
@@ -35,20 +40,20 @@ public abstract class AGameRules : MonoBehaviour
 
 	public virtual void RespawnFalledTiles (Tile tile)
 	{
-		tile.gameObject.SetActive(false);
+		tile.PrepareRespawn();
 		StartCoroutine(RespawnFalledTiles_Implementation(tile));
 	}
 
 	protected virtual IEnumerator RespawnFalledTiles_Implementation (Tile tile)
 	{
 		yield return new WaitForSeconds(TileRegerationTime);
-		tile.gameObject.SetActive(true);
 		tile.ActivateRespawn();
 	}
 
 	public virtual void OnPlayerDeath_Listener (Player player, Player killer)
 	{
 		// On player death common stuff
+		CameraManager.Instance.RemoveTargetToTrack(player.Controller.transform);
 	}
 
 	public virtual void OnPlayerWin_Listener ()
@@ -56,5 +61,6 @@ public abstract class AGameRules : MonoBehaviour
 		// On player win common stuff
 		GameManager.Instance.ResetAlivePlayers();
 		ArenaManager.Instance.DisableBehaviours();
+		CameraManager.Instance.ClearTrackedTargets();
 	}
 }

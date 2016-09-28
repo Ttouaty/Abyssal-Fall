@@ -79,6 +79,7 @@ public class PlayerController : MonoBehaviour
 	protected TimeCooldown _invulTime; //Seconds of invulnerability
 
 	protected DamageDealer _dmgDealerSelf;
+	public DamageDealer DamageDealerSelf { get { return _dmgDealerSelf; } }
 	[HideInInspector]
 	private DamageDealer _lastDamageDealer;
 	public DamageDealer LastDamageDealer
@@ -122,6 +123,7 @@ public class PlayerController : MonoBehaviour
 	{
 		_allowInput = false;
 		_rigidB.velocity = Vector3.zero;
+		_rigidB.isKinematic = true;
 		_activeSpeed = Vector3.zero;
 		_animator.SetTrigger("Reset");
 	}
@@ -129,10 +131,12 @@ public class PlayerController : MonoBehaviour
 	public void UnFreeze ()
 	{
 		_allowInput = true;
+		_rigidB.isKinematic = false;
 	}
 
 	public void Init(Player player)
 	{
+		Debug.Log(TimeManager.Instance);
 		_playerRef = player;
 
 		if (_characterData == null)
@@ -185,6 +189,7 @@ public class PlayerController : MonoBehaviour
 		if (_dmgDealerSelf == null)
 			_dmgDealerSelf = gameObject.AddComponent<DamageDealer>();
 
+		_dmgDealerSelf.PlayerRef = _playerRef;
 		_dmgDealerSelf.InGameName = _characterData.IngameName;
 		_dmgDealerSelf.Icon = _characterData.Icon;
 
@@ -220,7 +225,7 @@ public class PlayerController : MonoBehaviour
 	protected virtual void CustomUpdate() { }
 
 	#region EventCallbacks
-	void OnDestroy()
+	public void OnBeforeDestroy()
 	{
 		TimeManager.Instance.OnPause.RemoveListener(OnPause);
 		TimeManager.Instance.OnResume.RemoveListener(OnResume);
@@ -398,7 +403,8 @@ public class PlayerController : MonoBehaviour
 		_animator.SetTrigger("Death");
 		_audioSource.PlayOneShot(_characterData.SoundList.OnDeath);
 		_isDead = true;
-		GameManager.Instance.OnPlayerDeath.Invoke(_playerRef, null);
+		Player killer = _playerRef.Controller.LastDamageDealer != null ? _playerRef.Controller.LastDamageDealer.PlayerRef : null;
+		GameManager.Instance.OnPlayerDeath.Invoke(_playerRef, killer);
 	}
 
 	public void Eject(Vector3 direction)

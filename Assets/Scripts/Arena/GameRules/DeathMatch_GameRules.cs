@@ -20,11 +20,15 @@ public class DeathMatch_GameRules : AGameRules
 		{
 			killer.Score += PointsGainPerKill;
 			--player.Score;
+			Debug.Log("Killer ----- Player " + killer.PlayerNumber + " score : " + killer.Score);
+			Debug.Log("Killed ----- Player " + player.PlayerNumber + " score : " + player.Score);
 		}
 		else
 		{
 			player.Score -= PointsLoosePerSuicide;
+			Debug.Log("Suicide ----- Player " + player.PlayerNumber + " score : " + player.Score);
 		}
+
 
 		RespawnPlayer(player);
 	}
@@ -35,19 +39,22 @@ public class DeathMatch_GameRules : AGameRules
 		List<Tile> tiles = new List<Tile>(tilesEnumerator);
 		if(tiles.Count == 0)
 		{
+			// Cas où aucune tile n'est dispo pour faire spawn un player
 			// Normalement ne devrait jamais passer ici, mais au cas où
 			StartCoroutine(RespawnPlayer_Retry(player, 1.0f));
 		}
 		else
 		{
 			Tile tile = tiles.RandomElement();
-			tile.SetTimeLeft(1.5f);	
+			tile.SetTimeLeft(1.5f);
 
 			Spawn spawn = tile.gameObject.AddComponent<Spawn>();
 
-			spawn.SpawnPlayer(player.CharacterUsed);
-			player.CharacterUsed._animator.SetTrigger("Reset");
-			player.CharacterUsed._isDead = false;
+			spawn.SpawnPlayer(player.Controller);
+			player.Controller._animator.SetTrigger("Reset");
+			player.Controller._isDead = false;
+
+			CameraManager.Instance.AddTargetToTrack(player.Controller.transform);
 		}
 	}
 
@@ -62,13 +69,15 @@ public class DeathMatch_GameRules : AGameRules
 		base.OnPlayerWin_Listener();
 
 		// TODO : Gérer les égalités
+		int i;
 		int winnerId		= 0;
 		Player winnerPlayer = GameManager.Instance.RegisteredPlayers[winnerId];
-		for (int i = 0; i < GameManager.Instance.RegisteredPlayers.Length; ++i)
+		for (i = 0; i < GameManager.Instance.RegisteredPlayers.Length; ++i)
 		{
 			Player currentPlayer = GameManager.Instance.RegisteredPlayers[i];
 			if (currentPlayer != null)
 			{
+				currentPlayer.Controller.Freeze();
 				if (currentPlayer.Score > winnerPlayer.Score)
 				{
 					winnerId		= i;

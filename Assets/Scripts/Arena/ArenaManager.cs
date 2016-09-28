@@ -92,15 +92,19 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 
 	public void ResetMap(bool animate = true)
 	{
-		Transform[] roots = new Transform[] { TilesRoot, ObstaclesRoot, PlayersRoot, SpecialsRoot, BehavioursRoot };
+		CameraManager.Instance.ClearTrackedTargets();
 
-		for (int i = 0; i < roots.Length; ++i)
+		Transform[] roots = new Transform[] { TilesRoot, ObstaclesRoot, SpecialsRoot, BehavioursRoot };
+		int i;
+		Transform child;
+
+		for (i = 0; i < roots.Length; ++i)
 		{
 			if (roots[i].childCount > 0)
 			{
 				for(int j = roots[i].childCount - 1; j >= 0; --j)
 				{
-					Transform child = roots[i].GetChild(j);
+					child = roots[i].GetChild(j);
 					Poolable poolable = child.GetComponent<Poolable>();
 					if(poolable != null)
 					{
@@ -112,6 +116,13 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 					}
 				}
 			}
+		}
+
+		for(i = 0; i < PlayersRoot.childCount; ++i)
+		{
+			child = PlayersRoot.GetChild(i);
+			child.GetComponent<PlayerController>().OnBeforeDestroy();
+			Destroy(child.gameObject);
 		}
 
 		_tilesDropped       = 0;
@@ -264,7 +275,7 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 						// Add Spawn Comp
 						tileComp.SpawnComponent = tile.AddComponent<Spawn>();
 						_spawns.Add(tileComp.SpawnComponent);
-						tileComp.SetTimeLeft(1.5f);
+						tileComp.SetTimeLeft(1.5f, false);
 					}
 					else if (type == ETileType.OBSTACLE)
 					{

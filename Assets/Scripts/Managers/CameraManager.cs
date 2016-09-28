@@ -106,9 +106,14 @@ public class CameraManager : GenericSingleton<CameraManager>
 		_targetsTracked.Clear();
 	}
 
-	public void AddTargetToTrack(Transform newTarget)
+	public void AddTargetToTrack (Transform newTarget)
 	{
 		_targetsTracked.Add(newTarget);
+	}
+
+	public void RemoveTargetToTrack (Transform newTarget)
+	{
+		_targetsTracked.Remove(newTarget);
 	}
 
 	public void SetCenterPoint(Transform newCenterPoint, float time = 0)
