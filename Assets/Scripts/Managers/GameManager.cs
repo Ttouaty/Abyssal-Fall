@@ -73,7 +73,7 @@ public class GameManager : GenericSingleton<GameManager>
 	[HideInInspector]
 	public Player[] RegisteredPlayers = new Player[4];
 	// [HideInInspector]
-	public int nbPlayers = 0;
+	public int nbPlayers = -1;
 
 	public GameEventDeath OnPlayerDeath;
 	public GameEventWin OnPlayerWin;

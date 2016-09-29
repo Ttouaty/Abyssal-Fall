@@ -5,10 +5,11 @@ using System.Collections.Generic;
 
 public class CameraManager : GenericSingleton<CameraManager>
 {
-	private AnimationCurve _easeOutCurve = AnimationCurve.EaseInOut(0,0,1,1);
+	private AnimationCurve _easeOutCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
 	private Camera _camera;
 	private Transform _focalPoint; //FocalPoint is the point the camera is looking at, it can move away from the center point.
 	private Transform _centerPoint; //CenterPoint is the base of the camera, the default. It will not move ingame and is used as a anchor for every cameraMovement;
+	private float _baseDistance;
 
 	private Coroutine _activeMovementCoroutine;
 	[HideInInspector]
@@ -26,7 +27,7 @@ public class CameraManager : GenericSingleton<CameraManager>
 	protected override void Awake()
 	{
 		base.Awake();
-		_distance = Vector3.Distance(transform.position, transform.parent.position);
+		_baseDistance = _distance = Vector3.Distance(transform.position, transform.parent.position);
 	}
 
 	void Start()
@@ -52,13 +53,13 @@ public class CameraManager : GenericSingleton<CameraManager>
 			CalculateTargetsCentroid();
 			CalculateTargetsDistance();
 
-			Debug.DrawRay(_centerPoint.position, _targetsCentroid - _centerPoint.position, Color.red, 1);
+			//Debug.DrawRay(_centerPoint.position, _targetsCentroid - _centerPoint.position, Color.red, 1);
 
-			transform.localPosition = - transform.forward * _distance;
-		
+			transform.localPosition = -transform.forward * _distance;
+
 			FollowCentroid();
 
-			Debug.DrawRay(transform.position, transform.forward * _distance, Color.blue, 0.2f);
+			//Debug.DrawRay(transform.position, transform.forward * _distance, Color.blue, 0.2f);
 		}
 	}
 
@@ -93,7 +94,7 @@ public class CameraManager : GenericSingleton<CameraManager>
 		_distance = _tempDistance * 0.5f / Mathf.Tan(_camera.fieldOfView * 0.5f * Mathf.Deg2Rad) * 2f;
 		if (_distance < MinDistance)
 			_distance = MinDistance;
-		_verticalOffset = _distance * 0.25f;
+		_verticalOffset = _distance * 0.1f;
 	}
 
 	private void FollowCentroid()
@@ -107,18 +108,26 @@ public class CameraManager : GenericSingleton<CameraManager>
 		_targetsTracked.Clear();
 	}
 
-	public void AddTargetToTrack (Transform newTarget)
+	public void AddTargetToTrack(Transform newTarget)
 	{
 		_targetsTracked.Add(newTarget);
 	}
 
-	public void RemoveTargetToTrack (Transform newTarget)
+	public void RemoveTargetToTrack(Transform newTarget)
 	{
 		_targetsTracked.Remove(newTarget);
 	}
 
+	bool firstTime = true;
 	public void SetCenterPoint(Transform newCenterPoint, float time = 0)
 	{
+		if (firstTime)
+		{
+			firstTime = false;
+			time = 3;
+			Debug.Log("CameraManager: First time SetingCenterPoint, forcing time 3s");
+		}
+
 		if (time == 0)
 		{
 			_centerPoint.position = newCenterPoint.position;
@@ -149,5 +158,14 @@ public class CameraManager : GenericSingleton<CameraManager>
 		}
 
 		target.position = end.position;
+	}
+
+	public void Reset()
+	{
+		_distance = _baseDistance;
+		_targetsTracked.Clear();
+		_focalPoint.localPosition = Vector3.zero;
+		transform.localPosition = -transform.forward * _distance;
+
 	}
 }

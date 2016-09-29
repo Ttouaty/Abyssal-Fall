@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System;
 using UnityEngine.UI;
 
@@ -11,25 +12,26 @@ public struct SelectableCharacter
 	public Image InfoImage;//Unused for now
 }
 
-public class CharacterSlotsContainer : MonoBehaviour 
+public class CharacterSelector : MonoBehaviour
 {
 	public ParticleSystem OnCharacterSelectedParticles;
 	[Space]
-	private CharacterSlot[] _slotsAvailable;
+	[HideInInspector]
+	public CharacterSlot[] SlotsAvailable;
 	public SelectableCharacter[] _availableCharacters;
 
 	void Start()
 	{
-		_slotsAvailable = GetComponentsInChildren<CharacterSlot>();
+		SlotsAvailable = GetComponentsInChildren<CharacterSlot>();
 	}
 
 	public void OpenNextSlot(int JoyToListen)
 	{
-		for (int i = 0; i < _slotsAvailable.Length; ++i)
+		for (int i = 0; i < SlotsAvailable.Length; ++i)
 		{
-			if (!_slotsAvailable[i].Open)
+			if (!SlotsAvailable[i].Open)
 			{
-				_slotsAvailable[i].OpenSlot(i, JoyToListen);
+				SlotsAvailable[i].OpenSlot(i, JoyToListen);
 				return;
 			}
 		}
@@ -39,12 +41,12 @@ public class CharacterSlotsContainer : MonoBehaviour
 
 	public void CancelAllSelections(bool needClose = true)
 	{
-		for (int i = 0; i < _slotsAvailable.Length; ++i)
+		for (int i = 0; i < SlotsAvailable.Length; ++i)
 		{
-			if (_slotsAvailable[i].Selected)
-				_slotsAvailable[i].CancelCharacterSelection();
-			if (_slotsAvailable[i].Open && needClose)
-				_slotsAvailable[i].CloseSlot();
+			if (SlotsAvailable[i].Selected)
+				SlotsAvailable[i].CancelCharacterSelection();
+			if (SlotsAvailable[i].Open && needClose)
+				SlotsAvailable[i].CloseSlot();
 
 		}
 	}

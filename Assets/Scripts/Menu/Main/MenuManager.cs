@@ -23,7 +23,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 	private ReturnButton _returnGroupRef;
 	private bool _isListeningForInput = false;
 	private bool[] _controllerAlreadyInUse = new bool[12];
-	private CharacterSlotsContainer _characterSlotsContainerRef;
+	private CharacterSelector _characterSlotsContainerRef;
 	private RawImage[] _splashscreens;
 	private Coroutine _miniLoadingCoroutine;
 
@@ -34,10 +34,8 @@ public class MenuManager : GenericSingleton<MenuManager>
 		_canvas = GetComponentInChildren<Canvas>();
 		_canvas.worldCamera             = Camera.main;
 		_menuArray                      = GetComponentsInChildren<MenuPanel>();
-		_characterSlotsContainerRef     = GetComponentInChildren<CharacterSlotsContainer>();
 		_splashscreens                  = SplashScreens.GetComponentsInChildren<RawImage>();
-		_menuArray                      = GetComponentsInChildren<MenuPanel>();
-		_characterSlotsContainerRef     = GetComponentInChildren<CharacterSlotsContainer>();
+		_characterSlotsContainerRef     = GetComponentInChildren<CharacterSelector>();
 		_returnGroupRef					= GetComponentInChildren<ReturnButton>();
 		_metaContainer					= _canvas.transform.FindChild("Meta");
 
@@ -49,7 +47,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 	void Start()
 	{
 		MiniLoading.SetActive(false);
-
+		GameManager.ResetRegisteredPlayers();
 		_menuArray = GetComponentsInChildren<MenuPanel>();
 
 		_activeMenu = _menuArray[0];

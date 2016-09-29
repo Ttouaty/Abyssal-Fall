@@ -23,6 +23,7 @@ public class EndGameManager : GenericSingleton<EndGameManager>
 						Destroy(GameManager.Instance.GameRules.gameObject);
 						MainManager.Instance.LEVEL_MANAGER.UnloadScene(LevelManager.Instance.CurrentArenaConfig.BackgroundLevel);
 						MainManager.Instance.LEVEL_MANAGER.CurrentArenaConfig = null;
+						CameraManager.Instance.Reset();
 						MainManager.Instance.LEVEL_MANAGER.OpenMenu();
 					}
 				}

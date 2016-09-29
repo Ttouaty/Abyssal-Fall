@@ -22,8 +22,6 @@ public class MenuWheel<T> : MonoBehaviour where T : WheelSelectable
 	protected Color _tempColor;
 	protected float _tempElementAngle;
 
-	private bool Offseted = false;
-
 	protected virtual void Start()
 	{
 

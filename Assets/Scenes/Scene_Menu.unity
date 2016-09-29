@@ -141,8 +141,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AnimationTime: 0.3
   TargetScale: {x: 1.5, y: 1.5, z: 1.5}
-  DublicateSprite: 1
   IsDetached: 1
+  DublicateSprite: 1
   IsLocked: 0
 --- !u!114 &5172559
 MonoBehaviour:
@@ -476,16 +476,16 @@ RectTransform:
   m_GameObject: {fileID: 36619364}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
+  m_LocalScale: {x: 0.21115597, y: 0.21115641, z: 0.21115641}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 739850989}
   m_RootOrder: 0
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 7, y: 3.9999847}
+  m_AnchorMin: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 160, y: 160}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 1, y: 1}
 --- !u!114 &36619366
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -499,15 +499,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.309, g: 0.18774684, b: 0, a: 1}
-  m_RaycastTarget: 1
+  m_Color: {r: 0.33823532, g: 0.26578572, b: 0.17409171, a: 1}
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
-    m_Font: {fileID: 12800000, guid: c6a10cd0033fa2343b49511305215223, type: 3}
+    m_Font: {fileID: 12800000, guid: fdc26d7b8bd994542bf14a91f2d241ac, type: 3}
     m_FontSize: 150
     m_FontStyle: 0
     m_BestFit: 0
@@ -538,6 +538,7 @@ GameObject:
   - 222: {fileID: 87748352}
   - 114: {fileID: 87748351}
   - 114: {fileID: 87748350}
+  - 114: {fileID: 87748354}
   m_Layer: 5
   m_Name: DeathMatch
   m_TagString: Untagged
@@ -595,6 +596,17 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: DeathMatch
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 87748354}
+        m_MethodName: Activate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Lobby
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 2058223405}
@@ -665,6 +677,22 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 114.4}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &87748354
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 87748349}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15e0482477263944792bcaca081ac8e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AnimationTime: 0.3
+  TargetScale: {x: 1.5, y: 1.5, z: 1.5}
+  IsDetached: 0
+  DublicateSprite: 1
+  IsLocked: 0
 --- !u!1 &93041476
 GameObject:
   m_ObjectHideFlags: 0
@@ -702,7 +730,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1820, y: 980}
+  m_SizeDelta: {x: 800, y: 450}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &93041478
 CanvasRenderer:
@@ -839,8 +867,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AnimationTime: 0.3
   TargetScale: {x: 1.5, y: 1.5, z: 1.5}
-  DublicateSprite: 1
   IsDetached: 1
+  DublicateSprite: 1
   IsLocked: 0
 --- !u!114 &104036095
 MonoBehaviour:
@@ -928,8 +956,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AnimationTime: 0.3
   TargetScale: {x: 1.5, y: 1.5, z: 1.5}
-  DublicateSprite: 1
   IsDetached: 1
+  DublicateSprite: 1
   IsLocked: 0
 --- !u!114 &128723166
 MonoBehaviour:
@@ -998,8 +1026,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AnimationTime: 0.3
   TargetScale: {x: 1.5, y: 1.5, z: 1.5}
-  DublicateSprite: 1
   IsDetached: 1
+  DublicateSprite: 1
   IsLocked: 0
 --- !u!114 &138942577
 MonoBehaviour:
@@ -1143,6 +1171,7 @@ GameObject:
   - 222: {fileID: 179405416}
   - 114: {fileID: 179405415}
   - 114: {fileID: 179405414}
+  - 114: {fileID: 179405417}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -1209,6 +1238,17 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 179405417}
+        m_MethodName: Activate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Credits
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 2058223405}
         m_MethodName: MakeTransition
         m_Mode: 5
@@ -1255,6 +1295,22 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 179405412}
+--- !u!114 &179405417
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 179405412}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15e0482477263944792bcaca081ac8e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AnimationTime: 0.3
+  TargetScale: {x: 1.5, y: 1.5, z: 1.5}
+  IsDetached: 1
+  DublicateSprite: 1
+  IsLocked: 0
 --- !u!1 &195340218
 GameObject:
   m_ObjectHideFlags: 0
@@ -1548,8 +1604,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AnimationTime: 0.3
   TargetScale: {x: 1.5, y: 1.5, z: 1.5}
-  DublicateSprite: 1
   IsDetached: 1
+  DublicateSprite: 1
   IsLocked: 0
 --- !u!114 &236316272
 MonoBehaviour:
@@ -2546,8 +2602,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AnimationTime: 0.3
   TargetScale: {x: 1.5, y: 1.5, z: 1.5}
-  DublicateSprite: 1
   IsDetached: 1
+  DublicateSprite: 1
   IsLocked: 0
 --- !u!114 &489469282
 MonoBehaviour:
@@ -3156,16 +3212,16 @@ RectTransform:
   m_GameObject: {fileID: 673088300}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
+  m_LocalScale: {x: 0.21115597, y: 0.21115641, z: 0.21115641}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 887751360}
   m_RootOrder: 0
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -4, y: -4}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 160, y: 160}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0, y: 0}
 --- !u!114 &673088302
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3179,15 +3235,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.309, g: 0.18774684, b: 0, a: 1}
-  m_RaycastTarget: 1
+  m_Color: {r: 0.33823532, g: 0.26578572, b: 0.17409171, a: 1}
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
-    m_Font: {fileID: 12800000, guid: c6a10cd0033fa2343b49511305215223, type: 3}
+    m_Font: {fileID: 12800000, guid: fdc26d7b8bd994542bf14a91f2d241ac, type: 3}
     m_FontSize: 150
     m_FontStyle: 0
     m_BestFit: 0
@@ -3353,8 +3409,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AnimationTime: 0.3
   TargetScale: {x: 1.5, y: 1.5, z: 1.5}
-  DublicateSprite: 1
   IsDetached: 1
+  DublicateSprite: 1
   IsLocked: 0
 --- !u!114 &710156509
 MonoBehaviour:
@@ -3461,8 +3517,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AnimationTime: 0.3
   TargetScale: {x: 1.5, y: 1.5, z: 1.5}
-  DublicateSprite: 1
   IsDetached: 1
+  DublicateSprite: 1
   IsLocked: 0
 --- !u!114 &714287343
 MonoBehaviour:
@@ -3760,8 +3816,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AnimationTime: 0.3
   TargetScale: {x: 1.5, y: 1.5, z: 1.5}
-  DublicateSprite: 1
   IsDetached: 1
+  DublicateSprite: 1
   IsLocked: 0
 --- !u!114 &765272660
 MonoBehaviour:
@@ -4029,7 +4085,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -4178,7 +4234,6 @@ GameObject:
   - 224: {fileID: 898079811}
   - 222: {fileID: 898079814}
   - 114: {fileID: 898079813}
-  - 114: {fileID: 898079812}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -4205,19 +4260,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &898079812
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 11492886, guid: 04f18436bfd4b10419f1b6628433c808,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 898079810}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b90b5ba724e4a7049835e91d6cea6134, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Fragment: credits
 --- !u!114 &898079813
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4757,6 +4799,7 @@ GameObject:
   - 114: {fileID: 1010458322}
   - 114: {fileID: 1010458321}
   - 114: {fileID: 1010458323}
+  - 114: {fileID: 1010458326}
   m_Layer: 5
   m_Name: Start
   m_TagString: Untagged
@@ -4807,6 +4850,17 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1852019642}
         m_MethodName: SendSelectionToGameManager
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1010458326}
+        m_MethodName: Activate
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4932,6 +4986,22 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 40}
   m_SizeDelta: {x: 300, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1010458326
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1010458320}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15e0482477263944792bcaca081ac8e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AnimationTime: 0.3
+  TargetScale: {x: 1.5, y: 1.5, z: 1.5}
+  IsDetached: 1
+  DublicateSprite: 1
+  IsLocked: 0
 --- !u!1 &1054676794
 GameObject:
   m_ObjectHideFlags: 0
@@ -4944,6 +5014,7 @@ GameObject:
   - 222: {fileID: 1054676797}
   - 114: {fileID: 1054676796}
   - 114: {fileID: 1054676795}
+  - 114: {fileID: 1054676799}
   m_Layer: 5
   m_Name: FFA
   m_TagString: Untagged
@@ -5001,6 +5072,17 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: FreeForAll
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1054676799}
+        m_MethodName: Activate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Lobby
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 2058223405}
@@ -5071,6 +5153,22 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 170.3}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1054676799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1054676794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15e0482477263944792bcaca081ac8e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AnimationTime: 0.3
+  TargetScale: {x: 1.5, y: 1.5, z: 1.5}
+  IsDetached: 0
+  DublicateSprite: 1
+  IsLocked: 0
 --- !u!1 &1054933604
 GameObject:
   m_ObjectHideFlags: 0
@@ -5097,16 +5195,16 @@ RectTransform:
   m_GameObject: {fileID: 1054933604}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
+  m_LocalScale: {x: 0.21115597, y: 0.21115641, z: 0.21115641}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 195340219}
   m_RootOrder: 0
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 4, y: -4}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 160, y: 160}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 1, y: 0}
 --- !u!114 &1054933606
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5120,15 +5218,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.309, g: 0.18774684, b: 0, a: 1}
-  m_RaycastTarget: 1
+  m_Color: {r: 0.33823532, g: 0.26578572, b: 0.17409171, a: 1}
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
-    m_Font: {fileID: 12800000, guid: c6a10cd0033fa2343b49511305215223, type: 3}
+    m_Font: {fileID: 12800000, guid: fdc26d7b8bd994542bf14a91f2d241ac, type: 3}
     m_FontSize: 150
     m_FontStyle: 0
     m_BestFit: 0
@@ -5199,8 +5297,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AnimationTime: 0.3
   TargetScale: {x: 1.5, y: 1.5, z: 1.5}
-  DublicateSprite: 1
   IsDetached: 1
+  DublicateSprite: 1
   IsLocked: 0
 --- !u!114 &1060253543
 MonoBehaviour:
@@ -5374,8 +5472,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AnimationTime: 0.3
   TargetScale: {x: -1.5, y: 1.5, z: 1.5}
-  DublicateSprite: 1
   IsDetached: 1
+  DublicateSprite: 1
   IsLocked: 0
 --- !u!114 &1111860709
 MonoBehaviour:
@@ -6448,7 +6546,7 @@ RectTransform:
   m_RootOrder: 3
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 356, y: -283}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1413602993
@@ -7091,8 +7189,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AnimationTime: 0.3
   TargetScale: {x: 1.5, y: 1.5, z: 1.5}
-  DublicateSprite: 1
   IsDetached: 1
+  DublicateSprite: 1
   IsLocked: 0
 --- !u!114 &1601842518
 MonoBehaviour:
@@ -7719,8 +7817,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AnimationTime: 0.3
   TargetScale: {x: 1.5, y: 1.5, z: 1.5}
-  DublicateSprite: 1
   IsDetached: 1
+  DublicateSprite: 1
   IsLocked: 0
 --- !u!114 &1676820059
 MonoBehaviour:
@@ -7768,6 +7866,7 @@ GameObject:
   - 222: {fileID: 1678712048}
   - 114: {fileID: 1678712047}
   - 114: {fileID: 1678712046}
+  - 114: {fileID: 1678712049}
   m_Layer: 5
   m_Name: Next
   m_TagString: Untagged
@@ -7819,6 +7918,17 @@ MonoBehaviour:
   Callback:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 1678712049}
+        m_MethodName: Activate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: MapSelect
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 2058223405}
         m_MethodName: MakeTransition
         m_Mode: 5
@@ -7867,6 +7977,22 @@ CanvasRenderer:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1678712044}
+--- !u!114 &1678712049
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1678712044}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15e0482477263944792bcaca081ac8e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AnimationTime: 0.3
+  TargetScale: {x: 1.5, y: 1.5, z: 1.5}
+  IsDetached: 1
+  DublicateSprite: 1
+  IsLocked: 0
 --- !u!1 &1720107157
 GameObject:
   m_ObjectHideFlags: 0
@@ -8139,8 +8265,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AnimationTime: 0.3
   TargetScale: {x: 1.5, y: 1.5, z: 1.5}
-  DublicateSprite: 1
   IsDetached: 1
+  DublicateSprite: 1
   IsLocked: 0
 --- !u!114 &1779729143
 MonoBehaviour:
@@ -8907,16 +9033,16 @@ RectTransform:
   m_GameObject: {fileID: 1883429792}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
+  m_LocalScale: {x: 0.21115597, y: 0.21115641, z: 0.21115641}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 341430510}
   m_RootOrder: 0
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -4, y: 4}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 160, y: 160}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0, y: 1}
 --- !u!114 &1883429794
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8930,15 +9056,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.309, g: 0.18774684, b: 0, a: 1}
-  m_RaycastTarget: 1
+  m_Color: {r: 0.33823532, g: 0.26578572, b: 0.17409171, a: 1}
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
-    m_Font: {fileID: 12800000, guid: c6a10cd0033fa2343b49511305215223, type: 3}
+    m_Font: {fileID: 12800000, guid: fdc26d7b8bd994542bf14a91f2d241ac, type: 3}
     m_FontSize: 150
     m_FontStyle: 0
     m_BestFit: 0
@@ -9292,8 +9418,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AnimationTime: 0.3
   TargetScale: {x: 1.5, y: 1.5, z: 1.5}
-  DublicateSprite: 1
   IsDetached: 1
+  DublicateSprite: 1
   IsLocked: 0
 --- !u!114 &1908869171
 MonoBehaviour:
@@ -9362,8 +9488,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AnimationTime: 0.3
   TargetScale: {x: 1.5, y: 1.5, z: 1.5}
-  DublicateSprite: 1
   IsDetached: 1
+  DublicateSprite: 1
   IsLocked: 0
 --- !u!114 &1944124833
 MonoBehaviour:
@@ -9660,8 +9786,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AnimationTime: 0.3
   TargetScale: {x: 1.5, y: 1.5, z: 1.5}
-  DublicateSprite: 1
   IsDetached: 1
+  DublicateSprite: 1
   IsLocked: 0
 --- !u!114 &1976466112
 MonoBehaviour:
@@ -9749,8 +9875,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AnimationTime: 0.3
   TargetScale: {x: 1.5, y: 1.5, z: 1.5}
-  DublicateSprite: 1
   IsDetached: 1
+  DublicateSprite: 1
   IsLocked: 0
 --- !u!114 &1986708860
 MonoBehaviour:
@@ -10082,7 +10208,7 @@ GameObject:
   - 222: {fileID: 2039287477}
   - 114: {fileID: 2039287476}
   m_Layer: 5
-  m_Name: Image
+  m_Name: Title
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

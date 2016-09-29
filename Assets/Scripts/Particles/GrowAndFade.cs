@@ -6,9 +6,10 @@ public class GrowAndFade : MonoBehaviour {
 	public float AnimationTime = 0.3f;
 	public Vector3 TargetScale = new Vector3(1.5f,1.5f,1.5f);
 	[Space]
-	public bool DublicateSprite = true;
 	public bool IsDetached = true;
 
+	[HideInInspector]
+	public bool DublicateSprite = true;
 	[HideInInspector]
 	public bool IsLocked = false;
 
@@ -19,14 +20,34 @@ public class GrowAndFade : MonoBehaviour {
 		if (DublicateSprite)
 		{
 			GameObject particle = (GameObject)Instantiate(gameObject, transform.position, Quaternion.identity);
-			particle.transform.SetParent(MenuManager.Instance._canvas.transform);
+
+			MonoBehaviour[] tempComponents = particle.GetComponents<MonoBehaviour>();
+			for (int i = 0; i < tempComponents.Length; i++)
+			{
+				tempComponents[i].enabled = false;
+			}
+			particle.GetComponent<Image>().enabled = true;
+
+			if (IsDetached)
+				particle.transform.SetParent(MenuManager.Instance._canvas.transform);
+			else
+				particle.transform.SetParent(transform.parent);
+
 			particle.transform.localScale = transform.localScale;
 			particle.transform.localRotation = transform.localRotation;
+			particle.GetComponent<GrowAndFade>().enabled = true;
 			particle.GetComponent<GrowAndFade>().DublicateSprite = false;
 			particle.GetComponent<GrowAndFade>().Activate();
 		}
 		else
-			StartCoroutine(ActivateCoroutine(GetComponent<Image>()));
+		{
+			Image[] affectedImages = GetComponentsInChildren<Image>();
+
+			for (int i = 0; i < affectedImages.Length; i++)
+			{
+				StartCoroutine(ActivateCoroutine(affectedImages[i]));
+			}
+		}
 
 	}
 
@@ -36,10 +57,10 @@ public class GrowAndFade : MonoBehaviour {
 
 		target.CrossFadeAlpha(0.5f, 0, false);
 		target.CrossFadeAlpha(0, AnimationTime, false);
-
+		Vector3 startScale = target.transform.localScale;
 		while (Time.time < targetStamp)
 		{
-			target.transform.localScale = Vector3.Lerp(target.transform.localScale, TargetScale, 0.05f);
+			target.transform.localScale = Vector3.Lerp(startScale, TargetScale, 1 - (targetStamp - Time.time));
 			yield return null;
 		}
 		Destroy(target.gameObject);
