@@ -36,7 +36,6 @@ public class FreeForAll_GameRules : AGameRules
 
 	public override void OnPlayerWin_Listener ()
 	{
-		base.OnPlayerWin_Listener();
 
 		Player winner = GameManager.Instance.AlivePlayers[0];
 		winner.Controller.Freeze();
@@ -60,5 +59,7 @@ public class FreeForAll_GameRules : AGameRules
 				GUIManager.Instance.StopTimer();
 			}
 		}
+
+		base.OnPlayerWin_Listener();
 	}
 }
