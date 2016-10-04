@@ -67,7 +67,7 @@ public class PlayerController : MonoBehaviour
 
 	protected Vector3 _activeSpeed = Vector3.zero; // Activespeed est un vecteur qui est appliqué a chaque frame au rigibody.velocity => permet de modifier librement la vitesse du player.
 	protected Vector3 _activeDirection = Vector3.forward;
-	protected Vector2 _maxSpeed = new Vector2(7f, 20f);
+	protected Vector2 _maxSpeed = new Vector2(8f, 20f);
 	protected Vector2 _acceleration = new Vector2(1.2f, -2f);
 	protected float _friction = 50; //friction applied to the player when it slides (pushed or end dash) (units/s)
 

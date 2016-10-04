@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 using System.Collections;
 using System.Collections.Generic;
 using System;
@@ -15,15 +16,35 @@ public enum InputEnum
 	Start = 7
 }
 
-public class InputManager : GenericSingleton<InputManager> 
+public class InputManager : GenericSingleton<InputManager>
 {
 	//  Buttons						0		1		 2			3		4		5		6		7
 	private string[] InputNames = { "Dash", "Cancel", "Special", null, null, null, "Select", "Start" };
 	private KeyCode[] KeyboardControls = { KeyCode.H, KeyCode.J, KeyCode.K, KeyCode.L, KeyCode.None, KeyCode.None, KeyCode.Return, KeyCode.Space };
+	private static float _inputLockTime = 0;
+	private static bool _inputLocked = false;
+	private static GameObject _eventSystemGO;
 
-	private static int GetButtonNumber(string buttonName) 
+	private static int GetButtonNumber(string buttonName)
 	{
 		return Array.IndexOf(Instance.InputNames, buttonName);
+	}
+
+	void Update()
+	{
+		_inputLocked = _inputLockTime != 0;
+
+		_inputLockTime = _inputLockTime.Reduce(Time.deltaTime);
+
+		if (_eventSystemGO == null)
+		{
+			if (MenuManager.Instance != null)
+			{
+				_eventSystemGO = MenuManager.Instance.GetComponentInChildren<EventSystem>().gameObject;
+			}
+		}
+		else if (_eventSystemGO.activeInHierarchy != !_inputLocked)
+			_eventSystemGO.SetActive(!_inputLocked);
 	}
 
 	#region GetButtonDown
@@ -44,6 +65,8 @@ public class InputManager : GenericSingleton<InputManager>
 
 	public static bool GetButtonDown(int buttonNumber, int JoystickNumber = -1)
 	{
+		if (_inputLocked)
+			return false;
 		if (JoystickNumber == -1)
 			return Input.GetKeyDown("joystick button " + buttonNumber) || Input.GetKeyDown(Instance.KeyboardControls[buttonNumber]);
 		else if (JoystickNumber == 0)
@@ -72,6 +95,8 @@ public class InputManager : GenericSingleton<InputManager>
 
 	public static bool GetButtonUp(int buttonNumber, int JoystickNumber = -1)
 	{
+		if (_inputLocked)
+			return false;
 		if (JoystickNumber == -1)
 			return Input.GetKeyUp("joystick button " + buttonNumber) || Input.GetKeyUp(Instance.KeyboardControls[buttonNumber]);
 		else if (JoystickNumber == 0)
@@ -100,6 +125,9 @@ public class InputManager : GenericSingleton<InputManager>
 
 	public static bool GetButtonHeld(int buttonNumber, int JoystickNumber = -1)
 	{
+		if (_inputLocked)
+			return false;
+
 		if (JoystickNumber == -1)
 		{
 			return Input.GetKey("joystick button " + buttonNumber) || Input.GetKey(Instance.KeyboardControls[buttonNumber]);
@@ -114,17 +142,21 @@ public class InputManager : GenericSingleton<InputManager>
 	#region GetAxis
 	public static float GetAxis(string axisName = "x", int JoystickNumber = 0)
 	{
+		if (_inputLocked)
+			return 0;
 		return Input.GetAxis(axisName + "_" + JoystickNumber);
 	}
 
 	public static float GetAxisRaw(string axisName = "x", int JoystickNumber = 0)
 	{
+		if(_inputLocked)
+			return 0;
 		return Input.GetAxisRaw(axisName + "_" + JoystickNumber);
 	}
 
 	public static Vector2 GetStickDirection(int JoystickNumber = 0)
 	{
-		if (StickIsNeutral(JoystickNumber))
+		if (StickIsNeutral(JoystickNumber) || _inputLocked)
 			return Vector2.zero;
 		return new Vector2(GetAxis("x", JoystickNumber), GetAxis("y", JoystickNumber)).normalized;
 	}
@@ -135,7 +167,16 @@ public class InputManager : GenericSingleton<InputManager>
 	}
 	#endregion
 
-	
+	public static void AddInputLockTime(float additionnalTime)
+	{
+		_inputLockTime += additionnalTime;
+	}
+
+	public static void SetInputLockTime(float newTime)
+	{
+		_inputLockTime = newTime;
+		_inputLocked = newTime != 0;
+	}
 	
 
 }

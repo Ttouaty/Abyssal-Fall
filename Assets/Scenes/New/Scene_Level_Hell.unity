@@ -185,7 +185,6 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 12979334}
-  - 114: {fileID: 12979335}
   m_Layer: 0
   m_Name: Ile_01
   m_TagString: Untagged
@@ -213,19 +212,6 @@ Transform:
   - {fileID: 1403171304}
   m_Father: {fileID: 1577532822}
   m_RootOrder: 0
---- !u!114 &12979335
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 12979333}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a7659996eb31b84aaacc5f978c36fec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _amplitude: 1
-  _speed: 1
 --- !u!1 &23586980
 GameObject:
   m_ObjectHideFlags: 0
@@ -411,7 +397,6 @@ GameObject:
   - 33: {fileID: 28638809}
   - 23: {fileID: 28638808}
   - 95: {fileID: 28638807}
-  - 114: {fileID: 28638806}
   m_Layer: 0
   m_Name: ile_petite (1)
   m_TagString: Untagged
@@ -432,19 +417,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 891520262}
   m_RootOrder: 0
---- !u!114 &28638806
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 28638804}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a7659996eb31b84aaacc5f978c36fec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _amplitude: 2
-  _speed: 1
 --- !u!95 &28638807
 Animator:
   serializedVersion: 3
@@ -1234,7 +1206,6 @@ GameObject:
   - 33: {fileID: 233969092}
   - 23: {fileID: 233969091}
   - 95: {fileID: 233969090}
-  - 114: {fileID: 233969089}
   m_Layer: 0
   m_Name: ile_volante (5)
   m_TagString: Untagged
@@ -1256,19 +1227,6 @@ Transform:
   - {fileID: 667848560}
   m_Father: {fileID: 1577532822}
   m_RootOrder: 8
---- !u!114 &233969089
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 233969087}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a7659996eb31b84aaacc5f978c36fec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _amplitude: 1.5
-  _speed: 0.9
 --- !u!95 &233969090
 Animator:
   serializedVersion: 3
@@ -1423,7 +1381,6 @@ GameObject:
   - 33: {fileID: 277372770}
   - 23: {fileID: 277372769}
   - 95: {fileID: 277372768}
-  - 114: {fileID: 277372767}
   m_Layer: 0
   m_Name: ile_volante (4)
   m_TagString: Untagged
@@ -1447,19 +1404,6 @@ Transform:
   - {fileID: 231608387}
   m_Father: {fileID: 1049224569}
   m_RootOrder: 25
---- !u!114 &277372767
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 277372765}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a7659996eb31b84aaacc5f978c36fec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _amplitude: 1.2
-  _speed: 0.8
 --- !u!95 &277372768
 Animator:
   serializedVersion: 3
@@ -3454,7 +3398,6 @@ GameObject:
   - 33: {fileID: 509171855}
   - 23: {fileID: 509171854}
   - 95: {fileID: 509171853}
-  - 114: {fileID: 509171852}
   m_Layer: 0
   m_Name: ile_petite (5)
   m_TagString: Untagged
@@ -3475,19 +3418,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 839944354}
   m_RootOrder: 0
---- !u!114 &509171852
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 509171850}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a7659996eb31b84aaacc5f978c36fec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _amplitude: 2
-  _speed: 1
 --- !u!95 &509171853
 Animator:
   serializedVersion: 3
@@ -4311,7 +4241,6 @@ GameObject:
   - 33: {fileID: 680822082}
   - 23: {fileID: 680822081}
   - 95: {fileID: 680822080}
-  - 114: {fileID: 680822079}
   m_Layer: 0
   m_Name: ile_petite (4)
   m_TagString: Untagged
@@ -4332,19 +4261,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 607482521}
   m_RootOrder: 1
---- !u!114 &680822079
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 680822077}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a7659996eb31b84aaacc5f978c36fec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _amplitude: 2
-  _speed: 1
 --- !u!95 &680822080
 Animator:
   serializedVersion: 3
@@ -4784,7 +4700,6 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 748790159}
-  - 114: {fileID: 748790160}
   m_Layer: 0
   m_Name: Ile_04
   m_TagString: Untagged
@@ -4815,19 +4730,6 @@ Transform:
   - {fileID: 816250464}
   m_Father: {fileID: 1577532822}
   m_RootOrder: 3
---- !u!114 &748790160
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 748790158}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a7659996eb31b84aaacc5f978c36fec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _amplitude: 2
-  _speed: 1
 --- !u!1 &791960685
 GameObject:
   m_ObjectHideFlags: 0
@@ -7007,7 +6909,6 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 1049224569}
-  - 114: {fileID: 1049224570}
   m_Layer: 0
   m_Name: Ile_02
   m_TagString: Untagged
@@ -7055,19 +6956,6 @@ Transform:
   - {fileID: 406410545}
   m_Father: {fileID: 1577532822}
   m_RootOrder: 1
---- !u!114 &1049224570
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1049224568}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a7659996eb31b84aaacc5f978c36fec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _amplitude: 1
-  _speed: 1
 --- !u!1 &1070933790
 GameObject:
   m_ObjectHideFlags: 0
@@ -8719,7 +8607,6 @@ GameObject:
   - 33: {fileID: 1355529204}
   - 23: {fileID: 1355529203}
   - 95: {fileID: 1355529202}
-  - 114: {fileID: 1355529201}
   m_Layer: 0
   m_Name: ile_volante (1)
   m_TagString: Untagged
@@ -8741,19 +8628,6 @@ Transform:
   - {fileID: 1250031564}
   m_Father: {fileID: 1577532822}
   m_RootOrder: 9
---- !u!114 &1355529201
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1355529199}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a7659996eb31b84aaacc5f978c36fec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _amplitude: 1.4
-  _speed: 1.1
 --- !u!95 &1355529202
 Animator:
   serializedVersion: 3
@@ -8908,7 +8782,6 @@ GameObject:
   - 33: {fileID: 1388127445}
   - 23: {fileID: 1388127444}
   - 95: {fileID: 1388127443}
-  - 114: {fileID: 1388127442}
   m_Layer: 0
   m_Name: ile_petite (7)
   m_TagString: Untagged
@@ -8929,19 +8802,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 839944354}
   m_RootOrder: 2
---- !u!114 &1388127442
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1388127440}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a7659996eb31b84aaacc5f978c36fec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _amplitude: 2
-  _speed: 1
 --- !u!95 &1388127443
 Animator:
   serializedVersion: 3
@@ -10399,7 +10259,6 @@ GameObject:
   - 33: {fileID: 1637112765}
   - 23: {fileID: 1637112764}
   - 95: {fileID: 1637112763}
-  - 114: {fileID: 1637112762}
   m_Layer: 0
   m_Name: ile_petite (3)
   m_TagString: Untagged
@@ -10420,19 +10279,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 607482521}
   m_RootOrder: 0
---- !u!114 &1637112762
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1637112760}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a7659996eb31b84aaacc5f978c36fec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _amplitude: 2
-  _speed: 1
 --- !u!95 &1637112763
 Animator:
   serializedVersion: 3
@@ -11044,7 +10890,6 @@ GameObject:
   - 33: {fileID: 1784085145}
   - 23: {fileID: 1784085144}
   - 95: {fileID: 1784085143}
-  - 114: {fileID: 1784085142}
   m_Layer: 0
   m_Name: ile_petite (2)
   m_TagString: Untagged
@@ -11065,19 +10910,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 607482521}
   m_RootOrder: 2
---- !u!114 &1784085142
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1784085140}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a7659996eb31b84aaacc5f978c36fec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _amplitude: 2
-  _speed: 1
 --- !u!95 &1784085143
 Animator:
   serializedVersion: 3
@@ -11855,7 +11687,6 @@ GameObject:
   - 33: {fileID: 1914858951}
   - 23: {fileID: 1914858950}
   - 95: {fileID: 1914858949}
-  - 114: {fileID: 1914858948}
   m_Layer: 0
   m_Name: ile_petite (6)
   m_TagString: Untagged
@@ -11876,19 +11707,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 839944354}
   m_RootOrder: 1
---- !u!114 &1914858948
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1914858946}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a7659996eb31b84aaacc5f978c36fec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _amplitude: 2
-  _speed: 1
 --- !u!95 &1914858949
 Animator:
   serializedVersion: 3
@@ -12301,7 +12119,6 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 1953878668}
-  - 114: {fileID: 1953878669}
   m_Layer: 0
   m_Name: Ile_03
   m_TagString: Untagged
@@ -12327,19 +12144,6 @@ Transform:
   - {fileID: 1113144646}
   m_Father: {fileID: 1577532822}
   m_RootOrder: 2
---- !u!114 &1953878669
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1953878667}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a7659996eb31b84aaacc5f978c36fec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _amplitude: 2
-  _speed: 1
 --- !u!1 &1957348597
 GameObject:
   m_ObjectHideFlags: 0
@@ -12517,7 +12321,6 @@ GameObject:
   - 33: {fileID: 1996174904}
   - 23: {fileID: 1996174903}
   - 95: {fileID: 1996174902}
-  - 114: {fileID: 1996174901}
   m_Layer: 0
   m_Name: ile_volante (2)
   m_TagString: Untagged
@@ -12538,19 +12341,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 891520262}
   m_RootOrder: 2
---- !u!114 &1996174901
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1996174899}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a7659996eb31b84aaacc5f978c36fec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _amplitude: 2
-  _speed: 1
 --- !u!95 &1996174902
 Animator:
   serializedVersion: 3
@@ -13437,7 +13227,6 @@ GameObject:
   - 33: {fileID: 2137961009}
   - 23: {fileID: 2137961008}
   - 95: {fileID: 2137961007}
-  - 114: {fileID: 2137961006}
   m_Layer: 0
   m_Name: ile_volante (1)
   m_TagString: Untagged
@@ -13458,19 +13247,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 891520262}
   m_RootOrder: 1
---- !u!114 &2137961006
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 2137961004}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a7659996eb31b84aaacc5f978c36fec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _amplitude: 2
-  _speed: 1
 --- !u!95 &2137961007
 Animator:
   serializedVersion: 3

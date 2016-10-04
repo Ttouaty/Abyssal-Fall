@@ -19,7 +19,9 @@ public class MainManager : GenericSingleton<MainManager>
 	{
 		base.Awake();
 
-		GAME_OBJECT_POOL    = GameObjectPool.Instance;
+		Cursor.visible = false;
+
+		GAME_OBJECT_POOL = GameObjectPool.Instance;
 		DYNAMIC_CONFIG      = DynamicConfig.Instance;
 		LEVEL_MANAGER       = LevelManager.Instance;
 		TIME_MANAGER        = TimeManager.Instance;

@@ -9,23 +9,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6709b90a5db50264aa37f582427c3be2, type: 3}
-  m_Name: SO_Mage
+  m_Name: SO_Tank
   m_EditorClassIdentifier: 
-  IngameName: Enchantora The Witch
-  CharacterModel: {fileID: 11475656, guid: 3d4a50b86d93dbd4b91acbc922964100, type: 2}
+  IngameName: Bellus The Tank
+  Icon: {fileID: 0}
+  CharacterModel: {fileID: 11455340, guid: adc2308776991c0429825986e99b0c32, type: 2}
   CharacterMaterials:
-  - {fileID: 2100000, guid: a6e8202b05519ec4e9488f6f40a8cd2b, type: 2}
-  - {fileID: 2100000, guid: aac45e70a54774947a27bb81cb09d98c, type: 2}
+  - {fileID: 2100000, guid: a2e8f34096c7c8e4284bab3cfbb278a7, type: 2}
   - {fileID: 2100000, guid: 2085d6d318e9139479838deb44ecb229, type: 2}
+  - {fileID: 2100000, guid: 0347f43d680c4ec41aa2e15fb5d71a74, type: 2}
   CharacterStats:
-    strength: 3
-    specialCooldown: 5
-    speed: 3
-    resistance: 2
+    strength: 4
+    specialCooldown: 2
+    speed: 2
+    resistance: 4
   Dash:
-    endingLag: .300000012
-    force: {x: 7, y: 5}
-    ImpactEjection: {x: 5, y: 5}
+    endingLag: 0.3
+    force: {x: 9, y: 6}
+    ImpactEjection: {x: 7, y: 5}
     inProgress: 0
   SoundList:
     OnDashStart: {fileID: 0}

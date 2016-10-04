@@ -11,6 +11,8 @@ public class MenuManager : GenericSingleton<MenuManager>
 	public Image LoadingIn;
 	public Image LoadingOut;
 	public GameObject SplashScreens;
+	[Space]
+	public float InputDelayBetweenTransition = 0.5f;
 
 	private MenuPanel _activeMenu;
 	private MenuPanel[] _menuArray;
@@ -153,6 +155,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	public void MakeTransition(MenuPanel newMenu, bool forward = true)
 	{
+		InputManager.SetInputLockTime(InputDelayBetweenTransition);
 		StartCoroutine(Transition(newMenu, forward));
 	}
 
