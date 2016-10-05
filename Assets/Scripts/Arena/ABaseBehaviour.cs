@@ -39,9 +39,15 @@ public abstract class ABaseBehaviour : MonoBehaviour
 
 	private IEnumerator Run_Update()
 	{
+		float timer = 0f;
 		while(true)
 		{
-			yield return new WaitForSeconds(Frequency);
+			timer = 0f;
+			while(timer < Frequency)
+			{
+				timer += TimeManager.DeltaTime;
+				yield return null;
+			}
 			StartCoroutine(Run_Implementation());
 		}
 	}
