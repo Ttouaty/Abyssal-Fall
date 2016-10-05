@@ -28,9 +28,11 @@ public class MageController : PlayerController
 	[SerializeField]
 	private ParticleSystem _preExposionParticles;
 	[SerializeField]
-	private ParticleSystem _explosionParticles; 
+	private ParticleSystem _explosionParticles;
+	[SerializeField]
+	private ParticleSystem _chargeParticles;
 
-	
+
 
 	protected override void CustomStart()
 	{
@@ -56,6 +58,13 @@ public class MageController : PlayerController
 	{ 
 		if(InputManager.GetButtonHeld("Special", _playerRef.JoystickNumber))
 		{
+			if (_timeHeld == 0)
+			{
+				_chargeParticles.transform.localPosition = Vector3.zero;
+				_chargeParticles.transform.localRotation = Quaternion.identity;
+				_chargeParticles.Clear();
+				_chargeParticles.Play();
+			}
 			_timeHeld += Time.deltaTime;
 			if (_timeHeld > _specialMaxChargeTime)
 			{
@@ -63,6 +72,7 @@ public class MageController : PlayerController
 			}
 			_specialChargeSpeed += _specialChargeSpeedOriginal * _specialChargeSpeedIncrease * Time.deltaTime;
 			_specialActiveRange += _specialChargeSpeed * Time.deltaTime;
+			_chargeParticles.transform.position = Vector3.Lerp(_chargeParticles.transform.position, transform.position + _activeDirection.normalized * _specialActiveRange, 0.3f);
 			Debug.DrawRay(transform.position, _activeDirection.normalized * _specialActiveRange, Color.red, 0.1f);
 		}
 
@@ -72,6 +82,7 @@ public class MageController : PlayerController
 	protected override void SpecialAction()
 	{
 		Debug.DrawRay(transform.position+ Vector3.up * 0.2f, _activeDirection.normalized * _specialActiveRange, Color.green, 2f);
+		_chargeParticles.Stop();
 		StartCoroutine(DelayedExplosion(transform.position + _activeDirection.normalized * _specialActiveRange));
 		Debug.Log("special Activated");
 	}

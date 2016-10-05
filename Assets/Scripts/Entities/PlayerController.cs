@@ -51,9 +51,8 @@ public class PlayerController : MonoBehaviour
 	public bool _isDead = false;
 	[HideInInspector]
 	public bool IsGrounded = false;
-	//change to protected
-	[HideInInspector]
-	public PlayerProp _playerProp;
+
+	protected PlayerProp _playerProp;
 
 	#region references
 
@@ -70,17 +69,17 @@ public class PlayerController : MonoBehaviour
 	protected Vector2 _maxSpeed = new Vector2(8f, 20f);
 	protected Vector2 _acceleration = new Vector2(1.2f, -2f);
 	protected float _friction = 50; //friction applied to the player when it slides (pushed or end dash) (units/s)
-
+	protected float _airborneDelay = 0.15f;
 	[Space]
 	public SO_Character _characterData;
 
 	protected TimeCooldown _specialCooldown;
 	protected TimeCooldown _stunTime; //Seconds of stun on Hit
 	protected TimeCooldown _invulTime; //Seconds of invulnerability
+	protected TimeCooldown _airborneTimeout; //Time before being considered airborne
 
 	protected DamageDealer _dmgDealerSelf;
 	public DamageDealer DamageDealerSelf { get { return _dmgDealerSelf; } }
-	[HideInInspector]
 	private DamageDealer _lastDamageDealer;
 	public DamageDealer LastDamageDealer
 	{
@@ -108,7 +107,7 @@ public class PlayerController : MonoBehaviour
 	{
 		get
 		{
-			return !_characterData.Dash.inProgress && IsGrounded && !_isDead;
+			return !_characterData.Dash.inProgress /*&& IsGrounded*/ && !_isDead;
 		}
 	}
 
@@ -119,7 +118,7 @@ public class PlayerController : MonoBehaviour
 		_rigidB = GetComponent<Rigidbody>();
 	}
 
-	public void Freeze ()
+	public void Freeze()
 	{
 		_allowInput = false;
 		_rigidB.velocity = Vector3.zero;
@@ -128,7 +127,7 @@ public class PlayerController : MonoBehaviour
 		_animator.SetTrigger("Reset");
 	}
 
-	public void UnFreeze ()
+	public void UnFreeze()
 	{
 		_allowInput = true;
 		_rigidB.isKinematic = false;
@@ -136,12 +135,11 @@ public class PlayerController : MonoBehaviour
 
 	public void Init(Player player)
 	{
-		Debug.Log(TimeManager.Instance);
 		_playerRef = player;
 
 		if (_characterData == null)
 		{
-			Debug.Log("No SO_Character found for character "+gameObject.name+". Seriously ?");
+			Debug.Log("No SO_Character found for character " + gameObject.name + ". Seriously ?");
 			return;
 		}
 
@@ -171,6 +169,11 @@ public class PlayerController : MonoBehaviour
 		_invulTime = new TimeCooldown(this);
 		_invulTime.onFinish = OnInvulOver;
 		_invulTime.onProgress = OnInvulActive;
+
+		_airborneTimeout = new TimeCooldown(this);
+		_airborneTimeout.onFinish = OnAirbornFinish;
+		_airborneTimeout.onProgress = OnAirbornProgress;
+
 
 		_lastDamageDealerTimeOut = new TimeCooldown(this);
 		_lastDamageDealerTimeOut.onFinish = OnLastDamageDealerTimeOut;
@@ -292,10 +295,25 @@ public class PlayerController : MonoBehaviour
 	protected virtual void OnPlayerWin()
 	{
 		_allowInput = false;
-		_activeSpeed = Vector3.zero;
-		enabled = false;
+		//enabled = false;
+		Freeze();
 		_animator.SetTrigger("Reset");
 	}
+
+	private void OnAirbornFinish()
+	{
+
+	}
+
+	private void OnAirbornProgress()
+	{
+		if (_characterData.Dash.inProgress)
+			return;
+		if(IsGrounded)
+			_airborneTimeout.Add(Time.deltaTime);
+		IsGrounded = true;
+	}
+
 	#endregion
 
 
@@ -379,6 +397,7 @@ public class PlayerController : MonoBehaviour
 	{
 		IsGrounded = true;
 		_activeSpeed.y = 0f;
+		_airborneTimeout.Set(_airborneDelay);
 		//Breaks physics
 		//if (_hit.rigidbody.isKinematic == true)
 		//	transform.position = transform.position - (_snapGround.transform.position - _hit.point);
