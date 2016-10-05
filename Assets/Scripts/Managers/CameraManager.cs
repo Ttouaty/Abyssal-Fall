@@ -53,13 +53,13 @@ public class CameraManager : GenericSingleton<CameraManager>
 			CalculateTargetsCentroid();
 			CalculateTargetsDistance();
 
-			//Debug.DrawRay(_centerPoint.position, _targetsCentroid - _centerPoint.position, Color.red, 1);
+			Debug.DrawRay(_centerPoint.position, _targetsCentroid - _centerPoint.position, Color.red, 1);
 
 			transform.localPosition = -transform.forward * _distance;
 
 			FollowCentroid();
 
-			//Debug.DrawRay(transform.position, transform.forward * _distance, Color.blue, 0.2f);
+			Debug.DrawRay(transform.position, transform.forward * _distance, Color.blue, 0.2f);
 		}
 	}
 
@@ -84,16 +84,18 @@ public class CameraManager : GenericSingleton<CameraManager>
 		_farthestPosition = Vector3.zero;
 		for (int i = 0; i < _targetsTracked.Count; i++)
 		{
-			if (Vector3.Distance(_farthestPosition.ZeroY(), _targetsCentroid.ZeroY()) > _tempDistance)
+			if (Vector3.Distance(_targetsTracked[i].position.ZeroY(), _targetsCentroid.ZeroY()) > _tempDistance)
 			{
 				_farthestPosition = _targetsTracked[i].position.ZeroY();
 				_tempDistance = Vector3.Distance(_farthestPosition.ZeroY(), _targetsCentroid.ZeroY());
 			}
 		}
 
-		_distance = _tempDistance * 0.5f / Mathf.Tan(_camera.fieldOfView * 0.5f * Mathf.Deg2Rad) * 2f;
+		_distance = _tempDistance * 0.5f / Mathf.Tan(_camera.fieldOfView * 0.5f * Mathf.Deg2Rad) * 2.5f;
 		if (_distance < MinDistance)
 			_distance = MinDistance;
+
+
 		_verticalOffset = _distance * 0.1f;
 	}
 
@@ -124,8 +126,8 @@ public class CameraManager : GenericSingleton<CameraManager>
 		if (firstTime)
 		{
 			firstTime = false;
-			time = 3;
-			Debug.Log("CameraManager: First time SetingCenterPoint, forcing time 3s");
+			time = 2;
+			Debug.Log("CameraManager: First time SetingCenterPoint, forcing time 2s");
 		}
 
 		if (time == 0)

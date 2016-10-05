@@ -54,7 +54,7 @@ public class Hammer : MonoBehaviour {
 			if (Collider.gameObject.GetInstanceID() == _playerShooting.gameObject.GetInstanceID() || Collider.GetComponent<PlayerController>()._isInvul)
 				return;
 
-			Collider.GetComponent<PlayerController>().Damage(_rigidB.velocity + Vector3.up * 3, _stunInflicted, _playerShooting);
+			Collider.GetComponent<PlayerController>().Damage(Quaternion.FromToRotation(Vector3.right, _rigidB.velocity.ZeroY()) * _playerShooting.PlayerRef.Controller._characterData.Dash.force, _stunInflicted, _playerShooting);
 			// explosion particules
 			_audioSource.PlayOneShot(OnHitPlayer);
 			this.Stop();

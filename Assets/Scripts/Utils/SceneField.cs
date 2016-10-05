@@ -7,7 +7,7 @@ using UnityEditor;
 [System.Serializable]
 public struct SceneField
 {
-    public SceneAsset SceneAsset;
+    //public SceneAsset SceneAsset;
     public string SceneName;
     public GameObject SceneRoot;
 
@@ -15,7 +15,7 @@ public struct SceneField
     {
         get
         {
-            return SceneAsset == null && SceneName == "";
+			return /*SceneAsset == null &&*/ SceneName == "";
         }
     }
 
