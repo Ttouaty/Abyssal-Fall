@@ -20,13 +20,10 @@ public class DeathMatch_GameRules : AGameRules
 		{
 			killer.Score += PointsGainPerKill;
 			--player.Score;
-			Debug.Log("Killer ----- Player " + killer.PlayerNumber + " score : " + killer.Score);
-			Debug.Log("Killed ----- Player " + player.PlayerNumber + " score : " + player.Score);
 		}
 		else
 		{
 			player.Score -= PointsLoosePerSuicide;
-			Debug.Log("Suicide ----- Player " + player.PlayerNumber + " score : " + player.Score);
 		}
 
 

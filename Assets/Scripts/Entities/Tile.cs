@@ -76,7 +76,6 @@ public class Tile : MonoBehaviour, IPoolable
 		_canFall = false;
 		_isFalling = false;
 		_rigidB.isKinematic = true;
-		gameObject.SetActive(false);
 	}
 
 	public void ActivateRespawn()

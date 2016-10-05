@@ -28,9 +28,9 @@ public class FreeForAll_GameRules : AGameRules
 		}
 	}
 
-	public override void RespawnFalledTiles (Tile tile)
+	protected override IEnumerator RespawnFalledTiles_Implementation (Tile tile)
 	{
-		base.RespawnFalledTiles(tile);
+		yield return new WaitForSeconds(5f);
 		GameObjectPool.AddObjectIntoPool(tile.gameObject);
 	}
 
