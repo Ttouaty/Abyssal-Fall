@@ -9,25 +9,15 @@ public class EndGameManager : GenericSingleton<EndGameManager>
 
 	public Text WinnerText;
 
-	void Update()
+	public void ResetGame(bool checkIfOpen = true)
 	{
-		if (IsOpen)
+		if (!checkIfOpen || IsOpen)
 		{
-			for (int i = 0; i < GameManager.Instance.RegisteredPlayers.Length; ++i)
-			{
-				Player player = GameManager.Instance.RegisteredPlayers[i];
-				if (player != null)
-				{
-					if (InputManager.GetButtonDown("Dash", player.JoystickNumber))
-					{
-						Destroy(GameManager.Instance.GameRules.gameObject);
-						MainManager.Instance.LEVEL_MANAGER.UnloadScene(LevelManager.Instance.CurrentArenaConfig.BackgroundLevel);
-						MainManager.Instance.LEVEL_MANAGER.CurrentArenaConfig = null;
-						CameraManager.Instance.Reset();
-						MainManager.Instance.LEVEL_MANAGER.OpenMenu();
-					}
-				}
-			}
+			Destroy(GameManager.Instance.GameRules.gameObject);
+			MainManager.Instance.LEVEL_MANAGER.UnloadScene(LevelManager.Instance.CurrentArenaConfig.BackgroundLevel);
+			MainManager.Instance.LEVEL_MANAGER.CurrentArenaConfig = null;
+			CameraManager.Instance.Reset();
+			MainManager.Instance.LEVEL_MANAGER.OpenMenu();
 		}
 	}
 

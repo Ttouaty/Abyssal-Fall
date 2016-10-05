@@ -155,7 +155,6 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	public void MakeTransition(MenuPanel newMenu, bool forward = true)
 	{
-		InputManager.SetInputLockTime(InputDelayBetweenTransition);
 		StartCoroutine(Transition(newMenu, forward));
 	}
 
@@ -219,6 +218,8 @@ public class MenuManager : GenericSingleton<MenuManager>
 			newMenu.LastButtonSelected.Select();
 
 		_activeMenu = newMenu;
+		yield return null;
+		InputManager.SetInputLockTime(InputDelayBetweenTransition);
 	}
 
 	IEnumerator SendOutLeft(MenuPanel targetMenu)

@@ -10,21 +10,22 @@ public class MenuPauseManager : GenericSingleton<MenuPauseManager>
 
 	void Update ()
 	{
-		for(int i = 0; i < GameManager.Instance.RegisteredPlayers.Length; ++i)
-		{
-			Player player = GameManager.Instance.RegisteredPlayers[i];
-			if(player != null)
-			{
-				if(InputManager.GetButtonDown("Start", player.JoystickNumber) && CanPause)
-				{
-					Toggle();
-				}
-			}
-		}
+		//for(int i = 0; i < GameManager.Instance.RegisteredPlayers.Length; ++i)
+		//{
+		//	Player player = GameManager.Instance.RegisteredPlayers[i];
+		//	if(player != null)
+		//	{
+		//		if(InputManager.GetButtonDown("Start", player.JoystickNumber) && CanPause)
+		//		{
+		//			Toggle();
+		//		}
+		//	}
+		//}
 	}
 
 	public override void Init ()
 	{
+		IsOpen = true;
 		Close();
 
 		for (int i = 0; i < GameManager.Instance.RegisteredPlayers.Length; ++i)
@@ -51,6 +52,9 @@ public class MenuPauseManager : GenericSingleton<MenuPauseManager>
 
 	public void Open ()
 	{
+		if (IsOpen)
+			return;
+
 		TimeManager.Pause();
 		for (int i = 0; i < ScoresFields.Length; ++i)
 		{
@@ -73,8 +77,16 @@ public class MenuPauseManager : GenericSingleton<MenuPauseManager>
 		IsOpen = true;
 	}
 
+	public void BackToMainMenu()
+	{
+		EndGameManager.Instance.ResetGame(false);
+	}
+
 	public void Close ()
 	{
+		if (!IsOpen)
+			return;
+
 		TimeManager.Resume();
 		transform.GetChild(0).gameObject.SetActive(false);
 		IsOpen = false;
