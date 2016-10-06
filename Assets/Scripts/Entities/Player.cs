@@ -34,8 +34,6 @@ public class Player
 	public Player()
 	{
 		PlayerNumber = GameManager.Instance.nbPlayers++;
-
-		Debug.Log(PlayerNumber);
 	}
 
 

@@ -123,13 +123,13 @@ namespace Localizator
 			{
 				Debug.Log("Localizator.LanguageManager -> CurrentLanguage set to <" + _currentLanguage.ToString() + ">");
 				_currentDictionary = target;
+				OnChangeLanguage.Invoke();
 			}
 
-			if(!bIsLoaded)
+			if (!bIsLoaded)
 			{
 				bIsLoaded = true;
 			}
-			OnChangeLanguage.Invoke();
 		}
 
 		public string GetText(string id)

@@ -55,6 +55,7 @@ public class MenuPauseManager : GenericSingleton<MenuPauseManager>
 		if (IsOpen)
 			return;
 
+		InputManager.SetInputLockTime(0.3f);
 		TimeManager.Pause();
 		for (int i = 0; i < ScoresFields.Length; ++i)
 		{
