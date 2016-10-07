@@ -3,7 +3,7 @@ using System.Collections;
 
 public class KillPlane : MonoBehaviour
 {
-	void OnTriggerEnter(Collider col)
+	void OnTriggerExit(Collider col)
 	{
 		if (col.tag == "Player")
 		{

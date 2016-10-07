@@ -1,49 +1,41 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[RequireComponent(typeof(SphereCollider))]
 public class GroundCheck : MonoBehaviour
 {
-	private Rigidbody _rigidB;
 	private PlayerController _playerRef;
+	private Rigidbody _rigidB;
+	private bool IsColliding = false;
 
-	private float _checkDistance;
-	private RaycastHit _hit;
-	
-	void Start () 
+	void Start()
 	{
 		_playerRef = GetComponentInParent<PlayerController>();
 		_rigidB = GetComponentInParent<Rigidbody>();
-		_checkDistance = -(transform.position - _playerRef.transform.position).y;
-		CheckForGround();
-	}
-	
-	void FixedUpdate() 
-	{
-		CheckForGround();
 	}
 
-	void CheckForGround()
+	void LateUpdate()
 	{
-		if(_rigidB.velocity.y > 0.2f)
-			_playerRef.IsGrounded = false;
-		else if (_playerRef.IsGrounded && !TimeManager.IsPaused)
-		{
-			_rigidB.velocity = _rigidB.velocity.ZeroY();
+		_playerRef.IsGrounded = IsColliding;
+	}
 
-			if (Physics.Raycast(_playerRef.transform.position, Vector3.down, out _hit, _checkDistance, 1 << LayerMask.NameToLayer("Ground")))
-			{
-				if (_hit.transform.gameObject.activeInHierarchy && _hit.transform.GetComponent<Tile>() != null)
-					_hit.transform.GetComponent<Tile>().ActivateFall();
-			}
-			else
-				_playerRef.IsGrounded = false;
-		}
-		else if (_rigidB.velocity.y <= 0)
+	void OnTriggerEnter(Collider colli)
+	{
+		if (_rigidB.velocity.y > 0.2f)
+			return;
+
+		if (!_playerRef.IsGrounded)
 		{
-			if (Physics.Raycast(_playerRef.transform.position, Vector3.down, out _hit, _checkDistance - _rigidB.velocity.y * Time.deltaTime, 1 << LayerMask.NameToLayer("Ground")))
-				_playerRef.ContactGround(); // only activate if you make contact with the ground once
-			else
-				_playerRef.IsGrounded = false;
+			_playerRef.ContactGround();
 		}
+		IsColliding = true;
+	}
+	void OnTriggerStay(Collider colli)
+	{
+		IsColliding = _rigidB.velocity.y < 0.2f;
+	}
+	void OnTriggerExit(Collider colli)
+	{
+		IsColliding = false;
 	}
 }

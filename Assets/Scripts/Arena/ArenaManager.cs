@@ -60,14 +60,6 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 			_currentModeConfig		= MainManager.Instance.LEVEL_MANAGER.CurrentModeConfig;
 			_currentMapConfig		= MainManager.Instance.LEVEL_MANAGER.CurrentMapConfig;
 
-			GameObject killPlane			= new GameObject("KillPlane", typeof(KillPlane));
-			BoxCollider collider			= killPlane.AddComponent<BoxCollider>();
-			collider.isTrigger				= true;
-			collider.size					= new Vector3(100, 5, 100);
-			killPlane.transform.position	= new Vector3(0, -15.0f, 0);
-			killPlane.layer					= LayerMask.NameToLayer("KillPlane");
-			killPlane.transform.SetParent(transform, false);
-
 			ArenaRoot				= new GameObject("ArenaRoot").transform;
 			ArenaRoot.SetParent(transform, false);
 			TilesRoot				= new GameObject("TilesRoot").transform;
@@ -80,6 +72,15 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 			SpecialsRoot.SetParent(ArenaRoot, false);
 			BehavioursRoot			= new GameObject("BehavioursRoot").transform;
 			BehavioursRoot.SetParent(ArenaRoot, false);
+
+			GameObject killPlane = new GameObject("KillPlane", typeof(KillPlane));
+			BoxCollider collider = killPlane.AddComponent<BoxCollider>();
+			killPlane.transform.SetParent(ArenaRoot, false);
+			collider.isTrigger = true;
+			collider.size = new Vector3(100, 30, 100);
+			killPlane.transform.localScale = new Vector3(1, 1, 1);
+			killPlane.transform.localPosition = new Vector3(0, 10, 0);
+			killPlane.layer = LayerMask.NameToLayer("KillPlane");
 
 			ResetMap(true);
 		}

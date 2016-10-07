@@ -12,7 +12,7 @@ GameObject:
   - 136: {fileID: 13641748}
   - 82: {fileID: 8219030}
   - 114: {fileID: 11478206}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Character_Viking
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -28,7 +28,8 @@ GameObject:
   m_Component:
   - 4: {fileID: 454396}
   - 114: {fileID: 11489744}
-  m_Layer: 0
+  - 135: {fileID: 135000011626548612}
+  m_Layer: 16
   m_Name: GroundCheck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -70,7 +71,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 159510}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.05, z: 0}
+  m_LocalPosition: {x: 0, y: -0.625, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
@@ -82,8 +83,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 140124}
-  m_LocalRotation: {x: 0, y: -0.20106587, z: -0, w: 0.9795777}
-  m_LocalPosition: {x: 2.2650003, y: 1, z: -5.285001}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 3.05, y: 2.37, z: -5.81}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
@@ -104,7 +105,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 80
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!82 &8219030
 AudioSource:
@@ -196,7 +197,6 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _isDead: 0
   IsGrounded: 0
-  _playerProp: {fileID: 0}
   _characterData: {fileID: 11400000, guid: 24a0a06ce55a2b54794e14afa7bd9465, type: 2}
 --- !u!114 &11489744
 MonoBehaviour:
@@ -245,3 +245,15 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 140124}
   m_IsPrefabParent: 1
+--- !u!135 &135000011626548612
+SphereCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 159510}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}

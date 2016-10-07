@@ -14,7 +14,9 @@ public class CharacterPlayerLock : MonoBehaviour
 		{
 			if (Characters[i] == null)
 				continue;
-			tempPlayer =  new Player();
+			if (!Characters[i].gameObject.activeInHierarchy)
+				continue;
+				tempPlayer =  new Player();
 			tempPlayer.SkinNumber = 0;
 			tempPlayer.JoystickNumber = JoystickListening[i];
 			Characters[i].Init(tempPlayer);
@@ -27,8 +29,7 @@ public class CharacterPlayerLock : MonoBehaviour
 		{
 			if (Characters[i] == null)
 				continue;
-
-			if (Characters[i].isActiveAndEnabled)
+			if (Characters[i].gameObject.activeInHierarchy)
 				Characters[i]._playerRef.JoystickNumber = JoystickListening[i];
 		}
 	}

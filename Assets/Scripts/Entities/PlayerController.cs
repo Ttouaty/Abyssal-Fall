@@ -6,7 +6,7 @@ using System;
 public struct Dash
 {
 	public float endingLag;
-	public Vector2 force;
+	public Vector2[] Forces;
 	public Vector2 ImpactEjection;
 
 	[HideInInspector]
@@ -68,8 +68,15 @@ public class PlayerController : MonoBehaviour
 	protected Vector3 _activeDirection = Vector3.forward;
 	protected Vector2 _maxSpeed = new Vector2(8f, 20f);
 	protected Vector2 _acceleration = new Vector2(1.2f, -2f);
-	protected float _friction = 50; //friction applied to the player when it slides (pushed or end dash) (units/s)
+	protected float _friction = 60; //friction applied to the player when it slides (pushed or end dash) (units/s)
 	protected float _airborneDelay = 0.15f;
+
+	protected float _fullDashActivationTime = 0.05f;
+	private float _timeHeldDash;
+	private bool _dashMaxed = false;
+
+	protected int _dashActivationSteps;
+	protected int _dashStepActivated = 1;
 	[Space]
 	public SO_Character _characterData;
 
@@ -111,13 +118,6 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
-	protected void Awake()
-	{
-		_audioSource = GetComponent<AudioSource>();
-		_transf = transform;
-		_rigidB = GetComponent<Rigidbody>();
-	}
-
 	public void Freeze()
 	{
 		_allowInput = false;
@@ -131,6 +131,14 @@ public class PlayerController : MonoBehaviour
 	{
 		_allowInput = true;
 		_rigidB.isKinematic = false;
+	}
+
+	#region Unity Functions
+	protected void Awake()
+	{
+		_audioSource = GetComponent<AudioSource>();
+		_transf = transform;
+		_rigidB = GetComponent<Rigidbody>();
 	}
 
 	public void Init(Player player)
@@ -158,6 +166,7 @@ public class PlayerController : MonoBehaviour
 		if (_playerProp == null)
 			Debug.LogError("No player prop found in playermesh: " + gameObject.name + " !");
 
+		_dashActivationSteps = _characterData.Dash.Forces.Length;
 		_characterData.Dash.inProgress = false; // security because sometimes dash is activated, lolwutomfgrektbbq
 		_specialCooldown = new TimeCooldown(this);
 		_specialCooldown.onFinish = OnSpecialReset;
@@ -215,8 +224,7 @@ public class PlayerController : MonoBehaviour
 
 		ProcessCoolDowns();
 
-		if (_allowInput)
-			ProcessInputs();
+		ProcessInputs();
 
 		ProcessActiveSpeed();
 		if (_allowInput)
@@ -228,7 +236,7 @@ public class PlayerController : MonoBehaviour
 
 	protected virtual void CustomStart() { }
 	protected virtual void CustomUpdate() { }
-
+	#endregion
 	#region EventCallbacks
 	public void OnBeforeDestroy()
 	{
@@ -340,12 +348,40 @@ public class PlayerController : MonoBehaviour
 
 	private void ProcessInputs()
 	{
-		if (InputManager.GetButtonDown("Dash", _playerRef.JoystickNumber) && _canDash)
+		//if (InputManager.GetButtonDown("Dash", _playerRef.JoystickNumber) && _canDash)
+		//{
+		//	StartCoroutine(ActivateDash());
+		//}
+
+		if (InputManager.GetButtonHeld("Dash", _playerRef.JoystickNumber) && !_dashMaxed && (_characterData.Dash.inProgress || _allowInput))
 		{
-			StartCoroutine(ActivateDash());
+			if (_dashStepActivated <= (_dashActivationSteps - 1) * (_timeHeldDash / _fullDashActivationTime) +1)
+			{
+				Eject(Quaternion.FromToRotation(Vector3.right, _activeDirection) * _characterData.Dash.Forces[_dashStepActivated - 1]);
+
+				if(_dashStepActivated == 1)
+					StartCoroutine(ActivateDash());
+
+				Debug.Log("dash step " + _dashStepActivated + " reached");
+				_dashStepActivated++;
+
+				_dashMaxed = _dashStepActivated > _dashActivationSteps;
+			}
+
+			_timeHeldDash += Time.deltaTime;
+		}
+		else if (!InputManager.GetButtonHeld("Dash", _playerRef.JoystickNumber))
+		{
+			if (IsGrounded)
+			{
+				_timeHeldDash = 0;
+				_dashMaxed = false;
+			}
+			else
+				_dashMaxed = true;
 		}
 
-		if (SpecialActivation())
+		if (SpecialActivation() && _allowInput)
 		{
 			_specialCooldown.Set(_characterData.CharacterStats.specialCooldown);
 			SpecialAction();
@@ -395,6 +431,7 @@ public class PlayerController : MonoBehaviour
 
 	public void ContactGround()
 	{
+		_dashStepActivated = 1;
 		IsGrounded = true;
 		_activeSpeed.y = 0f;
 		_airborneTimeout.Set(_airborneDelay);
@@ -448,7 +485,7 @@ public class PlayerController : MonoBehaviour
 
 		float oldMagnitude = direction.magnitude;
 		_characterData.CharacterStats.resistance = _characterData.CharacterStats.resistance == 0 ? 1 : _characterData.CharacterStats.resistance;
-		direction = direction.normalized * (oldMagnitude * (6 - _characterData.CharacterStats.resistance) / 3);
+		direction = direction.normalized * (oldMagnitude + oldMagnitude * (10 * (_characterData.CharacterStats.resistance - 3)) / 100 );
 
 		Eject(direction);
 		if (stunTime > 0)
@@ -469,7 +506,6 @@ public class PlayerController : MonoBehaviour
 		_isInvul = true;
 		_allowInput = false;
 
-		Eject(Quaternion.FromToRotation(Vector3.right, _activeDirection) * _characterData.Dash.force);
 		_stunTime.Add(_characterData.Dash.endingLag);
 
 		_animator.SetTrigger("Dash_Start");
