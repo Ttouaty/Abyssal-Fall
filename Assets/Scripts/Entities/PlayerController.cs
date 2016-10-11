@@ -69,10 +69,11 @@ public class PlayerController : MonoBehaviour
 	protected Vector2 _maxSpeed = new Vector2(8f, 20f);
 	protected Vector2 _acceleration = new Vector2(1.2f, -2f);
 	protected float _friction = 60; //friction applied to the player when it slides (pushed or end dash) (units/s)
-	protected float _airborneDelay = 0.15f;
+	protected float _airborneDelay = 0.01f;
 
 	protected float _fullDashActivationTime = 0.05f;
 	private float _timeHeldDash;
+	private bool _waitForDashRelease = false;
 	private bool _dashMaxed = false;
 
 	protected int _dashActivationSteps;
@@ -114,7 +115,7 @@ public class PlayerController : MonoBehaviour
 	{
 		get
 		{
-			return !_characterData.Dash.inProgress /*&& IsGrounded*/ && !_isDead;
+			return !_isDead && !_dashMaxed && (_characterData.Dash.inProgress || _allowInput);
 		}
 	}
 
@@ -348,12 +349,7 @@ public class PlayerController : MonoBehaviour
 
 	private void ProcessInputs()
 	{
-		//if (InputManager.GetButtonDown("Dash", _playerRef.JoystickNumber) && _canDash)
-		//{
-		//	StartCoroutine(ActivateDash());
-		//}
-
-		if (InputManager.GetButtonHeld("Dash", _playerRef.JoystickNumber) && !_dashMaxed && (_characterData.Dash.inProgress || _allowInput))
+		if (InputManager.GetButtonHeld("Dash", _playerRef.JoystickNumber) && _canDash && !_waitForDashRelease)
 		{
 			if (_dashStepActivated <= (_dashActivationSteps - 1) * (_timeHeldDash / _fullDashActivationTime) +1)
 			{
@@ -362,23 +358,17 @@ public class PlayerController : MonoBehaviour
 				if(_dashStepActivated == 1)
 					StartCoroutine(ActivateDash());
 
-				Debug.Log("dash step " + _dashStepActivated + " reached");
 				_dashStepActivated++;
 
 				_dashMaxed = _dashStepActivated > _dashActivationSteps;
+				_waitForDashRelease = _dashMaxed;
 			}
 
 			_timeHeldDash += Time.deltaTime;
 		}
-		else if (!InputManager.GetButtonHeld("Dash", _playerRef.JoystickNumber))
+		else if (InputManager.GetButtonUp("Dash", _playerRef.JoystickNumber))
 		{
-			if (IsGrounded)
-			{
-				_timeHeldDash = 0;
-				_dashMaxed = false;
-			}
-			else
-				_dashMaxed = true;
+			_waitForDashRelease = false;
 		}
 
 		if (SpecialActivation() && _allowInput)
@@ -425,24 +415,18 @@ public class PlayerController : MonoBehaviour
 			_activeSpeed.x = _activeSpeed.x.Reduce(_friction * TimeManager.DeltaTime);
 			_activeSpeed.z = _activeSpeed.z.Reduce(_friction * TimeManager.DeltaTime);
 		}
-
-		//_activeSpeed = _activeSpeed.magnitude * (_activeSpeed.normalized - _activeColliPoint.normal * Vector3.Dot(_activeSpeed.normalized, _activeColliPoint.normal));
 	}
 
 	public void ContactGround()
 	{
-		_dashStepActivated = 1;
 		IsGrounded = true;
 		_activeSpeed.y = 0f;
 		_airborneTimeout.Set(_airborneDelay);
-		//Breaks physics
-		//if (_hit.rigidbody.isKinematic == true)
-		//	transform.position = transform.position - (_snapGround.transform.position - _hit.point);
+		_dashMaxed = false;
 	}
 
 	private void ApplyCharacterFinalVelocity()
 	{
-		//transform.position += _activeSpeed * TimeManager.DeltaTime;
 		_rigidB.velocity = _activeSpeed;
 		_animator.SetFloat("Speed", Mathf.Abs(_activeSpeed.x) + Mathf.Abs(_activeSpeed.z));
 	}
@@ -512,6 +496,7 @@ public class PlayerController : MonoBehaviour
 		_audioSource.PlayOneShot(_characterData.SoundList.OnDashStart);
 		gameObject.layer = LayerMask.NameToLayer("PlayerInvul");
 
+		IsGrounded = false;
 
 		while (!IsGrounded)
 		{
@@ -528,6 +513,9 @@ public class PlayerController : MonoBehaviour
 		yield return new WaitForSeconds(_characterData.Dash.endingLag);
 		_characterData.Dash.inProgress = false;
 		_allowInput = true;
+		_timeHeldDash = 0;
+		_dashStepActivated = 1;
+		_dashMaxed = false;
 	}
 
 	protected void OnCollisionEnter(Collision colli)

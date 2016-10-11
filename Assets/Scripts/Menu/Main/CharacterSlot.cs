@@ -138,6 +138,7 @@ public class CharacterSlot : MonoBehaviour
 
 		_wheelRef.GetSelectedElement().Controller._characterData.CharacterModel.Reskin(GetSelectedSkin);
 		_selectedCharacterModel = (GameObject)Instantiate(_wheelRef.GetSelectedElement().Controller._characterData.CharacterModel.gameObject, transform.position - transform.up * 30, transform.rotation * Quaternion.FromToRotation(Vector3.right, Vector3.left));
+		_selectedCharacterModel.transform.localScale = transform.localScale * 1.1f;
 		_selectedCharacterModel.transform.parent = transform;
 
 		Selected = true;

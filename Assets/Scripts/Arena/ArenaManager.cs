@@ -265,7 +265,7 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 					{
 						tileComp = tile.AddComponent<Tile>();
 					}
-					tileComp.SetTimeLeft(0.8f); // TODO -> Regler dans l'inspecteur
+					tileComp.SetTimeLeft(tileComp.TimeLeft); // TODO -> Regler dans l'inspecteur
 					_tiles.Add(tileComp);
 					tileComp.SpawnComponent = null;
 					tileComp.enabled = true;
@@ -276,7 +276,7 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 						// Add Spawn Comp
 						tileComp.SpawnComponent = tile.AddComponent<Spawn>();
 						_spawns.Add(tileComp.SpawnComponent);
-						tileComp.SetTimeLeft(1.5f, false);
+						tileComp.SetTimeLeft(tileComp.TimeLeft * 2, false);
 					}
 					else if (type == ETileType.OBSTACLE)
 					{
@@ -387,7 +387,7 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 
 		float timer = 0;
 		float initialY = element.transform.localPosition.y;
-		element.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
+		element.GetComponentInChildren<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
 
 		while (timer < 1)
 		{

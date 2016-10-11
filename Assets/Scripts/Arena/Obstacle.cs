@@ -52,7 +52,7 @@ public class Obstacle : MonoBehaviour, IPoolable
 	public void OnDropped ()
 	{
 		_particleSystem.SetActive(true);
-		GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
+		GetComponentInChildren<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
 	}
 
 	public void ActivateFall()

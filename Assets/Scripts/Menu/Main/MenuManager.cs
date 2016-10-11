@@ -200,7 +200,12 @@ public class MenuManager : GenericSingleton<MenuManager>
 		}
 
 		if (newMenu.MenuName == "Lobby")
+		{
+			MessageManager.Log("Press A to register a new Controller.");
 			_isListeningForInput = true;
+		}
+		else if(newMenu.MenuName == "GameConfig")
+			MessageManager.Log("! WIP ! ya rien qui marche ici, laisse tomber.");
 		else if (newMenu.MenuName == "Main")
 		{
 			ResetPlayers();

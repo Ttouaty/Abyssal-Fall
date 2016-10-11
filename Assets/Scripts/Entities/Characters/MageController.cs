@@ -72,7 +72,7 @@ public class MageController : PlayerController
 			}
 			_specialChargeSpeed += _specialChargeSpeedOriginal * _specialChargeSpeedIncrease * Time.deltaTime;
 			_specialActiveRange += _specialChargeSpeed * Time.deltaTime;
-			_chargeParticles.transform.position = Vector3.Lerp(_chargeParticles.transform.position, transform.position + _activeDirection.normalized * _specialActiveRange, 0.3f);
+			_chargeParticles.transform.position = Vector3.Lerp(_chargeParticles.transform.position, transform.position + _activeDirection.normalized * _specialActiveRange, 10f * Time.deltaTime);
 			Debug.DrawRay(transform.position, _activeDirection.normalized * _specialActiveRange, Color.red, 0.1f);
 		}
 

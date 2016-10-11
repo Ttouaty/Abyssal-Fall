@@ -148,3 +148,40 @@ public static class ListExtensions
 		}
 	}
 }
+
+
+public static class MonoBehaviourExtensions
+{
+	private static AnimationCurve _easeOutCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
+
+	public static void MoveTo(this MonoBehaviour objectMoved, Vector3 target, float time, bool local = false)
+	{
+		objectMoved.StartCoroutine(MoveCoroutine(objectMoved, target, time, local));
+	}
+
+	static IEnumerator MoveCoroutine(MonoBehaviour target,Vector3 end, float time, bool local = false)
+	{
+		float eT = 0;
+
+		Vector3 start;
+		if (local)
+			start = target.transform.localPosition;
+		else
+			start = target.transform.position;
+		while (eT < time)
+		{
+			eT += Time.deltaTime;
+			if (local)
+				target.transform.localPosition = Vector3.Lerp(start, end, _easeOutCurve.Evaluate(eT / time));
+			else
+				target.transform.position = Vector3.Lerp(start, end, _easeOutCurve.Evaluate(eT / time));
+
+			yield return null;
+		}
+
+		if (local)
+			target.transform.localPosition = end;
+		else
+			target.transform.position = end;
+	}
+}

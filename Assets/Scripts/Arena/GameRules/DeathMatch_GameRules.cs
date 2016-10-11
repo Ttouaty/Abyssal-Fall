@@ -43,7 +43,7 @@ public class DeathMatch_GameRules : AGameRules
 		else
 		{
 			Tile tile = tiles.RandomElement();
-			tile.SetTimeLeft(1.5f);
+			tile.SetTimeLeft(tile.TimeLeft);
 
 			Spawn spawn = tile.gameObject.AddComponent<Spawn>();
 

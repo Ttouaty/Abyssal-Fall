@@ -5,7 +5,7 @@ using System.Collections;
 public class Tile : MonoBehaviour, IPoolable
 {
 	private bool            _canFall		= true;
-	private float           _timeLeft		= 0.8f;
+	private float           _timeLeft		= 1.5f;
 	private float           _timeLeftSave;
 	private bool            _isTouched		= false;
 	private bool            _isFalling		= false;
@@ -18,10 +18,12 @@ public class Tile : MonoBehaviour, IPoolable
 	public bool				IsFalling		{ get { return _isFalling; } }
 	public bool             IsSpawn			{ get { return SpawnComponent == null; } }
 
+	public float TimeLeft { get { return _timeLeft; } }
+
 	void Awake()
 	{
 		_rigidB         = GetComponent<Rigidbody>();
-		_renderer       = GetComponent<MeshRenderer>();
+		_renderer       = GetComponentInChildren<MeshRenderer>();
 		_timeLeftSave   = _timeLeft;
 	}
 
