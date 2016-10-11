@@ -8,22 +8,12 @@ public class EndStageManager : GenericSingleton<EndStageManager>
 	public PlayerScore[] ScoresFields = new PlayerScore[4];
 	public Text StageText;
 
-	void Update()
+	public void ResetMap(bool checkIfOpen = true)
 	{
-		if(IsOpen)
+		if (!checkIfOpen || IsOpen)
 		{
-			for (int i = 0; i < GameManager.Instance.RegisteredPlayers.Length; ++i)
-			{
-				Player player = GameManager.Instance.RegisteredPlayers[i];
-				if (player != null)
-				{
-					if (InputManager.GetButtonDown("Dash", player.JoystickNumber))
-					{
-						ArenaManager.Instance.ResetMap(false);
-						Close();
-					}
-				}
-			}
+			ArenaManager.Instance.ResetMap(false);
+			Close();
 		}
 	}
 
@@ -56,6 +46,7 @@ public class EndStageManager : GenericSingleton<EndStageManager>
 	public void Open()
 	{
 		MenuPauseManager.Instance.CanPause = false;
+		InputManager.SetInputLockTime(0.3f);
 		TimeManager.Pause();
 		for (int i = 0; i < ScoresFields.Length; ++i)
 		{

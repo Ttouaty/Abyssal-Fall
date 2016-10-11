@@ -216,7 +216,7 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 
 		Position = new Vector3(
 			transform.position.x - _currentMapConfig.MapSize.x * 0.5f * TileScale + 0.5f * TileScale, 
-			Camera.main.transform.position.y + 5.0f,
+			Camera.main.transform.position.y + 20.0f,
 			transform.position.z - _currentMapConfig.MapSize.y * 0.5f * TileScale + 0.5f * TileScale
 		);
 
@@ -265,7 +265,7 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 					{
 						tileComp = tile.AddComponent<Tile>();
 					}
-					tileComp.SetTimeLeft(tileComp.TimeLeft); // TODO -> Regler dans l'inspecteur
+					tileComp.SetTimeLeft(tileComp.TimeLeftSave); // TODO -> Regler dans l'inspecteur
 					_tiles.Add(tileComp);
 					tileComp.SpawnComponent = null;
 					tileComp.enabled = true;
@@ -276,7 +276,7 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 						// Add Spawn Comp
 						tileComp.SpawnComponent = tile.AddComponent<Spawn>();
 						_spawns.Add(tileComp.SpawnComponent);
-						tileComp.SetTimeLeft(tileComp.TimeLeft * 2, false);
+						tileComp.SetTimeLeft(tileComp.TimeLeftSave * 2, false);
 					}
 					else if (type == ETileType.OBSTACLE)
 					{

@@ -13,7 +13,7 @@ public class MessageManager : GenericSingleton<MessageManager>
 	private int _numberMessagesDisplayed = 0;
 	private int _numberMessagesDestroyed = 0;
 
-	private const int TEXT_HEIGHT = 50;
+	private const int TEXT_HEIGHT = 60;
 
 	private float _messageOffset;
 

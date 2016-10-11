@@ -41,6 +41,7 @@ public class EndGameManager : GenericSingleton<EndGameManager>
 	public void Open()
 	{
 		MenuPauseManager.Instance.CanPause = false;
+		InputManager.SetInputLockTime(0.3f);
 		TimeManager.Pause();
 		transform.GetChild(0).gameObject.SetActive(true);
 		IsOpen = true;

@@ -60,7 +60,7 @@ public class PlayerController : MonoBehaviour
 	protected Rigidbody _rigidB;
 	protected AudioSource _audioSource;
 	protected RaycastHit _hit;
-	private Transform _groundCheck;
+	protected Transform _groundCheck;
 
 	#endregion
 
@@ -101,6 +101,7 @@ public class PlayerController : MonoBehaviour
 	private TimeCooldown _lastDamageDealerTimeOut;
 
 	protected bool _allowInput = true;
+	public bool AllowInput { get { return _allowInput; } }
 	protected bool _isStunned = false;
 
 	protected bool _canSpecial
@@ -160,7 +161,6 @@ public class PlayerController : MonoBehaviour
 
 		_transf.GetComponentInChildren<CharacterModel>().Reskin(_characterData.CharacterMaterials[_playerRef.SkinNumber]);
 
-		_rigidB = GetComponent<Rigidbody>();
 		_animator = _transf.GetComponentInChildren<Animator>();
 		_playerProp = transform.GetComponentInChildren<PlayerProp>();
 
@@ -169,6 +169,7 @@ public class PlayerController : MonoBehaviour
 
 		_dashActivationSteps = _characterData.Dash.Forces.Length;
 		_characterData.Dash.inProgress = false; // security because sometimes dash is activated, lolwutomfgrektbbq
+
 		_specialCooldown = new TimeCooldown(this);
 		_specialCooldown.onFinish = OnSpecialReset;
 
@@ -189,7 +190,7 @@ public class PlayerController : MonoBehaviour
 		_lastDamageDealerTimeOut.onFinish = OnLastDamageDealerTimeOut;
 		GameManager.Instance.OnPlayerWin.AddListener(OnPlayerWin);
 
-		_maxSpeed.x = _maxSpeed.x * _characterData.CharacterStats.speed / 3;
+		_maxSpeed.x = _maxSpeed.x + _maxSpeed.x * (20 * (_characterData.CharacterStats.speed - 3) / 100);
 
 		if (GetComponentInChildren<GroundCheck>() == null)
 		{
@@ -497,6 +498,8 @@ public class PlayerController : MonoBehaviour
 		gameObject.layer = LayerMask.NameToLayer("PlayerInvul");
 
 		IsGrounded = false;
+
+		yield return null; // wait a frame for internal calculation
 
 		while (!IsGrounded)
 		{

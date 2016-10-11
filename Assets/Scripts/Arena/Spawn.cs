@@ -11,9 +11,9 @@ public class Spawn : MonoBehaviour
 		Tile tileComponent = GetComponent<Tile>();
 		if(tileComponent != null)
 		{
-			tileComponent.enabled = false;
+			tileComponent.enabled = false; //commenté pour débug
 		}
-		GetComponent<MeshRenderer>().material.color = Color.green;
+		GetComponentInChildren<MeshRenderer>().material.color = Color.green;
 	}
 
 	public void SpawnPlayer (PlayerController player)

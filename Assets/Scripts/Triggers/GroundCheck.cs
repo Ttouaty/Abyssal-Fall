@@ -7,11 +7,13 @@ public class GroundCheck : MonoBehaviour
 	private PlayerController _playerRef;
 	private Rigidbody _rigidB;
 	private bool IsColliding = false;
+	private float _ownSize;
 
 	private RaycastHit _hit;
 
 	void Start()
 	{
+		_ownSize = GetComponent<SphereCollider>().radius;
 		_playerRef = GetComponentInParent<PlayerController>();
 		_rigidB = GetComponentInParent<Rigidbody>();
 	}
@@ -20,7 +22,7 @@ public class GroundCheck : MonoBehaviour
 	{
 		_playerRef.IsGrounded = IsColliding;
 
-		if (Physics.Raycast(_playerRef.transform.position, Vector3.down, out _hit, 1.2f, 1 << LayerMask.NameToLayer("Ground")))
+		if (Physics.Raycast(transform.position, Vector3.down, out _hit, _ownSize + 0.1f, 1 << LayerMask.NameToLayer("Ground")))
 		{
 			if (_hit.transform.gameObject.activeInHierarchy && _hit.transform.GetComponent<Tile>() != null)
 				_hit.transform.GetComponent<Tile>().ActivateFall();

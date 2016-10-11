@@ -11,19 +11,22 @@ public class Tile : MonoBehaviour, IPoolable
 	private bool            _isFalling		= false;
 	private Rigidbody       _rigidB;
 	private MeshRenderer    _renderer;
+	private Color			_defaultColor;
 
 	public Obstacle			Obstacle;
 	public Spawn            SpawnComponent;
 	public bool				CanFall			{ get { return _canFall; } }
 	public bool				IsFalling		{ get { return _isFalling; } }
 	public bool             IsSpawn			{ get { return SpawnComponent == null; } }
+	
 
-	public float TimeLeft { get { return _timeLeft; } }
+	public float TimeLeftSave { get { return _timeLeftSave; } }
 
 	void Awake()
 	{
 		_rigidB         = GetComponent<Rigidbody>();
 		_renderer       = GetComponentInChildren<MeshRenderer>();
+		_defaultColor = _renderer.material.color;
 		_timeLeftSave   = _timeLeft;
 	}
 
@@ -38,7 +41,7 @@ public class Tile : MonoBehaviour, IPoolable
 	public void OnGetFromPool()
 	{
 		_rigidB.isKinematic = true;
-		_renderer.material.color = Color.white; // Debug to see falling ground feedback
+		_renderer.material.color = _defaultColor; // Debug to see falling ground feedback
 		_isTouched = false;
 		_isFalling = false;
 		StopAllCoroutines();
@@ -82,7 +85,7 @@ public class Tile : MonoBehaviour, IPoolable
 
 	public void ActivateRespawn()
 	{
-		GetComponent<MeshRenderer>().material.color = Color.white;
+		GetComponentInChildren<MeshRenderer>().material.color = Color.white;
 		gameObject.SetActive(true);
 		StartCoroutine(ActivateRespawn_Implementation());
 	}
@@ -108,7 +111,7 @@ public class Tile : MonoBehaviour, IPoolable
 	{
 		if (_isTouched)
 			return;
-		
+
 		ArenaManager.Instance.RemoveTile(this);
 
 		TimeManager.Instance.OnPause.AddListener(OnPause);
@@ -120,7 +123,7 @@ public class Tile : MonoBehaviour, IPoolable
 
 	IEnumerator ActivateFall_Implementation()
 	{
-		MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
+		MeshRenderer meshRenderer = GetComponentInChildren<MeshRenderer>();
 
 		// Debug to see falling ground feedback
 		Color color = meshRenderer.material.color;
