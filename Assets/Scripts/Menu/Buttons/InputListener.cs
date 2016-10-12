@@ -17,7 +17,7 @@ public class InputListener : MonoBehaviour
 
 	public bool UseAxis = false;
 	public Vector2 directionToListen = new Vector2(1, 0);
-	public float AxisPrecision = 0.4f;
+	public float AxisPrecision = 0.7f;
 
 	public InputEnum InputToListen;
 

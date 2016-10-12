@@ -19,7 +19,11 @@ public class CameraManager : GenericSingleton<CameraManager>
 	private float _verticalOffset;
 
 	public float MinDistance = 5;
-	public float CentroidCoefficient = 1f;
+	public float Margin = 5;
+	public float Growth = 0.1f;
+	public float VerticalOffsetCoef = 2;
+
+	private const float _centroidCoefficient = 1f;
 
 	private List<Transform> _targetsTracked = new List<Transform>();
 	private Vector3 _targetsCentroid = Vector3.zero;
@@ -53,13 +57,13 @@ public class CameraManager : GenericSingleton<CameraManager>
 			CalculateTargetsCentroid();
 			CalculateTargetsDistance();
 
-			Debug.DrawRay(_centerPoint.position, _targetsCentroid - _centerPoint.position, Color.red, 1);
+			Debug.DrawRay(_centerPoint.position, _targetsCentroid - _centerPoint.position, Color.red);
 
 			transform.localPosition = -transform.forward * _distance;
 
 			FollowCentroid();
 
-			Debug.DrawRay(transform.position, transform.forward * _distance, Color.blue, 0.2f);
+			Debug.DrawRay(transform.position, transform.forward * _distance, Color.blue);
 		}
 	}
 
@@ -76,33 +80,44 @@ public class CameraManager : GenericSingleton<CameraManager>
 		_targetsCentroid.y = _centerPoint.position.y;
 	}
 
-	private Vector3 _farthestPosition;
 	private float _tempDistance;
+	private Vector3 _tempPosition;
 	private void CalculateTargetsDistance()
 	{
 		_tempDistance = 0;
-		_farthestPosition = Vector3.zero;
+		Vector3 basePoint = _targetsCentroid.ZeroY();
+		Vector3 tempDirection = Vector3.zero;
 		for (int i = 0; i < _targetsTracked.Count; i++)
 		{
-			if (Vector3.Distance(_targetsTracked[i].position.ZeroY(), _targetsCentroid.ZeroY()) > _tempDistance)
+			for (int j = i + 1; j < _targetsTracked.Count; j++)
 			{
-				_farthestPosition = _targetsTracked[i].position.ZeroY();
-				_tempDistance = Vector3.Distance(_farthestPosition.ZeroY(), _targetsCentroid.ZeroY());
+				tempDirection = _targetsTracked[j].position - _targetsTracked[i].position;
+				Debug.DrawRay(_targetsTracked[i].position, tempDirection);
+
+				_tempPosition = Quaternion.FromToRotation(Vector3.right, transform.right) * (tempDirection.ZeroY());
+				_tempPosition.x /= _camera.aspect;
+
+				if (_tempPosition.HighestAxis() > _tempDistance)
+				{
+					_tempDistance = _tempPosition.HighestAxis();
+				}
 			}
 		}
 
-		_distance = _tempDistance * 0.5f / Mathf.Tan(_camera.fieldOfView * 0.5f * Mathf.Deg2Rad) * 2.5f;
+		_distance = _tempDistance * 0.5f / Mathf.Tan(_camera.fieldOfView * 0.5f * Mathf.Deg2Rad) * (1 + Growth) + Margin;
+
 		if (_distance < MinDistance)
 			_distance = MinDistance;
 
+		if (Vector3.Angle(transform.forward, transform.forward.ZeroY().normalized) > 10)
+			_verticalOffset = Mathf.Tan((90 - transform.rotation.eulerAngles.x) * Mathf.Deg2Rad) * VerticalOffsetCoef;
 
-		_verticalOffset = _distance * 0.1f;
 	}
 
 	private void FollowCentroid()
 	{
 		//double lerp FTW !
-		_focalPoint.position = Vector3.Lerp(_focalPoint.position, Vector3.Lerp(_centerPoint.position, _targetsCentroid, CentroidCoefficient) - transform.forward.ZeroY().normalized * _verticalOffset, 0.1f);
+		_focalPoint.position = Vector3.Lerp(_focalPoint.position, Vector3.Lerp(_centerPoint.position, _targetsCentroid, _centroidCoefficient) - transform.forward.ZeroY().normalized * _verticalOffset, 5 * Time.deltaTime);
 	}
 
 	public void ClearTrackedTargets()

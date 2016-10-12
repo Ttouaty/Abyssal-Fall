@@ -452,8 +452,8 @@ public class PlayerController : MonoBehaviour
 
 	public void Eject(Vector3 direction)
 	{
-		if (direction.y > 0)
-			IsGrounded = false;
+		//if (direction.y > 0)
+		//	IsGrounded = false;
 
 		_activeSpeed = direction;
 		_rigidB.velocity = _activeSpeed;
@@ -497,14 +497,8 @@ public class PlayerController : MonoBehaviour
 		_audioSource.PlayOneShot(_characterData.SoundList.OnDashStart);
 		gameObject.layer = LayerMask.NameToLayer("PlayerInvul");
 
-		IsGrounded = false;
-
-		yield return null; // wait a frame for internal calculation
-
-		while (!IsGrounded)
-		{
-			yield return null;
-		}
+		yield return new WaitForSeconds(0.1f);
+		while (!IsGrounded){ yield return null; } //wait for landing
 
 		gameObject.layer = LayerMask.NameToLayer("PlayerDefault");
 

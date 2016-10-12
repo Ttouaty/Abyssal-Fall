@@ -30,6 +30,10 @@ public static class Vector3Extensions
 		return Mathf.Sign(number) * (Mathf.Abs(number) - amount);
 	}
 
+	public static float HighestAxis(this Vector3 vect)
+	{
+		return Mathf.Max(new float[3] {Mathf.Abs(vect.x), Mathf.Abs(vect.y), Mathf.Abs(vect.z)});
+	}
 	
 }
 
