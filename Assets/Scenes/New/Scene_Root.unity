@@ -800,7 +800,6 @@ GameObject:
   m_Component:
   - 4: {fileID: 1511463442}
   - 114: {fileID: 1511463443}
-  - 114: {fileID: 1511463444}
   m_Layer: 0
   m_Name: Scene_Root
   m_TagString: Untagged
@@ -852,19 +851,6 @@ MonoBehaviour:
   SOUND_MANAGER: {fileID: 0}
   LOADING_MANAGER: {fileID: 0}
   ARENA_MANAGER: {fileID: 0}
---- !u!114 &1511463444
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1511463441}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 051868a713f8bb947994e43c43f35fda, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StreamFilePath: test.txt
-  Result: 
 --- !u!1001 &1576437437
 Prefab:
   m_ObjectHideFlags: 0

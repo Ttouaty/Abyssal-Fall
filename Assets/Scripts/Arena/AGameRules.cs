@@ -9,18 +9,18 @@ public abstract class AGameRules : MonoBehaviour
 	 * Il faut remplacer tout les ints & bool  par des IntRule & BoolRule
 	 * & il faut faire suivre les custom editors
 	 */
-	public bool IsMatchRoundBased = true;
-	public int NumberOfRounds = 5;
-	public int MatchDuration = 180;
+	public bool IsMatchRoundBased;
+	public IntRule NumberOfRounds;
+	public IntRule MatchDuration;
 
-	public bool CanFalledTilesRespawn = false;
-	public int TileRegerationTime = 0;
+	public BoolRule CanFalledTilesRespawn;
+	public IntRule TileRegerationTime;
 
-	public int PointsGainPerKill = 1;
-	public int PointsLoosePerSuicide = 0;
-	public int TimeBeforeSuicide = 5;
+	public IntRule PointsGainPerKill;
+	public IntRule PointsLoosePerSuicide;
+	public IntRule TimeBeforeSuicide;
 
-	public bool CanPlayerRespawn = false;
+	public bool CanPlayerRespawn;
 	public List<Tile> RespawnZones = new List<Tile>();
 
 	public BehaviourConfiguration[] Behaviours;

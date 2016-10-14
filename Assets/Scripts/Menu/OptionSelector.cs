@@ -23,46 +23,46 @@ public class OptionSelector : MonoBehaviour
 
 	public void SetIsMatchRoundBased()
 	{
-		GetTargetRuleset().IsMatchRoundBased = !GetTargetRuleset().IsMatchRoundBased;
+		//GetTargetRuleset().IsMatchRoundBased = !GetTargetRuleset().IsMatchRoundBased;
 	}
 
 	public void SetCanFalledTilesRespawn()
 	{
-		GetTargetRuleset().CanFalledTilesRespawn = !GetTargetRuleset().CanFalledTilesRespawn;
+		//GetTargetRuleset().CanFalledTilesRespawn = !GetTargetRuleset().CanFalledTilesRespawn;
 	}
 
 	public void SetCanPlayerRespawn()
 	{
-		GetTargetRuleset().CanPlayerRespawn = !GetTargetRuleset().CanPlayerRespawn;
+		//GetTargetRuleset().CanPlayerRespawn = !GetTargetRuleset().CanPlayerRespawn;
 	}
 
 	public void SetNumberOfRounds(int direction)
 	{
-		GetTargetRuleset().NumberOfRounds += direction;
+		//GetTargetRuleset().NumberOfRounds += direction;
 	}
 
 	public void SetMatchDuration(int direction)
 	{
-		GetTargetRuleset().MatchDuration += direction;
+		//GetTargetRuleset().MatchDuration += direction;
 	}
 
 	public void SetTileRegerationTime(int direction)
 	{
-		GetTargetRuleset().TileRegerationTime += direction;
+		//GetTargetRuleset().TileRegerationTime += direction;
 	}
 
 	public void SetPointsGainPerKill(int direction)
 	{
-		GetTargetRuleset().PointsGainPerKill += direction;
+		//GetTargetRuleset().PointsGainPerKill += direction;
 	}
 
 	public void SetPointsLoosePerSuicide(int direction)
 	{
-		GetTargetRuleset().PointsLoosePerSuicide += direction;
+		//GetTargetRuleset().PointsLoosePerSuicide += direction;
 	}
 
 	public void SetTimeBeforeSuicide(int direction)
 	{
-		GetTargetRuleset().TimeBeforeSuicide += direction;
+		//GetTargetRuleset().TimeBeforeSuicide += direction;
 	}
 }

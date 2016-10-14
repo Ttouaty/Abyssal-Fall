@@ -80,28 +80,28 @@ public class Tile : MonoBehaviour, IPoolable
 	{
 		_canFall = false;
 		_isFalling = false;
-		_rigidB.isKinematic = true;
 	}
 
 	public void ActivateRespawn()
 	{
-		GetComponentInChildren<MeshRenderer>().material.color = Color.white;
+		GetComponentInChildren<MeshRenderer>().material.color = _defaultColor;
 		gameObject.SetActive(true);
+		_rigidB.isKinematic = true;
 		StartCoroutine(ActivateRespawn_Implementation());
 	}
 
 	IEnumerator ActivateRespawn_Implementation ()
 	{
 		float timer = 1.0f;
-		Vector3 initialPosition = transform.position;
+		Vector3 initialPosition = new Vector3(transform.localPosition.x, 15f, transform.localPosition.z);
 		Vector3 targetPosition = new Vector3(initialPosition.x, 0, initialPosition.z);
 		while(timer > 0.0f)
 		{
-			transform.position = Vector3.Lerp(initialPosition, targetPosition, 1.0f - timer);
+			transform.localPosition = Vector3.Lerp(initialPosition, targetPosition, 1.0f - timer);
 			timer -= TimeManager.DeltaTime;
 			yield return null;
 		}
-		transform.position = targetPosition;
+		transform.localPosition = targetPosition;
 		_canFall = true;
 		_isTouched = false;
 		_timeLeft = _timeLeftSave;

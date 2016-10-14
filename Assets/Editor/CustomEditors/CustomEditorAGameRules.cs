@@ -4,7 +4,7 @@ using UnityEditorInternal;
 using System.Collections;
 using System.Collections.Generic;
 
-[CustomEditor(typeof(AGameRules), true)]
+/*[CustomEditor(typeof(AGameRules), true)]
 public class CustomEditorAGameRules : Editor
 {
 	private AGameRules _target;
@@ -152,3 +152,4 @@ public class CustomEditorAGameRules : Editor
 		serializedObject.ApplyModifiedProperties();
 	}
 }
+*/

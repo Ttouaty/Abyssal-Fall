@@ -32,7 +32,7 @@ public static class Vector3Extensions
 
 	public static float HighestAxis(this Vector3 vect)
 	{
-		return Mathf.Max(new float[3] {Mathf.Abs(vect.x), Mathf.Abs(vect.y), Mathf.Abs(vect.z)});
+		return Mathf.Max(Mathf.Abs(vect.x), Mathf.Abs(vect.y), Mathf.Abs(vect.z));
 	}
 	
 }
