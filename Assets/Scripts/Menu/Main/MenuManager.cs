@@ -127,7 +127,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 		Debug.Log("game started");
 		GameManager.Instance.StartGame();
 		// SpawnFallingGround.instance.Init();
-		DeactivateMenu();
+		//DeactivateMenu();
 	}
 
 	private MenuPanel GetMenuPanel(string panelName)
@@ -366,6 +366,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 		}
 		else
 			Instance.StartCoroutine(Instance.DeactivateMenuCoroutine());
+		Instance.SetActiveButtons(Instance._activeMenu, false);
 	}
 
 	private IEnumerator DeactivateMenuCoroutine()
