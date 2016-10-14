@@ -295,6 +295,7 @@ public class LevelManager : GenericSingleton<LevelManager>
 		// Start Game
 		MainManager.Instance.ARENA_MANAGER.Init();	
 		_bIsLoading = false;
+		AutoFade.StartFade(0,0.2f,1);
 	}
 
 	public IEnumerator LoadLevelPreview (EArenaConfiguration arena, Action<AsyncOperation> callback = null)

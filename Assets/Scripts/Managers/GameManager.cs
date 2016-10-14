@@ -98,8 +98,15 @@ public class GameManager : GenericSingleton<GameManager>
 		}
 
 		CurrentStage = 1;
-		LevelManager.Instance.StartLevel(CurrentGameConfiguration);
+		StartCoroutine(StartLevelCoroutine());
+	}
 
+	private IEnumerator StartLevelCoroutine()
+	{
+		AutoFade.StartFade(1, 0.5f, 0.1f, Color.black);
+		yield return new WaitForSeconds(1);
+
+		LevelManager.Instance.StartLevel(CurrentGameConfiguration);
 		InProgress = true;
 	}
 

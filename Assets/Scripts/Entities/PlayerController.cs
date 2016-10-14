@@ -190,7 +190,7 @@ public class PlayerController : MonoBehaviour
 		_lastDamageDealerTimeOut.onFinish = OnLastDamageDealerTimeOut;
 		GameManager.Instance.OnPlayerWin.AddListener(OnPlayerWin);
 
-		_maxSpeed.x = _maxSpeed.x + _maxSpeed.x * (20 * (_characterData.CharacterStats.speed - 3) / 100);
+		_maxSpeed.x = _maxSpeed.x + _maxSpeed.x * (30 * (_characterData.CharacterStats.speed - 3) / 100);
 
 		if (GetComponentInChildren<GroundCheck>() == null)
 		{
@@ -352,7 +352,7 @@ public class PlayerController : MonoBehaviour
 	{
 		if (InputManager.GetButtonHeld("Dash", _playerRef.JoystickNumber) && _canDash && !_waitForDashRelease)
 		{
-			if (_dashStepActivated <= (_dashActivationSteps - 1) * (_timeHeldDash / _fullDashActivationTime) +1)
+			if (_dashStepActivated <= (_dashActivationSteps - 1) * (_timeHeldDash / _fullDashActivationTime) +1 && _characterData.Dash.Forces.Length >= _dashStepActivated - 1)
 			{
 				Eject(Quaternion.FromToRotation(Vector3.right, _activeDirection) * _characterData.Dash.Forces[_dashStepActivated - 1]);
 
