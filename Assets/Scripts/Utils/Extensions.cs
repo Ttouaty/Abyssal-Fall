@@ -2,9 +2,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+public enum Axis { x, y, z }
 
 public static class Vector3Extensions
 {
+
 	public static Vector3 ZeroX(this Vector3 vect)
 	{
 		vect.x = 0;
@@ -20,6 +22,28 @@ public static class Vector3Extensions
 	public static Vector3 ZeroZ(this Vector3 vect)
 	{
 		vect.z = 0;
+		return vect;
+	}
+
+	public static Vector3 Multiply(this Vector3 vect, Axis designatedAxis, float value)
+	{
+		if (designatedAxis == Axis.x)
+			vect.x *= value;
+		else if (designatedAxis == Axis.y)
+			vect.y *= value;
+		else
+			vect.z *= value;
+		return vect;
+	}
+
+	public static Vector3 Add(this Vector3 vect, Axis designatedAxis, float value)
+	{
+		if (designatedAxis == Axis.x)
+			vect.x += value;
+		else if (designatedAxis == Axis.y)
+			vect.y += value;
+		else
+			vect.z += value;
 		return vect;
 	}
 
@@ -59,6 +83,12 @@ public static class IntExtensions
 		return number;
 	}
 
+	public static float Percentage(this int number, float min, float max,  float decimalValue = 1f)
+	{
+		return Mathf.InverseLerp(min, max, number) * decimalValue;
+	}
+
+	
 }
 
 public static class ListExtensions

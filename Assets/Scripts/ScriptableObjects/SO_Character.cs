@@ -11,6 +11,8 @@ public class SO_Character :  ScriptableObject{
 	
 	[Space()]
 	public Stats CharacterStats;
+	[HideInInspector]
+	public Vector3 SpecialEjection = new Vector3(4.5f,3.27f); // base ejection is 3,3.27f (* 1.5f because tile scale) (Vector3 used for extensions)
 	[Space()]
 	public Dash Dash;
 

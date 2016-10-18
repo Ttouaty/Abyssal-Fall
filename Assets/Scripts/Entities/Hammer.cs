@@ -9,7 +9,7 @@ public class Hammer : MonoBehaviour {
 
 	private DamageDealer _playerShooting;
 	[SerializeField]
-	private int _speed = 10;
+	private int _speed = 20;
 	[SerializeField]
 	private float _stunInflicted = 0.3f;
 
@@ -30,7 +30,7 @@ public class Hammer : MonoBehaviour {
 		gameObject.SetActive(true);
 		_playerShooting = Shooter;
 
-		transform.localScale = Vector3.one * 2;
+		//transform.localScale = Vector3.one * 2;
 		transform.position = Position;
 		transform.rotation = Quaternion.LookRotation(Direction, Vector3.up);
 
@@ -40,9 +40,9 @@ public class Hammer : MonoBehaviour {
 
 	protected void Stop()
 	{
-		if (this.gameObject.activeSelf)
+		if (gameObject.activeSelf)
 		{
-			this._rigidB.velocity = Vector3.zero;
+			_rigidB.velocity = Vector3.zero;
 			GameObjectPool.AddObjectIntoPool(gameObject);
 		}
 	}
@@ -54,29 +54,29 @@ public class Hammer : MonoBehaviour {
 			if (Collider.gameObject.GetInstanceID() == _playerShooting.gameObject.GetInstanceID() || Collider.GetComponent<PlayerController>()._isInvul)
 				return;
 
-			Collider.GetComponent<PlayerController>().Damage(Quaternion.FromToRotation(Vector3.right, _rigidB.velocity.ZeroY()) * _playerShooting.PlayerRef.Controller._characterData.Dash.Forces[_playerShooting.PlayerRef.Controller._characterData.Dash.Forces.Length -1], _stunInflicted, _playerShooting);
+			Collider.GetComponent<PlayerController>().Damage(Quaternion.FromToRotation(Vector3.right, _rigidB.velocity.ZeroY()) * _playerShooting.PlayerRef.Controller._characterData.SpecialEjection * _playerShooting.PlayerRef.Controller._characterData.CharacterStats.strength, _stunInflicted, _playerShooting);
 			// explosion particules
 			_audioSource.PlayOneShot(OnHitPlayer);
-			this.Stop();
+			Stop();
 		}
-		else if(Collider.gameObject.layer == LayerMask.NameToLayer("Ground"))
+		else if(Collider.gameObject.layer == LayerMask.NameToLayer("Wall"))
 		{
 			_audioSource.PlayOneShot(OnHitObstacle);
-			this.Stop();
+			Stop();
 		}
 	}
 
 	private void OnBecameInvisible()
 	{
-		if (this.gameObject.activeInHierarchy)
+		if (gameObject.activeInHierarchy)
 			StartCoroutine("delayStop");
 	}
 
 	private IEnumerator delayStop()
 	{
 		yield return new WaitForSeconds(0.5f);
-		if (this.gameObject.activeSelf)
+		if (gameObject.activeSelf)
 			if (!GetComponent<Renderer>().isVisible)
-				this.Stop();
+				Stop();
 	}
 }

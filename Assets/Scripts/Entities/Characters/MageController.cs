@@ -21,8 +21,8 @@ public class MageController : PlayerController
 	private float _explosionDelay = 0.7f; // Time before explosion occurs after the special is activated
 	[SerializeField]
 	private float _explosionRadius = 4f;
-	[SerializeField]
-	private Vector2 _explosionEjection = new Vector2(5, 5);
+	//[SerializeField]
+	//private Vector2 _explosionEjection = new Vector2(5, 5);
 	[SerializeField]
 	private float _explosionStunTime = 0.4f;
 	[SerializeField]
@@ -37,6 +37,12 @@ public class MageController : PlayerController
 	protected override void CustomStart()
 	{
 		_specialChargeSpeedOriginal = _specialChargeSpeed;
+	}
+
+	protected override void CustomUpdate()
+	{
+		if (_chargeParticles.isPlaying && _timeHeld == 0)
+			_chargeParticles.Stop();
 	}
 
 	protected override bool SpecialActivation()
@@ -105,7 +111,7 @@ public class MageController : PlayerController
 
 		for (int i = 0; i < foundPlayers.Length; i++)
 		{
-			foundPlayers[i].GetComponent<PlayerController>().Damage(Quaternion.FromToRotation(Vector3.right, (foundPlayers[i].transform.position - position).ZeroY().normalized) * _explosionEjection, _explosionStunTime, _dmgDealerSelf);
+			foundPlayers[i].GetComponent<PlayerController>().Damage(Quaternion.FromToRotation(Vector3.right, (foundPlayers[i].transform.position - position).ZeroY().normalized) * _characterData.SpecialEjection * _characterData.CharacterStats.strength, _explosionStunTime, _dmgDealerSelf);
 		}
 
 

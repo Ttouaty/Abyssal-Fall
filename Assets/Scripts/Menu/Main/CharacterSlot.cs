@@ -244,8 +244,6 @@ public class CharacterSlot : MonoBehaviour
 
 	public void ChangeSkin(int direction)
 	{
-		int oldIndex = _selectedSkinIndex;
-
 		TrySwitchSkin(direction);
 
 		_wheelRef.ChangeActiveCharacterSkin(_availableCharacters[_selectedCharacterIndex].ArtWorks[_selectedSkinIndex], _selectedSkinIndex);

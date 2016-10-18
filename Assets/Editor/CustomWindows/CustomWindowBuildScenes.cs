@@ -22,7 +22,7 @@ public class CustomWindowBuildScenes : EditorWindow
 
 	private ReorderableList list;
 	private List<string> _scenes;
-	private string _currentOpenedScene = "";
+	//private string _currentOpenedScene = "";
 
 	void OnFocus ()
 	{

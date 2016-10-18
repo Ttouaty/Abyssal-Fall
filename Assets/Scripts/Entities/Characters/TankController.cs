@@ -11,8 +11,6 @@ public class TankController : PlayerController {
 	[SerializeField]
 	private float _specialSpeedDecreaseFactor = 0.2f;
 	[SerializeField]
-	private Vector2 _specialPushBack = new Vector2(8, 6);
-	[SerializeField]
 	private float _specialStun = 0.4f;
 	[SerializeField]
 	private ParticleSystem _specialParticles;
@@ -55,7 +53,7 @@ public class TankController : PlayerController {
 			{
 				colli.transform.GetComponent<PlayerController>()
 					.Damage(Quaternion.FromToRotation(Vector3.right,
-					(colli.transform.position - transform.position).ZeroY().normalized + _rigidB.velocity.normalized * 1.5f) * _specialPushBack * (_characterData.CharacterStats.strength / 3),
+					(colli.transform.position - transform.position).ZeroY().normalized + _rigidB.velocity.normalized * 1.5f) * _characterData.SpecialEjection * _characterData.CharacterStats.strength,
 					_specialStun,
 					_dmgDealerSelf);
 			}

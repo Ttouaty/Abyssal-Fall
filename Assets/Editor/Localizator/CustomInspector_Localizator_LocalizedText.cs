@@ -12,7 +12,7 @@ namespace Localizator
 	{
 		private LocalizedText _target;
 		private string[] _rootLines;
-		private int _selectedIndex = 0;
+		//private int _selectedIndex = 0;
 
 		void OnEnable ()
 		{
@@ -26,7 +26,7 @@ namespace Localizator
 			{
 				if(_rootLines[i].Equals(_target.Fragment))
 				{
-					_selectedIndex = i;
+					//_selectedIndex = i;
 					break;
 				}
 			}

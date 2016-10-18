@@ -19,16 +19,17 @@ MonoBehaviour:
   - {fileID: 2100000, guid: aac45e70a54774947a27bb81cb09d98c, type: 2}
   - {fileID: 2100000, guid: 2085d6d318e9139479838deb44ecb229, type: 2}
   CharacterStats:
-    strength: 3
+    strength: 5
     specialCooldown: 4
-    speed: 3
-    resistance: 2
+    speed: 6
+    resistance: 3
+  SpecialEjection: {x: 3, y: 3.27, z: 0}
   Dash:
     endingLag: 0.3
     Forces:
     - {x: 8, y: 5.2}
     - {x: 8, y: 6}
-    ImpactEjection: {x: 7, y: 5}
+    Impact: 3
     inProgress: 0
   SoundList:
     OnDashStart: {fileID: 0}
