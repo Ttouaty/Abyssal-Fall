@@ -23,10 +23,10 @@ public class CharacterSelectButton : InputListener
 
 	}
 
-	protected override void LaunchCallback()
+	protected override void LaunchCallback(int joy)
 	{
 		if (GameManager.Instance.AreAllPlayerReady)
-			base.LaunchCallback();
+			base.LaunchCallback(joy);
 	}
 
 	Color tempColor;

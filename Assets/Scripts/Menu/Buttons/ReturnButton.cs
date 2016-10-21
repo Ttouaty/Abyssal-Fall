@@ -21,9 +21,4 @@ public class ReturnButton : InputListener {
 		if (_timeHeld == 0)
 			CircleFill.fillAmount = 0;
 	}
-
-	protected override void LaunchCallback()
-	{
-		base.LaunchCallback();
-	}
 }

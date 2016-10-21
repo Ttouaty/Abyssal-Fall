@@ -4,7 +4,7 @@ using System.Collections.Generic;
 [System.Serializable]
 public struct Pool
 {
-	private GameObjectPool _GOPInstance;
+	//private GameObjectPool _GOPInstance;
 
 	public bool bIsOpen;
 	public GameObject Prefab;
@@ -20,7 +20,7 @@ public struct Pool
         Prefab          = prefab;
         Quantity        = quantity;
 
-        _GOPInstance    = null;
+        //_GOPInstance    = null;
 
         bIsOpen         = false;
         QuantityLoaded  = 0;

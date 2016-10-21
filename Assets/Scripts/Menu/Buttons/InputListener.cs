@@ -17,7 +17,7 @@ public class InputListener : MonoBehaviour
 
 	public bool UseAxis = false;
 	public Vector2 directionToListen = new Vector2(1, 0);
-	public float AxisPrecision = 0.7f;
+	public float AxisPrecision = 0.5f;
 
 	public InputEnum InputToListen;
 
@@ -31,7 +31,7 @@ public class InputListener : MonoBehaviour
 	public UnityEvent Callback;
 	
 	protected float _timeHeld;
-	private bool _waitForRelease;
+	private bool[] _waitForRelease = new bool[13];
 	private bool _isCallbackActivatedThisFrame = false;
 	private bool _isInputDown = false;
 
@@ -73,29 +73,29 @@ public class InputListener : MonoBehaviour
 	void TestAxis(int joystickNumber = -1)
 	{
 		_tempStickPosition = InputManager.GetStickDirection(joystickNumber);
-		if (_waitForRelease)
+		if (_waitForRelease[1 +joystickNumber])
 		{
 			if (_tempStickPosition.magnitude < stickActivateThreshold - 0.2)
 			{
-				_waitForRelease = false;
+				_waitForRelease[1 +joystickNumber] = false;
 				_timeHeld = 0;
 			} 
 		}
-		else if (Vector3.Dot(_tempStickPosition, directionToListen) > 1 - AxisPrecision && _tempStickPosition.magnitude > stickActivateThreshold)
+		else if (directionToListen.AnglePercent(_tempStickPosition) > AxisPrecision && _tempStickPosition.magnitude > stickActivateThreshold)
 		{
 			if (CanLoop)
 			{
 				_timeHeld -= Time.deltaTime;
 				if (_timeHeld < 0)
 				{ 
-					LaunchCallback();
+					LaunchCallback(joystickNumber);
 					_timeHeld = TimeToHold;
 				}
 
 			}
 			else {
-				_waitForRelease = true;
-				LaunchCallback();
+				_waitForRelease[1 +joystickNumber] = true;
+				LaunchCallback(joystickNumber);
 			}
 		}
 
@@ -103,39 +103,39 @@ public class InputListener : MonoBehaviour
 
 	void TestButton(int joystickNumber = -1)
 	{
-		if (_waitForRelease)
-			_waitForRelease = !InputManager.GetButtonUp(InputToListen, joystickNumber);
+		if (_waitForRelease[1 +joystickNumber])
+			_waitForRelease[1 +joystickNumber] = !InputManager.GetButtonUp(InputToListen, joystickNumber);
 
 		if (InputMethodUsed == InputMethod.Down)
 		{
 			if (InputManager.GetButtonDown(InputToListen, joystickNumber))
-				LaunchCallback();
+				LaunchCallback(joystickNumber);
 		}
 		else if (InputMethodUsed == InputMethod.Up)
 		{
 			if (InputManager.GetButtonUp(InputToListen, joystickNumber))
-				LaunchCallback();
+				LaunchCallback(joystickNumber);
 		}
 		else
 			_isInputDown = InputManager.GetButtonHeld(InputToListen, joystickNumber);
 
 		if (_isInputDown)
 		{
-			if (!_waitForRelease)
+			if (!_waitForRelease[1 +joystickNumber])
 				_timeHeld += Time.deltaTime;
 		}
 		else
 			_timeHeld = _timeHeld.Reduce(Time.deltaTime);
 
 		if (_timeHeld > TimeToHold)
-			LaunchCallback();
+			LaunchCallback(joystickNumber);
 	}
 
-	protected virtual void LaunchCallback()
+	protected virtual void LaunchCallback(int joy)
 	{
 		_isCallbackActivatedThisFrame = true;
 		if (!CanLoop)
-			_waitForRelease = true;
+			_waitForRelease[1 +joy] = true;
 		_timeHeld = 0;
 		
 		Callback.Invoke();
@@ -145,6 +145,9 @@ public class InputListener : MonoBehaviour
 	{
 		_isInputDown = false;
 		_timeHeld = 0;
-		_waitForRelease = false;
+		for (int i = 0; i < 12; i++)
+		{
+			_waitForRelease[1 +i] = false;
+		}
 	}
 }

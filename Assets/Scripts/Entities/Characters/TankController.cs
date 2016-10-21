@@ -11,8 +11,6 @@ public class TankController : PlayerController {
 	[SerializeField]
 	private float _specialSpeedDecreaseFactor = 0.2f;
 	[SerializeField]
-	private float _specialStun = 0.4f;
-	[SerializeField]
 	private ParticleSystem _specialParticles;
 	
 	private bool _charging = false;
@@ -49,13 +47,13 @@ public class TankController : PlayerController {
 		base.PlayerCollisionHandler(colli);
 		if (_charging)
 		{
-			if (colli.gameObject.layer == LayerMask.NameToLayer("PlayerDefault"))
+			if (colli.transform.GetComponent<IDamageable>() != null)
 			{
-				colli.transform.GetComponent<PlayerController>()
+				colli.transform.GetComponent<IDamageable>()
 					.Damage(Quaternion.FromToRotation(Vector3.right,
-					(colli.transform.position - transform.position).ZeroY().normalized + _rigidB.velocity.normalized * 1.5f) * _characterData.SpecialEjection * _characterData.CharacterStats.strength,
-					_specialStun,
-					_dmgDealerSelf);
+					(colli.transform.position - transform.position).ZeroY().normalized + _rigidB.velocity.normalized * 1.5f) * _characterData.SpecialEjection.Multiply(Axis.x, _characterData.CharacterStats.strength),
+					colli.contacts[0].point,
+					_characterData.SpecialDamageData);
 			}
 		}
 	}

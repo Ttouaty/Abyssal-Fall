@@ -28,6 +28,9 @@ public class MenuManager : GenericSingleton<MenuManager>
 	private CharacterSelector _characterSlotsContainerRef;
 	private RawImage[] _splashscreens;
 	private Coroutine _miniLoadingCoroutine;
+	private bool _needFTUE = false;
+
+	public bool NeedFTUE { get { return _needFTUE; } }
 
 	protected override void Awake()
 	{
@@ -40,6 +43,8 @@ public class MenuManager : GenericSingleton<MenuManager>
 		_characterSlotsContainerRef     = GetComponentInChildren<CharacterSelector>();
 		_returnGroupRef					= GetComponentInChildren<ReturnButton>();
 		_metaContainer					= _canvas.transform.FindChild("Meta");
+
+		_needFTUE = !PlayerPrefs.HasKey("FTUEDone");
 
 		_leftMenuAnchor		= _metaContainer.Find("LeftMenuAnchor");
 		_centerMenuAnchor	= _metaContainer.Find("CenterMenuAnchor");
@@ -66,6 +71,15 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 			_menuArray[i].transform.position = _leftMenuAnchor.position;
 			_menuArray[i].gameObject.SetActive(false);
+		}
+
+		if (_needFTUE)
+		{
+			_menuArray[0].transform.position = _leftMenuAnchor.position;
+			_menuArray[0].gameObject.SetActive(false);
+			GetMenuPanel("FTUE").transform.position = _centerMenuAnchor.position;
+			GetMenuPanel("FTUE").gameObject.SetActive(true);
+			_activeMenu = GetMenuPanel("FTUE");
 		}
 	}
 
@@ -167,6 +181,19 @@ public class MenuManager : GenericSingleton<MenuManager>
 		}
 	}
 
+	public void StartFtue()
+	{
+		DeactivateMenu();
+		StartCoroutine(StartTutorial());
+	}
+
+	private IEnumerator StartTutorial()
+	{
+		AutoFade.StartFade(1,1,1, Color.white);
+		yield return new WaitForSeconds(1);
+
+	}
+
 	public void Exit()
 	{
 		Application.Quit();
@@ -195,6 +222,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 		
 		if (newMenu == null)
 		{
+			StartCoroutine(SendOutLeft(_activeMenu));
 			_activeMenu = null;
 			yield break;
 		}
@@ -279,7 +307,8 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	IEnumerator FadeSplashscreens_Implementation(bool shouldShowSplashscreens)
 	{
-		SetActiveButtons(GetMenuPanel("Main"), false);
+		SetActiveButtons(_activeMenu, false);
+		_activeMenu.gameObject.SetActive(false);
 		Color color;
 		int i = 0;
 
@@ -303,14 +332,15 @@ public class MenuManager : GenericSingleton<MenuManager>
 			}
 		}
 		yield return StartCoroutine(LoadPreview_Implementation(EArenaConfiguration.Aerial));
-
+		_activeMenu.gameObject.SetActive(true);
 		SplashScreens.transform.Find("Background_black").GetComponent<Image>().CrossFadeAlpha(0, 1, false);
 		Destroy(SplashScreens, 1);
 
 		yield return StartCoroutine(WaitForFixedCamera());
 
-		SetActiveButtons(GetMenuPanel("Main"), true);
-		_activeMenu.PreSelectedButton.Select();
+		SetActiveButtons(_activeMenu, true);
+		if(_activeMenu.PreSelectedButton != null)
+			_activeMenu.PreSelectedButton.Select();
 	}
 
 	public void LoadPreview(EArenaConfiguration levelName)

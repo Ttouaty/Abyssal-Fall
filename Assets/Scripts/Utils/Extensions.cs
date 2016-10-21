@@ -58,7 +58,33 @@ public static class Vector3Extensions
 	{
 		return Mathf.Max(Mathf.Abs(vect.x), Mathf.Abs(vect.y), Mathf.Abs(vect.z));
 	}
-	
+
+	public static float AnglePercent(this Vector3 vect, Vector3 target)
+	{
+		float angle = Vector3.Angle(vect, target);
+
+		if (vect.magnitude == 0 || target.magnitude == 0)
+			return 0;
+
+		if (angle > 90)
+			return Mathf.InverseLerp(90, 180, angle) * -1;
+		else
+			return Mathf.InverseLerp(90, 0, angle);
+	}
+
+	public static float AnglePercent(this Vector2 vect, Vector2 target)
+	{
+		float angle = Vector2.Angle(vect, target);
+
+		if (vect.magnitude == 0 || target.magnitude == 0)
+			return 0;
+
+		if (angle > 90)
+			return Mathf.InverseLerp(90, 180, angle) * -1;
+		else
+			return Mathf.InverseLerp(90, 0, angle);
+	}
+
 }
 
 public static class IntExtensions
@@ -217,5 +243,34 @@ public static class MonoBehaviourExtensions
 			target.transform.localPosition = end;
 		else
 			target.transform.position = end;
+	}
+
+	public static void FadeDestroy(this MonoBehaviour target, float time)
+	{
+		target.StartCoroutine(FadeNDestroy(target, time));
+	}
+
+	static IEnumerator FadeNDestroy(MonoBehaviour target, float time)
+	{
+		Material objMat = target.GetComponentInChildren<Renderer>().material;
+		if(!objMat.IsKeywordEnabled("_ALPHATEST_ON") && !objMat.IsKeywordEnabled("_ALPHABLEND_ON") && !objMat.IsKeywordEnabled("_ALPHAPREMULTIPLY_ON"))
+		{
+			Debug.LogWarning("Object must have a transparency using rendering mode for FadeDestroy() to work!  \n(cutout, fade, transparent would work). Canceling!");
+			yield break;
+		}
+		float eT = 0;
+		Color startColor = objMat.color;
+		Color targetColor = objMat.color;
+		targetColor.a = 0;
+
+		while (eT < time)
+		{
+			eT += Time.deltaTime;
+
+			objMat.color = Color.Lerp(startColor, targetColor, eT / time);
+			yield return null;
+		}
+
+		MonoBehaviour.Destroy(target.gameObject);
 	}
 }

@@ -42,6 +42,9 @@ public class TimeCooldown : CoolDown{
 	{
 		targetTimeStamp = Time.time + value;
 		isFinished = false;
+
+		if (value == 0)
+			isFinished = true;
 	}
 
 }

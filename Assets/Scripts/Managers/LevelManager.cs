@@ -232,7 +232,7 @@ public class LevelManager : GenericSingleton<LevelManager>
 		MainManager.Instance.LOADING_MANAGER.SetStateText("start_loading");
 
 		// Init loading events
-		float originalLoadingBarSize = MainManager.Instance.LOADING_MANAGER.LoadBarProgress.rectTransform.rect.width;
+		//float originalLoadingBarSize = MainManager.Instance.LOADING_MANAGER.LoadBarProgress.rectTransform.rect.width;
 		OnLoadProgress.AddListener((float progress) => {
 			MainManager.Instance.LOADING_MANAGER.LoadBarProgress.fillAmount = progress;
 		});
@@ -293,9 +293,9 @@ public class LevelManager : GenericSingleton<LevelManager>
 		MainManager.Instance.ARENA_MANAGER = ArenaManager.Instance;
 
 		// Start Game
+		AutoFade.StartFade(0,0.5f,1);
 		MainManager.Instance.ARENA_MANAGER.Init();	
 		_bIsLoading = false;
-		AutoFade.StartFade(0,0.2f,1);
 	}
 
 	public IEnumerator LoadLevelPreview (EArenaConfiguration arena, Action<AsyncOperation> callback = null)

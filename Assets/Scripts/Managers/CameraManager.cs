@@ -56,13 +56,13 @@ public class CameraManager : GenericSingleton<CameraManager>
 		{
 			CalculateTargetsDistance();
 
-			Debug.DrawRay(_centerPoint.position, _targetsCentroid - _centerPoint.position, Color.red);
+			//Debug.DrawRay(_centerPoint.position, _targetsCentroid - _centerPoint.position, Color.red);
 
 			transform.localPosition = -transform.forward * _distance;
 
 			FollowCentroid();
 
-			Debug.DrawRay(transform.position, transform.forward * _distance, Color.blue);
+			//Debug.DrawRay(transform.position, transform.forward * _distance, Color.blue);
 		}
 	}
 
@@ -82,7 +82,7 @@ public class CameraManager : GenericSingleton<CameraManager>
 			{
 				++nbRays;
 				tempDirection = _targetsTracked[j].position - _targetsTracked[i].position;
-				Debug.DrawRay(_targetsTracked[i].position, tempDirection);
+				//Debug.DrawRay(_targetsTracked[i].position, tempDirection);
 
 				_tempPosition = Quaternion.FromToRotation(Vector3.right, transform.right) * (tempDirection.ZeroY());
 				_tempPosition.x /= _camera.aspect;
@@ -95,7 +95,10 @@ public class CameraManager : GenericSingleton<CameraManager>
 				}
 			}
 		}
-		_targetsCentroid /= nbRays;
+		if (_targetsTracked.Count == 1)
+			_targetsCentroid = _targetsTracked[0].position;
+		else
+			_targetsCentroid /= nbRays;
 		_targetsCentroid.y = _centerPoint.position.y;
 
 		_distance = Mathf.Lerp(_distance, _tempDistance * 0.5f / Mathf.Tan(_camera.fieldOfView * 0.5f * Mathf.Deg2Rad) * (1 + Growth) + Margin, 5 * Time.deltaTime);

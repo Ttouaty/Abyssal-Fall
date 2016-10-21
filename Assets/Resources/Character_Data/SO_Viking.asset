@@ -28,10 +28,16 @@ MonoBehaviour:
   Dash:
     endingLag: 0.3
     Forces:
-    - {x: 8, y: 5.2}
-    - {x: 8, y: 6}
+    - {x: 9, y: 4.905}
+    - {x: 12, y: 4.905}
     Impact: 4
     inProgress: 0
+  DashDamageData:
+    AttackTypeUsed: 0
+    StunInflicted: 0.3
+  SpecialDamageData:
+    AttackTypeUsed: 1
+    StunInflicted: 0.5
   SoundList:
     OnDashStart: {fileID: 0}
     OnDashEnd: {fileID: 0}

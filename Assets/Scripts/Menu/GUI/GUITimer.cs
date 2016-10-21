@@ -10,10 +10,10 @@ public class GUITimer : MonoBehaviour
 	[System.Serializable]
 	public class OnCompleteEvent : UnityEvent { }
 
-	private float                           _baseTimer;
+	//private float                           _baseTimer;
 	private float                           _currentTimer;
 	private Coroutine                       _coroutine;
-	private bool                            _bIsWarning         = false;
+	//private bool                            _bIsWarning         = false;
 	private Localizator.LocalizedText       _timerDisplay;
 
 	public OnCompleteEvent                  OnCompleteCallback;
@@ -26,7 +26,7 @@ public class GUITimer : MonoBehaviour
 
 	public void Stop ()
 	{
-		_baseTimer = 0;
+		//_baseTimer = 0;
 		_currentTimer = 0;
 		if(_coroutine != null)
 		{
@@ -42,7 +42,7 @@ public class GUITimer : MonoBehaviour
 	IEnumerator Run_Implementation (float timer)
 	{
 		IEnumerator warning = Warning_Implementation();
-		_baseTimer = timer;
+		//_baseTimer = timer;
 		_currentTimer = timer;
 
 		while (_currentTimer > 0)

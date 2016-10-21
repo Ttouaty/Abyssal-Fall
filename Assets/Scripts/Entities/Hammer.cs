@@ -10,8 +10,6 @@ public class Hammer : MonoBehaviour {
 	private DamageDealer _playerShooting;
 	[SerializeField]
 	private int _speed = 20;
-	[SerializeField]
-	private float _stunInflicted = 0.3f;
 
 	private Rigidbody _rigidB;
 	private AudioSource _audioSource;
@@ -35,48 +33,41 @@ public class Hammer : MonoBehaviour {
 		transform.rotation = Quaternion.LookRotation(Direction, Vector3.up);
 
 		_rigidB.velocity = Direction.normalized * _speed;
+		StartCoroutine(DelayStop());
+
 	}
 
 
 	protected void Stop()
 	{
-		if (gameObject.activeSelf)
-		{
-			_rigidB.velocity = Vector3.zero;
-			GameObjectPool.AddObjectIntoPool(gameObject);
-		}
+		_rigidB.velocity = Vector3.zero;
+		GameObjectPool.AddObjectIntoPool(gameObject);
 	}
 
-	private void OnTriggerEnter(Collider Collider)
+	private void OnTriggerEnter(Collider colli)
 	{
-		if (Collider.tag == "Player")
+		if (colli.GetComponent<IDamageable>() != null)
 		{
-			if (Collider.gameObject.GetInstanceID() == _playerShooting.gameObject.GetInstanceID() || Collider.GetComponent<PlayerController>()._isInvul)
+			if (colli.gameObject.GetInstanceID() == _playerShooting.PlayerRef.Controller.gameObject.GetInstanceID() || colli.GetComponent<PlayerController>()._isInvul)
 				return;
 
-			Collider.GetComponent<PlayerController>().Damage(Quaternion.FromToRotation(Vector3.right, _rigidB.velocity.ZeroY()) * _playerShooting.PlayerRef.Controller._characterData.SpecialEjection * _playerShooting.PlayerRef.Controller._characterData.CharacterStats.strength, _stunInflicted, _playerShooting);
+			colli.GetComponent<IDamageable>().Damage(Quaternion.FromToRotation(Vector3.right, _rigidB.velocity.ZeroY()) * _playerShooting.PlayerRef.Controller._characterData.SpecialEjection.Multiply(Axis.x, _playerShooting.PlayerRef.Controller._characterData.CharacterStats.strength),
+				transform.position,
+				_playerShooting.PlayerRef.Controller._characterData.SpecialDamageData);
 			// explosion particules
 			_audioSource.PlayOneShot(OnHitPlayer);
 			Stop();
 		}
-		else if(Collider.gameObject.layer == LayerMask.NameToLayer("Wall"))
+		else if(colli.gameObject.layer == LayerMask.NameToLayer("Wall"))
 		{
-			_audioSource.PlayOneShot(OnHitObstacle);
-			Stop();
+			//_audioSource.PlayOneShot(OnHitObstacle);
+			//Stop();
 		}
 	}
 
-	private void OnBecameInvisible()
+	private IEnumerator DelayStop()
 	{
-		if (gameObject.activeInHierarchy)
-			StartCoroutine("delayStop");
-	}
-
-	private IEnumerator delayStop()
-	{
-		yield return new WaitForSeconds(0.5f);
-		if (gameObject.activeSelf)
-			if (!GetComponent<Renderer>().isVisible)
-				Stop();
+		yield return new WaitForSeconds(3f);
+		Stop();
 	}
 }

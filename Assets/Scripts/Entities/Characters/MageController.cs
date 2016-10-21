@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MageController : PlayerController 
+public class MageController : PlayerController
 {
 	private float _specialActiveRange = 5;
 	
@@ -23,8 +23,6 @@ public class MageController : PlayerController
 	private float _explosionRadius = 4f;
 	//[SerializeField]
 	//private Vector2 _explosionEjection = new Vector2(5, 5);
-	[SerializeField]
-	private float _explosionStunTime = 0.4f;
 	[SerializeField]
 	private ParticleSystem _preExposionParticles;
 	[SerializeField]
@@ -107,11 +105,15 @@ public class MageController : PlayerController
 		exploParticles.Play();
 		Destroy(exploParticles.gameObject, exploParticles.startLifetime + exploParticles.duration);
 
-		Collider[] foundPlayers = Physics.OverlapSphere(position, _explosionRadius, 1 << LayerMask.NameToLayer("PlayerDefault"));
+		Collider[] foundElements = Physics.OverlapSphere(position, _explosionRadius);
 
-		for (int i = 0; i < foundPlayers.Length; i++)
+		for (int i = 0; i < foundElements.Length; i++)
 		{
-			foundPlayers[i].GetComponent<PlayerController>().Damage(Quaternion.FromToRotation(Vector3.right, (foundPlayers[i].transform.position - position).ZeroY().normalized) * _characterData.SpecialEjection * _characterData.CharacterStats.strength, _explosionStunTime, _dmgDealerSelf);
+			if(foundElements[i].GetComponent<IDamageable>() != null)
+				foundElements[i].GetComponent<IDamageable>().Damage(
+					Quaternion.FromToRotation(Vector3.right, (foundElements[i].transform.position - position).ZeroY().normalized) * _characterData.SpecialEjection.Multiply(Axis.x ,_characterData.CharacterStats.strength),
+					position,
+					_characterData.SpecialDamageData);
 		}
 
 

@@ -161,9 +161,12 @@ public class InputManager : GenericSingleton<InputManager>
 		return new Vector2(GetAxis("x", JoystickNumber), GetAxis("y", JoystickNumber)).normalized;
 	}
 
-	public static bool StickIsNeutral(int JoystickNumber = 0)
+	public static bool StickIsNeutral(int JoystickNumber = 0, float deadZone= 0f)
 	{
-		return Input.GetAxisRaw("x_" + JoystickNumber) == 0 && Input.GetAxisRaw("y_" + JoystickNumber) == 0;
+		if(deadZone == 0)
+			return Input.GetAxisRaw("x_" + JoystickNumber) == 0 && Input.GetAxisRaw("y_" + JoystickNumber) == 0;
+		else
+			return Mathf.Abs(Input.GetAxis("x_" + JoystickNumber)) < deadZone && Mathf.Abs(Input.GetAxis("y_" + JoystickNumber)) < deadZone;
 	}
 	#endregion
 

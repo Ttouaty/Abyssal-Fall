@@ -37,8 +37,18 @@ public class Stats
 	public int resistance = 5;
 }
 
+public interface IDamageable
+{
+	void Damage(Vector3 direction, Vector3 impactPoint,  DamageData Sender);
+}
+
+public interface IDamaging
+{
+	DamageDealer DmgDealerSelf { get; }
+}
+
 [RequireComponent(typeof(Rigidbody), typeof(AudioSource), typeof(DamageDealer))]
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 {
 	[HideInInspector]
 	public Player _playerRef;
@@ -67,9 +77,9 @@ public class PlayerController : MonoBehaviour
 	protected Vector3 _activeSpeed = Vector3.zero; // Activespeed est un vecteur qui est appliqué a chaque frame au rigibody.velocity => permet de modifier librement la vitesse du player.
 	protected Vector3 _activeDirection = Vector3.forward;
 	protected Vector2 _maxSpeed = new Vector2(8f, 20f);
-	protected Vector2 _acceleration = new Vector2(1.2f, -2f);
-	protected float _friction = 60; //friction applied to the player when it slides (pushed or end dash) (units/s)
-	protected float _airborneDelay = 0.01f;
+	protected Vector2 _acceleration = new Vector2(0.1f, -2f); // X => time needed to reach max speed, Y => Gravity multiplier
+	protected float _friction = 80; //friction applied to the player when it slides (pushed or end dash) (units/s)
+	//protected float _airborneDelay = 0.02f;
 
 	protected float _fullDashActivationTime = 0.05f;
 	private float _timeHeldDash;
@@ -84,10 +94,11 @@ public class PlayerController : MonoBehaviour
 	protected TimeCooldown _specialCooldown;
 	protected TimeCooldown _stunTime; //Seconds of stun on Hit
 	protected TimeCooldown _invulTime; //Seconds of invulnerability
-	protected TimeCooldown _airborneTimeout; //Time before being considered airborne
+	//protected TimeCooldown _airborneTimeout; //Time before being considered airborne
+	protected TimeCooldown _forcedAirbornTimeout; 
 
 	protected DamageDealer _dmgDealerSelf;
-	public DamageDealer DamageDealerSelf { get { return _dmgDealerSelf; } }
+	public DamageDealer DmgDealerSelf { get { return _dmgDealerSelf; } }
 	private DamageDealer _lastDamageDealer;
 	public DamageDealer LastDamageDealer
 	{
@@ -146,7 +157,7 @@ public class PlayerController : MonoBehaviour
 	public void Init(Player player)
 	{
 		_playerRef = player;
-
+		_playerRef.Controller = this;
 		if (_characterData == null)
 		{
 			Debug.Log("No SO_Character found for character " + gameObject.name + ". Seriously ?");
@@ -174,18 +185,30 @@ public class PlayerController : MonoBehaviour
 		_specialCooldown.onFinish = OnSpecialReset;
 
 		_stunTime = new TimeCooldown(this);
-		_stunTime.onFinish = OnStunOver;
-		_stunTime.onProgress = OnStunActive;
+		_stunTime.onFinish = () => { _isStunned = false; _allowInput = true; };
+		_stunTime.onProgress = () =>
+		{
+			if (!IsGrounded) { _stunTime.Add(TimeManager.DeltaTime); }
+			_allowInput = false;
+			_isStunned = true;
+		};//decrease Stun only if grounded
 
 		_invulTime = new TimeCooldown(this);
-		_invulTime.onFinish = OnInvulOver;
-		_invulTime.onProgress = OnInvulActive;
+		_invulTime.onFinish = () => { _isInvul = false; };
+		_invulTime.onProgress = () => { _isInvul = true; if (!IsGrounded) _invulTime.Add(Time.deltaTime); };
 
-		_airborneTimeout = new TimeCooldown(this);
-		_airborneTimeout.onFinish = OnAirbornFinish;
-		_airborneTimeout.onProgress = OnAirbornProgress;
+		//_airborneTimeout = new TimeCooldown(this);
+		//_airborneTimeout.onFinish = () => {	if (IsGrounded)	_airborneTimeout.Set(_airborneDelay);};
+		//_airborneTimeout.onProgress = () => {
+		//	if (_characterData.Dash.inProgress)
+		//		return;
+		//	if (IsGrounded)
+		//		_airborneTimeout.Set(_airborneDelay);
+		//	IsGrounded = true;
+		//};
 
-
+		_forcedAirbornTimeout = new TimeCooldown(this);
+		
 		_lastDamageDealerTimeOut = new TimeCooldown(this);
 		_lastDamageDealerTimeOut.onFinish = OnLastDamageDealerTimeOut;
 		GameManager.Instance.OnPlayerWin.AddListener(OnPlayerWin);
@@ -201,13 +224,13 @@ public class PlayerController : MonoBehaviour
 			tempGo.AddComponent(typeof(GroundCheck));
 			tempGo.transform.position = _transf.position - Vector3.up;
 		}
-		_dmgDealerSelf = GetComponent<DamageDealer>();
-		if (_dmgDealerSelf == null)
-			_dmgDealerSelf = gameObject.AddComponent<DamageDealer>();
 
+		_dmgDealerSelf = new DamageDealer();
 		_dmgDealerSelf.PlayerRef = _playerRef;
 		_dmgDealerSelf.InGameName = _characterData.IngameName;
 		_dmgDealerSelf.Icon = _characterData.Icon;
+
+		_characterData.SpecialDamageData.Dealer = _characterData.DashDamageData.Dealer = _dmgDealerSelf;
 
 		TimeManager.Instance.OnPause.AddListener(OnPause);
 		TimeManager.Instance.OnResume.AddListener(OnResume);
@@ -223,6 +246,10 @@ public class PlayerController : MonoBehaviour
 	{
 		if (_isDead || TimeManager.IsPaused)
 			return;
+
+		//had to do that :p
+		if (_forcedAirbornTimeout.TimeLeft > 0)
+			IsGrounded = false;
 
 		ProcessCoolDowns();
 
@@ -275,34 +302,6 @@ public class PlayerController : MonoBehaviour
 			_characterProp.PropRespawnParticles.Play();
 	}
 
-	protected virtual void OnStunOver()
-	{
-		_isStunned = false;
-		_allowInput = true;
-	}
-
-	protected virtual void OnStunActive()
-	{
-		if (!IsGrounded)
-		{
-			_stunTime.Add(TimeManager.DeltaTime); //decrease Stun only if grounded
-		}
-
-		_allowInput = false;
-		_isStunned = true;
-	}
-
-	protected virtual void OnInvulOver()
-	{
-		_isInvul = false;
-	}
-
-	protected virtual void OnInvulActive()
-	{
-		_isInvul = true;
-		if (!IsGrounded)
-			_invulTime.Add(Time.deltaTime);
-	}
 
 	protected virtual void OnPlayerWin()
 	{
@@ -312,26 +311,13 @@ public class PlayerController : MonoBehaviour
 		_animator.SetTrigger("Reset");
 	}
 
-	private void OnAirbornFinish()
-	{
-
-	}
-
-	private void OnAirbornProgress()
-	{
-		if (_characterData.Dash.inProgress)
-			return;
-		if (IsGrounded)
-			_airborneTimeout.Add(Time.deltaTime);
-		IsGrounded = true;
-	}
-
 	#endregion
 
 
 	#region Processes
 	private void ProcessOrientation()
 	{
+		Vector3 oldDirection = transform.forward;
 		if (!InputManager.StickIsNeutral(_playerRef.JoystickNumber) && !_isStunned)
 		{
 			//_activeDirection.x = Mathf.Lerp(_activeDirection.x, InputManager.GetAxis("x", _playerRef.JoystickNumber), 0.3f);
@@ -340,9 +326,22 @@ public class PlayerController : MonoBehaviour
 			_activeDirection.z = InputManager.GetAxis("y", _playerRef.JoystickNumber);
 			_activeDirection = Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized) * _activeDirection;
 			//_activeDirection.Normalize();
+
+			if (oldDirection.AnglePercent(_activeDirection) < -0.8f)
+				OnFlip();
 		}
 
 		transform.LookAt(transform.position + _activeDirection, Vector3.up);
+	}
+
+	protected void OnFlip()
+	{
+		//IMPORTANT, will need an flip animation
+
+		//_stunTime.Add(0.1f);
+		//_activeSpeed = Vector3.zero;
+
+		//Debug.Log("Character "+_characterData.IngameName+" Fliped.");
 	}
 
 	private void ProcessCoolDowns()
@@ -391,17 +390,27 @@ public class PlayerController : MonoBehaviour
 	{
 		if (IsGrounded)
 		{
-			if (_allowInput)
+			bool secureAllowInput = _allowInput; // just security (other threads to not fuck this up :p)
+			if (secureAllowInput)
 			{
+				_activeSpeed = Quaternion.FromToRotation(-Vector3.forward, Camera.main.transform.up.ZeroY().normalized) * _activeSpeed;
+				//#if UNITY_EDITOR 
+				//				_activeSpeed.x = _maxSpeed.x * InputManager.GetAxisRaw("x", _playerRef.JoystickNumber);
+				//				_activeSpeed.z = _maxSpeed.x * InputManager.GetAxisRaw("y", _playerRef.JoystickNumber);
+				//#else
+				//				_activeSpeed.x = _maxSpeed.x * InputManager.GetAxis("x", _playerRef.JoystickNumber);
+				//				_activeSpeed.z = _maxSpeed.x * InputManager.GetAxis("y", _playerRef.JoystickNumber);
+				//#endif
+			}
 
-#if UNITY_EDITOR
-				_activeSpeed.x = _maxSpeed.x * InputManager.GetAxisRaw("x", _playerRef.JoystickNumber);
-				_activeSpeed.z = _maxSpeed.x * InputManager.GetAxisRaw("y", _playerRef.JoystickNumber);
-#else
-				_activeSpeed.x = _maxSpeed.x * InputManager.GetAxis("x", _playerRef.JoystickNumber);
-				_activeSpeed.z = _maxSpeed.x * InputManager.GetAxis("y", _playerRef.JoystickNumber);
-#endif
-				_activeSpeed = Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized) * _activeSpeed.normalized * _maxSpeed.x;
+			ApplyFriction();
+
+			if (secureAllowInput)
+			{
+				_activeSpeed.x += ((_maxSpeed.x / _acceleration.x) * Time.deltaTime + _friction * TimeManager.DeltaTime) * InputManager.GetAxis("x", _playerRef.JoystickNumber);
+				_activeSpeed.z += ((_maxSpeed.x / _acceleration.x) * Time.deltaTime + _friction * TimeManager.DeltaTime) * InputManager.GetAxis("y", _playerRef.JoystickNumber);
+				_activeSpeed = Vector3.ClampMagnitude(_activeSpeed.ZeroY(), _maxSpeed.x);
+				_activeSpeed = Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized) * _activeSpeed;
 			}
 		}
 		else
@@ -409,23 +418,19 @@ public class PlayerController : MonoBehaviour
 			_activeSpeed.y += _acceleration.y * TimeManager.DeltaTime * Physics.gravity.magnitude;
 			_activeSpeed.y = Mathf.Clamp(_activeSpeed.y, -_maxSpeed.y, _maxSpeed.y * 10f);
 		}
-		ApplyFriction();
 	}
 
 	private void ApplyFriction()
 	{
-		if (IsGrounded)
-		{
-			_activeSpeed.x = _activeSpeed.x.Reduce(_friction * TimeManager.DeltaTime);
-			_activeSpeed.z = _activeSpeed.z.Reduce(_friction * TimeManager.DeltaTime);
-		}
+		_activeSpeed.x = _activeSpeed.x.Reduce(_friction * TimeManager.DeltaTime);
+		_activeSpeed.z = _activeSpeed.z.Reduce(_friction * TimeManager.DeltaTime);
 	}
 
 	public void ContactGround()
 	{
 		IsGrounded = true;
 		_activeSpeed.y = 0f;
-		_airborneTimeout.Set(_airborneDelay);
+		//_airborneTimeout.Set(_airborneDelay);
 		_dashMaxed = false;
 	}
 
@@ -456,28 +461,28 @@ public class PlayerController : MonoBehaviour
 	public void Eject(Vector3 direction)
 	{
 		if (direction.y > 0)
-			IsGrounded = false;
+			ForceAirborne(0.1f);
 
 		_activeSpeed = direction;
 		_rigidB.velocity = _activeSpeed;
 	}
 
-	public void Damage(Vector3 direction, float stunTime, DamageDealer Sender)
+	public void Damage(Vector3 direction,Vector3 impactPoint, DamageData data)
 	{
 		if (_isInvul)
 			return;
 
-		LastDamageDealer = Sender;
+		LastDamageDealer = data.Dealer;
 
-		Debug.Log("Character \"" + _characterData.IngameName + "\" was damaged by: \"" + Sender.InGameName + "\"");
+		Debug.Log("Character \"" + _characterData.IngameName + "\" was damaged by: \"" + data.Dealer.InGameName + "\"");
 
 		//direction.x += direction.x * (10 * (_characterData.CharacterStats.resistance - (Stats.maxValue * 0.5f))) / 100;
 
-		direction.x += direction.x * (_characterData.CharacterStats.resistance.Percentage(0,Stats.maxValue) - 0.5f);
+		direction.x += direction.x * (_characterData.CharacterStats.resistance.Percentage(0, Stats.maxValue) - 0.5f);
 		Eject(direction);
-		if (stunTime > 0)
-			_stunTime.Set(stunTime);
-		_invulTime.Set(stunTime * 1.2f);
+		if (data.StunInflicted > 0)
+			_stunTime.Set(data.StunInflicted);
+		_invulTime.Set(data.StunInflicted * 1.2f);
 		_activeDirection = -direction.ZeroY().normalized;
 		transform.LookAt(transform.position + _activeDirection, Vector3.up);
 
@@ -501,6 +506,7 @@ public class PlayerController : MonoBehaviour
 		_audioSource.PlayOneShot(_characterData.SoundList.OnDashStart);
 		gameObject.layer = LayerMask.NameToLayer("PlayerInvul");
 
+		ForceAirborne(0.2f);
 		yield return new WaitForSeconds(0.1f);
 		while (!IsGrounded)
 		{
@@ -529,8 +535,19 @@ public class PlayerController : MonoBehaviour
 		directionHeld.z = directionHeld.y;
 		directionHeld = Quaternion.FromToRotation(Vector3.right, Camera.main.transform.right.ZeroY().normalized) * directionHeld.ZeroY();
 
-		_activeSpeed += directionHeld * (0.04f + 0.005f * _characterData.CharacterStats.speed);
+		_activeSpeed += directionHeld * (0.03f + 0.002f * _characterData.CharacterStats.speed);
 	}
+
+	public void ForceAirborne(float timeForced = 0)
+	{
+		//_airborneTimeout.Set(0);
+		IsGrounded = false;
+		if(timeForced == 0)
+			_forcedAirbornTimeout.Set(10000000);
+		else
+			_forcedAirbornTimeout.Set(timeForced);
+	}
+
 
 	protected void OnCollisionEnter(Collision colli)
 	{
@@ -544,13 +561,13 @@ public class PlayerController : MonoBehaviour
 
 	protected virtual void PlayerCollisionHandler(Collision colli)
 	{
-		if (colli.gameObject.tag == "Player" && _characterData.Dash.inProgress)
+		if (colli.gameObject.GetComponent<IDamageable>() != null && _characterData.Dash.inProgress)
 		{
-
-			colli.transform.GetComponent<PlayerController>()
+			colli.gameObject.GetComponent<IDamageable>()
 				.Damage(Quaternion.FromToRotation(Vector3.right,
-				(colli.transform.position - transform.position).ZeroY().normalized) * (new Vector3(4.5f, 3.27f, 0).Multiply(Axis.x, _characterData.Dash.Impact)),
-				0.3f, _dmgDealerSelf);
+				(colli.transform.position - transform.position).ZeroY().normalized) * (_characterData.SpecialEjection.Multiply(Axis.x, _characterData.Dash.Impact)),
+				colli.contacts[0].point,
+				_characterData.DashDamageData);
 		}
 		//else if (colli.gameObject.layer == LayerMask.NameToLayer("Wall") && _characterData.Dash.inProgress)
 		//{

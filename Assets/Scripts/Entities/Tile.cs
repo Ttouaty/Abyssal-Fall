@@ -18,6 +18,7 @@ public class Tile : MonoBehaviour, IPoolable
 	public bool				CanFall			{ get { return _canFall; } }
 	public bool				IsFalling		{ get { return _isFalling; } }
 	public bool             IsSpawn			{ get { return SpawnComponent == null; } }
+	public Rigidbody		RigidBRef		{ get { return _rigidB; } }
 	
 
 	public float TimeLeftSave { get { return _timeLeftSave; } }
