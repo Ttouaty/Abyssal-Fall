@@ -35,6 +35,7 @@ public class LevelManager : GenericSingleton<LevelManager>
 	public SceneField                       SceneEndStage;
 	public SceneField                       SceneEndGame;
 	public SceneField                       SceneGUI;
+	public SceneField 						SceneTutorial;
 
 	/* Events */
 	[HideInInspector]   public LoadEvent    OnLoadStart;
@@ -57,7 +58,8 @@ public class LevelManager : GenericSingleton<LevelManager>
 			{ "SCENE_PAUSE", ScenePause },
 			{ "SCENE_END_STAGE", SceneEndStage },
 			{ "SCENE_END_GAME", SceneEndGame },
-			{ "SCENE_GUI", SceneGUI }
+			{ "SCENE_GUI", SceneGUI },
+			{ "SCENE_TUTORIAL", SceneTutorial }
 		};
 
 		foreach (KeyValuePair<string, SceneField> value in scenes)
@@ -207,6 +209,12 @@ public class LevelManager : GenericSingleton<LevelManager>
 		{
 			UnloadScene(CurrentScenes[0]);
 		}
+	}
+
+	public IEnumerator LoadSceneAlone (SceneField scene)
+	{
+		UnloadAllScenes();
+		yield return StartCoroutine(LoadScene(scene));
 	}
 
 	private Dictionary<SceneField, Action> _defaultScenesToLoad = new Dictionary<SceneField, Action>();
