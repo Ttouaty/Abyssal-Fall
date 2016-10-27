@@ -111,7 +111,7 @@ public class LevelManager : GenericSingleton<LevelManager>
 		}
 	}
 
-	public void StartLevel(GameConfiguration config)
+	public IEnumerator StartLevel(GameConfiguration config)
 	{
 		if (!_bIsLoading)
 		{
@@ -164,8 +164,9 @@ public class LevelManager : GenericSingleton<LevelManager>
 				MainManager.Instance.GAME_OBJECT_POOL.AddPool(CurrentModeConfig.AdditionalPoolsToLoad[i]);
 			}
 
-			StartCoroutine(LoadLevel());
+			return LoadLevel();
 		}
+		return null;
 	}
 
 	private IEnumerator LoadScene(SceneField scene, bool bIsAsync = false, Action<AsyncOperation> callback = null)
@@ -214,6 +215,7 @@ public class LevelManager : GenericSingleton<LevelManager>
 	public IEnumerator LoadSceneAlone (SceneField scene)
 	{
 		UnloadAllScenes();
+		_bIsOnMenu = false;
 		yield return StartCoroutine(LoadScene(scene));
 	}
 

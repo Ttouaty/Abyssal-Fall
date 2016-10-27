@@ -85,6 +85,18 @@ public static class Vector3Extensions
 			return Mathf.InverseLerp(90, 0, angle);
 	}
 
+	public static Vector3 SetAxis(this Vector3 vect, Axis designatedAxis, float value)
+	{
+		if (designatedAxis == Axis.x)
+			vect.x = value;
+		else if (designatedAxis == Axis.y)
+			vect.y = value;
+		else
+			vect.z = value;
+		return vect;
+	}
+
+
 }
 
 public static class IntExtensions
@@ -273,4 +285,5 @@ public static class MonoBehaviourExtensions
 
 		MonoBehaviour.Destroy(target.gameObject);
 	}
+
 }

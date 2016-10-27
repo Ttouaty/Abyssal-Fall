@@ -41,5 +41,10 @@ public class TimeManager : GenericSingleton<TimeManager>
     {
         deltaTime = Time.deltaTime * timeScale;
         currentTime += deltaTime;
+
+		if (Debug.isDebugBuild)
+		{
+			//Display Debug Info (FPS counter)
+		}
     }
 }

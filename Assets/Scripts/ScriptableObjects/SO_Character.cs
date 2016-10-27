@@ -9,18 +9,20 @@ public class SO_Character :  ScriptableObject{
 	public CharacterModel CharacterModel;
 	public Material[] CharacterMaterials;
 	
-	[Space()]
+	[Header("Stats")]
 	public Stats CharacterStats;
 	[HideInInspector]
 	public Vector3 SpecialEjection = new Vector3(2.25f,4.905f); // base ejection is 1.5f,4.905f (* 1.5f because tile scale) (Vector3 used for extensions) this vector is equal to 1m ejection with x2 gravity
-	[Space()]
+	[Header("Dash")]
 	public Dash Dash;
-
-	[Space]
 	public DamageData DashDamageData = new DamageData();
+
+	[Header("Special")]
 	public DamageData SpecialDamageData = new DamageData();
+	public float SpecialCoolDown = 3;
+	public float SpecialLag = 0.2f;
 
-
+	[Header("Misc")]
 	public PlayerAudioList SoundList;
 
 	public PoolConfiguration[] OtherAssetsToLoad;

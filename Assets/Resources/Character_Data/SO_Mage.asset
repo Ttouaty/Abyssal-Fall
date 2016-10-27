@@ -20,7 +20,6 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 2085d6d318e9139479838deb44ecb229, type: 2}
   CharacterStats:
     strength: 5
-    specialCooldown: 4
     speed: 6
     resistance: 3
   SpecialEjection: {x: 3, y: 3.27, z: 0}
@@ -37,6 +36,8 @@ MonoBehaviour:
   SpecialDamageData:
     AttackTypeUsed: 1
     StunInflicted: 0.5
+  SpecialCoolDown: 3
+  SpecialLag: 0.5
   SoundList:
     OnDashStart: {fileID: 0}
     OnDashEnd: {fileID: 0}

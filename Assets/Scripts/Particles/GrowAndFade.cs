@@ -29,7 +29,7 @@ public class GrowAndFade : MonoBehaviour {
 			particle.GetComponent<Image>().enabled = true;
 
 			if (IsDetached)
-				particle.transform.SetParent(MenuManager.Instance._canvas.transform);
+				particle.transform.SetParent(MessageManager.Instance.GetComponentInChildren<Canvas>().transform);
 			else
 				particle.transform.SetParent(transform.parent);
 

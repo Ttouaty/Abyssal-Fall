@@ -48,7 +48,7 @@ public class Hammer : MonoBehaviour {
 	{
 		if (colli.GetComponent<IDamageable>() != null)
 		{
-			if (colli.gameObject.GetInstanceID() == _playerShooting.PlayerRef.Controller.gameObject.GetInstanceID() || colli.GetComponent<PlayerController>()._isInvul)
+			if (colli.gameObject.GetInstanceID() == _playerShooting.PlayerRef.Controller.gameObject.GetInstanceID())
 				return;
 
 			colli.GetComponent<IDamageable>().Damage(Quaternion.FromToRotation(Vector3.right, _rigidB.velocity.ZeroY()) * _playerShooting.PlayerRef.Controller._characterData.SpecialEjection.Multiply(Axis.x, _playerShooting.PlayerRef.Controller._characterData.CharacterStats.strength),
@@ -56,7 +56,7 @@ public class Hammer : MonoBehaviour {
 				_playerShooting.PlayerRef.Controller._characterData.SpecialDamageData);
 			// explosion particules
 			_audioSource.PlayOneShot(OnHitPlayer);
-			Stop();
+			//Stop();
 		}
 		else if(colli.gameObject.layer == LayerMask.NameToLayer("Wall"))
 		{

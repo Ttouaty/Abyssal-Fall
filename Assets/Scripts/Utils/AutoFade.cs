@@ -100,8 +100,66 @@ public class AutoFade : MonoBehaviour
 		m_Fading = false;
 	}
 
+	private IEnumerator FadeWaitForCoroutine(float start, IEnumerator waitCoroutine, IEnumerator endCoroutine, Color aColor)
+	{
+		float t = 0.0f;
+		while (t < start)
+		{
+			yield return new WaitForEndOfFrame();
+			t += Time.deltaTime;
+			DrawQuad(aColor, t / start);
+		}
+
+		StartCoroutine(DrawQuadEveryFrame(aColor));
+
+		Debug.Log("start waiting");
+		yield return StartCoroutine(waitCoroutine);
+		Debug.Log("end waiting");
+		_quadEveryFramePass = false;
+
+		yield return endCoroutine;
+		m_Fading = false;
+	}
+
+	private IEnumerator EndFadeCoroutine(float wait, float end,Color aColor)
+	{
+		DrawQuad(aColor, 1);
+		float t = 0.0f;
+
+		while (t < wait)
+		{
+			t += Time.deltaTime;
+			DrawQuad(aColor, 1);
+			yield return new WaitForEndOfFrame();
+		}
+
+		t = 0;
+		while (t < end)
+		{
+			yield return new WaitForEndOfFrame();
+			t += Time.deltaTime;
+			DrawQuad(aColor, 1 - (t / end));
+		}
+		m_Fading = false;
+	}
+
+	private bool _quadEveryFramePass;
+	private IEnumerator DrawQuadEveryFrame(Color aColor)
+	{
+		_quadEveryFramePass = true;
+			Debug.Log("start draw every frame");
+		while (_quadEveryFramePass)
+		{
+
+			Debug.Log("asss");
+			DrawQuad(aColor, 1);
+			yield return new WaitForEndOfFrame();
+		}
+	}
+
 	public static void StartFade(float start, float wait, float end)
 	{
+		Instance.m_Fading = true;
 		StartFade(start, wait, end, Color.black);
 	}
 
@@ -111,5 +169,36 @@ public class AutoFade : MonoBehaviour
 		Instance.StartCoroutine(Instance.Fade(start, wait, end, aColor));
 	}
 
-	
+
+	public static IEnumerator StartFade(float start, IEnumerator waitforCoroutine)
+	{
+		Instance.m_Fading = true;
+		yield return Instance.StartCoroutine(StartFade(start, waitforCoroutine, null ,Color.black));
+	}
+
+	public static IEnumerator StartFade(float start, IEnumerator waitforCoroutine, IEnumerator endCoroutine)
+	{
+		Instance.m_Fading = true;
+		yield return Instance.StartCoroutine(StartFade(start, waitforCoroutine, endCoroutine, Color.black));
+	}
+
+	public static IEnumerator StartFade(float start, IEnumerator waitforCoroutine, IEnumerator endCoroutine, Color aColor)
+	{
+		Instance.m_Fading = true;
+		yield return Instance.StartCoroutine(Instance.FadeWaitForCoroutine(start, waitforCoroutine, endCoroutine, aColor));
+	}
+
+	public static IEnumerator EndFade(float wait, float end, Color aColor)
+	{
+		Instance.m_Fading = true;
+		yield return Instance.StartCoroutine(Instance.EndFadeCoroutine(wait, end, aColor));
+	}
+
+	public static IEnumerator EndFade(float wait, float end)
+	{
+		Instance.m_Fading = true;
+		yield return Instance.StartCoroutine(Instance.EndFadeCoroutine(wait, end, Color.black));
+	}
+
+
 }

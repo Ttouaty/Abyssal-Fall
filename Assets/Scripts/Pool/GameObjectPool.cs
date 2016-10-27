@@ -169,7 +169,7 @@ public class GameObjectPool : GenericSingleton<GameObjectPool>
 		Pool pool       = new Pool(prefab);
 		pool.Prefab     = prefab;
 		pool.Quantity   = quantity;
-		pool.Name       = prefab != null ? prefab.name : "Unkown Pool";
+		pool.Name       = prefab != null ? prefab.name : "Unknown Pool";
 		Pools.Add(pool);
 		return pool;
 	}

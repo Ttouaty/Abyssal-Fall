@@ -29,8 +29,6 @@ public class Stats
 	public static int maxValue = 10;
 	[Range(0, 10)]
 	public int strength = 5;
-	[Range(0, 30)]
-	public float specialCooldown = 3;
 	[Range(0, 10)]
 	public int speed = 5;
 	[Range(0, 10)]
@@ -76,6 +74,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 
 	protected Vector3 _activeSpeed = Vector3.zero; // Activespeed est un vecteur qui est appliqué a chaque frame au rigibody.velocity => permet de modifier librement la vitesse du player.
 	protected Vector3 _activeDirection = Vector3.forward;
+	protected Vector2 _originalMaxSpeed;
 	protected Vector2 _maxSpeed = new Vector2(8f, 20f);
 	protected Vector2 _acceleration = new Vector2(0.1f, -2f); // X => time needed to reach max speed, Y => Gravity multiplier
 	protected float _friction = 80; //friction applied to the player when it slides (pushed or end dash) (units/s)
@@ -83,7 +82,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 
 	protected float _fullDashActivationTime = 0.05f;
 	private float _timeHeldDash;
-	private bool _waitForDashRelease = false;
+	public bool WaitForDashRelease = false;
 	private bool _dashMaxed = false;
 
 	protected int _dashActivationSteps;
@@ -111,7 +110,10 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 	}
 	private TimeCooldown _lastDamageDealerTimeOut;
 
-	protected bool _allowInput = true;
+	protected bool _isAffectedByFriction = true;
+	protected bool _isFrozen = false;
+	protected bool _internalAllowInput = true;
+	protected bool _allowInput { get { return _internalAllowInput && !_isFrozen; } set { _internalAllowInput = value; } }
 	public bool AllowInput { get { return _allowInput; } }
 	protected bool _isStunned = false;
 
@@ -134,6 +136,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 	public void Freeze()
 	{
 		_allowInput = false;
+		_isFrozen = true;
 		_rigidB.velocity = Vector3.zero;
 		_rigidB.isKinematic = true;
 		_activeSpeed = Vector3.zero;
@@ -142,6 +145,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 
 	public void UnFreeze()
 	{
+		_isFrozen = false;
 		_allowInput = true;
 		_rigidB.isKinematic = false;
 	}
@@ -214,6 +218,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 		GameManager.Instance.OnPlayerWin.AddListener(OnPlayerWin);
 
 		_maxSpeed.x = _maxSpeed.x + _maxSpeed.x * (10 * (_characterData.CharacterStats.speed - Stats.maxValue * 0.5f) / 100);
+		_originalMaxSpeed = _maxSpeed;
 
 		if (GetComponentInChildren<GroundCheck>() == null)
 		{
@@ -351,7 +356,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 
 	private void ProcessInputs()
 	{
-		if (InputManager.GetButtonHeld("Dash", _playerRef.JoystickNumber) && _canDash && !_waitForDashRelease)
+		if (InputManager.GetButtonHeld("Dash", _playerRef.JoystickNumber) && _canDash && !WaitForDashRelease)
 		{
 			if (_dashStepActivated <= (_dashActivationSteps - 1) * (_timeHeldDash / _fullDashActivationTime) + 1 && _characterData.Dash.Forces.Length > _dashStepActivated - 1)
 			{
@@ -363,21 +368,22 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 				_dashStepActivated++;
 
 				_dashMaxed = _dashStepActivated > _dashActivationSteps;
-				_waitForDashRelease = _dashMaxed;
+				WaitForDashRelease = _dashMaxed;
 			}
 
 			_timeHeldDash += Time.deltaTime;
 		}
 		else if (InputManager.GetButtonUp("Dash", _playerRef.JoystickNumber))
 		{
-			_waitForDashRelease = false;
+			WaitForDashRelease = false;
 			_timeHeldDash = 0;
 		}
 
 		if (SpecialActivation() && _allowInput)
 		{
-			_specialCooldown.Set(_characterData.CharacterStats.specialCooldown);
+			_specialCooldown.Set(_characterData.SpecialCoolDown);
 			SpecialAction();
+			_stunTime.Add(_characterData.SpecialLag);
 		}
 	}
 
@@ -390,10 +396,10 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 	{
 		if (IsGrounded)
 		{
-			bool secureAllowInput = _allowInput; // just security (other threads to not fuck this up :p)
+			bool secureAllowInput = _allowInput; // just security
 			if (secureAllowInput)
 			{
-				_activeSpeed = Quaternion.FromToRotation(-Vector3.forward, Camera.main.transform.up.ZeroY().normalized) * _activeSpeed;
+				_activeSpeed = Quaternion.Inverse(Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized)) * _activeSpeed;
 				//#if UNITY_EDITOR 
 				//				_activeSpeed.x = _maxSpeed.x * InputManager.GetAxisRaw("x", _playerRef.JoystickNumber);
 				//				_activeSpeed.z = _maxSpeed.x * InputManager.GetAxisRaw("y", _playerRef.JoystickNumber);
@@ -402,8 +408,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 				//				_activeSpeed.z = _maxSpeed.x * InputManager.GetAxis("y", _playerRef.JoystickNumber);
 				//#endif
 			}
-
-			ApplyFriction();
+			if(_isAffectedByFriction)
+				ApplyFriction();
 
 			if (secureAllowInput)
 			{

@@ -26,7 +26,7 @@ public class GameManager : GenericSingleton<GameManager>
 	{
 		get
 		{
-			if (nbPlayers == 0)
+			if (nbPlayers <= 2)
 				return false;
 
 			for (int i = 0; i < nbPlayers; ++i)
@@ -103,12 +103,10 @@ public class GameManager : GenericSingleton<GameManager>
 
 	private IEnumerator StartLevelCoroutine()
 	{
-		AutoFade.StartFade(1, 0.5f, 0.1f, Color.black);
-		yield return new WaitForSeconds(1);
-
-		LevelManager.Instance.StartLevel(CurrentGameConfiguration);
+		yield return StartCoroutine(AutoFade.StartFade(1, LevelManager.Instance.StartLevel(CurrentGameConfiguration), AutoFade.EndFade(0.5f, 1, Color.black), Color.black));
 		InProgress = true;
 	}
+
 
 	public static void ResetRegisteredPlayers()
 	{

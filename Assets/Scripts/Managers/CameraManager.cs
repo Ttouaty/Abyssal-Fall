@@ -56,14 +56,18 @@ public class CameraManager : GenericSingleton<CameraManager>
 		{
 			CalculateTargetsDistance();
 
-			//Debug.DrawRay(_centerPoint.position, _targetsCentroid - _centerPoint.position, Color.red);
-
-			transform.localPosition = -transform.forward * _distance;
-
-			FollowCentroid();
-
-			//Debug.DrawRay(transform.position, transform.forward * _distance, Color.blue);
+			Debug.DrawRay(_centerPoint.position, _targetsCentroid - _centerPoint.position, Color.red);
+			Debug.DrawRay(transform.position, transform.forward * _distance, Color.blue);
 		}
+		else
+		{
+			_targetsCentroid = _centerPoint.position;
+		}
+
+		transform.localPosition = -transform.forward * _distance;
+
+		FollowCentroid();
+
 	}
 
 	private float _tempDistance;
@@ -117,6 +121,16 @@ public class CameraManager : GenericSingleton<CameraManager>
 		_focalPoint.position = Vector3.Lerp(_focalPoint.position, Vector3.Lerp(_centerPoint.position, _targetsCentroid, _centroidCoefficient) - transform.forward.ZeroY().normalized * _verticalOffset, 3 * Time.deltaTime);
 	}
 
+	public void SetCamAngle(float newAngle, Vector3 axis)
+	{
+		_camera.transform.rotation = Quaternion.AngleAxis(newAngle, axis);
+	}
+
+	public void AddCamAngle(float newAngle, Vector3 axis)
+	{
+		_camera.transform.rotation *= Quaternion.AngleAxis(newAngle, axis);
+	}
+
 	public void ClearTrackedTargets()
 	{
 		_targetsTracked.Clear();
@@ -124,16 +138,18 @@ public class CameraManager : GenericSingleton<CameraManager>
 
 	public void AddTargetToTrack(Transform newTarget)
 	{
-		_targetsTracked.Add(newTarget);
+		if(!_targetsTracked.Contains(newTarget))
+			_targetsTracked.Add(newTarget);
 	}
 
 	public void RemoveTargetToTrack(Transform newTarget)
 	{
-		_targetsTracked.Remove(newTarget);
+		if(_targetsTracked.Contains(newTarget))
+			_targetsTracked.Remove(newTarget);
 	}
 
 	bool firstTime = true;
-	public void SetCenterPoint(Transform newCenterPoint, float time = 0)
+	public void SetCenterPoint(Transform newCenterPoint, float time)
 	{
 		if (firstTime)
 		{
@@ -142,16 +158,14 @@ public class CameraManager : GenericSingleton<CameraManager>
 			Debug.Log("CameraManager: First time SetingCenterPoint, forcing time 2s");
 		}
 
-		if (time == 0)
-		{
-			_centerPoint.position = newCenterPoint.position;
-			//_focalPoint.rotation = _focalPoint.rotation;
-		}
-		else
-		{
-			//RotateLerp(_centerPoint, newCenterPoint, 1);
-			MoveLerp(_centerPoint, newCenterPoint, time);
-		}
+		MoveLerp(_centerPoint, newCenterPoint, time);
+	}
+
+	public void SetCenterPoint(Transform newCenterPoint)
+	{
+		_focalPoint.SetParent(null, true);
+		_centerPoint.position = newCenterPoint.position;
+		_focalPoint.SetParent(_centerPoint, true);
 	}
 
 	private void MoveLerp(Transform start, Transform target, float time)

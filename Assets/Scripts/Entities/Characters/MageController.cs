@@ -115,7 +115,25 @@ public class MageController : PlayerController
 					position,
 					_characterData.SpecialDamageData);
 		}
-
-
 	}
+
+	private IEnumerator SpecialLagCoroutine()
+	{
+		Vector2 oldSpeed = _originalMaxSpeed;
+		_maxSpeed *= 0.5f;
+		_maxSpeed.y = oldSpeed.y;
+		Vector2 startSpeed = _maxSpeed;
+
+		float eT = 0;
+
+		while (eT < _characterData.SpecialLag)
+		{
+			eT += Time.deltaTime;
+			_maxSpeed = Vector2.Lerp(startSpeed, oldSpeed, eT / _characterData.SpecialLag);
+			yield return null;
+		}
+
+		_maxSpeed = oldSpeed;
+	}
+
 }

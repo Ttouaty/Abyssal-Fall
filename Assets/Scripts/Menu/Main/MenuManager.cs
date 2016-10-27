@@ -22,8 +22,6 @@ public class MenuManager : GenericSingleton<MenuManager>
 	private Transform _centerMenuAnchor;
 	private Transform _rightMenuAnchor;
 
-	private ReturnButton _returnGroupRef;
-	private bool _isListeningForInput = false;
 	private bool[] _controllerAlreadyInUse = new bool[12];
 	private CharacterSelector _characterSlotsContainerRef;
 	private RawImage[] _splashscreens;
@@ -41,12 +39,12 @@ public class MenuManager : GenericSingleton<MenuManager>
 		_menuArray                      = GetComponentsInChildren<MenuPanel>();
 		_splashscreens                  = SplashScreens.GetComponentsInChildren<RawImage>();
 		_characterSlotsContainerRef     = GetComponentInChildren<CharacterSelector>();
-		_returnGroupRef					= GetComponentInChildren<ReturnButton>();
 		_metaContainer					= _canvas.transform.FindChild("Meta");
 
-		_needFTUE = !PlayerPrefs.HasKey("FTUEDone");
+		//_needFTUE = !PlayerPrefs.HasKey("FTUEDone");
+		_needFTUE = true;
 
-		_leftMenuAnchor		= _metaContainer.Find("LeftMenuAnchor");
+		_leftMenuAnchor = _metaContainer.Find("LeftMenuAnchor");
 		_centerMenuAnchor	= _metaContainer.Find("CenterMenuAnchor");
 		_rightMenuAnchor	= _metaContainer.Find("RightMenuAnchor");
 	}
@@ -85,30 +83,6 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	void Update()
 	{
-		if(_activeMenu != null)
-		{
-			//Only display return arrow if there is a menu to return to.
-			_returnGroupRef.gameObject.SetActive(_activeMenu.ParentMenu != null);
-		}
-
-		if (_isListeningForInput)
-		{
-			for (int i = -1; i < Input.GetJoystickNames().Length; i++)
-			{
-				if (i != -1)
-				{
-					if (Input.GetJoystickNames()[i] == "")//ignores unplugged controllers but tests for keyboard
-						continue;
-				}
-
-				if (InputManager.GetButtonDown(InputEnum.A, i + 1) && !_controllerAlreadyInUse[i + 1]) //if new controller presses A
-				{
-					Debug.Log("JOYSTICK NUMBER: " + (i + 1) + " PRESSED START");
-					RegisterNewPlayer(i + 1);
-				}
-			}
-		}
-
 		if (Input.GetKeyDown(KeyCode.Alpha1))
 		{
 			LoadPreview(EArenaConfiguration.Aerial);
@@ -126,8 +100,10 @@ public class MenuManager : GenericSingleton<MenuManager>
 		GameManager.ResetRegisteredPlayers();
 	}
 
-	private void RegisterNewPlayer(int joystickNumber)
+	public void RegisterNewPlayer(JoystickNumber joystickNumber)
 	{
+		if (_controllerAlreadyInUse[joystickNumber] || GameManager.Instance.nbPlayers >= 4)
+			return;
 		_controllerAlreadyInUse[joystickNumber] = true; // J'aurai pu utiliser un enum, mais je me rappellais plus comment faire dans le metro lAUl.
 
 		Player newPlayer = new Player();
@@ -184,13 +160,25 @@ public class MenuManager : GenericSingleton<MenuManager>
 	public void StartFtue()
 	{
 		DeactivateMenu();
-		StartCoroutine(StartTutorial());
+		MainManager.Instance.StartCoroutine(StartTutorial());
 	}
 
 	private IEnumerator StartTutorial()
 	{
-		AutoFade.StartFade(1,1,1, Color.white);
-		yield return new WaitForSeconds(1);
+		yield return StartCoroutine(AutoFade.StartFade(1, 
+			LevelManager.Instance.LoadSceneAlone(LevelManager.Instance.SceneTutorial),
+			AutoFade.EndFade(0.5f, 1, Color.white),
+			Color.white));
+	}
+
+	IEnumerator ass()
+	{
+		while (!Input.GetKey(KeyCode.P))
+		{
+			Debug.Log("waiting for P");
+			yield return null;
+		}
+		Debug.Log("P pressed");
 
 	}
 
@@ -203,7 +191,6 @@ public class MenuManager : GenericSingleton<MenuManager>
 	{
 		yield return null; // delay by one frame to avoid input error.
 
-		_isListeningForInput = false;
 		if (_activeMenu != null)
 		{ 
 			SetActiveButtons(_activeMenu, false);
@@ -227,12 +214,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 			yield break;
 		}
 
-		if (newMenu.MenuName == "Lobby")
-		{
-			MessageManager.Log("Press A to register a new Controller.");
-			_isListeningForInput = true;
-		}
-		else if(newMenu.MenuName == "GameConfig")
+		if(newMenu.MenuName == "GameConfig")
 			MessageManager.Log("! WIP ! ya rien qui marche ici, laisse tomber.");
 		else if (newMenu.MenuName == "Main")
 		{

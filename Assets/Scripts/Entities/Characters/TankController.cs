@@ -24,10 +24,14 @@ public class TankController : PlayerController {
 		float eT = 0;
 		_specialParticles.Clear();
 		_specialParticles.Play();
+
+		_isAffectedByFriction = false;
 		_isInvul = true;
 		_allowInput = false;
-		_activeSpeed = _activeDirection * _specialStartSpeed;
+		_activeSpeed = _activeDirection.normalized * _specialStartSpeed;
 		_charging = true;
+
+		yield return null;
 		while (eT < _specialTime)
 		{
 			eT += Time.deltaTime;
@@ -39,6 +43,7 @@ public class TankController : PlayerController {
 		_isInvul = false;
 		_allowInput = true;
 		_charging = false;
+		_isAffectedByFriction = true;
 
 	}
 

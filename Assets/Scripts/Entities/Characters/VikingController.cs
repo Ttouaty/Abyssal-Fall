@@ -10,6 +10,7 @@ public class VikingController : PlayerController
 		_characterProp.PropRenderer.enabled = false;
 		GameObject hammer = GameObjectPool.GetAvailableObject("Hammer");
         hammer.GetComponent<Hammer>().Launch(transform.position + transform.forward, transform.forward, _dmgDealerSelf);
-        hammer.transform.parent = ArenaManager.Instance.SpecialsRoot;
+		if(ArenaManager.Instance != null)
+			hammer.transform.parent = ArenaManager.Instance.SpecialsRoot;
     }
 }

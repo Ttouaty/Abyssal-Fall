@@ -46,11 +46,11 @@ public class CustomEditorInputListener : Editor
 			}
 		}
 
-		_preciseTarget.ListenToAllJoysticks = EditorGUILayout.Toggle("Listen all joysticks ?", _preciseTarget.ListenToAllJoysticks);
-		if (!_preciseTarget.ListenToAllJoysticks)
-		{
-			EditorGUILayout.PropertyField(serializedObject.FindProperty("JoysticksToListen"), true);
-		}
+		//_preciseTarget.ListenToAllJoysticks = EditorGUILayout.Toggle("Listen all joysticks ?", _preciseTarget.ListenToAllJoysticks);
+		//if (!_preciseTarget.ListenToAllJoysticks)
+		//{
+		//	EditorGUILayout.PropertyField(serializedObject.FindProperty("JoysticksToListen"), true);
+		//}
 		EditorGUILayout.PropertyField(serializedObject.FindProperty("Callback"), true);
 
 		serializedObject.ApplyModifiedProperties();

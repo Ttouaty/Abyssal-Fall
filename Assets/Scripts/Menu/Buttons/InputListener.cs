@@ -25,20 +25,18 @@ public class InputListener : MonoBehaviour
 	public float TimeToHold = 0.5f;
 	public bool CanLoop = false;
 
-	public bool ListenToAllJoysticks = true;
-	public int[] JoysticksToListen = new int[12]; 
+	//protected int[] JoysticksToListen = new int[12]; 
 	
-	public UnityEvent Callback;
+	public UnityEventInt Callback;
 	
 	protected float _timeHeld;
-	private bool[] _waitForRelease = new bool[13];
+	private bool[] _waitForRelease = new bool[12];
 	private bool _isCallbackActivatedThisFrame = false;
 	private bool _isInputDown = false;
 
 	protected virtual void Start()
 	{
-		if (!ListenToAllJoysticks && JoysticksToListen.Length == 0) 
-			JoysticksToListen = new int[12];
+		//JoysticksToListen = new int[12];
 		if (UseAxis && directionToListen.magnitude == 0)
 			Debug.LogError("No axis set for inputListener: "+gameObject.name);
 	}
@@ -46,19 +44,19 @@ public class InputListener : MonoBehaviour
 	protected virtual void Update()
 	{
 		_isCallbackActivatedThisFrame = false;
-		if (ListenToAllJoysticks)
-			TestInput();
-		else
-		{ 
-			for(int i = 0; i < JoysticksToListen.Length; ++i)
+		string[] tempStringArray = Input.GetJoystickNames();
+		for (int i = -1; i < tempStringArray.Length; ++i)
+		{
+			if (i != -1)
 			{
-				if (!JoysticksToListen[i].Equals(null))
-					TestInput(JoysticksToListen[i]);
+				if (tempStringArray[i] == "")
+					continue;
 			}
+			TestInput(i + 1);
 		}
 	}
 
-	void TestInput(int joystickNumber = -1) 
+	void TestInput(int joystickNumber) 
 	{ 
 		if(_isCallbackActivatedThisFrame)
 			return;
@@ -70,14 +68,14 @@ public class InputListener : MonoBehaviour
 	}
 
 	private Vector2 _tempStickPosition;
-	void TestAxis(int joystickNumber = -1)
+	void TestAxis(int joystickNumber)
 	{
 		_tempStickPosition = InputManager.GetStickDirection(joystickNumber);
-		if (_waitForRelease[1 +joystickNumber])
+		if (_waitForRelease[joystickNumber])
 		{
 			if (_tempStickPosition.magnitude < stickActivateThreshold - 0.2)
 			{
-				_waitForRelease[1 +joystickNumber] = false;
+				_waitForRelease[joystickNumber] = false;
 				_timeHeld = 0;
 			} 
 		}
@@ -94,17 +92,17 @@ public class InputListener : MonoBehaviour
 
 			}
 			else {
-				_waitForRelease[1 +joystickNumber] = true;
+				_waitForRelease[joystickNumber] = true;
 				LaunchCallback(joystickNumber);
 			}
 		}
 
 	}
 
-	void TestButton(int joystickNumber = -1)
+	void TestButton(int joystickNumber)
 	{
-		if (_waitForRelease[1 +joystickNumber])
-			_waitForRelease[1 +joystickNumber] = !InputManager.GetButtonUp(InputToListen, joystickNumber);
+		if (_waitForRelease[joystickNumber])
+			_waitForRelease[joystickNumber] = !InputManager.GetButtonUp(InputToListen, joystickNumber);
 
 		if (InputMethodUsed == InputMethod.Down)
 		{
@@ -121,7 +119,7 @@ public class InputListener : MonoBehaviour
 
 		if (_isInputDown)
 		{
-			if (!_waitForRelease[1 +joystickNumber])
+			if (!_waitForRelease[joystickNumber])
 				_timeHeld += Time.deltaTime;
 		}
 		else
@@ -135,19 +133,35 @@ public class InputListener : MonoBehaviour
 	{
 		_isCallbackActivatedThisFrame = true;
 		if (!CanLoop)
-			_waitForRelease[1 +joy] = true;
+			_waitForRelease[joy] = true;
 		_timeHeld = 0;
 		
-		Callback.Invoke();
+		Callback.Invoke(new JoystickNumber(joy));
 	}
 
 	void OnEnable()
 	{
 		_isInputDown = false;
 		_timeHeld = 0;
-		for (int i = 0; i < 12; i++)
+		for (int i = 0; i < _waitForRelease.Length; i++)
 		{
-			_waitForRelease[1 +i] = false;
+			_waitForRelease[i] = false;
 		}
+	}
+}
+
+[Serializable]
+public class UnityEventInt : UnityEvent<JoystickNumber> { }
+public class JoystickNumber
+{
+	private int value;
+	public JoystickNumber(int a)
+	{
+		value = a;
+	}
+
+	public static implicit operator int(JoystickNumber self)
+	{
+		return self.value;
 	}
 }

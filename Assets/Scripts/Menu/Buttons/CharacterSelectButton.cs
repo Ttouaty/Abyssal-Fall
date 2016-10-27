@@ -7,20 +7,13 @@ public class CharacterSelectButton : InputListener
 	protected override void Start()
 	{
  		base.Start();
-		this.ListenToAllJoysticks = false;
 	}
 
 	protected override void Update()
 	{
-		for(int i = 0; i < GameManager.Instance.nbPlayers; ++i)
-		{
-			JoysticksToListen[i] = GameManager.Instance.RegisteredPlayers[i].JoystickNumber;
-		}
-
-		SetVisibility(GameManager.Instance.AreAllPlayerReady && GameManager.Instance.nbPlayers >= 2);
-		if (GameManager.Instance.AreAllPlayerReady && GameManager.Instance.nbPlayers >= 2) //doublon mais fuk :p
+		SetVisibility(GameManager.Instance.AreAllPlayerReady);
+		if (GameManager.Instance.AreAllPlayerReady) //doublon mais fuk :p
  			base.Update();
-
 	}
 
 	protected override void LaunchCallback(int joy)

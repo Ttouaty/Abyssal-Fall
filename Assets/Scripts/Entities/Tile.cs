@@ -12,6 +12,7 @@ public class Tile : MonoBehaviour, IPoolable
 	private Rigidbody       _rigidB;
 	private MeshRenderer    _renderer;
 	private Color			_defaultColor;
+	private Vector3			_initialPoisition;
 
 	public Obstacle			Obstacle;
 	public Spawn            SpawnComponent;
@@ -94,15 +95,17 @@ public class Tile : MonoBehaviour, IPoolable
 	IEnumerator ActivateRespawn_Implementation ()
 	{
 		float timer = 1.0f;
-		Vector3 initialPosition = new Vector3(transform.localPosition.x, 15f, transform.localPosition.z);
-		Vector3 targetPosition = new Vector3(initialPosition.x, 0, initialPosition.z);
-		while(timer > 0.0f)
+		Vector3 initialPosition = new Vector3(transform.localPosition.x, -20f, transform.localPosition.z);
+		Quaternion initialRotation = transform.rotation;
+
+		while (timer > 0.0f)
 		{
-			transform.localPosition = Vector3.Lerp(initialPosition, targetPosition, 1.0f - timer);
+			transform.localPosition = Vector3.Lerp(initialPosition, _initialPoisition, 1.0f - timer);
+			transform.rotation = Quaternion.Lerp(initialRotation, Quaternion.identity, 1.0f - timer);
 			timer -= TimeManager.DeltaTime;
 			yield return null;
 		}
-		transform.localPosition = targetPosition;
+		transform.localPosition = _initialPoisition;
 		_canFall = true;
 		_isTouched = false;
 		_timeLeft = _timeLeftSave;
@@ -113,11 +116,14 @@ public class Tile : MonoBehaviour, IPoolable
 		if (_isTouched)
 			return;
 
-		ArenaManager.Instance.RemoveTile(this);
+		if (ArenaManager.Instance != null)
+		{
+			ArenaManager.Instance.RemoveTile(this);
 
-		TimeManager.Instance.OnPause.AddListener(OnPause);
-		TimeManager.Instance.OnResume.AddListener(OnResume);
-
+			TimeManager.Instance.OnPause.AddListener(OnPause);
+			TimeManager.Instance.OnResume.AddListener(OnResume);
+		}
+		_initialPoisition = transform.localPosition;
 		_isTouched = true;
 		StartCoroutine(ActivateFall_Implementation());
 	}
