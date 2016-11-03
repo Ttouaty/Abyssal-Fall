@@ -20,7 +20,7 @@ public class DefaultTrigger : MonoBehaviour {
 	{
 		if (!GetComponent<Collider>().isTrigger)
 		{
-			Debug.Log("DefaultTrigger \"" + gameObject.name+"\" had a non trigger collider, forcing isTrigger = true!");
+			Debug.Log("DefaultTrigger \"" + gameObject.name+"\" had a non trigger collider,\nforcing isTrigger = true!");
 			GetComponent<Collider>().isTrigger = true;
 		}
 

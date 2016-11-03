@@ -35,7 +35,6 @@ public class MenuManager : GenericSingleton<MenuManager>
 		base.Awake();
 
 		_canvas = GetComponentInChildren<Canvas>();
-		_canvas.worldCamera             = Camera.main;
 		_menuArray                      = GetComponentsInChildren<MenuPanel>();
 		_splashscreens                  = SplashScreens.GetComponentsInChildren<RawImage>();
 		_characterSlotsContainerRef     = GetComponentInChildren<CharacterSelector>();
@@ -51,6 +50,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	void Start()
 	{
+		_canvas.worldCamera = Camera.main;
 		MiniLoading.SetActive(false);
 		GameManager.ResetRegisteredPlayers();
 		_menuArray = GetComponentsInChildren<MenuPanel>();

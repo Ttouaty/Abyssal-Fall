@@ -4,16 +4,28 @@ using System.Collections.Generic;
 
 public class MainManager : GenericSingleton<MainManager>
 {
+	[HideInInspector]
 	public GameObjectPool       GAME_OBJECT_POOL;
-	public DynamicConfig        DYNAMIC_CONFIG;
-	public LevelManager         LEVEL_MANAGER;
-	public TimeManager          TIME_MANAGER;
-	public InputManager         INPUT_MANAGER;
-	public CoolDownManager      COOLDOWN_MANAGER;
-	public GameManager          GAME_MANAGER;
-	public SoundManager         SOUND_MANAGER;
-	public LoadingScreen        LOADING_MANAGER;
-	public ArenaManager         ARENA_MANAGER;
+	[HideInInspector]
+	public DynamicConfig DYNAMIC_CONFIG;
+	[HideInInspector]
+	public LevelManager LEVEL_MANAGER;
+	[HideInInspector]
+	public TimeManager TIME_MANAGER;
+	[HideInInspector]
+	public InputManager INPUT_MANAGER;
+	[HideInInspector]
+	public CoolDownManager COOLDOWN_MANAGER;
+	[HideInInspector]
+	public GameManager GAME_MANAGER;
+	[HideInInspector]
+	public SoundManager SOUND_MANAGER;
+	[HideInInspector]
+	public LoadingScreen LOADING_MANAGER;
+	[HideInInspector]
+	public ArenaManager ARENA_MANAGER;
+	[HideInInspector]
+	public CameraManager OriginalCameraManager;
 
 	protected override void Awake ()
 	{
@@ -28,6 +40,7 @@ public class MainManager : GenericSingleton<MainManager>
 		INPUT_MANAGER       = InputManager.Instance;
 		COOLDOWN_MANAGER    = CoolDownManager.Instance;
 		GAME_MANAGER        = GameManager.Instance;
+		OriginalCameraManager = CameraManager.Instance;
 
 		Dictionary<string, Object> dic = new Dictionary<string, Object>()
 		{

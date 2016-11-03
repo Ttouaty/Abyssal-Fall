@@ -43,7 +43,7 @@ public class TutorialManager : GenericSingleton<TutorialManager> {
 
 		MainManager.Instance.GAME_OBJECT_POOL.Load();
 		MainManager.Instance.GAME_OBJECT_POOL.LoadEnd.AddListener(PopPlayer);
-		
+
 		TempPlayer = new Player();
 		TempPlayer.PlayerNumber = 1;
 		TempPlayer.JoystickNumber = joyStick;
@@ -86,13 +86,13 @@ public class TutorialManager : GenericSingleton<TutorialManager> {
 
 	public void StartSequence(int sequenceNumber)
 	{
-		if(_tutorialSequences.Length > sequenceNumber)
+		if (_tutorialSequences.Length > sequenceNumber)
 			StartCoroutine(SequenceCoroutine(sequenceNumber));
 	}
 
 	IEnumerator SequenceCoroutine(int sequenceNumber)
 	{
-		while (!TutorialCharacterInstance.IsGrounded){ yield return null; }
+		while (!TutorialCharacterInstance.IsGrounded) { yield return null; }
 		TutorialCharacterInstance.Freeze();
 
 		//for (int i = 0; i < _tutorialSequences[sequenceNumber]._messageKeys.Length; i++)
@@ -115,7 +115,7 @@ public class TutorialManager : GenericSingleton<TutorialManager> {
 		PlayerPrefs.SetInt("FTUEDone", 1);
 		PlayerPrefs.Save();
 
-		AutoFade.StartFade(1,1,1,Color.white);
+		AutoFade.StartFade(1, 1, 1, Color.white);
 		StartCoroutine(DoigtDansLeCul());
 	}
 
@@ -123,7 +123,10 @@ public class TutorialManager : GenericSingleton<TutorialManager> {
 	{
 		yield return new WaitForSeconds(1);
 
-		Debug.Log("ça ne fait rien !");
 		LevelManager.Instance.OpenMenu();
 	}
+
+	public void SetPlayerDash(bool value){ TutorialCharacterInstance.AllowDash = value; }
+	public void SetPlayerSpecial(bool value){ TutorialCharacterInstance.AllowSpecial = value; }
+	public void SetInputLockTime(float value){ InputManager.AddInputLockTime(value); }
 }

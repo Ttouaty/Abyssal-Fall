@@ -112,9 +112,7 @@ public class AutoFade : MonoBehaviour
 
 		StartCoroutine(DrawQuadEveryFrame(aColor));
 
-		Debug.Log("start waiting");
 		yield return StartCoroutine(waitCoroutine);
-		Debug.Log("end waiting");
 		_quadEveryFramePass = false;
 
 		yield return endCoroutine;
@@ -147,11 +145,9 @@ public class AutoFade : MonoBehaviour
 	private IEnumerator DrawQuadEveryFrame(Color aColor)
 	{
 		_quadEveryFramePass = true;
-			Debug.Log("start draw every frame");
+
 		while (_quadEveryFramePass)
 		{
-
-			Debug.Log("asss");
 			DrawQuad(aColor, 1);
 			yield return new WaitForEndOfFrame();
 		}

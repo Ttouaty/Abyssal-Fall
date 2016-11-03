@@ -59,6 +59,7 @@ public class DialogBox : MonoBehaviour
 	private int _messageProgressionIndex;
 	private int _displayedTagIndex;
 	private int _displayedTextOffset;
+	private bool skipMessage;
 	private IEnumerator DisplayTextOverTime(Message message)
 	{
 		//ControlDiv.gameObject.SetActive(false);
@@ -71,6 +72,7 @@ public class DialogBox : MonoBehaviour
 		_displayedTagIndex = 0;
 		_displayedTextOffset = 0;
 		_isDisplaying = true;
+		skipMessage = false;
 		tagMatches = Regex.Matches(message.TranslatedText, @"<(.*?)>");
 
 		yield return null;
@@ -82,16 +84,20 @@ public class DialogBox : MonoBehaviour
 			nextTextOffset = _displayedTextOffset;
 			textToAdd = FilterTag(message);
 
-			Debug.Log(nextIndexToWrite - nextTextOffset);
-			Debug.Log(textToAdd);
-			Debug.Log(TextDiv.text.Length);
+			//Debug.Log(nextIndexToWrite - nextTextOffset);
+			//Debug.Log(textToAdd);
+			//Debug.Log(TextDiv.text.Length);
 
 			TextDiv.text = TextDiv.text.Insert(nextIndexToWrite - nextTextOffset, textToAdd);
-			_audioSource.PlayOneShot(TypeSound);
-			yield return new WaitForSeconds(1 / message.TextSpeed);
+			if (!skipMessage)
+			{
+				_audioSource.PlayOneShot(TypeSound);
+				yield return new WaitForSeconds(1 / message.TextSpeed);
+			}
 		}
 
 		yield return new WaitForSeconds(message.DelayAfter);
+
 		_isDisplaying = false;
 
 		if (message.AutoSkip)
@@ -176,8 +182,7 @@ public class DialogBox : MonoBehaviour
 			if (!_activeMessageSequence[_activeSequenceIndex].IsSkippable)
 				return;
 
-			_messageProgressionIndex = _activeMessageSequence[_activeSequenceIndex].TranslatedText.Length;
-			TextDiv.text = _activeMessageSequence[_activeSequenceIndex].TranslatedText;
+			skipMessage = true;
 		}
 		else
 			_advance = true;

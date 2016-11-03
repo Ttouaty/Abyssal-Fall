@@ -12,6 +12,7 @@ public class CameraManager : GenericSingleton<CameraManager>
 	private float _baseDistance;
 
 	private Coroutine _activeMovementCoroutine;
+	private Coroutine _activeRotationCoroutine;
 	[HideInInspector]
 	public bool IsMoving = false;
 
@@ -30,7 +31,14 @@ public class CameraManager : GenericSingleton<CameraManager>
 
 	protected override void Awake()
 	{
+		if (_instance != null) // replace instance
+		{
+			_instance.gameObject.SetActive(false);
+			_instance = this;
+		}
+
 		base.Awake();
+
 		_baseDistance = _distance = Vector3.Distance(transform.position, transform.parent.position);
 	}
 
@@ -64,7 +72,7 @@ public class CameraManager : GenericSingleton<CameraManager>
 			_targetsCentroid = _centerPoint.position;
 		}
 
-		transform.localPosition = -transform.forward * _distance;
+		transform.localPosition = - Vector3.forward * _distance;
 
 		FollowCentroid();
 
@@ -123,12 +131,27 @@ public class CameraManager : GenericSingleton<CameraManager>
 
 	public void SetCamAngle(float newAngle, Vector3 axis)
 	{
-		_camera.transform.rotation = Quaternion.AngleAxis(newAngle, axis);
+		_focalPoint.rotation = Quaternion.AngleAxis(newAngle, axis);
 	}
 
 	public void AddCamAngle(float newAngle, Vector3 axis)
 	{
-		_camera.transform.rotation *= Quaternion.AngleAxis(newAngle, axis);
+		_focalPoint.rotation *= Quaternion.AngleAxis(newAngle, axis);
+	}
+
+	public void SetCamAngleX(float newAngleX)
+	{
+		RotateLerp(_focalPoint, Quaternion.Euler(new Vector3(newAngleX, _focalPoint.rotation.eulerAngles.y, _focalPoint.rotation.eulerAngles.z)), 0.5f);
+	}
+
+	public void SetCamAngleY(float newAngleY)
+	{
+		RotateLerp(_focalPoint, Quaternion.Euler(new Vector3(_focalPoint.rotation.eulerAngles.x, newAngleY, _focalPoint.rotation.eulerAngles.z)), 0.5f);
+	}
+
+	public void SetCamAngleZ(float newAngleZ)
+	{
+		RotateLerp(_focalPoint, Quaternion.Euler(new Vector3(_focalPoint.rotation.eulerAngles.x, _focalPoint.rotation.eulerAngles.y, newAngleZ)), 0.5f);
 	}
 
 	public void ClearTrackedTargets()
@@ -149,7 +172,7 @@ public class CameraManager : GenericSingleton<CameraManager>
 	}
 
 	bool firstTime = true;
-	public void SetCenterPoint(Transform newCenterPoint, float time)
+	public void SetCenterPoint(Transform newCenterPoint, float time, float? distance = null, bool applyRotation = false)
 	{
 		if (firstTime)
 		{
@@ -159,6 +182,10 @@ public class CameraManager : GenericSingleton<CameraManager>
 		}
 
 		MoveLerp(_centerPoint, newCenterPoint, time);
+		if (applyRotation)
+			RotateLerp(_focalPoint, newCenterPoint.rotation, time);
+		if (distance != null)
+			_distance = (float) distance;
 	}
 
 	public void SetCenterPoint(Transform newCenterPoint)
@@ -168,7 +195,7 @@ public class CameraManager : GenericSingleton<CameraManager>
 		_focalPoint.SetParent(_centerPoint, true);
 	}
 
-	private void MoveLerp(Transform start, Transform target, float time)
+	public void MoveLerp(Transform start, Transform target, float time)
 	{
 		if (_activeMovementCoroutine != null)
 			StopCoroutine(_activeMovementCoroutine);
@@ -188,11 +215,37 @@ public class CameraManager : GenericSingleton<CameraManager>
 		target.position = end.position;
 	}
 
+	public void RotateLerp(Transform start, Quaternion target, float time)
+	{
+		if (_activeRotationCoroutine != null)
+			StopCoroutine(_activeRotationCoroutine);
+		_activeRotationCoroutine = StartCoroutine(RotateOverTimeCoroutine(start, target, time));
+	}
+
+	private IEnumerator RotateOverTimeCoroutine(Transform target, Quaternion end, float time)
+	{
+		float targetTime = Time.time + time;
+		Quaternion startRot = target.rotation;
+		while (targetTime > Time.time)
+		{
+			target.rotation = Quaternion.Lerp(startRot, end, _easeOutCurve.Evaluate(Time.time % (targetTime - time) / time));
+			yield return null;
+		}
+
+		target.rotation = end;
+	}
+
 	public void Reset()
 	{
 		_distance = _baseDistance;
 		_targetsTracked.Clear();
 		_focalPoint.localPosition = Vector3.zero;
 		transform.localPosition = -transform.forward * _distance;
+	}
+
+	void OnDestroy()
+	{
+		_instance = MainManager.Instance.OriginalCameraManager;
+		_instance.gameObject.SetActive(true);
 	}
 }

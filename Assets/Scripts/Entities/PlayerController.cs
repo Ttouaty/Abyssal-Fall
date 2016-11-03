@@ -116,12 +116,16 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 	protected bool _allowInput { get { return _internalAllowInput && !_isFrozen; } set { _internalAllowInput = value; } }
 	public bool AllowInput { get { return _allowInput; } }
 	protected bool _isStunned = false;
+	[HideInInspector]
+	public bool AllowDash = true;
+	[HideInInspector]
+	public bool AllowSpecial = true;
 
 	protected bool _canSpecial
 	{
 		get
 		{
-			return !_characterData.Dash.inProgress && !_isDead && _specialCooldown.TimeLeft <= 0;
+			return AllowSpecial && !_characterData.Dash.inProgress && !_isDead && _specialCooldown.TimeLeft <= 0;
 		}
 	}
 
@@ -129,7 +133,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 	{
 		get
 		{
-			return !_isDead && !_dashMaxed && (_characterData.Dash.inProgress || _allowInput);
+			return AllowDash && !_isDead && !_dashMaxed && (_characterData.Dash.inProgress || _allowInput);
 		}
 	}
 
