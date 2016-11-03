@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
+using UnityEngine.Events;
 
 public class CameraManager : GenericSingleton<CameraManager>
 {
@@ -29,12 +30,19 @@ public class CameraManager : GenericSingleton<CameraManager>
 	private List<Transform> _targetsTracked = new List<Transform>();
 	private Vector3 _targetsCentroid = Vector3.zero;
 
+	public static UnityEvent OnCameraChange = new UnityEvent();
+
 	protected override void Awake()
 	{
+
+		_camera = GetComponent<Camera>();
+
 		if (_instance != null) // replace instance
 		{
 			_instance.gameObject.SetActive(false);
 			_instance = this;
+			_camera.tag = "MainCamera";
+			OnCameraChange.Invoke();
 		}
 
 		base.Awake();
@@ -50,7 +58,6 @@ public class CameraManager : GenericSingleton<CameraManager>
 
 	public override void Init()
 	{
-		_camera = GetComponent<Camera>();
 		_focalPoint = transform.parent;
 		_centerPoint = _focalPoint.parent;
 	}
@@ -245,7 +252,10 @@ public class CameraManager : GenericSingleton<CameraManager>
 
 	void OnDestroy()
 	{
+		if (MainManager.Instance == null)
+			return; //gameClosed
 		_instance = MainManager.Instance.OriginalCameraManager;
 		_instance.gameObject.SetActive(true);
+		OnCameraChange.Invoke();
 	}
 }

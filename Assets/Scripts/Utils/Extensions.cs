@@ -221,6 +221,11 @@ public static class ListExtensions
 	}
 }
 
+public static class Curves
+{
+	public static AnimationCurve EaseInOutCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
+	public static AnimationCurve LinearCurve = AnimationCurve.Linear(0, 0, 1, 1);
+}
 
 public static class MonoBehaviourExtensions
 {

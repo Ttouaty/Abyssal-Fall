@@ -84,9 +84,9 @@ public class LevelManager : GenericSingleton<LevelManager>
 		}
 	}
 
-	public void OpenMenu (bool showSplashScreens = false)
+	public Coroutine OpenMenu (bool showSplashScreens = false)
 	{
-		StartCoroutine(OpenMenu_Implementation(showSplashScreens));
+		return StartCoroutine(OpenMenu_Implementation(showSplashScreens));
 	}
 
 	private IEnumerator OpenMenu_Implementation (bool showSplashScreens)
@@ -210,12 +210,12 @@ public class LevelManager : GenericSingleton<LevelManager>
 		{
 			UnloadScene(CurrentScenes[0]);
 		}
+		_bIsOnMenu = false;
 	}
 
 	public IEnumerator LoadSceneAlone (SceneField scene)
 	{
 		UnloadAllScenes();
-		_bIsOnMenu = false;
 		yield return StartCoroutine(LoadScene(scene));
 	}
 
@@ -313,10 +313,10 @@ public class LevelManager : GenericSingleton<LevelManager>
 		ArenaConfiguration_SO arenaConfig;
 		MainManager.Instance.DYNAMIC_CONFIG.GetConfig(arena, out arenaConfig);
 		yield return StartCoroutine(LoadScene(arenaConfig.BackgroundLevel, true, callback));
-		if (CurrentArenaConfig != null)
-		{
-			UnloadScene(CurrentArenaConfig.BackgroundLevel);
-		}
+		//if (CurrentArenaConfig != null)
+		//{
+		//	UnloadScene(CurrentArenaConfig.BackgroundLevel);
+		//}
 		CurrentArenaConfig = arenaConfig;
 		Destroy(ArenaManager.Instance);
 	}

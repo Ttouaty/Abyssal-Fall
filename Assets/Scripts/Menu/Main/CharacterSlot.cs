@@ -36,11 +36,11 @@ public class CharacterSlot : MonoBehaviour
 	private bool _canSwitchCharacter = true;
 
 	private CharacterSelectWheel _wheelRef;
-	private GameObject _selectedCharacterModel;
+	//private GameObject _selectedCharacterModel;
 
 	private Coroutine _activeCoroutineRef;
 
-	public WheelSelectableCharacter GetSelectedCharacter
+	public PlayerController GetSelectedCharacter
 	{
 		get
 		{
@@ -123,7 +123,7 @@ public class CharacterSlot : MonoBehaviour
 		}
 		if (_activeCoroutineRef != null)
 			StopCoroutine(_activeCoroutineRef);
-		GameManager.Instance.RegisteredPlayers[_playerIndex].Ready(_wheelRef.GetSelectedElement().Controller, _selectedSkinIndex);
+		GameManager.Instance.RegisteredPlayers[_playerIndex].Ready(_wheelRef.GetSelectedElement(), _selectedSkinIndex);
 		
 		//PLACEMENT DES PARTICULES A L'ARRACHE
 		Vector3 camDirection = (Camera.main.transform.position - transform.position).normalized;
@@ -133,16 +133,17 @@ public class CharacterSlot : MonoBehaviour
 		spawnParticles.transform.rotation = Quaternion.LookRotation(transform.forward, transform.up);
 		spawnParticles.GetComponent<FlashAndRotate>()._rotationAxis = transform.forward;
 
-		if (_selectedCharacterModel != null)
-			Destroy(_selectedCharacterModel);
+		//if (_selectedCharacterModel != null)
+		//	Destroy(_selectedCharacterModel);
 
-		_wheelRef.GetSelectedElement().Controller._characterData.CharacterModel.Reskin(GetSelectedSkin);
-		_selectedCharacterModel = (GameObject)Instantiate(_wheelRef.GetSelectedElement().Controller._characterData.CharacterModel.gameObject, transform.position - transform.up * 30, transform.rotation * Quaternion.FromToRotation(Vector3.right, Vector3.left));
-		_selectedCharacterModel.transform.localScale = transform.localScale * 1.1f;
-		_selectedCharacterModel.transform.parent = transform;
+		_wheelRef.GetSelectedElement()._characterData.CharacterModel.Reskin(GetSelectedSkin);
+		//_selectedCharacterModel = (GameObject)Instantiate(_wheelRef.GetSelectedElement()._characterData.CharacterModel.gameObject, transform.position, transform.rotation * Quaternion.FromToRotation(Vector3.right, Vector3.left));
+		//_selectedCharacterModel.transform.localScale = transform.localScale * 1.1f;
+		//_selectedCharacterModel.transform.parent = transform;
+		//_selectedCharacterModel.transform.localPosition = Vector3.zero;
 
 		Selected = true;
-		_activeCoroutineRef = StartCoroutine(SlideCharacterModelIn());
+		//_activeCoroutineRef = StartCoroutine(SlideCharacterModelIn());
 	}
 
 	bool CheckIfCharacterIsAvailable()
@@ -169,45 +170,51 @@ public class CharacterSlot : MonoBehaviour
 		if (GameManager.Instance.RegisteredPlayers[_playerIndex] != null)
 			GameManager.Instance.RegisteredPlayers[_playerIndex].UnReady();
 
-		_activeCoroutineRef = StartCoroutine(SlideCharacterModelOut());
+		//_activeCoroutineRef = StartCoroutine(SlideCharacterModelOut());
 
 	}
 
-	IEnumerator SlideCharacterModelIn()
-	{
-		float targetTime = Time.time + 1;
-		Vector3 targetPosition = transform.position + (Camera.main.transform.position - transform.position).normalized;
+	//IEnumerator SlideCharacterModelIn()
+	//{
+	//	float timeTaken = 0.3f;
+	//	float eT = 0;
+	//	Vector3 targetPosition = (Camera.main.transform.position - transform.position).normalized;
+	//	Vector3 startPos;
+	//	if (_playerIndex < 2)
+	//		startPos = Vector3.up * MenuManager.Instance._canvas.pixelRect.height * (1 / transform.localScale.y) * 0.5f;
+	//	else
+	//		startPos = - Vector3.up * MenuManager.Instance._canvas.pixelRect.height * (1 / transform.localScale.y) * 0.5f;
 
-		if (_playerIndex < 2)
-			_selectedCharacterModel.transform.position = transform.position + transform.up * 10;
-		else
-			_selectedCharacterModel.transform.position = transform.position - transform.up * 10;
+	//	_selectedCharacterModel.transform.localPosition = startPos;
+	//	while (eT < timeTaken)
+	//	{
+	//		_selectedCharacterModel.transform.localPosition = Vector3.Lerp(startPos, targetPosition, Curves.EaseInOutCurve.Evaluate(eT / timeTaken));
+	//		eT += Time.deltaTime;
+	//		yield return null;
+	//	}
+	//	_selectedCharacterModel.transform.localPosition = targetPosition;
+	//}
 
-		while (targetTime > Time.time)
-		{
-			_selectedCharacterModel.transform.position = Vector3.Lerp(_selectedCharacterModel.transform.position, targetPosition, 0.15f);
-			yield return null;
-		}
-		_selectedCharacterModel.transform.position = targetPosition;
-	}
+	//IEnumerator SlideCharacterModelOut()
+	//{
+	//	float timeTaken = 0.3f;
+	//	float eT = 0;
+	//	Vector3 startPos = _selectedCharacterModel.transform.localPosition;
+	//	Vector3 targetPosition;
+	//	if (_playerIndex < 2)
+	//		targetPosition = Vector3.up * MenuManager.Instance._canvas.pixelRect.height * (1 / transform.localScale.y) * 0.5f;
+	//	else
+	//		targetPosition = - Vector3.up * MenuManager.Instance._canvas.pixelRect.height * (1 / transform.localScale.y) * 0.5f;
 
-	IEnumerator SlideCharacterModelOut()
-	{
-		float targetTime = Time.time + 1;
-		Vector3 targetPosition;
-		if (_playerIndex < 2)
-			targetPosition = transform.position + transform.up * 10;
-		else
-			targetPosition = transform.position - transform.up * 10;
+	//	while (eT < timeTaken)
+	//	{
+	//		_selectedCharacterModel.transform.localPosition = Vector3.Lerp(startPos, targetPosition, Curves.EaseInOutCurve.Evaluate(eT / timeTaken));
+	//		eT += Time.deltaTime;
+	//		yield return null;
+	//	}
 
-		while (targetTime > Time.time)
-		{
-			_selectedCharacterModel.transform.position = Vector3.Lerp(_selectedCharacterModel.transform.position, targetPosition, 0.15f);
-			yield return null;
-		}
-
-		_selectedCharacterModel.transform.position = targetPosition;
-	}
+	//	_selectedCharacterModel.transform.localPosition = targetPosition;
+	//}
 
 	void AllowSwitchCharacter()
 	{
@@ -223,8 +230,14 @@ public class CharacterSlot : MonoBehaviour
 		_wheelRef.gameObject.SetActive(true);
 		_wheelRef.transform.SetParent(transform);
 		_wheelRef.transform.localRotation = Quaternion.identity;
-		_wheelRef.transform.position = transform.position;
-		_wheelRef.Generate(_availableCharacters);
+		_wheelRef.transform.position = transform.position + transform.forward.normalized * _wheelRef._wheelRadius;
+		PlayerController[] tempArray = new PlayerController[_availableCharacters.Length];
+
+		for (int i = 0; i < _availableCharacters.Length; i++)
+		{
+			tempArray[i] = _availableCharacters[i].CharacterRef;
+		}
+		_wheelRef.Generate(tempArray);
 		ChangeSkin(0);
 		Debug.Log("SLOT: " + name + " Opened, Listening to gamePad n°: " + joyToListen);
 	}
@@ -246,7 +259,7 @@ public class CharacterSlot : MonoBehaviour
 	{
 		TrySwitchSkin(direction);
 
-		_wheelRef.ChangeActiveCharacterSkin(_availableCharacters[_selectedCharacterIndex].ArtWorks[_selectedSkinIndex], _selectedSkinIndex);
+		_wheelRef.ChangeCharacterSkin(_selectedSkinIndex);
 	}
 
 	private int tempSkinSwitchAttempts = 0; // used to prevent infinite loop. (security if the character has less skins than players)

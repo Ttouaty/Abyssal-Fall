@@ -40,8 +40,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 		_characterSlotsContainerRef     = GetComponentInChildren<CharacterSelector>();
 		_metaContainer					= _canvas.transform.FindChild("Meta");
 
-		//_needFTUE = !PlayerPrefs.HasKey("FTUEDone");
-		_needFTUE = true;
+		_needFTUE = !PlayerPrefs.HasKey("FTUEDone");
 
 		_leftMenuAnchor = _metaContainer.Find("LeftMenuAnchor");
 		_centerMenuAnchor	= _metaContainer.Find("CenterMenuAnchor");
@@ -79,10 +78,18 @@ public class MenuManager : GenericSingleton<MenuManager>
 			GetMenuPanel("FTUE").gameObject.SetActive(true);
 			_activeMenu = GetMenuPanel("FTUE");
 		}
+
+		CameraManager.OnCameraChange.AddListener(OnCameraChange);
+	}
+
+	public void OnCameraChange()
+	{
+		_canvas.worldCamera = Camera.main;
 	}
 
 	void Update()
 	{
+
 		if (Input.GetKeyDown(KeyCode.Alpha1))
 		{
 			LoadPreview(EArenaConfiguration.Aerial);
@@ -171,17 +178,6 @@ public class MenuManager : GenericSingleton<MenuManager>
 			Color.white));
 	}
 
-	IEnumerator ass()
-	{
-		while (!Input.GetKey(KeyCode.P))
-		{
-			Debug.Log("waiting for P");
-			yield return null;
-		}
-		Debug.Log("P pressed");
-
-	}
-
 	public void Exit()
 	{
 		Application.Quit();
@@ -239,13 +235,13 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	IEnumerator SendOutLeft(MenuPanel targetMenu)
 	{
-		yield return StartCoroutine(MovePanelOverTime(targetMenu, _centerMenuAnchor.position, _leftMenuAnchor.position));
+		yield return StartCoroutine(MovePanelOverTime(targetMenu, _centerMenuAnchor.localPosition, _leftMenuAnchor.localPosition));
 		targetMenu.gameObject.SetActive(false);
 	}
 
 	IEnumerator SendOutRight(MenuPanel targetMenu)
 	{
-		yield return StartCoroutine(MovePanelOverTime(targetMenu, _centerMenuAnchor.position, _rightMenuAnchor.position));
+		yield return StartCoroutine(MovePanelOverTime(targetMenu, _centerMenuAnchor.localPosition, _rightMenuAnchor.localPosition));
 		targetMenu.gameObject.SetActive(false);
 	}
 
@@ -254,7 +250,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 		if(targetMenu != null)
 		{
 			targetMenu.gameObject.SetActive(true);
-			yield return StartCoroutine(MovePanelOverTime(targetMenu, _rightMenuAnchor.position, _centerMenuAnchor.position));
+			yield return StartCoroutine(MovePanelOverTime(targetMenu, _rightMenuAnchor.localPosition, _centerMenuAnchor.localPosition));
 		}
 	}
 
@@ -263,7 +259,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 		if (targetMenu != null)
 		{
 			targetMenu.gameObject.SetActive(true);
-			yield return StartCoroutine(MovePanelOverTime(targetMenu, _leftMenuAnchor.position, _centerMenuAnchor.position));
+			yield return StartCoroutine(MovePanelOverTime(targetMenu, _leftMenuAnchor.localPosition, _centerMenuAnchor.localPosition));
 		}
 	}
 
@@ -272,14 +268,14 @@ public class MenuManager : GenericSingleton<MenuManager>
 		float eT = 0;
 		float timeTaken = 0.3f;
 
-		targetMenu.transform.position = start;
+		targetMenu.transform.localPosition = start;
 		while (eT < timeTaken)
 		{
 			eT += Time.deltaTime;
-			targetMenu.transform.position = Vector3.Lerp(targetMenu.transform.position, end, eT / timeTaken);
+			targetMenu.transform.localPosition = Vector3.Lerp(targetMenu.transform.localPosition, end, eT / timeTaken);
 			yield return null;
 		}
-		targetMenu.transform.position = end;
+		targetMenu.transform.localPosition = end;
 	}
 
 	public void FadeSplashscreens (bool shouldShowSplashscreens)
@@ -313,6 +309,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 				yield return new WaitForSeconds(1);
 			}
 		}
+
 		yield return StartCoroutine(LoadPreview_Implementation(EArenaConfiguration.Aerial));
 		_activeMenu.gameObject.SetActive(true);
 		SplashScreens.transform.Find("Background_black").GetComponent<Image>().CrossFadeAlpha(0, 1, false);
@@ -399,5 +396,12 @@ public class MenuManager : GenericSingleton<MenuManager>
 	public void SetMode(string modeName)
 	{
 		GameManager.Instance.CurrentGameConfiguration.ModeConfiguration = (EModeConfiguration)Enum.Parse(typeof(EModeConfiguration), modeName);
+	}
+
+	public void SkipFTUE()
+	{
+		PlayerPrefs.SetInt("FTUEDone", 1);
+		PlayerPrefs.Save();
+		MakeTransition("Main");
 	}
 }

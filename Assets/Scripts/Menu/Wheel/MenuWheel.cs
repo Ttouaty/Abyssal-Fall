@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
-public class MenuWheel<T> : MonoBehaviour where T : WheelSelectable
+public class MenuWheel<ReturnType> : MonoBehaviour
 {
 
 	public float _wheelRadius = 3;
@@ -13,7 +13,8 @@ public class MenuWheel<T> : MonoBehaviour where T : WheelSelectable
 	protected float _alphaThresholdAngleMax = 150;
 
 
-	protected List<T> _elementList = new List<T>();
+	protected GameObject[] _displayArray = new GameObject[0];
+	protected ReturnType[] _returnArray = new ReturnType[0];
 
 	protected int _selectedElementIndex = 0;
 
@@ -27,68 +28,95 @@ public class MenuWheel<T> : MonoBehaviour where T : WheelSelectable
 
 	}
 
-	public virtual void Generate(T[] elementsToAdd)
+	public virtual void Generate(GameObject[] elementsToDisplay, ReturnType[] elementsToReturn)
 	{
 		transform.localScale = Vector3.one;
-		transform.position = transform.position + transform.forward * _wheelRadius;
 
 		_selectedElementIndex = 0;
-		for (int i = 0; i < _elementList.Count; i++)
+		for (int i = 0; i < _displayArray.Length; i++)
 		{
-			Destroy(_elementList[i].gameObject);
+			Destroy(_displayArray[i].gameObject);
 		}
 
-		_elementList.Clear();
-		_rotationBetweenElements = 360 / elementsToAdd.Length;
+		
 
-		for (int i = 0; i < elementsToAdd.Length; i++)
+		_returnArray = elementsToReturn;
+		_displayArray = elementsToDisplay;
+		_rotationBetweenElements = 360 / elementsToDisplay.Length;
+
+		if (_displayArray.Length != _returnArray.Length)
+			Debug.LogError("Display and return arrays lengths do not match!\nThis may/will cause crashes on selection.");
+
+		for (int i = 0; i < elementsToDisplay.Length; i++)
 		{
-			_elementList.Add(elementsToAdd[i]);
-			elementsToAdd[i].Generate(transform, transform.position - transform.forward * _wheelRadius, transform.parent.GetComponent<RectTransform>().sizeDelta);
-			elementsToAdd[i].transform.RotateAround(transform.position, transform.up, -_rotationBetweenElements * i);
+			elementsToDisplay[i].transform.SetParent(transform);
+			ElementGenerate(elementsToDisplay[i], - transform.forward.normalized * _wheelRadius);
+			//elementsToAdd[i].Generate(transform, transform.position - transform.forward * _wheelRadius, transform.parent.GetComponent<RectTransform>().sizeDelta);
+			elementsToDisplay[i].transform.RotateAround(transform.position, transform.up, -_rotationBetweenElements * i);
 		}
 
 		ScrollToIndex(_selectedElementIndex);
 	}
 
-	public virtual T GetSelectedElement()
+	protected virtual void ElementGenerate(GameObject element, Vector3 localPos)
 	{
-		return _elementList[_selectedElementIndex];
+		//element.transform.localScale = Vector3.one;
+		element.transform.localRotation = Quaternion.identity;
+		element.transform.position = transform.position + localPos;
+	}
+
+	public virtual ReturnType GetSelectedElement()
+	{
+		return _returnArray[_selectedElementIndex];
 	}
 
 	protected virtual void Update()
 	{
 		transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(0, _selectedElementIndex * _rotationBetweenElements, 0), _rotateSpeed);
-		for (int i = 0; i < _elementList.Count; ++i)
-		{
-			_tempColor = _elementList[i].color;
-			_tempElementAngle = Vector3.Angle(-Camera.main.transform.forward, (_elementList[i].transform.position - transform.position));
 
-			Debug.DrawLine(transform.position, _elementList[i].transform.position, Color.green);
+		//######## apply alpha to Image elements #########
+
+		ApplyAlpha();
+
+		RotateElementsFacingCam();
+	}
+
+	protected virtual void ApplyAlpha()
+	{
+		Image tempImageRef; 
+		for (int i = 0; i < _displayArray.Length; ++i)
+		{
+			tempImageRef = _displayArray[i].GetComponentInChildren<Image>();
+			if (tempImageRef == null)
+				return;
+
+			_tempColor = tempImageRef.color;
+			_tempElementAngle = Vector3.Angle(-Camera.main.transform.forward, (_displayArray[i].transform.position - transform.position));
+
+			Debug.DrawLine(transform.position, _displayArray[i].transform.position, Color.green);
 
 			if (_tempElementAngle < _alphaThresholdAngleMin)
 				_tempColor.a = 1;
 			else
 				_tempColor.a = (_alphaThresholdAngleMax - _tempElementAngle) / _alphaThresholdAngleMax;
 
-			_elementList[i].color = Color.Lerp(_elementList[i].color, _tempColor, _rotateSpeed);
+			tempImageRef.color = Color.Lerp(tempImageRef.color, _tempColor, _rotateSpeed);
 		}
-		RotateElementsFacingCam();
 	}
 
-	public void RotateElementsFacingCam()
+	protected virtual void RotateElementsFacingCam()
 	{
-		for (int i = 0; i < _elementList.Count; ++i)
+		for (int i = 0; i < _displayArray.Length; ++i)
 		{
-			_elementList[i].transform.rotation = Quaternion.LookRotation(Camera.main.transform.forward, Camera.main.transform.up);
+			_displayArray[i].transform.rotation = Quaternion.LookRotation(-Camera.main.transform.forward, Camera.main.transform.up);
 		}
 	}
 
 	public void ScrollToIndex(int newIndex)
 	{
 		_selectedElementIndex = newIndex;
-		_selectedElementIndex = _selectedElementIndex.LoopAround(0, _elementList.Count - 1);
-		_elementList[_selectedElementIndex].transform.SetAsLastSibling();
+		_selectedElementIndex = _selectedElementIndex.LoopAround(0, _displayArray.Length - 1);
+		_displayArray[_selectedElementIndex].transform.SetAsLastSibling();
 	}
 
 	public void ScrollLeft()

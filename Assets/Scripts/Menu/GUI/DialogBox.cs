@@ -84,10 +84,6 @@ public class DialogBox : MonoBehaviour
 			nextTextOffset = _displayedTextOffset;
 			textToAdd = FilterTag(message);
 
-			//Debug.Log(nextIndexToWrite - nextTextOffset);
-			//Debug.Log(textToAdd);
-			//Debug.Log(TextDiv.text.Length);
-
 			TextDiv.text = TextDiv.text.Insert(nextIndexToWrite - nextTextOffset, textToAdd);
 			if (!skipMessage)
 			{
@@ -133,7 +129,8 @@ public class DialogBox : MonoBehaviour
 				if (tagName == "br")
 				{
 					stringToWrite = "\n";
-					_displayedTextOffset += tagMatches[_displayedTagIndex].Value.Length - 1;
+					_displayedTextOffset += tagMatches[_displayedTagIndex].Value.Length - 1; 
+					// -1 because we are writting only 1 character (\n) and we advance of tagMatches[_displayedTagIndex].Value.Length character on the original string (<br/> => 5 chars)
 				}
 				else
 				{
@@ -155,17 +152,15 @@ public class DialogBox : MonoBehaviour
 				_displayedTagIndex++;
 				return stringToWrite;
 			}
+			//regex Used
 			//start <\s*\w.*?>
-
 			//start & closing <(.*?)>
-
 			// tag name (\w+) [0]
-
 		}
 
 		_messageProgressionIndex++;
 		if (_messageProgressionIndex <= message.TranslatedText.Length)
-			return message.TranslatedText[_messageProgressionIndex - 1] + "";
+			return new string(message.TranslatedText[_messageProgressionIndex - 1], 1);
 		else
 			return "";
 	}

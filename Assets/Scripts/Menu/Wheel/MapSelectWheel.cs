@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class MapSelectWheel : MenuWheel<WheelSelectable>
+public class MapSelectWheel : MenuWheel<EArenaConfiguration>
 {
 	private ArenaConfiguration_SO[] _configRefs;
 
@@ -15,28 +15,28 @@ public class MapSelectWheel : MenuWheel<WheelSelectable>
 
 	public void Generate()
 	{
-		WheelSelectable[] elementsToProcess = new WheelSelectable[_configRefs.Length];
+		GameObject[] elementsToProcess = new GameObject[_configRefs.Length];
+		EArenaConfiguration[] returnArray = new EArenaConfiguration[_configRefs.Length];
 
-		GameObject tempGO;
+		Image tempImageRef;
 		for (int i = 0; i < _configRefs.Length; i++)
 		{
-			tempGO = new GameObject();
-			tempGO.AddComponent<RectTransform>();
-			elementsToProcess[i] = tempGO.AddComponent<WheelSelectable>();
-			elementsToProcess[i].sprite = _configRefs[i].Artwork;
+			elementsToProcess[i] = new GameObject("Arena_" + _configRefs[i].TargetMapEnum.ToString(), typeof(Image), typeof(RectTransform));
+			elementsToProcess[i].AddComponent<RectTransform>();
+			tempImageRef = elementsToProcess[i].GetComponent<Image>();
+			tempImageRef.sprite = _configRefs[i].Artwork;
+
+			tempImageRef.preserveAspect = true;
+
+			tempImageRef.rectTransform.sizeDelta = transform.parent.GetComponent<RectTransform>().sizeDelta;
+			tempImageRef.color = new Color(tempImageRef.color.r, tempImageRef.color.g, tempImageRef.color.b, 0);
+
+			elementsToProcess[i].transform.SetParent(transform);
+			elementsToProcess[i].transform.localScale = Vector3.one;
+			returnArray[i] = _configRefs[i].TargetMapEnum;
 		}
 
-		base.Generate(elementsToProcess);
-
-		for (int i = 0; i < _elementList.Count; i++)
-		{
-			_elementList[i].gameObject.name = "Arena_" + _configRefs[i].TargetMapEnum.ToString();
-		}
-	}
-	
-	public new EArenaConfiguration GetSelectedElement()
-	{
-		return _configRefs[_selectedElementIndex].TargetMapEnum;
+		base.Generate(elementsToProcess, returnArray);
 	}
 
 	public void SendSelectionToGameManager()

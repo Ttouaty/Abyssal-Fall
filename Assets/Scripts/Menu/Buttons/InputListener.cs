@@ -77,7 +77,7 @@ public class InputListener : MonoBehaviour
 			{
 				_waitForRelease[joystickNumber] = false;
 				_timeHeld = 0;
-			} 
+			}
 		}
 		else if (directionToListen.AnglePercent(_tempStickPosition) > AxisPrecision && _tempStickPosition.magnitude > stickActivateThreshold)
 		{
@@ -85,7 +85,7 @@ public class InputListener : MonoBehaviour
 			{
 				_timeHeld -= Time.deltaTime;
 				if (_timeHeld < 0)
-				{ 
+				{
 					LaunchCallback(joystickNumber);
 					_timeHeld = TimeToHold;
 				}
@@ -95,6 +95,10 @@ public class InputListener : MonoBehaviour
 				_waitForRelease[joystickNumber] = true;
 				LaunchCallback(joystickNumber);
 			}
+		}
+		else
+		{
+			_timeHeld = -1;
 		}
 
 	}

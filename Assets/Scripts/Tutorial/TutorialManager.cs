@@ -51,7 +51,7 @@ public class TutorialManager : GenericSingleton<TutorialManager> {
 
 	private void PopPlayer(float unused)
 	{
-		TutorialCharacterInstance = (PlayerController)Instantiate(TutorialCharacter, _respawnPoint.position, Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized) * Quaternion.AngleAxis(180, Vector3.up));
+		TutorialCharacterInstance = (PlayerController)Instantiate(TutorialCharacter, _respawnPoint.position, Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized) * Quaternion.AngleAxis(180, Vector3.up), transform);
 		TempPlayer.Controller = TutorialCharacterInstance;
 		TutorialCharacterInstance.Init(TempPlayer);
 		TutorialCharacterInstance.AddStun(1f);
@@ -95,13 +95,6 @@ public class TutorialManager : GenericSingleton<TutorialManager> {
 		while (!TutorialCharacterInstance.IsGrounded) { yield return null; }
 		TutorialCharacterInstance.Freeze();
 
-		//for (int i = 0; i < _tutorialSequences[sequenceNumber]._messageKeys.Length; i++)
-		//{
-
-		//	Debug.Log("Message logged without translation, fix it later");
-		//	MessageManager.Log(_tutorialSequences[sequenceNumber]._messageKeys[i].TextKey, false);
-		//	yield return new WaitForSeconds(_tutorialSequences[sequenceNumber]._messageKeys[i].DelayAfter);
-		//}
 		yield return StartCoroutine(DialogBoxObject.LaunchDialog(_tutorialSequences[sequenceNumber]._messageKeys));
 
 		Debug.Log("Sequence over");
@@ -115,15 +108,21 @@ public class TutorialManager : GenericSingleton<TutorialManager> {
 		PlayerPrefs.SetInt("FTUEDone", 1);
 		PlayerPrefs.Save();
 
-		AutoFade.StartFade(1, 1, 1, Color.white);
-		StartCoroutine(DoigtDansLeCul());
+		StartCoroutine(ReopenMenu());
 	}
+
+	private IEnumerator ReopenMenu()
+	{
+		yield return StartCoroutine(AutoFade.StartFade(1,
+			DoigtDansLeCul(),
+			AutoFade.EndFade(0.2f, 0.7f, Color.white),
+			Color.white));
+	}
+
 
 	IEnumerator DoigtDansLeCul()
 	{
-		yield return new WaitForSeconds(1);
-
-		LevelManager.Instance.OpenMenu();
+		yield return LevelManager.Instance.OpenMenu();
 	}
 
 	public void SetPlayerDash(bool value){ TutorialCharacterInstance.AllowDash = value; }

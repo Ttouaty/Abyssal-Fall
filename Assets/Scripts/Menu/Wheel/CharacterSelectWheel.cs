@@ -3,41 +3,34 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
-public class CharacterSelectWheel : MenuWheel<WheelSelectableCharacter>
+public class CharacterSelectWheel : MenuWheel<PlayerController>
 {
 	public int _selectedSkinIndex = 0;
 
-	public void Generate(SelectableCharacter[] elementsToAdd)
+	public void Generate(PlayerController[] elementsToAdd)
 	{
-		WheelSelectableCharacter[] tempGenerationSelectableCharacters = new WheelSelectableCharacter[elementsToAdd.Length];
+		GameObject[] tempGenerationSelectableCharacters = new GameObject[elementsToAdd.Length];
 
-		GameObject tempGO;
 		for (int i = 0; i < tempGenerationSelectableCharacters.Length; i++)
 		{
-			tempGO = new GameObject();
-			tempGO.AddComponent<RectTransform>();
-			tempGenerationSelectableCharacters[i] = tempGO.AddComponent<WheelSelectableCharacter>();
-			tempGenerationSelectableCharacters[i].sprite = elementsToAdd[i].ArtWorks[0];
-			tempGenerationSelectableCharacters[i].Controller = elementsToAdd[i].CharacterRef;
+			tempGenerationSelectableCharacters[i] = Instantiate(elementsToAdd[i]._characterData.CharacterModel.gameObject) as GameObject;
+			tempGenerationSelectableCharacters[i].transform.localScale = transform.parent.localScale * 1.8f;
 		}
 
-		base.Generate(tempGenerationSelectableCharacters);
-
-		for (int i = 0; i < _elementList.Count; i++)
-		{
-			_elementList[i].gameObject.name = "character_" + elementsToAdd[i].CharacterRef._characterData.IngameName + "_" + i;
-		}
+		base.Generate(tempGenerationSelectableCharacters, elementsToAdd);
 	}
 
 	public Material GetSelectedSkin()
 	{
-		return GetSelectedElement().Controller._characterData.CharacterMaterials[_selectedSkinIndex];
+		return GetSelectedElement()._characterData.CharacterMaterials[_selectedSkinIndex];
 	}
 
-	public void ChangeActiveCharacterSkin(Sprite newSkin, int index)
+	public void ChangeCharacterSkin(int skinIndex, int characterIndex = -1)
 	{
-		_elementList[_selectedElementIndex].sprite = newSkin;
-		_selectedSkinIndex = index;
+		if(characterIndex == -1)
+			_displayArray[_selectedElementIndex].GetComponent<CharacterModel>().Reskin(_returnArray[_selectedElementIndex]._characterData.CharacterMaterials[skinIndex]);
+		else
+			_displayArray[characterIndex].GetComponent<CharacterModel>().Reskin(_returnArray[characterIndex]._characterData.CharacterMaterials[skinIndex]);
 	}
 
 	public override void Reset()
