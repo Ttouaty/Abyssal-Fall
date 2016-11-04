@@ -75,7 +75,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 	protected Vector3 _activeSpeed = Vector3.zero; // Activespeed est un vecteur qui est appliqué a chaque frame au rigibody.velocity => permet de modifier librement la vitesse du player.
 	protected Vector3 _activeDirection = Vector3.forward;
 	protected Vector2 _originalMaxSpeed;
-	protected Vector2 _maxSpeed = new Vector2(8f, 20f);
+	protected Vector2 _maxSpeed = new Vector2(7f, 20f);
 	protected Vector2 _acceleration = new Vector2(0.1f, -2f); // X => time needed to reach max speed, Y => Gravity multiplier
 	protected float _friction = 80; //friction applied to the player when it slides (pushed or end dash) (units/s)
 	//protected float _airborneDelay = 0.02f;
@@ -222,6 +222,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 		GameManager.Instance.OnPlayerWin.AddListener(OnPlayerWin);
 
 		_maxSpeed.x = _maxSpeed.x + _maxSpeed.x * (10 * (_characterData.CharacterStats.speed - Stats.maxValue * 0.5f) / 100);
+
+		Debug.Log(_maxSpeed);
 		_originalMaxSpeed = _maxSpeed;
 
 		if (GetComponentInChildren<GroundCheck>() == null)

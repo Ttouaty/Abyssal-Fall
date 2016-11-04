@@ -38,7 +38,7 @@ public class CharacterSlot : MonoBehaviour
 	private CharacterSelectWheel _wheelRef;
 	//private GameObject _selectedCharacterModel;
 
-	private Coroutine _activeCoroutineRef;
+	//private Coroutine _activeCoroutineRef;
 
 	public PlayerController GetSelectedCharacter
 	{
@@ -121,8 +121,8 @@ public class CharacterSlot : MonoBehaviour
 			Debug.Log("Ce personnage et ce skin sont déja selectionné.");
 			return;
 		}
-		if (_activeCoroutineRef != null)
-			StopCoroutine(_activeCoroutineRef);
+		//if (_activeCoroutineRef != null)
+		//	StopCoroutine(_activeCoroutineRef);
 		GameManager.Instance.RegisteredPlayers[_playerIndex].Ready(_wheelRef.GetSelectedElement(), _selectedSkinIndex);
 		
 		//PLACEMENT DES PARTICULES A L'ARRACHE
@@ -136,7 +136,7 @@ public class CharacterSlot : MonoBehaviour
 		//if (_selectedCharacterModel != null)
 		//	Destroy(_selectedCharacterModel);
 
-		_wheelRef.GetSelectedElement()._characterData.CharacterModel.Reskin(GetSelectedSkin);
+		//_wheelRef.GetSelectedElement()._characterData.CharacterModel.Reskin(GetSelectedSkin);
 		//_selectedCharacterModel = (GameObject)Instantiate(_wheelRef.GetSelectedElement()._characterData.CharacterModel.gameObject, transform.position, transform.rotation * Quaternion.FromToRotation(Vector3.right, Vector3.left));
 		//_selectedCharacterModel.transform.localScale = transform.localScale * 1.1f;
 		//_selectedCharacterModel.transform.parent = transform;
@@ -163,8 +163,8 @@ public class CharacterSlot : MonoBehaviour
 
 	public void CancelCharacterSelection()
 	{
-		if (_activeCoroutineRef != null)
-			StopCoroutine(_activeCoroutineRef);
+		//if (_activeCoroutineRef != null)
+		//	StopCoroutine(_activeCoroutineRef);
 
 		Selected = false;
 		if (GameManager.Instance.RegisteredPlayers[_playerIndex] != null)
@@ -230,7 +230,7 @@ public class CharacterSlot : MonoBehaviour
 		_wheelRef.gameObject.SetActive(true);
 		_wheelRef.transform.SetParent(transform);
 		_wheelRef.transform.localRotation = Quaternion.identity;
-		_wheelRef.transform.position = transform.position + transform.forward.normalized * _wheelRef._wheelRadius;
+		_wheelRef.transform.position = transform.position + transform.forward.normalized * (_wheelRef._wheelRadius - 1);
 		PlayerController[] tempArray = new PlayerController[_availableCharacters.Length];
 
 		for (int i = 0; i < _availableCharacters.Length; i++)

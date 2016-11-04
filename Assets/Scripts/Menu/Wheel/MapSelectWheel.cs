@@ -19,20 +19,20 @@ public class MapSelectWheel : MenuWheel<EArenaConfiguration>
 		EArenaConfiguration[] returnArray = new EArenaConfiguration[_configRefs.Length];
 
 		Image tempImageRef;
+		_wheelRadius = Mathf.Abs(transform.localPosition.z);
 		for (int i = 0; i < _configRefs.Length; i++)
 		{
-			elementsToProcess[i] = new GameObject("Arena_" + _configRefs[i].TargetMapEnum.ToString(), typeof(Image), typeof(RectTransform));
-			elementsToProcess[i].AddComponent<RectTransform>();
+			elementsToProcess[i] = new GameObject("Arena_" + _configRefs[i].TargetMapEnum.ToString(), typeof(Image));
 			tempImageRef = elementsToProcess[i].GetComponent<Image>();
 			tempImageRef.sprite = _configRefs[i].Artwork;
 
 			tempImageRef.preserveAspect = true;
 
-			tempImageRef.rectTransform.sizeDelta = transform.parent.GetComponent<RectTransform>().sizeDelta;
 			tempImageRef.color = new Color(tempImageRef.color.r, tempImageRef.color.g, tempImageRef.color.b, 0);
 
 			elementsToProcess[i].transform.SetParent(transform);
 			elementsToProcess[i].transform.localScale = Vector3.one;
+			tempImageRef.rectTransform.sizeDelta = transform.parent.GetComponent<RectTransform>().sizeDelta;
 			returnArray[i] = _configRefs[i].TargetMapEnum;
 		}
 

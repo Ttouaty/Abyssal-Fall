@@ -17,6 +17,8 @@ public class CharacterSelectWheel : MenuWheel<PlayerController>
 			tempGenerationSelectableCharacters[i].transform.localScale = transform.parent.localScale * 1.8f;
 		}
 
+		_wheelRadius = Mathf.Abs(transform.localPosition.z);
+
 		base.Generate(tempGenerationSelectableCharacters, elementsToAdd);
 	}
 
@@ -31,6 +33,14 @@ public class CharacterSelectWheel : MenuWheel<PlayerController>
 			_displayArray[_selectedElementIndex].GetComponent<CharacterModel>().Reskin(_returnArray[_selectedElementIndex]._characterData.CharacterMaterials[skinIndex]);
 		else
 			_displayArray[characterIndex].GetComponent<CharacterModel>().Reskin(_returnArray[characterIndex]._characterData.CharacterMaterials[skinIndex]);
+
+		_selectedSkinIndex = skinIndex;
+	}
+
+	public override void ScrollToIndex(int newIndex)
+	{
+		ChangeCharacterSkin(0);
+		base.ScrollToIndex(newIndex);
 	}
 
 	public override void Reset()

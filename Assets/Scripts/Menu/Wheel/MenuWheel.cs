@@ -33,12 +33,11 @@ public class MenuWheel<ReturnType> : MonoBehaviour
 		transform.localScale = Vector3.one;
 
 		_selectedElementIndex = 0;
+
 		for (int i = 0; i < _displayArray.Length; i++)
 		{
 			Destroy(_displayArray[i].gameObject);
 		}
-
-		
 
 		_returnArray = elementsToReturn;
 		_displayArray = elementsToDisplay;
@@ -50,9 +49,8 @@ public class MenuWheel<ReturnType> : MonoBehaviour
 		for (int i = 0; i < elementsToDisplay.Length; i++)
 		{
 			elementsToDisplay[i].transform.SetParent(transform);
-			ElementGenerate(elementsToDisplay[i], - transform.forward.normalized * _wheelRadius);
-			//elementsToAdd[i].Generate(transform, transform.position - transform.forward * _wheelRadius, transform.parent.GetComponent<RectTransform>().sizeDelta);
-			elementsToDisplay[i].transform.RotateAround(transform.position, transform.up, -_rotationBetweenElements * i);
+			ElementGenerate(elementsToDisplay[i], Quaternion.AngleAxis(-_rotationBetweenElements * i, Vector3.up) *  Vector3.back * _wheelRadius);
+			//elementsToDisplay[i].transform.RotateAround(transform.position, transform.up, -_rotationBetweenElements * i);
 		}
 
 		ScrollToIndex(_selectedElementIndex);
@@ -62,7 +60,7 @@ public class MenuWheel<ReturnType> : MonoBehaviour
 	{
 		//element.transform.localScale = Vector3.one;
 		element.transform.localRotation = Quaternion.identity;
-		element.transform.position = transform.position + localPos;
+		element.transform.localPosition = localPos;
 	}
 
 	public virtual ReturnType GetSelectedElement()
@@ -75,7 +73,6 @@ public class MenuWheel<ReturnType> : MonoBehaviour
 		transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(0, _selectedElementIndex * _rotationBetweenElements, 0), _rotateSpeed);
 
 		//######## apply alpha to Image elements #########
-
 		ApplyAlpha();
 
 		RotateElementsFacingCam();
@@ -112,7 +109,7 @@ public class MenuWheel<ReturnType> : MonoBehaviour
 		}
 	}
 
-	public void ScrollToIndex(int newIndex)
+	public virtual void ScrollToIndex(int newIndex)
 	{
 		_selectedElementIndex = newIndex;
 		_selectedElementIndex = _selectedElementIndex.LoopAround(0, _displayArray.Length - 1);
