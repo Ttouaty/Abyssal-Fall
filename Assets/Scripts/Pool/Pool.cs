@@ -44,10 +44,8 @@ public struct Pool
 		Reserve.Add(go);
 		go.transform.parent = Root.transform;
 		go.transform.position = Vector3.zero;
-		go.transform.localPosition = Vector3.zero;
 		go.transform.rotation = Quaternion.identity;
-		go.transform.localRotation = Quaternion.identity;
-		go.gameObject.SetActive(false);
+		go.SetActive(false);
 	}
 
 	public void Init()

@@ -6,6 +6,8 @@ using System.Collections.Generic;
 public class GroundCheck : MonoBehaviour
 {
 	private PlayerController _playerRef;
+	private Collider _colliderRef;
+	private Rigidbody _rigidBRef;
 	//private float _ownSize;
 
 	//private RaycastHit _hit;
@@ -16,6 +18,24 @@ public class GroundCheck : MonoBehaviour
 	{
 		//_ownSize = GetComponent<SphereCollider>().radius;
 		_playerRef = GetComponentInParent<PlayerController>();
+		_colliderRef = GetComponent<Collider>();
+		_rigidBRef = _playerRef.GetComponent<Rigidbody>();
+	}
+
+	void Update()
+	{
+		if (_rigidBRef.velocity.y > 0.1f)
+		{
+			if (_colliderRef.enabled)
+			{
+				_colliderRef.enabled = false;
+				_colliderIds.Clear();
+			}
+		}
+		else
+		{
+			_colliderRef.enabled = true;
+		}
 	}
 
 	void LateUpdate()
@@ -24,7 +44,7 @@ public class GroundCheck : MonoBehaviour
 
 		//if (Physics.Raycast(transform.position, Vector3.down, out _hit, _ownSize + 0.1f, 1 << LayerMask.NameToLayer("Ground")))
 		//{
-			
+
 		//}
 	}
 

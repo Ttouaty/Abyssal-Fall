@@ -10,10 +10,8 @@ public class Poolable : MonoBehaviour
         Pool.Reserve.Add(gameObject);
         gameObject.transform.parent = Pool.Root.transform;
         gameObject.transform.position = Vector3.zero;
-        gameObject.transform.localPosition = Vector3.zero;
         gameObject.transform.rotation = Quaternion.identity;
-        gameObject.transform.localRotation = Quaternion.identity;
-        gameObject.gameObject.SetActive(false);
+        gameObject.SetActive(false);
         IsInPool = true;
     }
 }

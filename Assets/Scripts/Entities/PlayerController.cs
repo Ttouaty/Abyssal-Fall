@@ -82,6 +82,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 
 	protected float _fullDashActivationTime = 0.05f;
 	private float _timeHeldDash;
+	[HideInInspector]
 	public bool WaitForDashRelease = false;
 	private bool _dashMaxed = false;
 
@@ -223,7 +224,6 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 
 		_maxSpeed.x = _maxSpeed.x + _maxSpeed.x * (10 * (_characterData.CharacterStats.speed - Stats.maxValue * 0.5f) / 100);
 
-		Debug.Log(_maxSpeed);
 		_originalMaxSpeed = _maxSpeed;
 
 		if (GetComponentInChildren<GroundCheck>() == null)
@@ -248,6 +248,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 		TimeManager.Instance.OnTimeScaleChange.AddListener(OnTimeScaleChange);
 
 		CameraManager.Instance.AddTargetToTrack(transform);
+		_activeDirection = transform.rotation * Vector3.forward;
 
 		CustomStart();
 
@@ -264,11 +265,12 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 
 		ProcessCoolDowns();
 
-		ProcessInputs();
 
 		ProcessActiveSpeed();
 		if (_allowInput)
 			ProcessOrientation();
+
+		ProcessInputs();
 		ApplyCharacterFinalVelocity();
 
 		CustomUpdate();
@@ -331,15 +333,17 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 		Vector3 oldDirection = transform.forward;
 		if (!InputManager.StickIsNeutral(_playerRef.JoystickNumber) && !_isStunned)
 		{
-			//_activeDirection.x = Mathf.Lerp(_activeDirection.x, InputManager.GetAxis("x", _playerRef.JoystickNumber), 0.3f);
-			//_activeDirection.z = Mathf.Lerp(_activeDirection.z, InputManager.GetAxis("y", _playerRef.JoystickNumber), 0.3f);
 			_activeDirection.x = InputManager.GetAxis("x", _playerRef.JoystickNumber);
 			_activeDirection.z = InputManager.GetAxis("y", _playerRef.JoystickNumber);
 			_activeDirection = Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized) * _activeDirection;
-			//_activeDirection.Normalize();
 
 			if (oldDirection.AnglePercent(_activeDirection) < -0.8f)
 				OnFlip();
+		}
+		else
+		{
+			_activeDirection = transform.rotation * Vector3.forward;
+			_activeDirection = Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized) * _activeDirection;
 		}
 
 		transform.LookAt(transform.position + _activeDirection, Vector3.up);
@@ -362,7 +366,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 
 	private void ProcessInputs()
 	{
-		if (InputManager.GetButtonHeld("Dash", _playerRef.JoystickNumber) && _canDash && !WaitForDashRelease)
+		if (InputManager.GetButtonHeld("Dash", _playerRef.JoystickNumber) && !WaitForDashRelease && _canDash)
 		{
 			if (_dashStepActivated <= (_dashActivationSteps - 1) * (_timeHeldDash / _fullDashActivationTime) + 1 && _characterData.Dash.Forces.Length > _dashStepActivated - 1)
 			{
@@ -376,13 +380,11 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 				_dashMaxed = _dashStepActivated > _dashActivationSteps;
 				WaitForDashRelease = _dashMaxed;
 			}
-
 			_timeHeldDash += Time.deltaTime;
 		}
-		else if (InputManager.GetButtonUp("Dash", _playerRef.JoystickNumber))
+		else if(_characterData.Dash.inProgress)
 		{
-			WaitForDashRelease = false;
-			_timeHeldDash = 0;
+			WaitForDashRelease = true;
 		}
 
 		if (SpecialActivation() && _allowInput)
@@ -490,7 +492,9 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 
 		//direction.x += direction.x * (10 * (_characterData.CharacterStats.resistance - (Stats.maxValue * 0.5f))) / 100;
 
-		direction.x += direction.x * (_characterData.CharacterStats.resistance.Percentage(0, Stats.maxValue) - 0.5f);
+		direction.x += direction.x * (0.5f - _characterData.CharacterStats.resistance.Percentage(0, Stats.maxValue));
+		direction.z += direction.z * (0.5f - _characterData.CharacterStats.resistance.Percentage(0, Stats.maxValue));
+
 		Eject(direction);
 		if (data.StunInflicted > 0)
 			_stunTime.Set(data.StunInflicted);
@@ -518,7 +522,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 		_audioSource.PlayOneShot(_characterData.SoundList.OnDashStart);
 		gameObject.layer = LayerMask.NameToLayer("PlayerInvul");
 
-		ForceAirborne(0.2f);
+		ForceAirborne(0.4f);
 		yield return new WaitForSeconds(0.1f);
 		while (!IsGrounded)
 		{
@@ -529,16 +533,17 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 		gameObject.layer = LayerMask.NameToLayer("PlayerDefault");
 
 		_isInvul = false;
-
 		_animator.SetTrigger("Dash_End");
 		_audioSource.PlayOneShot(_characterData.SoundList.OnDashEnd);
 
 		yield return new WaitForSeconds(_characterData.Dash.endingLag);
 		_characterData.Dash.inProgress = false;
 		_allowInput = true;
+
 		_timeHeldDash = 0;
 		_dashStepActivated = 1;
 		_dashMaxed = false;
+		WaitForDashRelease = false;
 	}
 
 	protected virtual void DashAirControl()

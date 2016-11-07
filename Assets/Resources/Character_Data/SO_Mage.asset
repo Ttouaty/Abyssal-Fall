@@ -37,11 +37,14 @@ MonoBehaviour:
     AttackTypeUsed: 1
     StunInflicted: 0.5
   SpecialCoolDown: 3
-  SpecialLag: 0.5
+  SpecialLag: 0.3
   SoundList:
     OnDashStart: {fileID: 0}
     OnDashEnd: {fileID: 0}
     OnDeath: {fileID: 0}
     OnSpecialActivate: {fileID: 0}
     OnHit: {fileID: 0}
-  OtherAssetsToLoad: []
+  OtherAssetsToLoad:
+  - Name: FireBall
+    Prefab: {fileID: 1000013642960176, guid: b9726eb2174e1e84b86696efd453ac87, type: 2}
+    Quantity: 20
