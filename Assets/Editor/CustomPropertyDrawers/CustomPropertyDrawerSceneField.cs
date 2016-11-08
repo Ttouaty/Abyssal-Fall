@@ -8,8 +8,8 @@ public class CustomPropertyDrawerSceneField : PropertyDrawer
 	{
 		EditorGUI.BeginProperty(_position, GUIContent.none, _property);
 		//SerializedProperty sceneAsset = _property.FindPropertyRelative("SceneAsset");
-		SerializedProperty sceneName = _property.FindPropertyRelative("SceneName");
-		_position = EditorGUI.PrefixLabel(_position, GUIUtility.GetControlID(FocusType.Passive), _label);
+		//SerializedProperty sceneName = _property.FindPropertyRelative("SceneName");
+		//_position = EditorGUI.PrefixLabel(_position, GUIUtility.GetControlID(FocusType.Passive), _label);
 		//if (sceneAsset != null)
 		//{
 		//	Object oldSceneAsset = sceneAsset.objectReferenceValue;

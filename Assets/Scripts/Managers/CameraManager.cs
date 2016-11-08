@@ -36,18 +36,30 @@ public class CameraManager : GenericSingleton<CameraManager>
 	{
 
 		_camera = GetComponent<Camera>();
-
-		if (_instance != null) // replace instance
-		{
-			_instance.gameObject.SetActive(false);
-			_instance = this;
-			_camera.tag = "MainCamera";
-			OnCameraChange.Invoke();
-		}
+		
+		ReplaceInstance(this);
 
 		base.Awake();
 
+		//Replace Normal AudioListeners by StudioListeners
+		if (GetComponent<AudioListener>() != null)
+			Destroy(GetComponent<AudioListener>());
+
+		if (GetComponent<FMODUnity.StudioListener>() != null)
+			gameObject.AddComponent<FMODUnity.StudioListener>();
+
 		_baseDistance = _distance = Vector3.Distance(transform.position, transform.parent.position);
+	}
+
+	public void ReplaceInstance(CameraManager newInstance)
+	{
+		if (_instance != null) // replace instance
+		{
+			_instance.gameObject.SetActive(false);
+			_instance = newInstance;
+			_camera.tag = "MainCamera";
+			OnCameraChange.Invoke();
+		}
 	}
 
 	void Start()
@@ -254,8 +266,6 @@ public class CameraManager : GenericSingleton<CameraManager>
 	{
 		if (MainManager.Instance == null)
 			return; //gameClosed
-		_instance = MainManager.Instance.OriginalCameraManager;
-		_instance.gameObject.SetActive(true);
-		OnCameraChange.Invoke();
+		ReplaceInstance(MainManager.Instance.OriginalCameraManager);
 	}
 }

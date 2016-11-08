@@ -3,7 +3,8 @@ using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
 
-[CustomEditor(typeof(SoundManager))]
+//[CustomEditor(typeof(SoundManager))]
+/*
 public class CustomEditorSoundManager : Editor
 {
 	[MenuItem("GameObject/Create Sound Manager")]
@@ -206,3 +207,4 @@ public class CustomEditorSoundManager : Editor
 		GUI.color = color;
 	}
 }
+*/
