@@ -2,19 +2,17 @@
 using System.Collections;
 using System;
 
-[RequireComponent(typeof(Rigidbody), typeof(SphereCollider), typeof(AudioSource))]
+[RequireComponent(typeof(Rigidbody), typeof(SphereCollider))]
 public abstract class ABaseProjectile : MonoBehaviour, IPoolable
 {
 	protected DamageDealer _shooter;
 	protected Rigidbody _rigidB;
-	protected AudioSource _audioSource;
 
 	[SerializeField]
 	protected int _speed = 20;
 
 	protected virtual void Awake()
 	{
-		_audioSource = GetComponentInChildren<AudioSource>();
 		_rigidB = GetComponentInChildren<Rigidbody>();
 		GetComponentInChildren<Collider>().isTrigger = true;
 	}

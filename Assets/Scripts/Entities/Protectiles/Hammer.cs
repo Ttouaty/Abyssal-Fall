@@ -21,7 +21,6 @@ public class Hammer : ABaseProjectile {
 	public override void OnHitPlayer(IDamageable damagedEntity)
 	{
 		base.OnHitPlayer(damagedEntity);
-		_audioSource.PlayOneShot(OnHitPlayerSound);
 	}
 
 	public override void OnHitEnvironnement()

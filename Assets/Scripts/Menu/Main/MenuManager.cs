@@ -13,6 +13,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 	public GameObject SplashScreens;
 	[Space]
 	public float InputDelayBetweenTransition = 0.5f;
+	public FmodOneShotSound ReturnSound;
 
 	private MenuPanel _activeMenu;
 	private MenuPanel[] _menuArray;
@@ -141,6 +142,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	public void MenuReturn()
 	{
+		ReturnSound.Play();
 		if (_activeMenu.ParentMenu != null)
 			MakeTransition(_activeMenu.ParentMenu, false);
 	}

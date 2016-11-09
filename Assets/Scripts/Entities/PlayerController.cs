@@ -50,6 +50,8 @@ public class PlayerAudioList
 	public void Generate()
 	{
 		FmodSoundEvent[] tempArray = SoundList.ToArray();
+		if(tempArray.Length < 6)
+			Debug.LogWarning("PlayerSoundList doesn't seem to have all base sounds.\n\"OnDashStart\",\"OnDashEnd\",\"OnDeath\",\"OnHit\",\"OnSpecialActivate\",\"OnSpecialRestored\",");
 		for (int i = 0; i < tempArray.Length; i++)
 		{
 			_soundDico[tempArray[i].Key] = tempArray[i];
@@ -60,22 +62,44 @@ public class PlayerAudioList
 [Serializable]
 public class FmodSoundEvent
 {
-	public FmodSoundEvent(string defaultKey = null)
-	{
-		Key = defaultKey;
-	}
 	public string Key;
 	[FMODUnity.EventRef]
 	public string FmodEvent;
-	public static implicit operator string(FmodSoundEvent self) { return self.FmodEvent; }
+
+	public FmodSoundEvent(string defaultKey = "", string newFmodEvent = "")
+	{
+		Key = defaultKey;
+		FmodEvent = newFmodEvent;
+	}
+
 	public void Play(GameObject position = null)
 	{
 		if (FmodEvent.Length == 0)
 		{
-			Debug.LogWarning("No FmodEvent linked for sound: "+Key);
+			Debug.LogWarning("No FmodEvent linked for sound: " + Key);
 			return;
 		}
 
+		if (position != null)
+			FMODUnity.RuntimeManager.PlayOneShotAttached(FmodEvent, position);
+		else
+			FMODUnity.RuntimeManager.PlayOneShotAttached(FmodEvent, Camera.main.gameObject);
+	}
+}
+
+[Serializable]
+public class FmodOneShotSound
+{
+	[FMODUnity.EventRef]
+	public string FmodEvent;
+
+	public FmodOneShotSound(string newFmodEvent = "")
+	{
+		FmodEvent = newFmodEvent;
+	}
+
+	public void Play(GameObject position = null)
+	{
 		if (position != null)
 			FMODUnity.RuntimeManager.PlayOneShotAttached(FmodEvent, position);
 		else
@@ -525,7 +549,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 	{
 		Debug.Log("Player is DED!");
 		_animator.SetTrigger("Death");
-		_characterData.SoundList["onDeath"].Play(gameObject);
+		_characterData.SoundList["OnDeath"].Play(gameObject);
 		_isDead = true;
 		Player killer = _playerRef.Controller.LastDamageDealer != null ? _playerRef.Controller.LastDamageDealer.PlayerRef : null;
 		GameManager.Instance.OnPlayerDeath.Invoke(_playerRef, killer);
