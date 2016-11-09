@@ -11,10 +11,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eef8d824ea7b63742966aaa0e94ac383, type: 3}
   m_Name: FMODStudioSettings
   m_EditorClassIdentifier: 
-  HasSourceProject: 1
-  HasPlatforms: 1
-  SourceProjectPath: 
-  SourceBankPath: 
+  HasSourceProject: 0
+  HasPlatforms: 0
+  SourceProjectPath: Docs\Fmod Studio\Test_AF\Test_AF.fspro
+  SourceBankPath: Assets\Sounds\Fmod\Desktop
   AutomaticEventLoading: 1
   AutomaticSampleLoading: 0
   ImportType: 0
@@ -32,7 +32,7 @@ MonoBehaviour:
     Value: 0
   OverlaySettings:
   - Platform: 1
-    Value: 1
+    Value: 0
   - Platform: 2
     Value: 0
   LoggingSettings:
@@ -40,7 +40,9 @@ MonoBehaviour:
     Value: 1
   - Platform: 2
     Value: 0
-  BankDirectorySettings: []
+  BankDirectorySettings:
+  - Platform: 2
+    Value: Desktop
   VirtualChannelSettings:
   - Platform: 1
     Value: 1024
@@ -52,5 +54,5 @@ MonoBehaviour:
   - Platform: 2
     Value: 32
   Plugins: []
-  MasterBank: 
+  MasterBank: Master Bank
   Banks: []

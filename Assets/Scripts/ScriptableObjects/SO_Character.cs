@@ -22,9 +22,10 @@ public class SO_Character :  ScriptableObject{
 	public float SpecialCoolDown = 3;
 	public float SpecialLag = 0.2f;
 
-	[Header("Misc")]
+	[Header("Sounds")]
 	public PlayerAudioList SoundList;
-
+	[Space]
+	[Header("Pool")]
 	public PoolConfiguration[] OtherAssetsToLoad;
 	//public string[] sounds = { "Not Used for now" };
 }

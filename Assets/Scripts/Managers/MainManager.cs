@@ -19,8 +19,6 @@ public class MainManager : GenericSingleton<MainManager>
 	[HideInInspector]
 	public GameManager GAME_MANAGER;
 	[HideInInspector]
-	public SoundManager SOUND_MANAGER;
-	[HideInInspector]
 	public LoadingScreen LOADING_MANAGER;
 	[HideInInspector]
 	public ArenaManager ARENA_MANAGER;

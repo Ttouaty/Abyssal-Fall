@@ -40,11 +40,19 @@ MonoBehaviour:
   SpecialCoolDown: 2
   SpecialLag: 0.2
   SoundList:
-    OnDashStart: {fileID: 0}
-    OnDashEnd: {fileID: 0}
-    OnDeath: {fileID: 0}
-    OnSpecialActivate: {fileID: 0}
-    OnHit: {fileID: 0}
+    SoundList:
+    - Key: OnDashStart
+      FmodEvent: event:/Sfx/viking/sfx_viking_dash_start
+    - Key: OnDashEnd
+      FmodEvent: event:/Sfx/viking/sfx_viking_dash_end
+    - Key: OnDeath
+      FmodEvent: event:/Sfx/viking/sfx_viking_death
+    - Key: OnSpecialActivate
+      FmodEvent: event:/Sfx/viking/sfx_viking_hammer_throw
+    - Key: OnHit
+      FmodEvent: event:/Sfx/viking/sfx_viking_hammer_hit_player
+    - Key: OnSpecialRestored
+      FmodEvent: event:/Sfx/Menu Validate
   OtherAssetsToLoad:
   - Name: Hammer
     Prefab: {fileID: 143516, guid: 07e1f478976236e489c448a02c52c28a, type: 2}

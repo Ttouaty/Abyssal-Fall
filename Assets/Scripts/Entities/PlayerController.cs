@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System;
 
 [Serializable]
@@ -14,13 +15,73 @@ public struct Dash
 }
 
 [Serializable]
-public struct PlayerAudioList
+public class PlayerAudioList
 {
-	public AudioClip OnDashStart;
-	public AudioClip OnDashEnd;
-	public AudioClip OnDeath;
-	public AudioClip OnSpecialActivate;
-	public AudioClip OnHit;
+	public List<FmodSoundEvent> SoundList = new List<FmodSoundEvent>
+	{
+		new FmodSoundEvent("OnDashStart"),
+		new FmodSoundEvent("OnDashEnd"),
+		new FmodSoundEvent("OnDeath"),
+		new FmodSoundEvent("OnHit"),
+		new FmodSoundEvent("OnSpecialActivate"),
+		new FmodSoundEvent("OnSpecialRestored")
+	};
+	private Dictionary<string, FmodSoundEvent> _soundDico = new Dictionary<string, FmodSoundEvent>();
+	private bool _isGenerated = false;
+	
+	public FmodSoundEvent this[string Key]
+	{
+		get
+		{
+			if (!_isGenerated)
+				Generate();
+
+			if (!_soundDico.ContainsKey(Key))
+			{
+				Debug.LogWarning(Key+ " was not found in PlayerAudioList, generating an empty one !");
+				_soundDico[Key] = new FmodSoundEvent(Key);
+				SoundList.Add(_soundDico[Key]); // Just to see it inInspector
+			}
+
+			return _soundDico[Key];
+		}
+	}
+
+	public void Generate()
+	{
+		FmodSoundEvent[] tempArray = SoundList.ToArray();
+		for (int i = 0; i < tempArray.Length; i++)
+		{
+			_soundDico[tempArray[i].Key] = tempArray[i];
+		}
+	}
+}
+
+[Serializable]
+public class FmodSoundEvent
+{
+	public FmodSoundEvent(string defaultKey = null)
+	{
+		Key = defaultKey;
+	}
+	public string Key;
+	[FMODUnity.EventRef]
+	public string FmodEvent;
+	public static implicit operator string(FmodSoundEvent self) { return self.FmodEvent; }
+	public void Play(GameObject position = null)
+	{
+		if (FmodEvent.Length == 0)
+		{
+			Debug.LogWarning("No FmodEvent linked for sound: "+Key);
+			return;
+		}
+
+		if (position != null)
+			FMODUnity.RuntimeManager.PlayOneShotAttached(FmodEvent, position);
+		else
+			FMODUnity.RuntimeManager.PlayOneShotAttached(FmodEvent, Camera.main.gameObject);
+
+	}
 }
 
 [Serializable]
@@ -45,7 +106,7 @@ public interface IDamaging
 	DamageDealer DmgDealerSelf { get; }
 }
 
-[RequireComponent(typeof(Rigidbody), typeof(AudioSource), typeof(DamageDealer))]
+[RequireComponent(typeof(Rigidbody), typeof(DamageDealer))]
 public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 {
 	[HideInInspector]
@@ -67,7 +128,6 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 
 	protected Transform _transf;
 	protected Rigidbody _rigidB;
-	protected AudioSource _audioSource;
 	protected RaycastHit _hit;
 
 	#endregion
@@ -158,7 +218,6 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 	#region Unity Functions
 	protected void Awake()
 	{
-		_audioSource = GetComponent<AudioSource>();
 		_transf = transform;
 		_rigidB = GetComponent<Rigidbody>();
 	}
@@ -466,7 +525,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 	{
 		Debug.Log("Player is DED!");
 		_animator.SetTrigger("Death");
-		_audioSource.PlayOneShot(_characterData.SoundList.OnDeath);
+		_characterData.SoundList["onDeath"].Play(gameObject);
 		_isDead = true;
 		Player killer = _playerRef.Controller.LastDamageDealer != null ? _playerRef.Controller.LastDamageDealer.PlayerRef : null;
 		GameManager.Instance.OnPlayerDeath.Invoke(_playerRef, killer);
@@ -502,7 +561,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 		_activeDirection = -direction.ZeroY().normalized;
 		transform.LookAt(transform.position + _activeDirection, Vector3.up);
 
-		_audioSource.PlayOneShot(_characterData.SoundList.OnHit);
+		_characterData.SoundList["OnHit"].Play(gameObject);
 		_animator.SetTrigger("Stun_Start");
 	}
 
@@ -519,7 +578,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 		_stunTime.Add(_characterData.Dash.endingLag);
 
 		_animator.SetTrigger("Dash_Start");
-		_audioSource.PlayOneShot(_characterData.SoundList.OnDashStart);
+		_characterData.SoundList["OnDashStart"].Play(gameObject);
 		gameObject.layer = LayerMask.NameToLayer("PlayerInvul");
 
 		ForceAirborne(0.4f);
@@ -534,7 +593,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 
 		_isInvul = false;
 		_animator.SetTrigger("Dash_End");
-		_audioSource.PlayOneShot(_characterData.SoundList.OnDashEnd);
+		_characterData.SoundList["OnDashEnd"].Play(gameObject);
 
 		yield return new WaitForSeconds(_characterData.Dash.endingLag);
 		_characterData.Dash.inProgress = false;
