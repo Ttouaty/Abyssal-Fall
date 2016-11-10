@@ -81,7 +81,7 @@ public class GameObjectPool : GenericSingleton<GameObjectPool>
 		}
 		else
 		{
-			Debug.LogError("GameObjectPool >>>> You try to push back in pull a non-poolable GameObject. It may have some issues.");
+			Debug.LogError("GameObjectPool >>>> You try to push back in a non-poolable GameObject. It may have some issues.");
 			Debug.Break();
 		}
 	}
@@ -197,7 +197,7 @@ public class GameObjectPool : GenericSingleton<GameObjectPool>
 		bIsLoading = true;
 		ElementsLoaded = 0;
 		ElementsToLoad = 0;
-
+		
 		for (var p = 0; p < Pools.Count; ++p)
 		{
 			ElementsToLoad += Pools[p].Quantity;

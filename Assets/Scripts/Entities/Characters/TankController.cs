@@ -56,7 +56,7 @@ public class TankController : PlayerController {
 			{
 				colli.transform.GetComponent<IDamageable>()
 					.Damage(Quaternion.FromToRotation(Vector3.right,
-					(colli.transform.position - transform.position).ZeroY().normalized + _rigidB.velocity.normalized * 1.5f) * _characterData.SpecialEjection.Multiply(Axis.x, _characterData.CharacterStats.strength),
+					(colli.transform.position - transform.position).ZeroY().normalized + _rigidB.velocity.normalized * 1.5f) * SO_Character.SpecialEjection.Multiply(Axis.x, _characterData.CharacterStats.strength),
 					colli.contacts[0].point,
 					_characterData.SpecialDamageData);
 			}

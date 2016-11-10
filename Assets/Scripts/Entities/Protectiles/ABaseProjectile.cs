@@ -7,6 +7,9 @@ public abstract class ABaseProjectile : MonoBehaviour, IPoolable
 {
 	protected DamageDealer _shooter;
 	protected Rigidbody _rigidB;
+	protected Vector3 _ejectionForce;
+	protected DamageData _ownDamageData;
+	protected float _maxLifeSpan = 5;
 
 	[SerializeField]
 	protected int _speed = 20;
@@ -15,6 +18,8 @@ public abstract class ABaseProjectile : MonoBehaviour, IPoolable
 	{
 		_rigidB = GetComponentInChildren<Rigidbody>();
 		GetComponentInChildren<Collider>().isTrigger = true;
+		if (GetComponent<Poolable>() == null)
+			Debug.Log("Projectile "+gameObject.name+" has no component \"Poolable\" this may break stuff!");
 	}
 
 	public virtual void Launch(Vector3 Position, Vector3 Direction, DamageDealer Shooter)
@@ -22,18 +27,37 @@ public abstract class ABaseProjectile : MonoBehaviour, IPoolable
 		gameObject.SetActive(true);
 		_shooter = Shooter;
 
-		if(Shooter.PlayerRef.Controller != null)
+		if (Shooter.PlayerRef != null) 
+		{
 			Physics.IgnoreCollision(GetComponentInChildren<Collider>(), Shooter.PlayerRef.Controller.GetComponentInChildren<Collider>(), true);
+			_ejectionForce = SO_Character.SpecialEjection.Multiply(Axis.x, _shooter.PlayerRef.Controller._characterData.CharacterStats.strength);
+			_ownDamageData = _shooter.PlayerRef.Controller._characterData.SpecialDamageData.SetProjectile(this);
+		}
+		else // Cheat if environnement
+		{
+			_ejectionForce = SO_Character.SpecialEjection.Multiply(Axis.x, 5);
+			_ownDamageData = new DamageData().SetProjectile(this);
+			_ownDamageData.Dealer = Shooter;
+		}
+
 
 		transform.position = Position;
 		transform.rotation = Quaternion.LookRotation(Direction, Vector3.up);
 
 		_rigidB.velocity = Direction.normalized * _speed;
+		StartCoroutine(DelayStop());
+	}
+
+	private IEnumerator DelayStop()
+	{
+		yield return new WaitForSeconds(_maxLifeSpan);
+		Stop();
 	}
 
 	protected virtual void Stop()
 	{
 		_rigidB.velocity = Vector3.zero;
+		StopAllCoroutines();
 		GameObjectPool.AddObjectIntoPool(gameObject);
 	}
 
@@ -43,7 +67,7 @@ public abstract class ABaseProjectile : MonoBehaviour, IPoolable
 
 	public virtual void OnReturnToPool()
 	{
-		gameObject.SetActive(false);
+		//gameObject.SetActive(false);
 	}
 
 	private void OnTriggerEnter(Collider colli)
@@ -66,9 +90,9 @@ public abstract class ABaseProjectile : MonoBehaviour, IPoolable
 
 	public virtual void DamageEntity(IDamageable damagedEntity)
 	{
-		damagedEntity.Damage(Quaternion.FromToRotation(Vector3.right, _rigidB.velocity.ZeroY()) * _shooter.PlayerRef.Controller._characterData.SpecialEjection.Multiply(Axis.x, _shooter.PlayerRef.Controller._characterData.CharacterStats.strength),
+		damagedEntity.Damage(Quaternion.FromToRotation(Vector3.right, _rigidB.velocity.ZeroY()) * _ejectionForce,
 				transform.position,
-				_shooter.PlayerRef.Controller._characterData.SpecialDamageData.SetProjectile(this));
+				_ownDamageData);
 	}
 
 	public virtual void OnHitEnvironnement()

@@ -198,8 +198,6 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 	}
 	private TimeCooldown _lastDamageDealerTimeOut;
 
-	public bool _isNPC = false; // Will have to do a parent class for that shiet !
-
 	protected bool _isAffectedByFriction = true;
 	protected bool _isFrozen = false;
 	protected bool _internalAllowInput = true;
@@ -347,7 +345,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 
 	protected void Update()
 	{
-		if (_isDead || TimeManager.IsPaused || _isNPC) //watch out no Update if NPC!
+		if (_isDead || TimeManager.IsPaused)
 			return;
 
 		//had to do that :p
@@ -683,7 +681,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 		{
 			colli.gameObject.GetComponent<IDamageable>()
 				.Damage(Quaternion.FromToRotation(Vector3.right,
-				(colli.transform.position - transform.position).ZeroY().normalized) * (_characterData.SpecialEjection.Multiply(Axis.x, _characterData.Dash.Impact)),
+				(colli.transform.position - transform.position).ZeroY().normalized) * (SO_Character.SpecialEjection.Multiply(Axis.x, _characterData.Dash.Impact)),
 				colli.contacts[0].point,
 				_characterData.DashDamageData);
 		}

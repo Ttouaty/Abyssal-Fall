@@ -13,22 +13,6 @@ public class DestructibleWall : MonoBehaviour, IDamageable
 {
 	public AttackType AttackTypeToListen;
 
-	//void OnCollisionEnter(Collision colli)
-	//{
-	//	if (AttackTypeToListen == AttackType.Dash)
-	//	{
-	//		if (colli.gameObject.GetComponent<PlayerController>() != null)
-	//		{
-	//			if (colli.gameObject.GetComponent<PlayerController>()._characterData.Dash.inProgress)
-	//				DestroyWall();
-	//		}
-	//	}
-	//	else if (AttackTypeToListen == AttackType.Special)
-	//	{
-			
-	//	}
-	//}
-
 	public void DestroyWall(Vector3 position, float force)
 	{
 		Rigidbody[] childrenRigiB = GetComponentsInChildren<Rigidbody>();

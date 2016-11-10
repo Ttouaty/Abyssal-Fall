@@ -48,7 +48,7 @@ public class MageController : PlayerController
 			transform.forward, 
 			_explosionDelay, 
 			_explosionRadius, 
-			_characterData.SpecialEjection.Multiply(Axis.x, _characterData.CharacterStats.strength), 
+			SO_Character.SpecialEjection.Multiply(Axis.x, _characterData.CharacterStats.strength), 
 			_characterData.SpecialDamageData
 		);
 

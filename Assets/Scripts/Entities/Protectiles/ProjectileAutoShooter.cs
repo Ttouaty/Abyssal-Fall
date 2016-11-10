@@ -18,13 +18,8 @@ public class ProjectileAutoShooter : MonoBehaviour
 			return;
 
 		OwnDamageDealer = new DamageDealer();
-		OwnDamageDealer.InGameName = gameObject.name;
-		OwnDamageDealer.PlayerRef = new Player();
-		OwnDamageDealer.PlayerRef.Controller = gameObject.AddComponent<PlayerController>();
-		OwnDamageDealer.PlayerRef.Controller._characterData = CharacterDamaging;
-		OwnDamageDealer.PlayerRef.Controller.GetComponent<Rigidbody>().isKinematic = true;
-		OwnDamageDealer.PlayerRef.Controller._isNPC = true;
-
+		OwnDamageDealer.InGameName = CharacterDamaging.IngameName;
+		
 		_shootTimer = new TimeCooldown(this);
 		_shootTimer.onFinish = () =>
 		{

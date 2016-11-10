@@ -4,6 +4,7 @@ using System.Collections;
 
 [CreateAssetMenu(fileName = "NewCharacterData", menuName = "Abyssal Fall/Character/SO_Character")]
 public class SO_Character :  ScriptableObject{
+	public static  Vector3 SpecialEjection = new Vector3(2.25f,4.905f); // base ejection is 1.5f,4.905f (* 1.5f because tile scale) (Vector3 used for extensions) this vector is equal to 1m ejection with x2 gravity
 	public string IngameName;
 	public Image Icon;
 	public CharacterModel CharacterModel;
@@ -11,8 +12,6 @@ public class SO_Character :  ScriptableObject{
 	
 	[Header("Stats")]
 	public Stats CharacterStats;
-	[HideInInspector]
-	public Vector3 SpecialEjection = new Vector3(2.25f,4.905f); // base ejection is 1.5f,4.905f (* 1.5f because tile scale) (Vector3 used for extensions) this vector is equal to 1m ejection with x2 gravity
 	[Header("Dash")]
 	public Dash Dash;
 	public DamageData DashDamageData = new DamageData();

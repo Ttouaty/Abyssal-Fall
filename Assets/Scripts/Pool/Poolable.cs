@@ -2,6 +2,7 @@
 
 public class Poolable : MonoBehaviour
 {
+	[HideInInspector]
 	public Pool Pool;
     public bool IsInPool = false;
 	
