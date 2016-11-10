@@ -15,7 +15,7 @@ public struct Dash
 }
 
 [Serializable]
-public class PlayerAudioList
+public class PlayerSoundList
 {
 	public List<FmodSoundEvent> SoundList = new List<FmodSoundEvent>
 	{
@@ -130,7 +130,7 @@ public interface IDamaging
 	DamageDealer DmgDealerSelf { get; }
 }
 
-[RequireComponent(typeof(Rigidbody), typeof(DamageDealer))]
+[RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 {
 	[HideInInspector]
@@ -162,6 +162,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 	protected Vector2 _maxSpeed = new Vector2(7f, 20f);
 	protected Vector2 _acceleration = new Vector2(0.1f, -2f); // X => time needed to reach max speed, Y => Gravity multiplier
 	protected float _friction = 80; //friction applied to the player when it slides (pushed or end dash) (units/s)
+	protected float _parryTime = 1f; //time at the beginning of a Dash when the player is in countering attacks
+	
 	//protected float _airborneDelay = 0.02f;
 
 	protected float _fullDashActivationTime = 0.05f;
@@ -176,8 +178,9 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 	public SO_Character _characterData;
 
 	protected TimeCooldown _specialCooldown;
-	protected TimeCooldown _stunTime; //Seconds of stun on Hit
-	protected TimeCooldown _invulTime; //Seconds of invulnerability
+	protected TimeCooldown _stunTimer; //Seconds of stun on Hit
+	protected TimeCooldown _invulTimer; //Seconds of invulnerability
+	protected TimeCooldown _parryTimer; //Seconds of Parrying
 	//protected TimeCooldown _airborneTimeout; //Time before being considered airborne
 	protected TimeCooldown _forcedAirbornTimeout; 
 
@@ -195,12 +198,15 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 	}
 	private TimeCooldown _lastDamageDealerTimeOut;
 
+	public bool _isNPC = false; // Will have to do a parent class for that shiet !
+
 	protected bool _isAffectedByFriction = true;
 	protected bool _isFrozen = false;
 	protected bool _internalAllowInput = true;
 	protected bool _allowInput { get { return _internalAllowInput && !_isFrozen; } set { _internalAllowInput = value; } }
 	public bool AllowInput { get { return _allowInput; } }
 	protected bool _isStunned = false;
+	protected bool _isParrying { get { return _parryTimer.TimeLeft != 0; } }
 	[HideInInspector]
 	public bool AllowDash = true;
 	[HideInInspector]
@@ -276,18 +282,20 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 		_specialCooldown = new TimeCooldown(this);
 		_specialCooldown.onFinish = OnSpecialReset;
 
-		_stunTime = new TimeCooldown(this);
-		_stunTime.onFinish = () => { _isStunned = false; _allowInput = true; };
-		_stunTime.onProgress = () =>
+		_stunTimer = new TimeCooldown(this);
+		_stunTimer.onFinish = () => { _isStunned = false; _allowInput = true; };
+		_stunTimer.onProgress = () =>
 		{
-			if (!IsGrounded) { _stunTime.Add(TimeManager.DeltaTime); }
+			if (!IsGrounded) { _stunTimer.Add(TimeManager.DeltaTime); }
 			_allowInput = false;
 			_isStunned = true;
 		};//decrease Stun only if grounded
 
-		_invulTime = new TimeCooldown(this);
-		_invulTime.onFinish = () => { _isInvul = false; };
-		_invulTime.onProgress = () => { _isInvul = true; if (!IsGrounded) _invulTime.Add(Time.deltaTime); };
+		_invulTimer = new TimeCooldown(this);
+		_invulTimer.onFinish = () => { _isInvul = false; };
+		_invulTimer.onProgress = () => { _isInvul = true; if (!IsGrounded) _invulTimer.Add(Time.deltaTime); };
+
+		_parryTimer = new TimeCooldown(this);
 
 		//_airborneTimeout = new TimeCooldown(this);
 		//_airborneTimeout.onFinish = () => {	if (IsGrounded)	_airborneTimeout.Set(_airborneDelay);};
@@ -339,7 +347,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 
 	protected void Update()
 	{
-		if (_isDead || TimeManager.IsPaused)
+		if (_isDead || TimeManager.IsPaused || _isNPC) //watch out no Update if NPC!
 			return;
 
 		//had to do that :p
@@ -444,7 +452,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 
 	private void ProcessCoolDowns()
 	{
-		_animator.SetFloat("StunTime", _stunTime.TimeLeft);
+		_animator.SetFloat("StunTime", _stunTimer.TimeLeft);
 	}
 
 	private void ProcessInputs()
@@ -474,7 +482,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 		{
 			_specialCooldown.Set(_characterData.SpecialCoolDown);
 			SpecialAction();
-			_stunTime.Add(_characterData.SpecialLag);
+			_stunTimer.Add(_characterData.SpecialLag);
 		}
 	}
 
@@ -566,6 +574,12 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 
 	public void Damage(Vector3 direction,Vector3 impactPoint, DamageData data)
 	{
+		if (_isParrying && data.IsParryable)
+		{
+			Parry(data.Projectile);
+			return;
+		}
+
 		if (_isInvul)
 			return;
 
@@ -573,15 +587,13 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 
 		Debug.Log("Character \"" + _characterData.IngameName + "\" was damaged by: \"" + data.Dealer.InGameName + "\"");
 
-		//direction.x += direction.x * (10 * (_characterData.CharacterStats.resistance - (Stats.maxValue * 0.5f))) / 100;
-
 		direction.x += direction.x * (0.5f - _characterData.CharacterStats.resistance.Percentage(0, Stats.maxValue));
 		direction.z += direction.z * (0.5f - _characterData.CharacterStats.resistance.Percentage(0, Stats.maxValue));
 
 		Eject(direction);
 		if (data.StunInflicted > 0)
-			_stunTime.Set(data.StunInflicted);
-		_invulTime.Set(data.StunInflicted * 1.2f);
+			_stunTimer.Set(data.StunInflicted);
+		_invulTimer.Set(data.StunInflicted * 1.2f);
 		_activeDirection = -direction.ZeroY().normalized;
 		transform.LookAt(transform.position + _activeDirection, Vector3.up);
 
@@ -589,8 +601,13 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 		_animator.SetTrigger("Stun_Start");
 	}
 
-	public void AddStun(float stunTime) { _stunTime.Add(stunTime); }
-	public void SetStun(float stunTime) { _stunTime.Set(stunTime); }
+	public void Parry(ABaseProjectile projectileParried)
+	{
+		projectileParried.Parry();
+	}
+
+	public void AddStun(float stunTime) { _stunTimer.Add(stunTime); }
+	public void SetStun(float stunTime) { _stunTimer.Set(stunTime); }
 
 
 	protected virtual IEnumerator ActivateDash()
@@ -598,8 +615,9 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 		_characterData.Dash.inProgress = true;
 		_isInvul = true;
 		_allowInput = false;
+		_parryTimer.Set(_parryTime);
 
-		_stunTime.Add(_characterData.Dash.endingLag);
+		_stunTimer.Add(_characterData.Dash.endingLag);
 
 		_animator.SetTrigger("Dash_Start");
 		_characterData.SoundList["OnDashStart"].Play(gameObject);

@@ -23,7 +23,7 @@ public class SO_Character :  ScriptableObject{
 	public float SpecialLag = 0.2f;
 
 	[Header("Sounds")]
-	public PlayerAudioList SoundList;
+	public PlayerSoundList SoundList;
 	[Space]
 	[Header("Pool")]
 	public PoolConfiguration[] OtherAssetsToLoad;

@@ -142,9 +142,11 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	public void MenuReturn()
 	{
-		ReturnSound.Play();
 		if (_activeMenu.ParentMenu != null)
+		{
+			ReturnSound.Play();
 			MakeTransition(_activeMenu.ParentMenu, false);
+		}
 	}
 
 	public void MakeTransition(string newMenu)

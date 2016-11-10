@@ -3,9 +3,6 @@ using System.Collections;
 
 public class Hammer : ABaseProjectile {
 
-	public AudioClip OnHitPlayerSound;
-	public AudioClip OnHitObstacle;
-
 	public override void Launch(Vector3 Position, Vector3 Direction, DamageDealer Shooter)
 	{
 		base.Launch(Position, Direction, Shooter);

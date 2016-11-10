@@ -18,4 +18,13 @@ public class DamageData
 	public DamageDealer Dealer;
 	public AttackType AttackTypeUsed;
 	public float StunInflicted;
+	public bool IsParryable;
+	[HideInInspector]
+	public ABaseProjectile Projectile;
+
+	public DamageData SetProjectile(ABaseProjectile newProjo)
+	{
+		Projectile = newProjo;
+		return this;
+	}
 }

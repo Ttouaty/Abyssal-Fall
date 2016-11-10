@@ -22,6 +22,9 @@ public abstract class ABaseProjectile : MonoBehaviour, IPoolable
 		gameObject.SetActive(true);
 		_shooter = Shooter;
 
+		if(Shooter.PlayerRef.Controller != null)
+			Physics.IgnoreCollision(GetComponentInChildren<Collider>(), Shooter.PlayerRef.Controller.GetComponentInChildren<Collider>(), true);
+
 		transform.position = Position;
 		transform.rotation = Quaternion.LookRotation(Direction, Vector3.up);
 
@@ -47,8 +50,6 @@ public abstract class ABaseProjectile : MonoBehaviour, IPoolable
 	{
 		if (colli.GetComponent<IDamageable>() != null)
 		{
-			if (colli.gameObject.GetInstanceID() == _shooter.PlayerRef.Controller.gameObject.GetInstanceID())
-				return;
 			OnHitPlayer(colli.GetComponent<IDamageable>());
 		}
 		else if (colli.gameObject.layer == LayerMask.NameToLayer("Wall"))
@@ -60,13 +61,23 @@ public abstract class ABaseProjectile : MonoBehaviour, IPoolable
 
 	public virtual void OnHitPlayer(IDamageable damagedEntity)
 	{
+		DamageEntity(damagedEntity);
+	}
+
+	public virtual void DamageEntity(IDamageable damagedEntity)
+	{
 		damagedEntity.Damage(Quaternion.FromToRotation(Vector3.right, _rigidB.velocity.ZeroY()) * _shooter.PlayerRef.Controller._characterData.SpecialEjection.Multiply(Axis.x, _shooter.PlayerRef.Controller._characterData.CharacterStats.strength),
 				transform.position,
-				_shooter.PlayerRef.Controller._characterData.SpecialDamageData);
+				_shooter.PlayerRef.Controller._characterData.SpecialDamageData.SetProjectile(this));
 	}
 
 	public virtual void OnHitEnvironnement()
 	{
 		Stop();
+	}
+
+	public virtual void Parry()
+	{
+		Debug.Log("Projectile was parried");
 	}
 }

@@ -4,24 +4,17 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-[RequireComponent(typeof(AudioSource))]
 public class DialogBox : MonoBehaviour
 {
 	public Transform ControlDiv;
 	public Text TextDiv;
-	public AudioClip TypeSound;
 	private Message[] _activeMessageSequence;
 	private int _activeSequenceIndex = 0;
 	private Coroutine _activeDisplayCoroutine;
 	private bool _advance = false;
 	private bool _isDisplaying = false;
-	private AudioSource _audioSource;
-
-	void Awake()
-	{
-		_audioSource = GetComponent<AudioSource>();
-		_audioSource.spatialize = false;
-	}
+	[SerializeField]
+	private FmodOneShotSound _typingSound;
 
 	public IEnumerator LaunchDialog(Message[] messagesSequence)
 	{
@@ -87,7 +80,7 @@ public class DialogBox : MonoBehaviour
 			TextDiv.text = TextDiv.text.Insert(nextIndexToWrite - nextTextOffset, textToAdd);
 			if (!skipMessage)
 			{
-				_audioSource.PlayOneShot(TypeSound);
+				_typingSound.Play();
 				yield return new WaitForSeconds(1 / message.TextSpeed);
 			}
 		}

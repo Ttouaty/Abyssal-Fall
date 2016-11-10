@@ -71,7 +71,7 @@ public class FireBall : ABaseProjectile
 				foundElements[i].GetComponent<IDamageable>().Damage(
 					Quaternion.FromToRotation(Vector3.right, (foundElements[i].transform.position - transform.position).ZeroY().normalized) * _ejection,
 					transform.position,
-					_explosionDamageData);
+					_explosionDamageData.SetProjectile(this));
 		}
 	}
 
