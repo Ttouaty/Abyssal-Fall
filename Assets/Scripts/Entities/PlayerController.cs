@@ -24,7 +24,8 @@ public class PlayerSoundList
 		new FmodSoundEvent("OnDeath"),
 		new FmodSoundEvent("OnHit"),
 		new FmodSoundEvent("OnSpecialActivate"),
-		new FmodSoundEvent("OnSpecialRestored")
+		new FmodSoundEvent("OnSpecialRestored"),
+		new FmodSoundEvent("OnParry")
 	};
 	private Dictionary<string, FmodSoundEvent> _soundDico = new Dictionary<string, FmodSoundEvent>();
 	private bool _isGenerated = false;
@@ -50,8 +51,8 @@ public class PlayerSoundList
 	public void Generate()
 	{
 		FmodSoundEvent[] tempArray = SoundList.ToArray();
-		if(tempArray.Length < 6)
-			Debug.LogWarning("PlayerSoundList doesn't seem to have all base sounds.\n\"OnDashStart\",\"OnDashEnd\",\"OnDeath\",\"OnHit\",\"OnSpecialActivate\",\"OnSpecialRestored\",");
+		if(tempArray.Length < 7)
+			Debug.LogWarning("PlayerSoundList doesn't seem to have all base sounds.\n\"OnDashStart\",\"OnDashEnd\",\"OnDeath\",\"OnHit\",\"OnSpecialActivate\",\"OnSpecialRestored\",\"OnParry\".");
 		for (int i = 0; i < tempArray.Length; i++)
 		{
 			_soundDico[tempArray[i].Key] = tempArray[i];
@@ -162,7 +163,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 	protected Vector2 _maxSpeed = new Vector2(7f, 20f);
 	protected Vector2 _acceleration = new Vector2(0.1f, -2f); // X => time needed to reach max speed, Y => Gravity multiplier
 	protected float _friction = 80; //friction applied to the player when it slides (pushed or end dash) (units/s)
-	protected float _parryTime = 1f; //time at the beginning of a Dash when the player is in countering attacks
+	protected float _parryTime = 0.08f; //time at the beginning of a Dash when the player is in countering attacks
 	
 	//protected float _airborneDelay = 0.02f;
 
@@ -204,7 +205,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 	protected bool _allowInput { get { return _internalAllowInput && !_isFrozen; } set { _internalAllowInput = value; } }
 	public bool AllowInput { get { return _allowInput; } }
 	protected bool _isStunned = false;
-	protected bool _isParrying { get { return _parryTimer.TimeLeft != 0; } }
+	public bool _isParrying { get { return _parryTimer.TimeLeft != 0; } }
 	[HideInInspector]
 	public bool AllowDash = true;
 	[HideInInspector]
@@ -329,6 +330,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 		_dmgDealerSelf.PlayerRef = _playerRef;
 		_dmgDealerSelf.InGameName = _characterData.IngameName;
 		_dmgDealerSelf.Icon = _characterData.Icon;
+		_dmgDealerSelf.ObjectRef = gameObject;
 
 		_characterData.SpecialDamageData.Dealer = _characterData.DashDamageData.Dealer = _dmgDealerSelf;
 
@@ -553,7 +555,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 
 	public void Kill()
 	{
-		Debug.Log("Player is DED!");
+		Debug.Log("Player n°"+_playerRef.PlayerNumber+" with character "+_characterData.IngameName+" is DED!");
 		_animator.SetTrigger("Death");
 		_characterData.SoundList["OnDeath"].Play(gameObject);
 		_isDead = true;
@@ -572,12 +574,6 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 
 	public void Damage(Vector3 direction,Vector3 impactPoint, DamageData data)
 	{
-		if (_isParrying && data.IsParryable)
-		{
-			Parry(data.Projectile);
-			return;
-		}
-
 		if (_isInvul)
 			return;
 
@@ -601,7 +597,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 
 	public void Parry(ABaseProjectile projectileParried)
 	{
-		projectileParried.Parry();
+		projectileParried.Parry(DmgDealerSelf);
 	}
 
 	public void AddStun(float stunTime) { _stunTimer.Add(stunTime); }

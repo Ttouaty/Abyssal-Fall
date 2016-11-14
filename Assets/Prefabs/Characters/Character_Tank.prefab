@@ -90,6 +90,7 @@ Transform:
   - {fileID: 404880}
   - {fileID: 420142}
   - {fileID: 4000011092432470}
+  - {fileID: 4000011654183642}
   m_Father: {fileID: 0}
   m_RootOrder: 0
 --- !u!54 &5479542
@@ -194,7 +195,7 @@ ParticleSystem:
   moveWithTransform: 0
   autoRandomSeed: 1
   scalingMode: 2
-  randomSeed: -588028688
+  randomSeed: -521133251
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -1943,6 +1944,23 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 144624}
   m_IsPrefabParent: 1
+--- !u!1 &1000012705718332
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 4000011654183642}
+  - 136: {fileID: 136000011784505746}
+  - 114: {fileID: 114000013766807020}
+  m_Layer: 14
+  m_Name: ParryHitBox
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1000013806696706
 GameObject:
   m_ObjectHideFlags: 0
@@ -1973,6 +1991,30 @@ Transform:
   m_Children: []
   m_Father: {fileID: 437672}
   m_RootOrder: 2
+--- !u!4 &4000011654183642
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000012705718332}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -6.1500015, y: -1.0209999, z: -5.649994}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 437672}
+  m_RootOrder: 3
+--- !u!114 &114000013766807020
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000012705718332}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b818b3b56770234c9a9725398ebdde8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114000014037650384
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1996,3 +2038,16 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!136 &136000011784505746
+CapsuleCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000012705718332}
+  m_Material: {fileID: 13400000, guid: 18353c955f39cab4b9e998a4f5515050, type: 2}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 0.74
+  m_Height: 3
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.5, z: 0}

@@ -10,6 +10,8 @@ public abstract class ABaseProjectile : MonoBehaviour, IPoolable
 	protected Vector3 _ejectionForce;
 	protected DamageData _ownDamageData;
 	protected float _maxLifeSpan = 5;
+	protected int LauncherId;
+
 
 	[SerializeField]
 	protected int _speed = 20;
@@ -19,27 +21,25 @@ public abstract class ABaseProjectile : MonoBehaviour, IPoolable
 		_rigidB = GetComponentInChildren<Rigidbody>();
 		GetComponentInChildren<Collider>().isTrigger = true;
 		if (GetComponent<Poolable>() == null)
-			Debug.Log("Projectile "+gameObject.name+" has no component \"Poolable\" this may break stuff!");
+			Debug.LogWarning("Projectile "+gameObject.name+" has no component \"Poolable\" this may break stuff!");
 	}
 
-	public virtual void Launch(Vector3 Position, Vector3 Direction, DamageDealer Shooter)
+	public virtual void Launch(Vector3 Position, Vector3 Direction, DamageData data)
 	{
 		gameObject.SetActive(true);
-		_shooter = Shooter;
-
-		if (Shooter.PlayerRef != null) 
+		_shooter = data.Dealer;
+		
+		if (_shooter.PlayerRef != null) 
 		{
-			Physics.IgnoreCollision(GetComponentInChildren<Collider>(), Shooter.PlayerRef.Controller.GetComponentInChildren<Collider>(), true);
 			_ejectionForce = SO_Character.SpecialEjection.Multiply(Axis.x, _shooter.PlayerRef.Controller._characterData.CharacterStats.strength);
-			_ownDamageData = _shooter.PlayerRef.Controller._characterData.SpecialDamageData.SetProjectile(this);
 		}
 		else // Cheat if environnement
 		{
 			_ejectionForce = SO_Character.SpecialEjection.Multiply(Axis.x, 5);
-			_ownDamageData = new DamageData().SetProjectile(this);
-			_ownDamageData.Dealer = Shooter;
 		}
 
+		_ownDamageData = data.SetProjectile(this).Copy();
+		LauncherId = _ownDamageData.Dealer.ObjectRef.GetInstanceID();
 
 		transform.position = Position;
 		transform.rotation = Quaternion.LookRotation(Direction, Vector3.up);
@@ -57,6 +57,7 @@ public abstract class ABaseProjectile : MonoBehaviour, IPoolable
 	protected virtual void Stop()
 	{
 		_rigidB.velocity = Vector3.zero;
+		_ownDamageData = null;
 		StopAllCoroutines();
 		GameObjectPool.AddObjectIntoPool(gameObject);
 	}
@@ -74,7 +75,10 @@ public abstract class ABaseProjectile : MonoBehaviour, IPoolable
 	{
 		if (colli.GetComponent<IDamageable>() != null)
 		{
-			OnHitPlayer(colli.GetComponent<IDamageable>());
+			if(colli.gameObject.GetInstanceID() != LauncherId)
+				OnHitPlayer(colli.GetComponent<IDamageable>());
+			else
+				Debug.Log("same connard");
 		}
 		else if (colli.gameObject.layer == LayerMask.NameToLayer("Wall"))
 		{
@@ -100,8 +104,11 @@ public abstract class ABaseProjectile : MonoBehaviour, IPoolable
 		Stop();
 	}
 
-	public virtual void Parry()
+	public virtual void Parry(DamageDealer characterParrying)
 	{
-		Debug.Log("Projectile was parried");
+		StopAllCoroutines();
+		_ownDamageData.Dealer = characterParrying;
+		
+		Launch(transform.position, (_shooter.ObjectRef.transform.position - transform.position).ZeroY(), _ownDamageData);
 	}
 }

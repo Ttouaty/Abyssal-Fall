@@ -35,12 +35,13 @@ public class GameObjectPool : GenericSingleton<GameObjectPool>
 			Pool pool = Instance.Pools[i];
 			if (pool.Name.CompareTo(poolName) == 0)
 			{
-				if (pool.Reserve.Count > 0)
+				//Theo: J'ai changé la facon de récup les objets car parfois le compte entre 
+				//les enfants et la reserve se dérèglais et on récupérais des objets encore instantiés
+				if (pool.Root.transform.childCount > 0)
 				{
-					GameObject go = pool.Reserve[0];
+					GameObject go = pool.Root.transform.GetChild(0).gameObject;
 					go.transform.parent = null;
 					go.SetActive(true);
-					pool.Reserve.RemoveAt(0);
 
 					go.GetComponent<Poolable>().IsInPool = false;
 

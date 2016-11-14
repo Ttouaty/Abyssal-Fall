@@ -17,7 +17,7 @@ public class FireBall : ABaseProjectile
 	public void Launch(Vector3 Position, Vector3 Direction, float explosionDelay, float explosionRadius, Vector3 ejection, DamageData newDamageData)
 	{
 		GetComponent<Collider>().enabled = true;
-		base.Launch(Position, Direction, newDamageData.Dealer);
+		base.Launch(Position, Direction, newDamageData);
 		StartCoroutine(DelayStop());
 		_explosionRadius = explosionRadius;
 		_explosionDelay = explosionDelay;

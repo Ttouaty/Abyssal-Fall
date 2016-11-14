@@ -7,30 +7,25 @@ public class ProjectileAutoShooter : MonoBehaviour
 
 	public string _projectilePoolName = "Hammer";
 	public float Interval = 2;
-
-	[Tooltip("Usually SO_Environnement here.")]
-	public SO_Character CharacterDamaging;
-	private DamageDealer OwnDamageDealer;
+	[Space()]
+	public string DamagerName = "Environnement";
+	public float StunInflicted = 0.3f;
+	private DamageData _ownDamageData;
 
 	void Start()
 	{
-		if (CharacterDamaging == null)
-			return;
+		_ownDamageData = new DamageData();
+		_ownDamageData.StunInflicted = StunInflicted;
+		_ownDamageData.Dealer = new DamageDealer();
+		_ownDamageData.Dealer.InGameName = DamagerName;
+		_ownDamageData.Dealer.ObjectRef = gameObject;
 
-		OwnDamageDealer = new DamageDealer();
-		OwnDamageDealer.InGameName = CharacterDamaging.IngameName;
-		
 		_shootTimer = new TimeCooldown(this);
 		_shootTimer.onFinish = () =>
 		{
 			_shootTimer.Set(Interval);
-			GameObjectPool.GetAvailableObject(_projectilePoolName).GetComponent<ABaseProjectile>().Launch(transform.position, transform.forward, OwnDamageDealer);
+			GameObjectPool.GetAvailableObject(_projectilePoolName).GetComponent<ABaseProjectile>().Launch(transform.position, transform.forward, _ownDamageData);
 		};
 		_shootTimer.Set(Interval);
-	}
-
-	void Update()
-	{
-
 	}
 }

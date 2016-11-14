@@ -7,6 +7,8 @@ using UnityEngine.UI;
 public class DamageDealer
 {
 	public Player PlayerRef;
+	public GameObject ObjectRef;
+	public DamageData DamageData;
 	public string InGameName;
 	public Image Icon;
 }
@@ -26,5 +28,17 @@ public class DamageData
 	{
 		Projectile = newProjo;
 		return this;
+	}
+
+	public DamageData Copy()
+	{
+		DamageData newDamageData = new DamageData();
+		newDamageData.Dealer = Dealer;
+		newDamageData.AttackTypeUsed = AttackTypeUsed;
+		newDamageData.StunInflicted = StunInflicted;
+		newDamageData.IsParryable = IsParryable;
+		newDamageData.Projectile = Projectile;
+
+		return newDamageData;
 	}
 }

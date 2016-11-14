@@ -1,4 +1,4 @@
 public enum ECharacterConfiguration
 {
-   Viking,Ninja,Tank,Wizard
+   Viking,Ninja,Tank,Mage
 }

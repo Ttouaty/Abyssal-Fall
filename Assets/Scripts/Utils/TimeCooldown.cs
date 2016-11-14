@@ -8,7 +8,7 @@ public class TimeCooldown : CoolDown{
 	{
 		get 
 		{
-			return targetTimeStamp - Time.time;
+			return Mathf.Clamp(targetTimeStamp - Time.time, 0, 32768);
 		}
 	}
 

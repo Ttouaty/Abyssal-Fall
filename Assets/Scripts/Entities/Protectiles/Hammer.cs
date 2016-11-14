@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Hammer : ABaseProjectile {
 
-	public override void Launch(Vector3 Position, Vector3 Direction, DamageDealer Shooter)
+	public override void Launch(Vector3 Position, Vector3 Direction, DamageData Shooter)
 	{
 		base.Launch(Position, Direction, Shooter);
 	}
