@@ -34,7 +34,6 @@ public class CameraManager : GenericSingleton<CameraManager>
 
 	protected override void Awake()
 	{
-
 		_camera = GetComponent<Camera>();
 		
 		ReplaceInstance(this);
