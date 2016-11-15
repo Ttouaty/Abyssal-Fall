@@ -23,20 +23,23 @@ MonoBehaviour:
     strength: 7
     speed: 5
     resistance: 6
-  SpecialEjection: {x: 3, y: 3.27, z: 0}
   Dash:
     endingLag: 0.3
     Forces:
     - {x: 9, y: 4.905}
     - {x: 12, y: 4.905}
     Impact: 4
-    inProgress: 1
+    inProgress: 0
   DashDamageData:
     AttackTypeUsed: 0
     StunInflicted: 0.3
+    IsParryable: 0
+    Projectile: {fileID: 0}
   SpecialDamageData:
     AttackTypeUsed: 1
     StunInflicted: 0.5
+    IsParryable: 0
+    Projectile: {fileID: 0}
   SpecialCoolDown: 2
   SpecialLag: 0.2
   SoundList:
@@ -53,6 +56,8 @@ MonoBehaviour:
       FmodEvent: event:/Sfx/viking/sfx_viking_hammer_hit_player
     - Key: OnSpecialRestored
       FmodEvent: event:/Sfx/Menu/Menu Validate
+    - Key: OnParry
+      FmodEvent: event:/Sfx/viking/sfx_viking_hammer_hit_wall
   OtherAssetsToLoad:
   - Name: Hammer
     Prefab: {fileID: 143516, guid: 07e1f478976236e489c448a02c52c28a, type: 2}

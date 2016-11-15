@@ -77,8 +77,6 @@ public abstract class ABaseProjectile : MonoBehaviour, IPoolable
 		{
 			if(colli.gameObject.GetInstanceID() != LauncherId)
 				OnHitPlayer(colli.GetComponent<IDamageable>());
-			else
-				Debug.Log("same connard");
 		}
 		else if (colli.gameObject.layer == LayerMask.NameToLayer("Wall"))
 		{

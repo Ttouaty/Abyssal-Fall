@@ -31,6 +31,7 @@ public class CustomEditorDynamicConfig : Editor
 
 	public override void OnInspectorGUI()
 	{
+		Undo.RecordObject(target, "inspector");
 		List<ArenaConfiguration> arenaConfigToRemove            = new List<ArenaConfiguration>();
 		List<AGameRulesConfiguration> modeConfigToRemove		= new List<AGameRulesConfiguration>();
 		List<CharacterConfiguration> characterConfigToRemove    = new List<CharacterConfiguration>();
@@ -325,7 +326,7 @@ public class CustomEditorDynamicConfig : Editor
 			GUI.color = _defaultColor;
 		}
 		EditorGUILayout.EndVertical();
-
+		
 		SetDefaultGUIBackgroundColor();
 		SceneView.RepaintAll();
 	}

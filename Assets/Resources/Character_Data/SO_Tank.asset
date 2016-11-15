@@ -22,7 +22,6 @@ MonoBehaviour:
     strength: 7
     speed: 2
     resistance: 8
-  SpecialEjection: {x: 3, y: 3.27, z: 0}
   Dash:
     endingLag: 0.3
     Forces:
@@ -33,15 +32,29 @@ MonoBehaviour:
   DashDamageData:
     AttackTypeUsed: 0
     StunInflicted: 0.3
+    IsParryable: 0
+    Projectile: {fileID: 0}
   SpecialDamageData:
     AttackTypeUsed: 1
     StunInflicted: 0.7
+    IsParryable: 0
+    Projectile: {fileID: 0}
   SpecialCoolDown: 1.5
   SpecialLag: 0.6
   SoundList:
-    OnDashStart: {fileID: 0}
-    OnDashEnd: {fileID: 0}
-    OnDeath: {fileID: 0}
-    OnSpecialActivate: {fileID: 0}
-    OnHit: {fileID: 0}
+    SoundList:
+    - Key: OnDashStart
+      FmodEvent: event:/Sfx/viking/sfx_viking_dash_start
+    - Key: OnDashEnd
+      FmodEvent: event:/Sfx/viking/sfx_viking_dash_end
+    - Key: OnDeath
+      FmodEvent: event:/Sfx/viking/sfx_viking_death
+    - Key: OnHit
+      FmodEvent: event:/Sfx/viking/sfx_viking_hammer_hit_player
+    - Key: OnSpecialActivate
+      FmodEvent: event:/Sfx/viking/sfx_viking_hammer_throw
+    - Key: OnSpecialRestored
+      FmodEvent: event:/Sfx/Menu/Menu Small Validate
+    - Key: OnParry
+      FmodEvent: event:/Sfx/viking/sfx_viking_hammer_hit_wall
   OtherAssetsToLoad: []

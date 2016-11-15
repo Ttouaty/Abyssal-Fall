@@ -4,9 +4,23 @@ using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using UnityEngine.Events;
 
+public enum ShakeStrength
+{
+	Minimum = 2,
+	Verylow = 3,
+	Low = 5,
+	Medium = 7,
+	High = 12,
+	Veryhigh = 20,
+	Extreme = 50,
+	StupidHigh = 100
+}
+
 public class CameraManager : GenericSingleton<CameraManager>
 {
-	private AnimationCurve _easeOutCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
+	private float _shakeTimeLeft = 0;
+	private ShakeStrength _activeShakeStrength;
+
 	private Camera _camera;
 	private Transform _focalPoint; //FocalPoint is the point the camera is looking at, it can move away from the center point.
 	private Transform _centerPoint; //CenterPoint is the base of the camera, the default. It will not move ingame and is used as a anchor for every cameraMovement;
@@ -54,6 +68,7 @@ public class CameraManager : GenericSingleton<CameraManager>
 	{
 		if (_instance != null) // replace instance
 		{
+			_shakeTimeLeft = 0;
 			_instance.gameObject.SetActive(false);
 			_instance = newInstance;
 			_camera.tag = "MainCamera";
@@ -91,10 +106,23 @@ public class CameraManager : GenericSingleton<CameraManager>
 		}
 
 		transform.localPosition = - Vector3.forward * _distance;
-
 		FollowCentroid();
 
+		ProcessScreenShake();
 	}
+
+	private void ProcessScreenShake()
+	{
+		if (_shakeTimeLeft > 0)
+		{
+			Vector3 ShakeVector = Random.insideUnitSphere * (int) _activeShakeStrength;
+			ShakeVector *= 0.05f;
+			transform.localPosition += ShakeVector;
+
+			_shakeTimeLeft = Mathf.Clamp(_shakeTimeLeft - Time.deltaTime, 0, 10); // Screenshake Capped at 10 secs (stupid long)
+		}
+	}
+
 
 	private float _tempDistance;
 	private Vector3 _tempPosition;
@@ -226,7 +254,7 @@ public class CameraManager : GenericSingleton<CameraManager>
 		Vector3 startpos = target.position;
 		while (targetTime > Time.time)
 		{
-			target.position = Vector3.Lerp(startpos, end.position, _easeOutCurve.Evaluate(Time.time % (targetTime - time) / time));
+			target.position = Vector3.Lerp(startpos, end.position, Curves.EaseInOutCurve.Evaluate(Time.time % (targetTime - time) / time));
 			yield return null;
 		}
 
@@ -246,12 +274,27 @@ public class CameraManager : GenericSingleton<CameraManager>
 		Quaternion startRot = target.rotation;
 		while (targetTime > Time.time)
 		{
-			target.rotation = Quaternion.Lerp(startRot, end, _easeOutCurve.Evaluate(Time.time % (targetTime - time) / time));
+			target.rotation = Quaternion.Lerp(startRot, end, Curves.EaseInOutCurve.Evaluate(Time.time % (targetTime - time) / time));
 			yield return null;
 		}
 
 		target.rotation = end;
 	}
+
+	public static void Shake(ShakeStrength force)
+	{
+		Shake(force, ((int) force) * 0.01f);
+	}
+
+	/// <summary>
+	/// Use of regular Shake(ShakeStrengh) is Suggested (time is calculated automatically)
+	/// </summary>
+	public static void Shake(ShakeStrength force, float customTime)
+	{
+		_instance._shakeTimeLeft = customTime;
+		_instance._activeShakeStrength = force;
+	}
+
 
 	public void Reset()
 	{

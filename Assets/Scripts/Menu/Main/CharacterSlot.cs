@@ -230,7 +230,8 @@ public class CharacterSlot : MonoBehaviour
 		_wheelRef.gameObject.SetActive(true);
 		_wheelRef.transform.SetParent(transform);
 		_wheelRef.transform.localRotation = Quaternion.identity;
-		_wheelRef.transform.position = transform.position + transform.forward.normalized * (_wheelRef._wheelRadius - 1);
+		if(_wheelRef.transform.localPosition.z < 1)
+			_wheelRef.transform.position = transform.position + transform.forward.normalized * (_wheelRef._wheelRadius - 1);
 		PlayerController[] tempArray = new PlayerController[_availableCharacters.Length];
 
 		for (int i = 0; i < _availableCharacters.Length; i++)

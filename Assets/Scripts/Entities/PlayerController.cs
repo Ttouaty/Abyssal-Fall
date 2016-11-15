@@ -28,20 +28,15 @@ public class PlayerSoundList
 		new FmodSoundEvent("OnParry")
 	};
 	private Dictionary<string, FmodSoundEvent> _soundDico = new Dictionary<string, FmodSoundEvent>();
-	private bool _isGenerated = false;
 	
 	public FmodSoundEvent this[string Key]
 	{
 		get
 		{
-			if (!_isGenerated)
-				Generate();
-
 			if (!_soundDico.ContainsKey(Key))
 			{
-				Debug.LogWarning(Key+ " was not found in PlayerAudioList, generating an empty one !");
-				_soundDico[Key] = new FmodSoundEvent(Key);
-				SoundList.Add(_soundDico[Key]); // Just to see it inInspector
+				Debug.LogWarning(Key+ " was not found in PlayerAudioList");
+				return new FmodSoundEvent(Key);
 			}
 
 			return _soundDico[Key];
@@ -223,6 +218,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 	{
 		get
 		{
+
+			Debug.Log(AllowDash && !_isDead && !_dashMaxed && (_characterData.Dash.inProgress || _allowInput));
 			return AllowDash && !_isDead && !_dashMaxed && (_characterData.Dash.inProgress || _allowInput);
 		}
 	}
@@ -234,7 +231,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 		_rigidB.velocity = Vector3.zero;
 		_rigidB.isKinematic = true;
 		_activeSpeed = Vector3.zero;
-		_animator.SetTrigger("Reset");
+		//_animator.SetTrigger("Reset");
 	}
 
 	public void UnFreeze()
@@ -260,6 +257,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 			Debug.Log("No SO_Character found for character " + gameObject.name + ". Seriously ?");
 			return;
 		}
+
+		_characterData.SoundList.Generate();
 
 		//Instantiates player mesh and retrieves its props and particles
 		GameObject playerMesh = Instantiate(_characterData.CharacterModel.gameObject) as GameObject;
@@ -344,7 +343,6 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 		CustomStart();
 
 	}
-
 	protected void Update()
 	{
 		if (_isDead || TimeManager.IsPaused)
@@ -478,6 +476,9 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 			WaitForDashRelease = true;
 		}
 
+		if (InputManager.GetButtonUp("Dash", _playerRef.JoystickNumber) && IsGrounded)
+			WaitForDashRelease = false;
+
 		if (SpecialActivation() && _allowInput)
 		{
 			_specialCooldown.Set(_characterData.SpecialCoolDown);
@@ -584,6 +585,16 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 		direction.x += direction.x * (0.5f - _characterData.CharacterStats.resistance.Percentage(0, Stats.maxValue));
 		direction.z += direction.z * (0.5f - _characterData.CharacterStats.resistance.Percentage(0, Stats.maxValue));
 
+		if (direction.magnitude > 20)
+		{
+			Debug.Log("strong push detected");
+			CameraManager.Shake(ShakeStrength.High);
+		}
+		else
+			CameraManager.Shake(ShakeStrength.Medium);
+
+
+
 		Eject(direction);
 		if (data.StunInflicted > 0)
 			_stunTimer.Set(data.StunInflicted);
@@ -597,6 +608,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 
 	public void Parry(ABaseProjectile projectileParried)
 	{
+		CameraManager.Shake(ShakeStrength.Medium);
 		projectileParried.Parry(DmgDealerSelf);
 	}
 
@@ -618,6 +630,9 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 		gameObject.layer = LayerMask.NameToLayer("PlayerInvul");
 
 		ForceAirborne(0.4f);
+
+		CameraManager.Shake(ShakeStrength.Verylow);
+
 		yield return new WaitForSeconds(0.1f);
 		while (!IsGrounded)
 		{
@@ -638,7 +653,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 		_timeHeldDash = 0;
 		_dashStepActivated = 1;
 		_dashMaxed = false;
-		WaitForDashRelease = false;
+		if (!InputManager.GetButtonHeld("Dash", _playerRef.JoystickNumber))
+			WaitForDashRelease = false;
 	}
 
 	protected virtual void DashAirControl()
