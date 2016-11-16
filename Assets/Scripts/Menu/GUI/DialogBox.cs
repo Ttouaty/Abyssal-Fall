@@ -53,6 +53,7 @@ public class DialogBox : MonoBehaviour
 	private int _displayedTagIndex;
 	private int _displayedTextOffset;
 	private bool skipMessage;
+	private int _characterSoundjump;
 	private IEnumerator DisplayTextOverTime(Message message)
 	{
 		//ControlDiv.gameObject.SetActive(false);
@@ -64,6 +65,7 @@ public class DialogBox : MonoBehaviour
 		_messageProgressionIndex = 0;
 		_displayedTagIndex = 0;
 		_displayedTextOffset = 0;
+		_characterSoundjump = 0;
 		_isDisplaying = true;
 		skipMessage = false;
 		tagMatches = Regex.Matches(message.TranslatedText, @"<(.*?)>");
@@ -80,7 +82,10 @@ public class DialogBox : MonoBehaviour
 			TextDiv.text = TextDiv.text.Insert(nextIndexToWrite - nextTextOffset, textToAdd);
 			if (!skipMessage)
 			{
-				_typingSound.Play();
+				if(_characterSoundjump % 2 == 0)
+					_typingSound.Play();
+
+				_characterSoundjump++;
 				yield return new WaitForSeconds(1 / message.TextSpeed);
 			}
 		}

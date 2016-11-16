@@ -36,11 +36,11 @@ public class TutorialManager : GenericSingleton<TutorialManager> {
 	public void SpawnPlayer(JoystickNumber joyStick)
 	{
 		PoolConfiguration[] assets = TutorialCharacter._characterData.OtherAssetsToLoad;
+		MainManager.Instance.GAME_OBJECT_POOL.DropAll();
 		for (int j = 0; j < assets.Length; ++j)
 		{
 			MainManager.Instance.GAME_OBJECT_POOL.AddPool(assets[j]);
 		}
-
 		MainManager.Instance.GAME_OBJECT_POOL.Load();
 		MainManager.Instance.GAME_OBJECT_POOL.LoadEnd.AddListener(PopPlayer);
 

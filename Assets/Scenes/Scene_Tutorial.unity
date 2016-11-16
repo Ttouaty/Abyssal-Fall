@@ -138,7 +138,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.1102941, g: 0.1102941, b: 0.1102941, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -180,6 +180,7 @@ MonoBehaviour:
   directionToListen: {x: 1, y: 0}
   AxisPrecision: 0.5
   InputToListen: 0
+  InputStringToListen: 
   InputMethodUsed: 0
   TimeToHold: 0.5
   CanLoop: 0
@@ -210,6 +211,7 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEventInt, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
+  UseKeyboard: 0
 --- !u!1 &13470576
 GameObject:
   m_ObjectHideFlags: 0
@@ -4145,6 +4147,7 @@ MonoBehaviour:
   directionToListen: {x: 1, y: 0}
   AxisPrecision: 0.4
   InputToListen: 1
+  InputStringToListen: 
   InputMethodUsed: 2
   TimeToHold: 1
   CanLoop: 0
@@ -4175,6 +4178,7 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEventInt, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
+  UseKeyboard: 0
 --- !u!225 &243226407
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -7439,6 +7443,7 @@ MonoBehaviour:
   directionToListen: {x: 1, y: 0}
   AxisPrecision: 0.5
   InputToListen: 0
+  InputStringToListen: 
   InputMethodUsed: 0
   TimeToHold: 0.5
   CanLoop: 0
@@ -7456,6 +7461,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 573759434}
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
       - m_Target: {fileID: 1146996328}
         m_MethodName: SetActive
         m_Mode: 6
@@ -7469,6 +7485,7 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEventInt, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
+  UseKeyboard: 0
 --- !u!1001 &460094752
 Prefab:
   m_ObjectHideFlags: 0
@@ -16958,7 +16975,7 @@ RectTransform:
   m_RootOrder: 1
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0.6968947}
-  m_AnchoredPosition: {x: 0, y: 19}
+  m_AnchoredPosition: {x: 0, y: -138.8}
   m_SizeDelta: {x: 500, y: -38}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1156243264
