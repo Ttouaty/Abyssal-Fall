@@ -403,7 +403,7 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 		}
 
 		element.GetComponent<Obstacle>().OnDropped();
-		CameraShake.instance.Shake(0.2f);
+		CameraManager.Shake(ShakeStrength.Medium);
 		++_obstaclesDropped;
 
 		yield return null;

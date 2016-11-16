@@ -9,6 +9,7 @@ public class CustomEditorInputListener : Editor
 	public override void OnInspectorGUI()
 	{
 		serializedObject.Update();
+		Undo.RecordObject(_preciseTarget, "InputListener");
 
 		_preciseTarget.UseAxis = EditorGUILayout.Toggle("Uses Axis ?", _preciseTarget.UseAxis);
 		
@@ -28,8 +29,12 @@ public class CustomEditorInputListener : Editor
 			EditorGUILayout.EndHorizontal();
 		}
 		else
-		{ 
-			_preciseTarget.InputToListen = (InputEnum)EditorGUILayout.EnumPopup("Button to listen", _preciseTarget.InputToListen);
+		{
+			_preciseTarget.UseKeyboard = EditorGUILayout.Toggle("Keyboard Only ?", _preciseTarget.UseKeyboard);
+			if (!_preciseTarget.UseKeyboard)
+				_preciseTarget.InputToListen = (InputEnum)EditorGUILayout.EnumPopup("Button to listen", _preciseTarget.InputToListen);
+			else
+				_preciseTarget.InputStringToListen = EditorGUILayout.TextField("Key to listen", _preciseTarget.InputStringToListen);
 			_preciseTarget.InputMethodUsed = (InputMethod)EditorGUILayout.EnumPopup("Input type", _preciseTarget.InputMethodUsed);
 
 			if (_preciseTarget.InputMethodUsed == InputMethod.Held)

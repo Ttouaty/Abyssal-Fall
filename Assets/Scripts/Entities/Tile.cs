@@ -13,9 +13,10 @@ public class Tile : MonoBehaviour, IPoolable
 	private MeshRenderer    _renderer;
 	private Color			_defaultColor;
 	private Vector3			_initialPoisition;
-
+	[HideInInspector]
 	public Obstacle			Obstacle;
-	public Spawn            SpawnComponent;
+	[HideInInspector]
+	public Spawn SpawnComponent;
 	public bool				CanFall			{ get { return _canFall; } }
 	public bool				IsFalling		{ get { return _isFalling; } }
 	public bool             IsSpawn			{ get { return SpawnComponent == null; } }

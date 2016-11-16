@@ -7,7 +7,13 @@ using UnityEngine.UI;
 public class DamageDealer
 {
 	public Player PlayerRef;
-	public GameObject ObjectRef;
+	private GameObject _objectRef;
+	public int InstanceId;
+	public GameObject ObjectRef
+	{
+		get { return _objectRef; }
+		set { InstanceId = value.GetInstanceID(); _objectRef = value; }
+	}
 	public DamageData DamageData;
 	public string InGameName;
 	public Image Icon;

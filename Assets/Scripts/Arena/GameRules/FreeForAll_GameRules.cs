@@ -30,8 +30,12 @@ public class FreeForAll_GameRules : AGameRules
 
 	protected override IEnumerator RespawnFalledTiles_Implementation (Tile tile)
 	{
-		yield return new WaitForSeconds(5f);
-		GameObjectPool.AddObjectIntoPool(tile.gameObject);
+		//yield return new WaitForSeconds(5f);
+		//GameObjectPool.AddObjectIntoPool(tile.gameObject);
+
+
+		Debug.Log("THAT WAS IT !");
+		yield return null;
 	}
 
 	public override void OnPlayerWin_Listener ()
@@ -39,6 +43,7 @@ public class FreeForAll_GameRules : AGameRules
 
 		Player winner = GameManager.Instance.AlivePlayers[0];
 		winner.Controller.Freeze();
+		InputManager.AddInputLockTime(1);
 
 		if (winner.Score == GameManager.Instance.CurrentGameConfiguration.NumberOfStages)
 		{

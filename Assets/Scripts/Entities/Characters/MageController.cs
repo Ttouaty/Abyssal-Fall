@@ -44,12 +44,13 @@ public class MageController : PlayerController
 		_lastFireBallCasted = fireBallObj.GetComponent<FireBall>();
 
 		_lastFireBallCasted.Launch(
-			transform.position + transform.forward, 
-			transform.forward, 
-			_explosionDelay, 
-			_explosionRadius, 
-			SO_Character.SpecialEjection.Multiply(Axis.x, _characterData.CharacterStats.strength), 
-			_characterData.SpecialDamageData
+			transform.position + transform.forward,
+			transform.forward,
+			_explosionDelay,
+			_explosionRadius,
+			SO_Character.SpecialEjection.Multiply(Axis.x, _characterData.CharacterStats.strength),
+			_characterData.SpecialDamageData,
+			gameObject.GetInstanceID()
 		);
 
 		if (ArenaManager.Instance != null)

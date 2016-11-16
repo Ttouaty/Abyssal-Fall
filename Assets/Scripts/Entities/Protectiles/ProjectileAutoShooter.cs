@@ -24,7 +24,7 @@ public class ProjectileAutoShooter : MonoBehaviour
 		_shootTimer.onFinish = () =>
 		{
 			_shootTimer.Set(Interval);
-			GameObjectPool.GetAvailableObject(_projectilePoolName).GetComponent<ABaseProjectile>().Launch(transform.position, transform.forward, _ownDamageData);
+			GameObjectPool.GetAvailableObject(_projectilePoolName).GetComponent<ABaseProjectile>().Launch(transform.position, transform.forward, _ownDamageData, gameObject.GetInstanceID());
 		};
 		_shootTimer.Set(Interval);
 	}

@@ -56,7 +56,7 @@ public class CameraManager : GenericSingleton<CameraManager>
 
 		//Replace Normal AudioListeners by StudioListeners
 		if (GetComponent<AudioListener>() != null)
-			Destroy(GetComponent<AudioListener>());
+			GetComponent<AudioListener>().enabled = false;
 
 		if (GetComponent<FMODUnity.StudioListener>() != null)
 			gameObject.AddComponent<FMODUnity.StudioListener>();
@@ -71,6 +71,7 @@ public class CameraManager : GenericSingleton<CameraManager>
 			_shakeTimeLeft = 0;
 			_instance.gameObject.SetActive(false);
 			_instance = newInstance;
+			_instance.gameObject.SetActive(true);
 			_camera.tag = "MainCamera";
 			OnCameraChange.Invoke();
 		}

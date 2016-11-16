@@ -24,7 +24,7 @@ public abstract class ABaseProjectile : MonoBehaviour, IPoolable
 			Debug.LogWarning("Projectile "+gameObject.name+" has no component \"Poolable\" this may break stuff!");
 	}
 
-	public virtual void Launch(Vector3 Position, Vector3 Direction, DamageData data)
+	public virtual void Launch(Vector3 Position, Vector3 Direction, DamageData data, int newLauncherId)
 	{
 		gameObject.SetActive(true);
 		_shooter = data.Dealer;
@@ -39,7 +39,7 @@ public abstract class ABaseProjectile : MonoBehaviour, IPoolable
 		}
 
 		_ownDamageData = data.SetProjectile(this).Copy();
-		LauncherId = _ownDamageData.Dealer.ObjectRef.GetInstanceID();
+		LauncherId = newLauncherId;
 
 		transform.position = Position;
 		transform.rotation = Quaternion.LookRotation(Direction, Vector3.up);
@@ -107,6 +107,6 @@ public abstract class ABaseProjectile : MonoBehaviour, IPoolable
 		StopAllCoroutines();
 		_ownDamageData.Dealer = characterParrying;
 		
-		Launch(transform.position, (_shooter.ObjectRef.transform.position - transform.position).ZeroY(), _ownDamageData);
+		Launch(transform.position, (_shooter.ObjectRef.transform.position - transform.position).ZeroY(), _ownDamageData, LauncherId);
 	}
 }

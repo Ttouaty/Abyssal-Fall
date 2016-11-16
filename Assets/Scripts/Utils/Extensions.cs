@@ -46,7 +46,9 @@ public static class Vector3Extensions
 			vect.z += value;
 		return vect;
 	}
-
+	/// <summary>
+	/// Reduces a float's absolute value by ammount & cap at 0 ( -10.Reduce(3); == -7 )
+	/// </summary>
 	public static float Reduce(this float number, float amount)
 	{
 		if (Mathf.Abs(number) < Mathf.Abs(amount))
@@ -101,6 +103,9 @@ public static class Vector3Extensions
 
 public static class IntExtensions
 {
+	/// <summary>
+	/// Reduces a int's absolute value by ammount & cap at 0 ( -10.Reduce(3); == -7 )
+	/// </summary>
 	public static int Reduce(this int number, int amount)
 	{
 		if (Mathf.Abs(number) < Mathf.Abs(amount))

@@ -14,10 +14,10 @@ public class FireBall : ABaseProjectile
 	private Vector3 _ejection;
 	private DamageData _explosionDamageData;
 
-	public void Launch(Vector3 Position, Vector3 Direction, float explosionDelay, float explosionRadius, Vector3 ejection, DamageData newDamageData)
+	public void Launch(Vector3 Position, Vector3 Direction, float explosionDelay, float explosionRadius, Vector3 ejection, DamageData newDamageData, int instanceId)
 	{
 		GetComponent<Collider>().enabled = true;
-		base.Launch(Position, Direction, newDamageData);
+		base.Launch(Position, Direction, newDamageData, instanceId);
 		StartCoroutine(DelayStop());
 		_explosionRadius = explosionRadius;
 		_explosionDelay = explosionDelay;

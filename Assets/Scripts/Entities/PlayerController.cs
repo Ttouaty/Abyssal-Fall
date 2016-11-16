@@ -218,8 +218,6 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 	{
 		get
 		{
-
-			Debug.Log(AllowDash && !_isDead && !_dashMaxed && (_characterData.Dash.inProgress || _allowInput));
 			return AllowDash && !_isDead && !_dashMaxed && (_characterData.Dash.inProgress || _allowInput);
 		}
 	}
@@ -498,24 +496,21 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 		{
 			bool secureAllowInput = _allowInput; // just security
 			if (secureAllowInput)
-			{
 				_activeSpeed = Quaternion.Inverse(Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized)) * _activeSpeed;
-				//#if UNITY_EDITOR 
-				//				_activeSpeed.x = _maxSpeed.x * InputManager.GetAxisRaw("x", _playerRef.JoystickNumber);
-				//				_activeSpeed.z = _maxSpeed.x * InputManager.GetAxisRaw("y", _playerRef.JoystickNumber);
-				//#else
-				//				_activeSpeed.x = _maxSpeed.x * InputManager.GetAxis("x", _playerRef.JoystickNumber);
-				//				_activeSpeed.z = _maxSpeed.x * InputManager.GetAxis("y", _playerRef.JoystickNumber);
-				//#endif
-			}
+
 			if(_isAffectedByFriction)
 				ApplyFriction();
 
 			if (secureAllowInput)
 			{
-				_activeSpeed.x += ((_maxSpeed.x / _acceleration.x) * Time.deltaTime + _friction * TimeManager.DeltaTime) * InputManager.GetAxis("x", _playerRef.JoystickNumber);
-				_activeSpeed.z += ((_maxSpeed.x / _acceleration.x) * Time.deltaTime + _friction * TimeManager.DeltaTime) * InputManager.GetAxis("y", _playerRef.JoystickNumber);
+				Vector3 tempStickPosition = InputManager.GetStickDirection(_playerRef.JoystickNumber);
+				tempStickPosition.z = tempStickPosition.y;
+				tempStickPosition.y = 0;
+
+				_activeSpeed = tempStickPosition * (_activeSpeed.magnitude + ((_maxSpeed.x / _acceleration.x) * TimeManager.DeltaTime + _friction * TimeManager.DeltaTime));
+
 				_activeSpeed = Vector3.ClampMagnitude(_activeSpeed.ZeroY(), _maxSpeed.x);
+
 				_activeSpeed = Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized) * _activeSpeed;
 			}
 		}
@@ -582,10 +577,10 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 
 		Debug.Log("Character \"" + _characterData.IngameName + "\" was damaged by: \"" + data.Dealer.InGameName + "\"");
 
-		direction.x += direction.x * (0.5f - _characterData.CharacterStats.resistance.Percentage(0, Stats.maxValue));
-		direction.z += direction.z * (0.5f - _characterData.CharacterStats.resistance.Percentage(0, Stats.maxValue));
+		direction.x += direction.x * ((0.5f - _characterData.CharacterStats.resistance.Percentage(0, Stats.maxValue)) * 0.5f);
+		direction.z += direction.z * ((0.5f - _characterData.CharacterStats.resistance.Percentage(0, Stats.maxValue)) * 0.5f);
 
-		if (direction.magnitude > 20)
+		if (direction.magnitude > 15)
 		{
 			Debug.Log("strong push detected");
 			CameraManager.Shake(ShakeStrength.High);
@@ -609,6 +604,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 	public void Parry(ABaseProjectile projectileParried)
 	{
 		CameraManager.Shake(ShakeStrength.Medium);
+		_characterData.SoundList["OnParry"].Play(gameObject);
 		projectileParried.Parry(DmgDealerSelf);
 	}
 

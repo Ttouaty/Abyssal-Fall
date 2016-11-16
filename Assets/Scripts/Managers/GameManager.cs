@@ -26,7 +26,7 @@ public class GameManager : GenericSingleton<GameManager>
 	{
 		get
 		{
-			if (nbPlayers <= 2)
+			if (nbPlayers < 2)
 				return false;
 
 			for (int i = 0; i < nbPlayers; ++i)
@@ -60,8 +60,8 @@ public class GameManager : GenericSingleton<GameManager>
 			OnPlayerWin.AddListener(_gameRules.OnPlayerWin_Listener);
 		}
 	}
-
-	public AudioClip OnGroundDrop;
+	
+	public AudioClip OnGroundDrop; //TODO Switch to FmodOneShotSound
 	public AudioClip OnObstacleDrop;
 	public AudioClip OnThree;
 	public AudioClip OnTwo;
