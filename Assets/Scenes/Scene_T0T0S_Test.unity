@@ -17548,7 +17548,7 @@ MonoBehaviour:
   - {fileID: 972123119}
   - {fileID: 1878742490}
   - {fileID: 1205596965}
-  JoystickListening: 02000000000000000200000005000000
+  JoystickListening: 00000000030000000200000005000000
 --- !u!4 &582437605
 Transform:
   m_ObjectHideFlags: 0
@@ -25257,6 +25257,10 @@ Prefab:
     - target: {fileID: 427594, guid: 9b85bde0b5dc1d74b8ec37b4561a265f, type: 2}
       propertyPath: m_RootOrder
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 113056, guid: 9b85bde0b5dc1d74b8ec37b4561a265f, type: 2}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9b85bde0b5dc1d74b8ec37b4561a265f, type: 2}
@@ -44505,7 +44509,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!23 &1451655597
 MeshRenderer:
   m_ObjectHideFlags: 0

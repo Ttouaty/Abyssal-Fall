@@ -360,6 +360,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 		ProcessInputs();
 		ApplyCharacterFinalVelocity();
 
+		_animator.SetBool("IsGrounded", IsGrounded);
+
 		CustomUpdate();
 	}
 
@@ -408,7 +410,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 		_allowInput = false;
 		//enabled = false;
 		Freeze();
-		_animator.SetTrigger("Reset");
+		//_animator.SetTrigger("Reset");
 	}
 
 	#endregion
@@ -538,7 +540,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 	private void ApplyCharacterFinalVelocity()
 	{
 		_rigidB.velocity = _activeSpeed;
-		_animator.SetFloat("Speed", Mathf.Abs(_activeSpeed.x) + Mathf.Abs(_activeSpeed.z));
+		_animator.SetFloat("Speed", _activeSpeed.magnitude);
 	}
 
 
@@ -600,7 +602,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 		transform.LookAt(transform.position + _activeDirection, Vector3.up);
 
 		_characterData.SoundList["OnHit"].Play(gameObject);
-		_animator.SetTrigger("Stun_Start");
+		_animator.SetTrigger("Hit");
 	}
 
 	public void Parry(ABaseProjectile projectileParried)
