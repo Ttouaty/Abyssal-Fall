@@ -5,7 +5,7 @@ public class VikingController : PlayerController
 {
 	protected override void SpecialAction()
 	{
-		_animator.SetTrigger("Throw");
+		_animator.SetTrigger("Special");
 		_characterProp.PropRenderer.enabled = false;
 		GameObject hammer = GameObjectPool.GetAvailableObject("Hammer");
 

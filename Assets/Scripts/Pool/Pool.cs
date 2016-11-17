@@ -14,10 +14,10 @@ public struct Pool
 	public List<GameObject> Reserve;
     public string Name;
 
-    public Pool (GameObject prefab = null, int quantity = 0)
+    public Pool (GameObject prefab = null, int quantity = 0, string newName = null)
     {
-        Name            = prefab != null ? prefab.name : "Unkown Pool";
-        Prefab          = prefab;
+        Name            = newName != null ? newName : prefab != null ? prefab.name : "Unknown Pool";
+		Prefab          = prefab;
         Quantity        = quantity;
 
         //_GOPInstance    = null;

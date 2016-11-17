@@ -2,7 +2,7 @@
 using System.Collections;
 using System;
 
-[RequireComponent(typeof(Rigidbody), typeof(SphereCollider))]
+[RequireComponent(typeof(Rigidbody), typeof(SphereCollider), typeof(Poolable))]
 public abstract class ABaseProjectile : MonoBehaviour, IPoolable
 {
 	protected DamageDealer _shooter;

@@ -152,7 +152,7 @@ public class GameObjectPool : GenericSingleton<GameObjectPool>
 		}
 	}
 
-	public Pool AddPool(GameObject prefab, int quantity = 1000)
+	public Pool AddPool(GameObject prefab, int quantity = 1000, string poolName = null)
 	{
 		if(prefab != null)
 		{
@@ -170,14 +170,15 @@ public class GameObjectPool : GenericSingleton<GameObjectPool>
 		Pool pool       = new Pool(prefab);
 		pool.Prefab     = prefab;
 		pool.Quantity   = quantity;
-		pool.Name       = prefab != null ? prefab.name : "Unknown Pool";
+		pool.Name       = poolName != null ? poolName : prefab.name;
 		Pools.Add(pool);
 		return pool;
 	}
 
 	public void AddPool(PoolConfiguration config)
 	{
-		AddPool(config.Prefab, config.Quantity);
+		
+		AddPool(config.Prefab, config.Quantity, config.Name);
 	}
 
 	public void RemovePool(Pool pool)

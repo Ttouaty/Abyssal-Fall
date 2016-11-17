@@ -557,6 +557,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 		_isDead = true;
 		Player killer = _playerRef.Controller.LastDamageDealer != null ? _playerRef.Controller.LastDamageDealer.PlayerRef : null;
 		GameManager.Instance.OnPlayerDeath.Invoke(_playerRef, killer);
+		CameraManager.Instance.RemoveTargetToTrack(transform);
 	}
 
 	public void Eject(Vector3 direction)
@@ -593,7 +594,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 		Eject(direction);
 		if (data.StunInflicted > 0)
 			_stunTimer.Set(data.StunInflicted);
-		_invulTimer.Set(data.StunInflicted * 1.2f);
+		_invulTimer.Set(data.StunInflicted * 1.3f);
+
 		_activeDirection = -direction.ZeroY().normalized;
 		transform.LookAt(transform.position + _activeDirection, Vector3.up);
 

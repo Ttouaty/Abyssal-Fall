@@ -310,7 +310,7 @@ Light:
   m_Cookie: {fileID: 0}
   m_DrawHalo: 0
   m_Flare: {fileID: 0}
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -17548,7 +17548,7 @@ MonoBehaviour:
   - {fileID: 972123119}
   - {fileID: 1878742490}
   - {fileID: 1205596965}
-  JoystickListening: 00000000020000000200000005000000
+  JoystickListening: 02000000000000000200000005000000
 --- !u!4 &582437605
 Transform:
   m_ObjectHideFlags: 0
@@ -25236,7 +25236,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 427594, guid: 9b85bde0b5dc1d74b8ec37b4561a265f, type: 2}
       propertyPath: m_LocalPosition.z
-      value: -160.1
+      value: -163.65
       objectReference: {fileID: 0}
     - target: {fileID: 427594, guid: 9b85bde0b5dc1d74b8ec37b4561a265f, type: 2}
       propertyPath: m_LocalRotation.x
@@ -25257,10 +25257,6 @@ Prefab:
     - target: {fileID: 427594, guid: 9b85bde0b5dc1d74b8ec37b4561a265f, type: 2}
       propertyPath: m_RootOrder
       value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 113056, guid: 9b85bde0b5dc1d74b8ec37b4561a265f, type: 2}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9b85bde0b5dc1d74b8ec37b4561a265f, type: 2}
@@ -44583,7 +44579,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b49bb4321ef454d48a81428c4cc99e10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _projectilePoolName: Hammer
+  _projectilePoolName: Shuriken
   Interval: 1
   DamagerName: Environnement
   StunInflicted: 0.3

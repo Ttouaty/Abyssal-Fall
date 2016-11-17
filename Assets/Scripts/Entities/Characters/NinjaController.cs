@@ -2,37 +2,29 @@
 using System.Collections;
 
 public class NinjaController : PlayerController {
-	[SerializeField]
-	private ParticleSystem _ghostParticles;
 
-	private float SpecialLength = 2;
+	public int ShurikenNumber = 3;
+	public float AngleSpread = 90; 
 
 	protected override void SpecialAction()
 	{
-		TimeCooldown specialCooldown = new TimeCooldown(this);
-		specialCooldown.onProgress += OnFantomActive;
-		specialCooldown.onFinish += OnFantomFinish;
-		specialCooldown.Set(SpecialLength);
-		//TODO : ANIM
-		_ghostParticles.Clear();
-		_ghostParticles.Play();
-		gameObject.layer = LayerMask.NameToLayer("PlayerGhost");
-		_rigidB.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
+		_animator.SetTrigger("Special");
+		_characterData.SoundList["OnSpecialActivate"].Play(gameObject);
+
+		Vector3 newDirection = Quaternion.AngleAxis(- AngleSpread * 0.5f, Vector3.up) * transform.forward;
+		for (int i = 0; i < ShurikenNumber; i++)
+		{
+			ThrowShuriken(newDirection);
+			newDirection = Quaternion.AngleAxis(AngleSpread / (ShurikenNumber - 1), Vector3.up) * newDirection;
+		}
 	}
 
-	private void OnFantomActive()
+	private void ThrowShuriken(Vector3 direction)
 	{
-		_rigidB.velocity = _rigidB.velocity.ZeroY();
-		_activeSpeed = _activeSpeed.ZeroY();
-		IsGrounded = true;
+		GameObject shuriken = GameObjectPool.GetAvailableObject("Shuriken");
+
+		shuriken.GetComponent<Shuriken>().Launch(transform.position + transform.forward, direction, _characterData.SpecialDamageData, gameObject.GetInstanceID());
+		if (ArenaManager.Instance != null)
+			shuriken.transform.parent = ArenaManager.Instance.SpecialsRoot;
 	}
-
-	private void OnFantomFinish()
-	{
-		gameObject.layer = LayerMask.NameToLayer("PlayerDefault");
-		_rigidB.constraints = RigidbodyConstraints.FreezeRotation;
-
-		_ghostParticles.Stop();
-	}
-
 }

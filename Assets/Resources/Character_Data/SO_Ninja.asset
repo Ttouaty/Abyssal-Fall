@@ -22,7 +22,6 @@ MonoBehaviour:
     strength: 2
     speed: 8
     resistance: 2
-  SpecialEjection: {x: 3, y: 3.27, z: 0}
   Dash:
     endingLag: 0.1
     Forces:
@@ -33,15 +32,32 @@ MonoBehaviour:
   DashDamageData:
     AttackTypeUsed: 0
     StunInflicted: 0.3
+    IsParryable: 0
+    Projectile: {fileID: 0}
   SpecialDamageData:
     AttackTypeUsed: 1
-    StunInflicted: 0.3
+    StunInflicted: 0.15
+    IsParryable: 1
+    Projectile: {fileID: 0}
   SpecialCoolDown: 0.5
   SpecialLag: 0.1
   SoundList:
-    OnDashStart: {fileID: 0}
-    OnDashEnd: {fileID: 0}
-    OnDeath: {fileID: 0}
-    OnSpecialActivate: {fileID: 0}
-    OnHit: {fileID: 0}
-  OtherAssetsToLoad: []
+    SoundList:
+    - Key: OnDashStart
+      FmodEvent: 
+    - Key: OnDashEnd
+      FmodEvent: 
+    - Key: OnDeath
+      FmodEvent: 
+    - Key: OnHit
+      FmodEvent: 
+    - Key: OnSpecialActivate
+      FmodEvent: 
+    - Key: OnSpecialRestored
+      FmodEvent: 
+    - Key: OnParry
+      FmodEvent: 
+  OtherAssetsToLoad:
+  - Name: Shuriken
+    Prefab: {fileID: 1000011368359532, guid: f1d3700a7eb68df419c0199ca68bf167, type: 2}
+    Quantity: 50
