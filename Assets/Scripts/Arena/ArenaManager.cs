@@ -215,8 +215,8 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 		Map = ParseMapFile();
 
 		Position = new Vector3(
-			transform.position.x - _currentMapConfig.MapSize.x * 0.5f * TileScale + 0.5f * TileScale, 
-			Camera.main.transform.position.y + 20.0f,
+			transform.position.x - _currentMapConfig.MapSize.x * 0.5f * TileScale + 0.5f * TileScale,
+			transform.position.y + 50,
 			transform.position.z - _currentMapConfig.MapSize.y * 0.5f * TileScale + 0.5f * TileScale
 		);
 

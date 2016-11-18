@@ -148,10 +148,10 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 
 	protected Transform _transf;
 	protected Rigidbody _rigidB;
+	protected FacialExpresionModule _FEMref;
 	protected RaycastHit _hit;
 
 	#endregion
-
 	protected Vector3 _activeSpeed = Vector3.zero; // Activespeed est un vecteur qui est appliqué a chaque frame au rigibody.velocity => permet de modifier librement la vitesse du player.
 	protected Vector3 _activeDirection = Vector3.forward;
 	protected Vector2 _originalMaxSpeed;
@@ -279,7 +279,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 		_specialCooldown.onFinish = OnSpecialReset;
 
 		_stunTimer = new TimeCooldown(this);
-		_stunTimer.onFinish = () => { _isStunned = false; _allowInput = true; };
+		_FEMref = playerMesh.GetComponent<CharacterModel>().FEMref;
+		_stunTimer.onFinish = () => { _isStunned = false; _allowInput = true; _FEMref.SetExpression(_FEMref.StartingExpression); };
 		_stunTimer.onProgress = () =>
 		{
 			if (!IsGrounded) { _stunTimer.Add(TimeManager.DeltaTime); }
@@ -338,13 +339,18 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 		CameraManager.Instance.AddTargetToTrack(transform);
 		_activeDirection = transform.rotation * Vector3.forward;
 
-		CustomStart();
+
+
+			CustomStart();
 
 	}
 	protected void Update()
 	{
 		if (_isDead || TimeManager.IsPaused)
 			return;
+
+		if (InputManager.GetButtonDown("f5"))
+			_FEMref.SetExpression("Kawai");
 
 		//had to do that :p
 		if (_forcedAirbornTimeout.TimeLeft > 0)
@@ -361,6 +367,11 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 		ApplyCharacterFinalVelocity();
 
 		_animator.SetBool("IsGrounded", IsGrounded);
+
+		if (IsGrounded)
+			_rigidB.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionY;
+		else
+			_rigidB.constraints = RigidbodyConstraints.FreezeRotation;
 
 		CustomUpdate();
 	}
@@ -408,6 +419,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 	protected virtual void OnPlayerWin()
 	{
 		_allowInput = false;
+		_FEMref.SetExpression("Happy");
 		//enabled = false;
 		Freeze();
 		//_animator.SetTrigger("Reset");
@@ -494,6 +506,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 
 	private void ProcessActiveSpeed()
 	{
+
 		if (IsGrounded)
 		{
 			bool secureAllowInput = _allowInput; // just security
@@ -533,6 +546,18 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 	{
 		IsGrounded = true;
 		_activeSpeed.y = 0f;
+
+
+		Physics.Raycast(transform.position, Vector3.down, out _hit, 3, 1 << LayerMask.NameToLayer("Ground"));
+
+		if (_hit.point.magnitude > 1)
+		{
+			Vector3 tempPosition = transform.position;
+			tempPosition.y = _hit.point.y + (transform.position.y - (GetComponent<Collider>().bounds.center.y - GetComponent<Collider>().bounds.extents.y));
+			transform.position = tempPosition;
+		}
+		else
+			Debug.Log("point zero detected");
 		//_airborneTimeout.Set(_airborneDelay);
 		_dashMaxed = false;
 	}
@@ -540,7 +565,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 	private void ApplyCharacterFinalVelocity()
 	{
 		_rigidB.velocity = _activeSpeed;
-		_animator.SetFloat("Speed", _activeSpeed.magnitude);
+		_animator.SetFloat("Speed", _activeSpeed.ZeroY().magnitude);
 	}
 
 
@@ -554,6 +579,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 	public void Kill()
 	{
 		Debug.Log("Player n°"+_playerRef.PlayerNumber+" with character "+_characterData.IngameName+" is DED!");
+
+		_FEMref.SetExpression("Fear");
 		_animator.SetTrigger("Death");
 		_characterData.SoundList["OnDeath"].Play(gameObject);
 		_isDead = true;
@@ -592,7 +619,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 			CameraManager.Shake(ShakeStrength.Medium);
 
 
-
+		_FEMref.SetExpression("Pain");
 		Eject(direction);
 		if (data.StunInflicted > 0)
 			_stunTimer.Set(data.StunInflicted);
@@ -630,8 +657,6 @@ public class PlayerController : MonoBehaviour, IDamageable, IDamaging
 		gameObject.layer = LayerMask.NameToLayer("PlayerInvul");
 
 		ForceAirborne(0.4f);
-
-		CameraManager.Shake(ShakeStrength.Verylow);
 
 		yield return new WaitForSeconds(0.1f);
 		while (!IsGrounded)

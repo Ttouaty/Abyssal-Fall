@@ -41,11 +41,6 @@ public class GroundCheck : MonoBehaviour
 	void LateUpdate()
 	{
 		_playerRef.IsGrounded = _colliderIds.Count > 0;
-
-		//if (Physics.Raycast(transform.position, Vector3.down, out _hit, _ownSize + 0.1f, 1 << LayerMask.NameToLayer("Ground")))
-		//{
-
-		//}
 	}
 
 	void OnTriggerEnter(Collider colli)

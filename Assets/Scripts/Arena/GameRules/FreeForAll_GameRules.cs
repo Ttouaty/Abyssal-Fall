@@ -32,9 +32,6 @@ public class FreeForAll_GameRules : AGameRules
 	{
 		//yield return new WaitForSeconds(5f);
 		//GameObjectPool.AddObjectIntoPool(tile.gameObject);
-
-
-		Debug.Log("THAT WAS IT !");
 		yield return null;
 	}
 
