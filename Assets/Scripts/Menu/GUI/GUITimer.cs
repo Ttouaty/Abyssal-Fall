@@ -21,7 +21,7 @@ public class GUITimer : MonoBehaviour
 
 	void Awake ()
 	{
-		_timerDisplay = GetComponent<Localizator.LocalizedText>();
+		_timerDisplay = GetComponentInChildren<Localizator.LocalizedText>();
 	}
 
 	public void Stop ()

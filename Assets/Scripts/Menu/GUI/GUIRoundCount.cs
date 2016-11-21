@@ -8,7 +8,7 @@ public class GUIRoundCount : MonoBehaviour
 	
 	void Awake()
 	{
-		_RoundCountDisplay = GetComponent<Localizator.LocalizedText>();
+		_RoundCountDisplay = GetComponentInChildren<Localizator.LocalizedText>();
 	}
 
 	public void SetRound(int round)
