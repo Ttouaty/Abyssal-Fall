@@ -39,7 +39,16 @@ public class Player : NetworkBehaviour
 
 	void Awake()
 	{
-		PlayerNumber = Network.connections.Length;
+		PlayerNumber = ServerManager.Instance.RegisteredPlayers.Count + 1;
+		if (MenuManager.Instance != null)
+		{
+			for (int i = 0; i < MenuManager.Instance.LocalJoystickBuffer.Count; i++)
+			{
+				JoystickNumber = MenuManager.Instance.LocalJoystickBuffer[i];
+				MenuManager.Instance.LocalJoystickBuffer.RemoveAt(i);
+				break;
+			}
+		}
 	}
 
 	public void SelectCharacter(ref PlayerController newCharacter)
@@ -64,5 +73,14 @@ public class Player : NetworkBehaviour
 	{
 		_characterUsed = null;
 		isReady = false;
+	}
+
+	void OnDestroy()
+	{
+		if (isServer)
+		{
+			if (Controller != null)
+				Destroy(Controller.gameObject);
+		}
 	}
 }

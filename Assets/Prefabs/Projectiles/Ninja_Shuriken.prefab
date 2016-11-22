@@ -41,6 +41,8 @@ GameObject:
   - 135: {fileID: 135000014073807860}
   - 114: {fileID: 114000013443627944}
   - 114: {fileID: 114000013742008496}
+  - 114: {fileID: 114000013709052114}
+  - 114: {fileID: 114000011111612976}
   m_Layer: 0
   m_Name: Ninja_Shuriken
   m_TagString: Untagged
@@ -99,7 +101,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000011368359532}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 20.339586, y: 3.43, z: -169.99008}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
@@ -208,6 +210,26 @@ Animation:
   m_PlayAutomatically: 1
   m_AnimatePhysics: 0
   m_CullingType: 0
+--- !u!114 &114000011111612976
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000011368359532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1768714887, guid: 870353891bb340e2b2a9c8707e7419ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_TransformSyncMode: 3
+  m_SendInterval: 0
+  m_SyncRotationAxis: 2
+  m_RotationSyncCompression: 0
+  m_SyncSpin: 0
+  m_MovementTheshold: 0.001
+  m_SnapThreshold: 5
+  m_InterpolateRotation: 1
+  m_InterpolateMovement: 1
 --- !u!114 &114000013443627944
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -228,6 +250,38 @@ MonoBehaviour:
     Reserve: []
     Name: 
   IsInPool: 0
+--- !u!114 &114000013709052114
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000011368359532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 372142912, guid: 870353891bb340e2b2a9c8707e7419ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SceneId:
+    m_Value: 0
+  m_AssetId:
+    i0: 241
+    i1: 211
+    i2: 112
+    i3: 10
+    i4: 126
+    i5: 182
+    i6: 141
+    i7: 244
+    i8: 25
+    i9: 192
+    i10: 25
+    i11: 156
+    i12: 166
+    i13: 139
+    i14: 241
+    i15: 103
+  m_ServerOnly: 0
+  m_LocalPlayerAuthority: 0
 --- !u!114 &114000013742008496
 MonoBehaviour:
   m_ObjectHideFlags: 1

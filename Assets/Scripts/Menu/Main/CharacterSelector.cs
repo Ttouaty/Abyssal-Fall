@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 using System.Collections.Generic;
 using System;
@@ -31,6 +32,7 @@ public class CharacterSelector : MonoBehaviour
 		{
 			if (!SlotsAvailable[i].Open)
 			{
+				NetworkServer.Spawn(SlotsAvailable[i].gameObject);
 				SlotsAvailable[i].OpenSlot(i, JoyToListen);
 				return;
 			}

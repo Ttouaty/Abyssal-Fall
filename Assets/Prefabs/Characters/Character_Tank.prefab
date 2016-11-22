@@ -11,6 +11,8 @@ GameObject:
   - 54: {fileID: 5479542}
   - 136: {fileID: 13681318}
   - 114: {fileID: 11405882}
+  - 114: {fileID: 114000012299761450}
+  - 114: {fileID: 114000014162069242}
   m_Layer: 14
   m_Name: Character_Tank
   m_TagString: Player
@@ -83,7 +85,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 144624}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 34.13, y: 3.23, z: -164.47}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
@@ -119,6 +121,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f651276d4beebd4686f01d528c7b8d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerRef: {fileID: 0}
   _isInvul: 0
   Spawn: {fileID: 0}
   _animator: {fileID: 0}
@@ -2004,6 +2007,38 @@ Transform:
   m_Children: []
   m_Father: {fileID: 437672}
   m_RootOrder: 3
+--- !u!114 &114000012299761450
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 144624}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 372142912, guid: 870353891bb340e2b2a9c8707e7419ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SceneId:
+    m_Value: 0
+  m_AssetId:
+    i0: 186
+    i1: 127
+    i2: 237
+    i3: 108
+    i4: 167
+    i5: 148
+    i6: 20
+    i7: 244
+    i8: 201
+    i9: 58
+    i10: 169
+    i11: 187
+    i12: 18
+    i13: 181
+    i14: 89
+    i15: 185
+  m_ServerOnly: 0
+  m_LocalPlayerAuthority: 0
 --- !u!114 &114000013766807020
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2026,6 +2061,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d2ae97db3f2bfb498d69a02d0afb60a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114000014162069242
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 144624}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1768714887, guid: 870353891bb340e2b2a9c8707e7419ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_TransformSyncMode: 3
+  m_SendInterval: 0.1
+  m_SyncRotationAxis: 7
+  m_RotationSyncCompression: 0
+  m_SyncSpin: 0
+  m_MovementTheshold: 0.001
+  m_SnapThreshold: 5
+  m_InterpolateRotation: 1
+  m_InterpolateMovement: 1
 --- !u!135 &135000011568156930
 SphereCollider:
   m_ObjectHideFlags: 1

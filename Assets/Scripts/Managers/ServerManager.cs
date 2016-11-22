@@ -13,7 +13,11 @@ public class ServerManager : NetworkManager
 
 	[SerializeField]
 	private List<Player> _alivePlayers;
+	[HideInInspector]
 	public List<Player> AlivePlayers { get { return _alivePlayers; } }
+
+	[HideInInspector]
+	public bool IsOnline = false;
 
 	public bool AreAllPlayerReady
 	{
@@ -47,7 +51,7 @@ public class ServerManager : NetworkManager
 		DynamicConfig.Instance.GetConfigs(ref tempPlayerArray);
 		for (int i = 0; i < tempPlayerArray.Length; i++)
 		{
-			ClientScene.RegisterPrefab(tempPlayerArray[i]._characterData.CharacterModel.gameObject); //Add Character models
+			ClientScene.RegisterPrefab(tempPlayerArray[i].gameObject); //Add Character
 
 			for (int j = 0; j < tempPlayerArray[i]._characterData.OtherAssetsToLoad.Length; j++)
 			{
@@ -60,6 +64,9 @@ public class ServerManager : NetworkManager
 
 		for (int i = 0; i < tempMapArray.Length; i++)
 		{
+			if (tempMapArray[i].Ground == null)
+				continue;
+
 			ClientScene.RegisterPrefab(tempMapArray[i].Ground); //Add grounds
 			ClientScene.RegisterPrefab(tempMapArray[i].Obstacle); //Add obstacle
 
@@ -68,9 +75,8 @@ public class ServerManager : NetworkManager
 				ClientScene.RegisterPrefab(tempMapArray[i].AdditionalPoolsToLoad[j].Prefab); //Add Additionnal map prefabs
 			}
 		}
-		;
 
-		Instance = singleton.gameObject.GetComponent<ServerManager>();
+		Instance = FindObjectOfType<ServerManager>();
 
 		_initialised = true;
 		return Instance;
@@ -91,14 +97,18 @@ public class ServerManager : NetworkManager
 		}
 	}
 
-	public override void OnClientConnect(NetworkConnection conn)
+	public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
 	{
-		base.OnClientConnect(conn);
-
+		Player player = (Player)Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
+		RegisteredPlayers.Add(player);
+		Debug.Log("add player joystick number here");
+		NetworkServer.AddPlayerForConnection(conn, player.gameObject, playerControllerId);
 	}
 
-	void OnPlayerConnected(NetworkPlayer player)
+	public override void OnServerRemovePlayer(NetworkConnection conn, UnityEngine.Networking.PlayerController player)
 	{
-		Debug.Log("Player " + playerCount++ + " connected from " + player.ipAddress + ":" + player.port);
+		RegisteredPlayers.Remove(player.gameObject.GetComponent<Player>());
+		base.OnServerRemovePlayer(conn, player);
+		
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 
 public abstract class GenericSingleton<T> : MonoBehaviour, IInitializable where T : Component
@@ -29,5 +30,5 @@ public abstract class GenericSingleton<T> : MonoBehaviour, IInitializable where 
 
 public interface IInitializable
 {
-	void Init ();
+	void Init();
 }

@@ -59,8 +59,6 @@ public class InputListener : MonoBehaviour
 			TestInput(i + 1);
 		}
 
-	
-
 		if ((InputMethodUsed == InputMethod.Held && !UseAxis) || (UseAxis && CanLoop))
 		{
 			if (_JoystickHeld != -1)
@@ -83,6 +81,7 @@ public class InputListener : MonoBehaviour
 
 		_JoystickHeld = -1;
 		_JoystickRequestCallback = -1;
+
 	}
 
 	void TestInput(int joystickNumber)
@@ -174,7 +173,7 @@ public class InputListener : MonoBehaviour
 		if (!CanLoop)
 			_waitForRelease[joy] = true;
 		_timeHeld = 0;
-
+		_JoystickRequestCallback = -1;
 		Callback.Invoke(new JoystickNumber(joy));
 	}
 

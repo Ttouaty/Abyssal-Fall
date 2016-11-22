@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.Events;
@@ -10,7 +11,7 @@ struct SelectedCharacters
 	public int skinIndex;
 }
 
-public class CharacterSlot : MonoBehaviour
+public class CharacterSlot : NetworkBehaviour
 {
 	private static SelectableCharacter[] _availableCharacters;
 	public static ParticleSystem OnCharacterSelectedParticles;
@@ -26,8 +27,10 @@ public class CharacterSlot : MonoBehaviour
 	private int _joyToListen; 
 	private int _playerIndex;
 	[HideInInspector]
+	[SyncVar]
 	public bool Open = false;
 	[HideInInspector]
+	[SyncVar]
 	public bool Selected = false;
 
 	public UnityEvent OnSlotOpen;
@@ -68,11 +71,10 @@ public class CharacterSlot : MonoBehaviour
 		}
 
 
-		_wheelRef = new GameObject().AddComponent<CharacterSelectWheel>();
+		_wheelRef = new GameObject("characterWheel", typeof(NetworkIdentity), typeof(NetworkTransform)).AddComponent<CharacterSelectWheel>();
 		_wheelRef.transform.SetParent(transform);
 		_wheelRef.transform.localRotation = Quaternion.identity;
 		_wheelRef.transform.position = transform.position;
-		_wheelRef.gameObject.name = "characterWheel";
 
 		_switchCharacterCooldown = new TimeCooldown(this);
 		_switchCharacterCooldown.onFinish = AllowSwitchCharacter;
@@ -238,7 +240,10 @@ public class CharacterSlot : MonoBehaviour
 		{
 			tempArray[i] = _availableCharacters[i].CharacterRef;
 		}
+
 		_wheelRef.Generate(tempArray);
+		NetworkServer.Spawn(_wheelRef.gameObject);
+
 		ChangeSkin(0);
 		Debug.Log("SLOT: " + name + " Opened, Listening to gamePad n°: " + joyToListen);
 	}

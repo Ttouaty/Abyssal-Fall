@@ -1,7 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.UI;
 using System;
+using UnityEngine.Networking;
+
+[Serializable]
+public enum OpenCharacterSlot
+{
+	None, First, Second, Third, Fourth
+}
 
 public class MenuManager : GenericSingleton<MenuManager>
 {
@@ -29,23 +37,25 @@ public class MenuManager : GenericSingleton<MenuManager>
 	private Coroutine _miniLoadingCoroutine;
 	private bool _needFTUE = false;
 
+	[HideInInspector]
+	public List<int> LocalJoystickBuffer = new List<int>();
+
 	public bool NeedFTUE { get { return _needFTUE; } }
 
 	protected override void Awake()
 	{
-		base.Awake();
 
 		_canvas = GetComponentInChildren<Canvas>();
-		_menuArray                      = GetComponentsInChildren<MenuPanel>();
-		_splashscreens                  = SplashScreens.GetComponentsInChildren<RawImage>();
-		_characterSlotsContainerRef     = GetComponentInChildren<CharacterSelector>();
-		_metaContainer					= _canvas.transform.FindChild("Meta");
+		_menuArray = GetComponentsInChildren<MenuPanel>();
+		_splashscreens = SplashScreens.GetComponentsInChildren<RawImage>();
+		_characterSlotsContainerRef = GetComponentInChildren<CharacterSelector>();
+		_metaContainer = _canvas.transform.FindChild("Meta");
 
 		_needFTUE = !PlayerPrefs.HasKey("FTUEDone");
 
 		_leftMenuAnchor = _metaContainer.Find("LeftMenuAnchor");
-		_centerMenuAnchor	= _metaContainer.Find("CenterMenuAnchor");
-		_rightMenuAnchor	= _metaContainer.Find("RightMenuAnchor");
+		_centerMenuAnchor = _metaContainer.Find("CenterMenuAnchor");
+		_rightMenuAnchor = _metaContainer.Find("RightMenuAnchor");
 	}
 
 	void Start()
@@ -110,11 +120,26 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	public void RegisterNewPlayer(JoystickNumber joystickNumber)
 	{
+		if (!ServerManager.Instance.IsOnline)
+		{
+			if (_controllerAlreadyInUse[joystickNumber] || ServerManager.Instance.RegisteredPlayers.Count >= 4)
+				return;
+			ServerManager.singleton.StartClient();
 
-		Debug.Log("redo that");
+			LocalJoystickBuffer.Add(joystickNumber);
+			_controllerAlreadyInUse[joystickNumber] = true;
+			_characterSlotsContainerRef.OpenNextSlot(joystickNumber);
+		}
+		else
+			Debug.Log("need to start client with correct IP and stuff");
+	}
 
-		//if (_controllerAlreadyInUse[joystickNumber] || ServerManager.Instance.RegisteredPlayers.Count >= 4)
-		//	return;
+	void CmdRegisterNewPlayer(JoystickNumber joystickNumber)
+	{
+
+		Debug.Log("CMD recieved, need to open new characterslot");
+
+		//
 		//_controllerAlreadyInUse[joystickNumber] = true; // J'aurai pu utiliser un enum, mais je me rappellais plus comment faire dans le metro lAUl.
 
 		//Player newPlayer = new Player();
@@ -122,6 +147,25 @@ public class MenuManager : GenericSingleton<MenuManager>
 		//newPlayer.JoystickNumber = joystickNumber;
 		//_characterSlotsContainerRef.OpenNextSlot(joystickNumber);
 	}
+	//[ClientRpc]
+	//void RpcOpenCharacterSlots(OpenCharacterSlot slotsOpen)
+	//{
+	//	if (slotsOpen == OpenCharacterSlot.None)
+	//		return;
+
+
+	//	Debug.Log(slotsOpen.ToString());
+
+	//	if ((slotsOpen & OpenCharacterSlot.First) != 0)
+	//		Debug.Log("1 is open");
+	//	if ((slotsOpen & OpenCharacterSlot.Second) != 0)
+	//		Debug.Log("2 is open");
+	//	if ((slotsOpen & OpenCharacterSlot.Third) != 0)
+	//		Debug.Log("3 is open");
+	//	if ((slotsOpen & OpenCharacterSlot.Fourth) != 0)
+	//		Debug.Log("4 is open");
+
+	//}
 
 	public void StartGame()
 	{
@@ -179,7 +223,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	private IEnumerator StartTutorial()
 	{
-		yield return StartCoroutine(AutoFade.StartFade(1, 
+		yield return StartCoroutine(AutoFade.StartFade(1,
 			LevelManager.Instance.LoadSceneAlone(LevelManager.Instance.SceneTutorial),
 			AutoFade.EndFade(0.5f, 1, Color.white),
 			Color.white));
@@ -192,12 +236,12 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	IEnumerator Transition(MenuPanel newMenu, bool forward = true)
 	{
-		yield return null; // delay by one frame to avoid input error.
+		//yield return null; // delay by one frame to avoid input error.
 
 		if (_activeMenu != null)
-		{ 
+		{
 			SetActiveButtons(_activeMenu, false);
-			StopAllCoroutines();
+			//StopAllCoroutines();
 			if (forward)
 			{
 				StartCoroutine(SendOutLeft(_activeMenu));
@@ -209,7 +253,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 				StartCoroutine(SendInLeft(newMenu));
 			}
 		}
-		
+
 		if (newMenu == null)
 		{
 			StartCoroutine(SendOutLeft(_activeMenu));
@@ -217,7 +261,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 			yield break;
 		}
 
-		if(newMenu.MenuName == "GameConfig")
+		if (newMenu.MenuName == "GameConfig")
 			MessageManager.Log("! WIP ! ya rien qui marche ici, laisse tomber.");
 		else if (newMenu.MenuName == "Main")
 		{
@@ -225,19 +269,23 @@ public class MenuManager : GenericSingleton<MenuManager>
 			_characterSlotsContainerRef.CancelAllSelections(true);
 		}
 
-		SetActiveButtons(newMenu, true); // Attention peux poser des problemes si on veux avoirs des boutons verrouillés
+		SetActiveButtons(newMenu, true); // Attention peux poser des problemes si on veux avoir des boutons verrouillés
 
-		if (newMenu.LastButtonSelected == null)
-		{
-			if (newMenu.PreSelectedButton != null)
-				newMenu.PreSelectedButton.Select();
-		}
-		else 
-			newMenu.LastButtonSelected.Select();
 
 		_activeMenu = newMenu;
-		yield return null;
 		InputManager.SetInputLockTime(InputDelayBetweenTransition);
+
+		yield return new WaitForSeconds(InputDelayBetweenTransition);
+
+		if (_activeMenu.LastButtonSelected == null)
+		{
+			if (_activeMenu.PreSelectedButton != null)
+				_activeMenu.PreSelectedButton.Select();
+		}
+		else
+		{
+			_activeMenu.LastButtonSelected.Select();
+		}
 	}
 
 	IEnumerator SendOutLeft(MenuPanel targetMenu)
@@ -254,7 +302,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	IEnumerator SendInRight(MenuPanel targetMenu)
 	{
-		if(targetMenu != null)
+		if (targetMenu != null)
 		{
 			targetMenu.gameObject.SetActive(true);
 			yield return StartCoroutine(MovePanelOverTime(targetMenu, _rightMenuAnchor.localPosition, _centerMenuAnchor.localPosition));
@@ -285,7 +333,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 		targetMenu.transform.localPosition = end;
 	}
 
-	public void FadeSplashscreens (bool shouldShowSplashscreens)
+	public void FadeSplashscreens(bool shouldShowSplashscreens)
 	{
 		StartCoroutine(FadeSplashscreens_Implementation(shouldShowSplashscreens));
 	}
@@ -325,13 +373,13 @@ public class MenuManager : GenericSingleton<MenuManager>
 		yield return StartCoroutine(WaitForFixedCamera());
 
 		SetActiveButtons(_activeMenu, true);
-		if(_activeMenu.PreSelectedButton != null)
+		if (_activeMenu.PreSelectedButton != null)
 			_activeMenu.PreSelectedButton.Select();
 	}
 
 	public void LoadPreview(EArenaConfiguration levelName)
 	{
-		if(_miniLoadingCoroutine != null)
+		if (_miniLoadingCoroutine != null)
 		{
 			StopCoroutine(_miniLoadingCoroutine);
 		}
@@ -344,10 +392,10 @@ public class MenuManager : GenericSingleton<MenuManager>
 		Image loadingInImage = LoadingIn.GetComponent<Image>();
 		Image loadingOutImage = LoadingOut.GetComponent<Image>();
 
-		Color color             = Color.white;
-		color.a                 = 1.0f;
-		loadingOutImage.color   = color;
-		loadingInImage.color    = color;
+		Color color = Color.white;
+		color.a = 1.0f;
+		loadingOutImage.color = color;
+		loadingInImage.color = color;
 
 		loadingOutImage.fillAmount = 0.0f;
 		yield return StartCoroutine(LevelManager.Instance.LoadLevelPreview(levelName, (AsyncOperation async) =>
@@ -357,20 +405,20 @@ public class MenuManager : GenericSingleton<MenuManager>
 		loadingOutImage.fillAmount = 1.0f;
 
 		float timer = 1.0f;
-		while(timer > 0)
+		while (timer > 0)
 		{
-			timer                  -= Time.deltaTime;
-			color.a                 = Mathf.Lerp(1.0f, 0.0f, 1.0f - timer);
-			loadingOutImage.color   = color;
-			loadingInImage.color    = color;
+			timer -= Time.deltaTime;
+			color.a = Mathf.Lerp(1.0f, 0.0f, 1.0f - timer);
+			loadingOutImage.color = color;
+			loadingInImage.color = color;
 			yield return null;
 		}
 
 		MiniLoading.SetActive(false);
 
-		color.a                 = 1.0f;
-		loadingOutImage.color   = color;
-		loadingInImage.color    = color;
+		color.a = 1.0f;
+		loadingOutImage.color = color;
+		loadingInImage.color = color;
 	}
 
 	public static void DeactivateMenu(bool instant = false)
@@ -387,7 +435,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	private IEnumerator DeactivateMenuCoroutine()
 	{
-		MakeTransition((MenuPanel) null);
+		MakeTransition((MenuPanel)null);
 		yield return new WaitForSeconds(1);
 		gameObject.SetActive(false);
 	}
@@ -410,5 +458,17 @@ public class MenuManager : GenericSingleton<MenuManager>
 		PlayerPrefs.SetInt("FTUEDone", 1);
 		PlayerPrefs.Save();
 		MakeTransition("Main");
+	}
+
+	public void StartLocalHost()
+	{
+
+		Debug.Log("asshole");
+		ServerManager.singleton.OnStartHost();
+	}
+
+	public void SetGameIsOnline(bool online)
+	{
+		ServerManager.Instance.IsOnline = online;
 	}
 }
