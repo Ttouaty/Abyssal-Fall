@@ -21,11 +21,11 @@ public class EndStageManager : GenericSingleton<EndStageManager>
 	{
 		Close();
 
-		for (int i = 0; i < GameManager.Instance.RegisteredPlayers.Length; ++i)
+		for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; ++i)
 		{
-			if (GameManager.Instance.RegisteredPlayers[i] != null)
+			if (ServerManager.Instance.RegisteredPlayers[i] != null)
 			{
-				ScoresFields[i].CurrentPlayer = GameManager.Instance.RegisteredPlayers[i];
+				ScoresFields[i].CurrentPlayer = ServerManager.Instance.RegisteredPlayers[i];
 			}
 			ScoresFields[i].Init();
 		}

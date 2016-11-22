@@ -123,7 +123,7 @@ public class CharacterSlot : MonoBehaviour
 		}
 		//if (_activeCoroutineRef != null)
 		//	StopCoroutine(_activeCoroutineRef);
-		GameManager.Instance.RegisteredPlayers[_playerIndex].Ready(_wheelRef.GetSelectedElement(), _selectedSkinIndex);
+		ServerManager.Instance.RegisteredPlayers[_playerIndex].Ready(_wheelRef.GetSelectedElement(), _selectedSkinIndex);
 		
 		//PLACEMENT DES PARTICULES A L'ARRACHE
 		Vector3 camDirection = (Camera.main.transform.position - transform.position).normalized;
@@ -167,8 +167,8 @@ public class CharacterSlot : MonoBehaviour
 		//	StopCoroutine(_activeCoroutineRef);
 
 		Selected = false;
-		if (GameManager.Instance.RegisteredPlayers[_playerIndex] != null)
-			GameManager.Instance.RegisteredPlayers[_playerIndex].UnReady();
+		if (ServerManager.Instance.RegisteredPlayers[_playerIndex] != null)
+			ServerManager.Instance.RegisteredPlayers[_playerIndex].UnReady();
 
 		//_activeCoroutineRef = StartCoroutine(SlideCharacterModelOut());
 

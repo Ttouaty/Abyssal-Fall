@@ -52,7 +52,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 	{
 		_canvas.worldCamera = Camera.main;
 		MiniLoading.SetActive(false);
-		GameManager.ResetRegisteredPlayers();
+		ServerManager.ResetRegisteredPlayers();
 		_menuArray = GetComponentsInChildren<MenuPanel>();
 
 		_activeMenu = _menuArray[0];
@@ -105,19 +105,22 @@ public class MenuManager : GenericSingleton<MenuManager>
 	{
 		//Trashy way but fuck it.
 		_controllerAlreadyInUse = new bool[12];
-		GameManager.ResetRegisteredPlayers();
+		ServerManager.ResetRegisteredPlayers();
 	}
 
 	public void RegisterNewPlayer(JoystickNumber joystickNumber)
 	{
-		if (_controllerAlreadyInUse[joystickNumber] || GameManager.Instance.nbPlayers >= 4)
-			return;
-		_controllerAlreadyInUse[joystickNumber] = true; // J'aurai pu utiliser un enum, mais je me rappellais plus comment faire dans le metro lAUl.
 
-		Player newPlayer = new Player();
-		GameManager.Instance.RegisteredPlayers[newPlayer.PlayerNumber] = newPlayer;
-		newPlayer.JoystickNumber = joystickNumber;
-		_characterSlotsContainerRef.OpenNextSlot(joystickNumber);
+		Debug.Log("redo that");
+
+		//if (_controllerAlreadyInUse[joystickNumber] || ServerManager.Instance.RegisteredPlayers.Count >= 4)
+		//	return;
+		//_controllerAlreadyInUse[joystickNumber] = true; // J'aurai pu utiliser un enum, mais je me rappellais plus comment faire dans le metro lAUl.
+
+		//Player newPlayer = new Player();
+		//ServerManager.Instance.RegisteredPlayers[newPlayer.PlayerNumber] = newPlayer;
+		//newPlayer.JoystickNumber = joystickNumber;
+		//_characterSlotsContainerRef.OpenNextSlot(joystickNumber);
 	}
 
 	public void StartGame()

@@ -68,10 +68,10 @@ public class DeathMatch_GameRules : AGameRules
 		// TODO : Gérer les égalités
 		int i;
 		int winnerId		= 0;
-		Player winnerPlayer = GameManager.Instance.RegisteredPlayers[winnerId];
-		for (i = 0; i < GameManager.Instance.RegisteredPlayers.Length; ++i)
+		Player winnerPlayer = ServerManager.Instance.RegisteredPlayers[winnerId];
+		for (i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; ++i)
 		{
-			Player currentPlayer = GameManager.Instance.RegisteredPlayers[i];
+			Player currentPlayer = ServerManager.Instance.RegisteredPlayers[i];
 			if (currentPlayer != null)
 			{
 				currentPlayer.Controller.Freeze();

@@ -59,7 +59,7 @@ public abstract class AGameRules : MonoBehaviour
 	public virtual void OnPlayerWin_Listener ()
 	{
 		// On player win common stuff
-		GameManager.Instance.ResetAlivePlayers();
+		ServerManager.Instance.ResetAlivePlayers();
 		ArenaManager.Instance.DisableBehaviours();
 		CameraManager.Instance.ClearTrackedTargets();
 	}

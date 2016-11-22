@@ -11,14 +11,14 @@ public class CharacterSelectButton : InputListener
 
 	protected override void Update()
 	{
-		SetVisibility(GameManager.Instance.AreAllPlayerReady);
-		if (GameManager.Instance.AreAllPlayerReady) //doublon mais fuk :p
+		SetVisibility(ServerManager.Instance.AreAllPlayerReady);
+		if (ServerManager.Instance.AreAllPlayerReady) //doublon mais fuk :p
  			base.Update();
 	}
 
 	protected override void LaunchCallback(int joy)
 	{
-		if (GameManager.Instance.AreAllPlayerReady)
+		if (ServerManager.Instance.AreAllPlayerReady)
 			base.LaunchCallback(joy);
 	}
 

@@ -1,14 +1,14 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 
-public class Player
+public class Player : NetworkBehaviour
 {
-	[HideInInspector]
-	public int PlayerNumber;
+
 	[HideInInspector]
 	public int JoystickNumber = 0;
 	[HideInInspector]
-	public int SkinNumber = 0; //the index of the material used by the playerMesh
+	
 	public int Score = 0;
 	public bool isReady
 	{
@@ -16,10 +16,16 @@ public class Player
 		private set{ _ready = value; }
 	}
 
+	[SyncVar]
 	private bool _ready;
-
-	// PlayerController Instantiated
-	public PlayerController Controller;
+	[HideInInspector]
+	[SyncVar]
+	public int SkinNumber = 0; //the index of the material used by the playerMesh
+	[HideInInspector]
+	[SyncVar]
+	public int PlayerNumber;
+	[HideInInspector]
+	public PlayerController Controller;// PlayerController Instantiated
 
 	// PlayerController Prefab Model
 	private PlayerController _characterUsed;
@@ -31,11 +37,10 @@ public class Player
 		}
 	}
 
-	public Player()
+	void Awake()
 	{
-		PlayerNumber = GameManager.Instance.nbPlayers++;
+		PlayerNumber = Network.connections.Length;
 	}
-
 
 	public void SelectCharacter(ref PlayerController newCharacter)
 	{

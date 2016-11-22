@@ -22,23 +22,6 @@ public class GameManager : GenericSingleton<GameManager>
 {
 	public static bool InProgress = false;
 
-	public bool AreAllPlayerReady
-	{
-		get
-		{
-			if (nbPlayers < 2)
-				return false;
-
-			for (int i = 0; i < nbPlayers; ++i)
-			{
-				if (!RegisteredPlayers[i].isReady)
-					return false;
-			}
-			return true;
-		}
-	}
-
-
 	private AGameRules _gameRules;
 	public AGameRules GameRules 
 	{
@@ -70,10 +53,10 @@ public class GameManager : GenericSingleton<GameManager>
 	public AudioSource AudioSource;
 	public AudioSource GameLoop;
 
-	[HideInInspector]
-	public Player[] RegisteredPlayers = new Player[4];
-	// [HideInInspector]
-	public int nbPlayers = -1;
+	//[HideInInspector]
+	//public Player[] RegisteredPlayers = new Player[4];
+	//// [HideInInspector]
+	//public int nbPlayers = -1;
 
 	public GameEventDeath OnPlayerDeath;
 	public GameEventWin OnPlayerWin;
@@ -82,15 +65,13 @@ public class GameManager : GenericSingleton<GameManager>
 	public GameConfiguration  CurrentGameConfiguration;
 
 	public int CurrentStage = 0;
-	[SerializeField]
-	private List<Player> _alivePlayers;
-	public List<Player> AlivePlayers { get { return _alivePlayers; } }
+	
 
 	public void StartGame()
 	{
-		ResetAlivePlayers();
+		ServerManager.Instance.ResetAlivePlayers();
 		// DEBUG en attendant que la sélection de la map soit dispo
-		switch (_alivePlayers.Count)
+		switch (ServerManager.Instance.AlivePlayers.Count)
 		{
 			case 2: CurrentGameConfiguration.MapConfiguration = EMapConfiguration.TestArena20x20; break;
 			case 3: CurrentGameConfiguration.MapConfiguration = EMapConfiguration.TestArena26x26; break;
@@ -108,21 +89,5 @@ public class GameManager : GenericSingleton<GameManager>
 	}
 
 
-	public static void ResetRegisteredPlayers()
-	{
-		Instance.RegisteredPlayers = new Player[4];
-		Instance.nbPlayers = 0;
-	}
-
-	public void ResetAlivePlayers ()
-	{
-		_alivePlayers = new List<Player>();
-		for (int i = 0; i < RegisteredPlayers.Length; ++i)
-		{
-			if (RegisteredPlayers[i] != null)
-			{
-				_alivePlayers.Add(RegisteredPlayers[i]);
-			}
-		}
-	}
+	
 }

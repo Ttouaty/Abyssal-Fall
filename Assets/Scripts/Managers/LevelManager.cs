@@ -141,9 +141,9 @@ public class LevelManager : GenericSingleton<LevelManager>
 			MainManager.Instance.GAME_OBJECT_POOL.AddPool(newPoolToLoad);
 
 			int i;
-			for (i = 0; i < GameManager.Instance.nbPlayers; ++i)
+			for (i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; ++i)
 			{
-				Player player = GameManager.Instance.RegisteredPlayers[i];
+				Player player = ServerManager.Instance.RegisteredPlayers[i];
 				if (player != null)
 				{
 					PoolConfiguration[] assets = player.CharacterUsed._characterData.OtherAssetsToLoad;

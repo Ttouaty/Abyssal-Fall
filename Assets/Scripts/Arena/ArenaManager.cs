@@ -181,10 +181,10 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 		yield return StartCoroutine(LoadArena(animate));
 
 		// Spanw Players
-		_players = new GameObject[GameManager.Instance.nbPlayers];
-		for (int i = 0; i < GameManager.Instance.nbPlayers; ++i)
+		_players = new GameObject[ServerManager.Instance.RegisteredPlayers.Count];
+		for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; ++i)
 		{
-			Player player = GameManager.Instance.RegisteredPlayers[i];
+			Player player = ServerManager.Instance.RegisteredPlayers[i];
 			if (player != null)
 			{
 				_players[i] = Instantiate(player.CharacterUsed.gameObject);

@@ -10,9 +10,9 @@ public class MenuPauseManager : GenericSingleton<MenuPauseManager>
 
 	void Update ()
 	{
-		//for(int i = 0; i < GameManager.Instance.RegisteredPlayers.Length; ++i)
+		//for(int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; ++i)
 		//{
-		//	Player player = GameManager.Instance.RegisteredPlayers[i];
+		//	Player player = ServerManager.Instance.RegisteredPlayers[i];
 		//	if(player != null)
 		//	{
 		//		if(InputManager.GetButtonDown("Start", player.JoystickNumber) && CanPause)
@@ -28,11 +28,11 @@ public class MenuPauseManager : GenericSingleton<MenuPauseManager>
 		IsOpen = true;
 		Close();
 
-		for (int i = 0; i < GameManager.Instance.RegisteredPlayers.Length; ++i)
+		for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; ++i)
 		{
-			if(GameManager.Instance.RegisteredPlayers[i] != null)
+			if(ServerManager.Instance.RegisteredPlayers[i] != null)
 			{
-				ScoresFields[i].CurrentPlayer = GameManager.Instance.RegisteredPlayers[i];
+				ScoresFields[i].CurrentPlayer = ServerManager.Instance.RegisteredPlayers[i];
 			}
 			ScoresFields[i].Init();
 		}
@@ -63,7 +63,7 @@ public class MenuPauseManager : GenericSingleton<MenuPauseManager>
 		}
 		transform.GetChild(0).gameObject.SetActive(true);
 
-		List<Player> alives = GameManager.Instance.AlivePlayers;
+		List<Player> alives = ServerManager.Instance.AlivePlayers;
 		if (alives != null)
 		{
 			for (int i = 0; i < alives.Count; ++i)
@@ -92,7 +92,7 @@ public class MenuPauseManager : GenericSingleton<MenuPauseManager>
 		transform.GetChild(0).gameObject.SetActive(false);
 		IsOpen = false;
 
-		List<Player> alives = GameManager.Instance.AlivePlayers;
+		List<Player> alives = ServerManager.Instance.AlivePlayers;
 		if(alives != null)
 		{
 			for (int i = 0; i < alives.Count; ++i)

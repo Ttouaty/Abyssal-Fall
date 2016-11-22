@@ -23,6 +23,8 @@ public class MainManager : GenericSingleton<MainManager>
 	[HideInInspector]
 	public ArenaManager ARENA_MANAGER;
 	[HideInInspector]
+	public ServerManager SERVER_MANAGER;
+	[HideInInspector]
 	public CameraManager OriginalCameraManager;
 
 	protected override void Awake ()
@@ -38,6 +40,7 @@ public class MainManager : GenericSingleton<MainManager>
 		INPUT_MANAGER       = InputManager.Instance;
 		COOLDOWN_MANAGER    = CoolDownManager.Instance;
 		GAME_MANAGER        = GameManager.Instance;
+		SERVER_MANAGER      = ServerManager.Init();
 		OriginalCameraManager = CameraManager.Instance;
 
 		Dictionary<string, Object> dic = new Dictionary<string, Object>()
