@@ -26,7 +26,7 @@ public class FacialExpresionModule : MonoBehaviour
 	{
 		if (ExpressionMaterialModel == null)
 		{
-			Debug.LogError("No ExpressionMaterialModel set for expression module in " + gameObject.name);
+			Debug.LogWarning("No ExpressionMaterialModel set for expression module in " + gameObject.name);
 			enabled = false;
 			return;
 		}
@@ -38,6 +38,8 @@ public class FacialExpresionModule : MonoBehaviour
 
 	public void SetExpression(string expressionName)
 	{
+		if (!enabled)
+			return;
 		if (!_generated)
 		{
 			Generate();
