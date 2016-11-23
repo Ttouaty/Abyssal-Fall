@@ -242,6 +242,7 @@ public class CharacterSlot : NetworkBehaviour
 		}
 
 		_wheelRef.Generate(tempArray);
+
 		NetworkServer.Spawn(_wheelRef.gameObject);
 
 		ChangeSkin(0);

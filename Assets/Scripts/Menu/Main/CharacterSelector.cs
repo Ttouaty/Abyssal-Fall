@@ -32,14 +32,17 @@ public class CharacterSelector : MonoBehaviour
 		{
 			if (!SlotsAvailable[i].Open)
 			{
-				NetworkServer.Spawn(SlotsAvailable[i].gameObject);
-				SlotsAvailable[i].OpenSlot(i, JoyToListen);
+				//NetworkServer.Spawn(SlotsAvailable[i].gameObject);
+				//SlotsAvailable[i].OpenSlot(i, JoyToListen);
+				Debug.Log("open new slot");
 				return;
 			}
 		}
 
 		Debug.LogWarning("no more slots to open !");
 	}
+
+	
 
 	public void CancelAllSelections(bool needClose = true)
 	{

@@ -5,12 +5,6 @@ using UnityEngine.UI;
 using System;
 using UnityEngine.Networking;
 
-[Serializable]
-public enum OpenCharacterSlot
-{
-	None, First, Second, Third, Fourth
-}
-
 public class MenuManager : GenericSingleton<MenuManager>
 {
 	[HideInInspector]
@@ -110,7 +104,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 			LoadPreview(EArenaConfiguration.Hell);
 		}
 	}
-
+	
 	private void ResetPlayers()
 	{
 		//Trashy way but fuck it.
@@ -122,50 +116,29 @@ public class MenuManager : GenericSingleton<MenuManager>
 	{
 		if (!ServerManager.Instance.IsOnline)
 		{
-			if (_controllerAlreadyInUse[joystickNumber] || ServerManager.Instance.RegisteredPlayers.Count >= 4)
+			if (_controllerAlreadyInUse[joystickNumber] || LocalJoystickBuffer.Count >= 4)
 				return;
-			ServerManager.singleton.StartClient();
+
+			if (!ServerManager.singleton.isNetworkActive)
+				StartLocalHost();
+			else
+			{
+				GameObject newLocalPlayer = Instantiate(ServerManager.singleton.playerPrefab);
+				NetworkServer.Spawn(newLocalPlayer);
+				//ClientScene.AddPlayer(newLocalPlayer.GetComponent<Player>().playerControllerId);
+			}
 
 			LocalJoystickBuffer.Add(joystickNumber);
 			_controllerAlreadyInUse[joystickNumber] = true;
-			_characterSlotsContainerRef.OpenNextSlot(joystickNumber);
 		}
 		else
 			Debug.Log("need to start client with correct IP and stuff");
 	}
 
-	void CmdRegisterNewPlayer(JoystickNumber joystickNumber)
+	public void OpenCharacterSlot(int joystickNumber)
 	{
-
-		Debug.Log("CMD recieved, need to open new characterslot");
-
-		//
-		//_controllerAlreadyInUse[joystickNumber] = true; // J'aurai pu utiliser un enum, mais je me rappellais plus comment faire dans le metro lAUl.
-
-		//Player newPlayer = new Player();
-		//ServerManager.Instance.RegisteredPlayers[newPlayer.PlayerNumber] = newPlayer;
-		//newPlayer.JoystickNumber = joystickNumber;
-		//_characterSlotsContainerRef.OpenNextSlot(joystickNumber);
+		_characterSlotsContainerRef.OpenNextSlot(joystickNumber);
 	}
-	//[ClientRpc]
-	//void RpcOpenCharacterSlots(OpenCharacterSlot slotsOpen)
-	//{
-	//	if (slotsOpen == OpenCharacterSlot.None)
-	//		return;
-
-
-	//	Debug.Log(slotsOpen.ToString());
-
-	//	if ((slotsOpen & OpenCharacterSlot.First) != 0)
-	//		Debug.Log("1 is open");
-	//	if ((slotsOpen & OpenCharacterSlot.Second) != 0)
-	//		Debug.Log("2 is open");
-	//	if ((slotsOpen & OpenCharacterSlot.Third) != 0)
-	//		Debug.Log("3 is open");
-	//	if ((slotsOpen & OpenCharacterSlot.Fourth) != 0)
-	//		Debug.Log("4 is open");
-
-	//}
 
 	public void StartGame()
 	{
@@ -462,13 +435,17 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	public void StartLocalHost()
 	{
-
-		Debug.Log("asshole");
-		ServerManager.singleton.OnStartHost();
+		ServerManager.singleton.StartHost();
 	}
 
 	public void SetGameIsOnline(bool online)
 	{
 		ServerManager.Instance.IsOnline = online;
+	}
+
+	public void DisconnectFromServer()
+	{
+		ServerManager.singleton.StopHost();
+		ServerManager.singleton.StopClient();
 	}
 }

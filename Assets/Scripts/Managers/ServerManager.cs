@@ -89,6 +89,7 @@ public class ServerManager : NetworkManager
 
 	public void ResetAlivePlayers()
 	{
+
 		_alivePlayers = new List<Player>();
 
 		for (int i = 0; i < _activePlayers.Count; ++i)
@@ -99,16 +100,23 @@ public class ServerManager : NetworkManager
 
 	public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
 	{
-		Player player = (Player)Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
-		RegisteredPlayers.Add(player);
-		Debug.Log("add player joystick number here");
-		NetworkServer.AddPlayerForConnection(conn, player.gameObject, playerControllerId);
+		GameObject player = Instantiate(playerPrefab, transform) as GameObject;
+		RegisteredPlayers.Add(player.GetComponent<Player>());
+
+		player.GetComponent<Player>().PlayerNumber = RegisteredPlayers.Count;
+
+		NetworkServer.AddPlayerForConnection(conn, player, playerControllerId);
+
+		player.GetComponent<Player>().RpcOpenTargetSlot(player.GetComponent<Player>().PlayerNumber);
+
 	}
+
+	
 
 	public override void OnServerRemovePlayer(NetworkConnection conn, UnityEngine.Networking.PlayerController player)
 	{
 		RegisteredPlayers.Remove(player.gameObject.GetComponent<Player>());
-		base.OnServerRemovePlayer(conn, player);
-		
+
+		base.OnServerRemovePlayer(conn, player);		
 	}
 }
