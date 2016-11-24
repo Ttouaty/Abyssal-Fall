@@ -30,6 +30,7 @@ public class MainManager : GenericSingleton<MainManager>
 	protected override void Awake ()
 	{
 		base.Awake();
+		//DontDestroyOnLoad(gameObject);
 
 		Cursor.visible = false;
 

@@ -8,7 +8,6 @@ public class Player : NetworkLobbyPlayer
 	[HideInInspector]
 	public int JoystickNumber = 0;
 	[HideInInspector]
-	
 	public int Score = 0;
 	public bool isReady
 	{
@@ -36,6 +35,8 @@ public class Player : NetworkLobbyPlayer
 			return _characterUsed;
 		}
 	}
+
+	private bool isSelectingCharacter = false;
 
 	public void Init(int newJoystickNumber)
 	{
@@ -84,7 +85,7 @@ public class Player : NetworkLobbyPlayer
 			{
 				if (MenuManager.Instance.LocalJoystickBuffer.Count != 0)
 				{
-					JoystickNumber = MenuManager.Instance.LocalJoystickBuffer[MenuManager.Instance.LocalJoystickBuffer.Count - 1];
+					Init(MenuManager.Instance.LocalJoystickBuffer[MenuManager.Instance.LocalJoystickBuffer.Count - 1]);
 					Debug.Log("player created with joystick number :" + JoystickNumber);
 				}
 				else
@@ -99,9 +100,12 @@ public class Player : NetworkLobbyPlayer
 	[ClientRpc]
 	public void RpcOpenTargetSlot(int slotNumber)
 	{
-		if (isLocalPlayer)
+		if (isLocalPlayer && !isSelectingCharacter)
 		{
-			MenuManager.Instance.OpenCharacterSlot(slotNumber);
+			MenuManager.Instance.OpenCharacterSlot(slotNumber, this);
+
+			Debug.LogWarning("player N°"+PlayerNumber+" listening to joystick "+JoystickNumber+" has openned slot "+slotNumber);
+			isSelectingCharacter = true;
 		}
 	}
 
@@ -112,5 +116,11 @@ public class Player : NetworkLobbyPlayer
 		{
 			MenuManager.Instance.CloseCharacterSlot(slotNumber);
 		}
+	}
+
+	[Command]
+	public void CmdSelectCharacter()
+	{
+		Debug.Log("PLayer N°"+PlayerNumber+" has selected a character");
 	}
 }

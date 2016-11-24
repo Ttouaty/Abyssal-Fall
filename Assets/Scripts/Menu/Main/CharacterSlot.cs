@@ -76,6 +76,8 @@ public class CharacterSlot : NetworkBehaviour
 		_wheelRef.transform.localRotation = Quaternion.identity;
 		_wheelRef.transform.position = transform.position;
 
+		ClientScene.RegisterPrefab(_wheelRef.gameObject);
+
 		_switchCharacterCooldown = new TimeCooldown(this);
 		_switchCharacterCooldown.onFinish = AllowSwitchCharacter;
 
@@ -223,11 +225,11 @@ public class CharacterSlot : NetworkBehaviour
 		_canSwitchCharacter = true;
 	}
 
-	public void OpenSlot(int playerNumber, int joyToListen)
+	public void OpenSlot(int playerNumber, Player player)
 	{
 		Open = true;
 		OnSlotOpen.Invoke();
-		_joyToListen = joyToListen;
+		_joyToListen = player.JoystickNumber;
 		_playerIndex = playerNumber;
 		_wheelRef.gameObject.SetActive(true);
 		_wheelRef.transform.SetParent(transform);
@@ -242,11 +244,11 @@ public class CharacterSlot : NetworkBehaviour
 		}
 
 		_wheelRef.Generate(tempArray);
-
-		NetworkServer.Spawn(_wheelRef.gameObject);
+		_wheelRef.GetComponent<NetworkIdentity>().localPlayerAuthority = true;
+		NetworkServer.SpawnWithClientAuthority(_wheelRef.gameObject, player.gameObject);
 
 		ChangeSkin(0);
-		Debug.Log("SLOT: " + name + " Opened, Listening to gamePad n°: " + joyToListen);
+		Debug.Log("SLOT: " + name + " Opened, Listening to gamePad n°: " + player.JoystickNumber);
 	}
 
 	public void CloseSlot()

@@ -26,32 +26,23 @@ public class CharacterSelector : MonoBehaviour
 		SlotsAvailable = GetComponentsInChildren<CharacterSlot>();
 	}
 
-	//public void OpenNextSlot(int JoyToListen)
-	//{
-	//	for (int i = 0; i < SlotsAvailable.Length; ++i)
-	//	{
-	//		if (!SlotsAvailable[i].Open)
-	//		{
-	//			//NetworkServer.Spawn(SlotsAvailable[i].gameObject);
-	//			//SlotsAvailable[i].OpenSlot(i, JoyToListen);
-	//			Debug.Log("open new slot");
-	//			return;
-	//		}
-	//	}
-
-	//	Debug.LogWarning("no more slots to open !");
-	//}
-
-	public void OpenTargetSlot(int slotNumber)
+	public void OpenTargetSlot(int slotNumber, Player player)
 	{
+		if (SlotsAvailable[slotNumber].Open)
+		{
+			Debug.Log("Slot "+slotNumber+" is already open !");
+			return;
+		}
 
-		Debug.Log("CharacterSelector: slot n°" + slotNumber + " is set to open");
+		SlotsAvailable[slotNumber].OpenSlot(slotNumber, player);
 	}
 
 	public void CloseTargetSlot(int slotNumber)
 	{
-
-		Debug.Log("CharacterSelector: slot n°" + slotNumber + " is set to close");
+		if (SlotsAvailable[slotNumber].Selected)
+			SlotsAvailable[slotNumber].CancelCharacterSelection();
+		if (SlotsAvailable[slotNumber].Open)
+			SlotsAvailable[slotNumber].CloseSlot();
 	}
 
 

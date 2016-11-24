@@ -137,9 +137,9 @@ public class MenuManager : GenericSingleton<MenuManager>
 			Debug.Log("need to start client with correct IP and stuff");
 	}
 
-	public void OpenCharacterSlot(int slotNumber)
+	public void OpenCharacterSlot(int slotNumber, Player player)
 	{
-		_characterSlotsContainerRef.OpenTargetSlot(slotNumber);
+		_characterSlotsContainerRef.OpenTargetSlot(slotNumber, player);
 	}
 
 	public void CloseCharacterSlot(int slotNumber)
@@ -404,6 +404,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	public static void DeactivateMenu(bool instant = false)
 	{
+		Instance.SetActiveButtons(Instance._activeMenu, false);
 		if (instant)
 		{
 			Instance.StartCoroutine(Instance.SendOutLeft(Instance._activeMenu));
@@ -411,7 +412,6 @@ public class MenuManager : GenericSingleton<MenuManager>
 		}
 		else
 			Instance.StartCoroutine(Instance.DeactivateMenuCoroutine());
-		Instance.SetActiveButtons(Instance._activeMenu, false);
 	}
 
 	private IEnumerator DeactivateMenuCoroutine()

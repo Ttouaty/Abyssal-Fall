@@ -90,6 +90,7 @@ public class ServerManager : NetworkLobbyManager
 	public override void ServerChangeScene(string sceneName)
 	{
 		// Do nothing
+		
 	}
 
 	void Start()
@@ -143,7 +144,7 @@ public class ServerManager : NetworkLobbyManager
 
 		for (int i = 0; i < RegisteredPlayers.Count; i++)
 		{
-			RegisteredPlayers[i].RpcOpenTargetSlot(player.GetComponent<Player>().PlayerNumber);
+			RegisteredPlayers[i].RpcOpenTargetSlot(player.GetComponent<Player>().PlayerNumber -1);
 		}
 	}
 
@@ -154,9 +155,9 @@ public class ServerManager : NetworkLobbyManager
 		{
 			for (int i = 0; i < RegisteredPlayers.Count; i++)
 			{
-				RegisteredPlayers[i].RpcCloseTargetSlot(player.gameObject.GetComponent<Player>().PlayerNumber - 1);
+				RegisteredPlayers[i].RpcCloseTargetSlot(player.gameObject.GetComponent<Player>().PlayerNumber -1);
 			}
 		}
-		base.OnServerRemovePlayer(conn, player);		
+		base.OnServerRemovePlayer(conn, player);
 	}
 }

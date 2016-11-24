@@ -58,7 +58,7 @@ public class CameraManager : GenericSingleton<CameraManager>
 		if (GetComponent<AudioListener>() != null)
 			GetComponent<AudioListener>().enabled = false;
 
-		if (GetComponent<FMODUnity.StudioListener>() != null)
+		if (GetComponent<FMODUnity.StudioListener>() == null)
 			gameObject.AddComponent<FMODUnity.StudioListener>();
 
 		_baseDistance = _distance = Vector3.Distance(transform.position, transform.parent.position);
