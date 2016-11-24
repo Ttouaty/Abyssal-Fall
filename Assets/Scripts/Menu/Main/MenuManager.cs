@@ -119,30 +119,38 @@ public class MenuManager : GenericSingleton<MenuManager>
 			if (_controllerAlreadyInUse[joystickNumber] || LocalJoystickBuffer.Count >= 4)
 				return;
 
-			if (!ServerManager.singleton.isNetworkActive)
-				StartLocalHost();
-			else
-			{
-				GameObject newLocalPlayer = Instantiate(ServerManager.singleton.playerPrefab);
-				NetworkServer.Spawn(newLocalPlayer);
-				//ClientScene.AddPlayer(newLocalPlayer.GetComponent<Player>().playerControllerId);
-			}
-
 			LocalJoystickBuffer.Add(joystickNumber);
 			_controllerAlreadyInUse[joystickNumber] = true;
+
+			if (!ServerManager.singleton.isNetworkActive)
+			{
+				StartLocalHost();
+				ServerManager.Instance.IsInLobby = true;
+			}
+			else
+			{
+				ServerManager.Instance.TryToAddPlayer();
+			}
+
 		}
 		else
 			Debug.Log("need to start client with correct IP and stuff");
 	}
 
-	public void OpenCharacterSlot(int joystickNumber)
+	public void OpenCharacterSlot(int slotNumber)
 	{
-		_characterSlotsContainerRef.OpenNextSlot(joystickNumber);
+		_characterSlotsContainerRef.OpenTargetSlot(slotNumber);
+	}
+
+	public void CloseCharacterSlot(int slotNumber)
+	{
+		_characterSlotsContainerRef.CloseTargetSlot(slotNumber);
 	}
 
 	public void StartGame()
 	{
 		Debug.Log("game started");
+		ServerManager.Instance.IsInLobby = false;
 		GameManager.Instance.StartGame();
 		// SpawnFallingGround.instance.Init();
 		//DeactivateMenu();

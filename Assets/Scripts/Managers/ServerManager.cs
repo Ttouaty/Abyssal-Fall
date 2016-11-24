@@ -3,7 +3,7 @@ using UnityEngine.Networking;
 using System.Collections;
 using System.Collections.Generic;
 
-public class ServerManager : NetworkManager
+public class ServerManager : NetworkLobbyManager
 {
 	public static ServerManager Instance;
 	private static bool _initialised = false;
@@ -18,6 +18,8 @@ public class ServerManager : NetworkManager
 
 	[HideInInspector]
 	public bool IsOnline = false;
+	[HideInInspector]
+	public bool IsInLobby = false;
 
 	public bool AreAllPlayerReady
 	{
@@ -82,6 +84,38 @@ public class ServerManager : NetworkManager
 		return Instance;
 	}
 
+
+
+	private string originalLobbyScene;
+	public override void ServerChangeScene(string sceneName)
+	{
+		// Do nothing
+	}
+
+	void Start()
+	{
+		offlineScene = "";
+		lobbyScene = "Scene_Root"; // Name of the scene with the network manager
+		originalLobbyScene = lobbyScene;
+	}
+	public override void OnStartClient(NetworkClient lobbyClient)
+	{
+		lobbyScene = originalLobbyScene; // Ensures the client loads correctly
+	}
+	public override void OnStopClient()
+	{
+		lobbyScene = ""; // Ensures we don't reload the scene after quitting
+	}
+	public override void OnStartServer()
+	{
+		lobbyScene = originalLobbyScene; // Ensures the server loads correctly
+	}
+	public override void OnStopServer()
+	{
+		lobbyScene = ""; // Ensures we don't reload the scene after quitting
+	}
+
+
 	public static void ResetRegisteredPlayers()
 	{
 		Instance._activePlayers.Clear();
@@ -89,7 +123,7 @@ public class ServerManager : NetworkManager
 
 	public void ResetAlivePlayers()
 	{
-
+		
 		_alivePlayers = new List<Player>();
 
 		for (int i = 0; i < _activePlayers.Count; ++i)
@@ -107,16 +141,22 @@ public class ServerManager : NetworkManager
 
 		NetworkServer.AddPlayerForConnection(conn, player, playerControllerId);
 
-		player.GetComponent<Player>().RpcOpenTargetSlot(player.GetComponent<Player>().PlayerNumber);
-
+		for (int i = 0; i < RegisteredPlayers.Count; i++)
+		{
+			RegisteredPlayers[i].RpcOpenTargetSlot(player.GetComponent<Player>().PlayerNumber);
+		}
 	}
-
-	
 
 	public override void OnServerRemovePlayer(NetworkConnection conn, UnityEngine.Networking.PlayerController player)
 	{
 		RegisteredPlayers.Remove(player.gameObject.GetComponent<Player>());
-
+		if (IsInLobby)
+		{
+			for (int i = 0; i < RegisteredPlayers.Count; i++)
+			{
+				RegisteredPlayers[i].RpcCloseTargetSlot(player.gameObject.GetComponent<Player>().PlayerNumber - 1);
+			}
+		}
 		base.OnServerRemovePlayer(conn, player);		
 	}
 }

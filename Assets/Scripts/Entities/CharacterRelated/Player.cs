@@ -2,7 +2,7 @@
 using UnityEngine.Networking;
 using System.Collections;
 
-public class Player : NetworkBehaviour
+public class Player : NetworkLobbyPlayer
 {
 
 	[HideInInspector]
@@ -80,12 +80,18 @@ public class Player : NetworkBehaviour
 	{
 		if (isLocalPlayer)
 		{
-
 			if(MenuManager.Instance != null)
 			{
-				JoystickNumber = MenuManager.Instance.LocalJoystickBuffer[0];
-				MenuManager.Instance.LocalJoystickBuffer.RemoveAt(0);
-				Debug.Log("player created with joystick number :" +JoystickNumber);
+				if (MenuManager.Instance.LocalJoystickBuffer.Count != 0)
+				{
+					JoystickNumber = MenuManager.Instance.LocalJoystickBuffer[MenuManager.Instance.LocalJoystickBuffer.Count - 1];
+					Debug.Log("player created with joystick number :" + JoystickNumber);
+				}
+				else
+				{
+					Debug.Log("No joystickBuffer found in menu manager: closing connection.");
+					ServerManager.singleton.StopClient();
+				}
 			}
 		}
 	}
@@ -96,7 +102,15 @@ public class Player : NetworkBehaviour
 		if (isLocalPlayer)
 		{
 			MenuManager.Instance.OpenCharacterSlot(slotNumber);
-			Debug.Log("slot number " + slotNumber + " is set to be opened !");
+		}
+	}
+
+	[ClientRpc]
+	public void RpcCloseTargetSlot(int slotNumber)
+	{
+		if (isLocalPlayer)
+		{
+			MenuManager.Instance.CloseCharacterSlot(slotNumber);
 		}
 	}
 }
