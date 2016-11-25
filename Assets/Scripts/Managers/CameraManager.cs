@@ -218,16 +218,8 @@ public class CameraManager : GenericSingleton<CameraManager>
 			_targetsTracked.Remove(newTarget);
 	}
 
-	bool firstTime = true;
 	public void SetCenterPoint(Transform newCenterPoint, float time, float? distance = null, bool applyRotation = false)
 	{
-		if (firstTime)
-		{
-			firstTime = false;
-			time = 2;
-			Debug.Log("CameraManager: First time SetingCenterPoint, forcing time 2s");
-		}
-
 		MoveLerp(_centerPoint, newCenterPoint, time);
 		if (applyRotation)
 			RotateLerp(_focalPoint, newCenterPoint.rotation, time);
