@@ -9,7 +9,9 @@ public class ServerManager : NetworkLobbyManager
 	private static bool _initialised = false;
 
 	private List<Player> _activePlayers = new List<Player>();
+	[HideInInspector]
 	public List<Player> RegisteredPlayers { get { return _activePlayers; } }
+
 
 	[SerializeField]
 	private List<Player> _alivePlayers;
@@ -20,6 +22,8 @@ public class ServerManager : NetworkLobbyManager
 	public bool IsOnline = false;
 	[HideInInspector]
 	public bool IsInLobby = false;
+
+	private bool _isInGame = false;
 
 	public bool AreAllPlayerReady
 	{
@@ -90,7 +94,8 @@ public class ServerManager : NetworkLobbyManager
 	public override void ServerChangeScene(string sceneName)
 	{
 		// Do nothing
-		
+
+		Debug.Log("ass");
 	}
 
 	void Start()
@@ -98,6 +103,8 @@ public class ServerManager : NetworkLobbyManager
 		offlineScene = "";
 		lobbyScene = "Scene_Root"; // Name of the scene with the network manager
 		originalLobbyScene = lobbyScene;
+		_isInGame = false;
+		_playersReadyForMapSpawn = 0;
 	}
 	public override void OnStartClient(NetworkClient lobbyClient)
 	{
@@ -109,6 +116,7 @@ public class ServerManager : NetworkLobbyManager
 	}
 	public override void OnStartServer()
 	{
+		NetworkServer.SetAllClientsNotReady();
 		lobbyScene = originalLobbyScene; // Ensures the server loads correctly
 	}
 	public override void OnStopServer()
@@ -124,7 +132,6 @@ public class ServerManager : NetworkLobbyManager
 
 	public void ResetAlivePlayers()
 	{
-		
 		_alivePlayers = new List<Player>();
 
 		for (int i = 0; i < _activePlayers.Count; ++i)
@@ -135,6 +142,9 @@ public class ServerManager : NetworkLobbyManager
 
 	public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
 	{
+		if (GameManager.InProgress)
+			conn.Dispose();
+
 		GameObject player = Instantiate(playerPrefab, transform) as GameObject;
 		RegisteredPlayers.Add(player.GetComponent<Player>());
 
@@ -159,5 +169,30 @@ public class ServerManager : NetworkLobbyManager
 			}
 		}
 		base.OnServerRemovePlayer(conn, player);
+	}
+
+	private int _playersReadyForMapSpawn = 0;
+	public void AddArenaWaiting()
+	{
+		if (_isInGame)
+		{
+			Debug.Log("is already in game");
+			return;
+		}
+
+		_playersReadyForMapSpawn++;
+		if(!IsOnline)
+		{
+			Debug.Log("launching game (normal)");
+			_isInGame = true;
+			ArenaManager.Instance.RpcAllClientReady();
+		}
+		else if(_playersReadyForMapSpawn >= RegisteredPlayers.Count) 
+		{
+			Debug.Log("launching game (online)");
+
+			_isInGame = true;
+			ArenaManager.Instance.RpcAllClientReady();
+		}
 	}
 }

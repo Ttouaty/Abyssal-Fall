@@ -16,7 +16,7 @@ public class FPSCounter : MonoBehaviour {
 	
 	void Update ()
 	{
-		_fpsDisplayed = Mathf.Lerp(_fpsDisplayed, 1 / Time.deltaTime, 2 * Time.deltaTime);
+		_fpsDisplayed = Mathf.Lerp(_fpsDisplayed, 1 / Time.deltaTime, 10 * Time.deltaTime);
 		_textRef.text = _fpsDisplayed.ToString("0.0");
 	}
 

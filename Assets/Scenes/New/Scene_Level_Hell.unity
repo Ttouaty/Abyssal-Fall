@@ -1013,6 +1013,57 @@ Prefab:
 Transform:
   m_PrefabParentObject: {fileID: 400000, guid: 8a5b4f973fe352a4cbd7ffbde499c05c, type: 3}
   m_PrefabInternal: {fileID: 121379736}
+--- !u!1001 &137014242
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 716063459}
+    m_Modifications:
+    - target: {fileID: 4000012999620624, guid: 1c564f22705f4b74fb27d3873a678000, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4000012999620624, guid: 1c564f22705f4b74fb27d3873a678000, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4000012999620624, guid: 1c564f22705f4b74fb27d3873a678000, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4000012999620624, guid: 1c564f22705f4b74fb27d3873a678000, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4000012999620624, guid: 1c564f22705f4b74fb27d3873a678000, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4000012999620624, guid: 1c564f22705f4b74fb27d3873a678000, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4000012999620624, guid: 1c564f22705f4b74fb27d3873a678000, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4000012999620624, guid: 1c564f22705f4b74fb27d3873a678000, type: 2}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000012256155670, guid: 1c564f22705f4b74fb27d3873a678000, type: 2}
+      propertyPath: m_Name
+      value: ArenaManager
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 1c564f22705f4b74fb27d3873a678000, type: 2}
+  m_IsPrefabParent: 0
+--- !u!4 &137014243 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 4000012999620624, guid: 1c564f22705f4b74fb27d3873a678000,
+    type: 2}
+  m_PrefabInternal: {fileID: 137014242}
 --- !u!1001 &154603950
 Prefab:
   m_ObjectHideFlags: 0
@@ -1861,7 +1912,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 291581966}
-  m_LocalRotation: {x: 0.011521112, y: -0.5326097, z: -0.2576418, w: 0.80611104}
+  m_LocalRotation: {x: 0.011521111, y: -0.53260964, z: -0.25764176, w: 0.8061109}
   m_LocalPosition: {x: -69, y: -204.7, z: -5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: -14.772, y: -63.548004, z: -26.127}
@@ -3472,7 +3523,6 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 716063459}
-  - 114: {fileID: 716063458}
   - 114: {fileID: 716063457}
   m_Layer: 0
   m_Name: Scene_Base_GA
@@ -3492,29 +3542,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6609df727730f5b43bc7f2a3429fc356, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeTaken: 3
+  timeTaken: 2
   distance: 30
   applyRotation: 0
   autoFocus: 1
---- !u!114 &716063458
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 716063456}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d1aa6fd5d05c8324b801bb0c0398f4e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TileScale: 1.5
-  Position: {x: 0, y: 0, z: 0}
-  ArenaRoot: {fileID: 0}
-  TilesRoot: {fileID: 0}
-  ObstaclesRoot: {fileID: 0}
-  PlayersRoot: {fileID: 0}
-  SpecialsRoot: {fileID: 0}
-  BehavioursRoot: {fileID: 0}
 --- !u!4 &716063459
 Transform:
   m_ObjectHideFlags: 0
@@ -3529,6 +3560,7 @@ Transform:
   - {fileID: 154603951}
   - {fileID: 1414342060}
   - {fileID: 1095854647}
+  - {fileID: 137014243}
   m_Father: {fileID: 0}
   m_RootOrder: 1
 --- !u!1001 &753571575
@@ -8281,7 +8313,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2035005671}
-  m_LocalRotation: {x: 0.011521111, y: -0.53260964, z: -0.25764176, w: 0.8061109}
+  m_LocalRotation: {x: 0.011521112, y: -0.5326097, z: -0.2576418, w: 0.80611104}
   m_LocalPosition: {x: -71, y: -77.7, z: 36}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: -14.772, y: -63.548004, z: -26.127}

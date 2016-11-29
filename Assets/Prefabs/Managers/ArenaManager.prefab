@@ -9,31 +9,31 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 1000010873507134}
+  m_RootGameObject: {fileID: 1000012256155670}
   m_IsPrefabParent: 1
---- !u!1 &1000010873507134
+--- !u!1 &1000012256155670
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 4
   m_Component:
-  - 4: {fileID: 4000010033167970}
-  - 114: {fileID: 114000012625342996}
-  - 114: {fileID: 114000012342111342}
+  - 4: {fileID: 4000012999620624}
+  - 114: {fileID: 114000013720775710}
+  - 114: {fileID: 114000013356596662}
   m_Layer: 0
-  m_Name: NetWorkPlayerPrefab
+  m_Name: ArenaManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4000010033167970
+--- !u!4 &4000012999620624
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000010873507134}
+  m_GameObject: {fileID: 1000012256155670}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -41,29 +41,31 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!114 &114000012342111342
+--- !u!114 &114000013356596662
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000010873507134}
+  m_GameObject: {fileID: 1000012256155670}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cf82dd1866d20e8429866d6cf43d5a23, type: 3}
+  m_Script: {fileID: 11500000, guid: d1aa6fd5d05c8324b801bb0c0398f4e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShowLobbyGUI: 0
-  JoystickNumber: 0
-  Score: 0
-  SkinNumber: 0
-  PlayerNumber: 0
-  Controller: {fileID: 0}
---- !u!114 &114000012625342996
+  TileScale: 1.5
+  Position: {x: 0, y: 0, z: 0}
+  ArenaRoot: {fileID: 0}
+  TilesRoot: {fileID: 0}
+  ObstaclesRoot: {fileID: 0}
+  PlayersRoot: {fileID: 0}
+  SpecialsRoot: {fileID: 0}
+  BehavioursRoot: {fileID: 0}
+--- !u!114 &114000013720775710
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000010873507134}
+  m_GameObject: {fileID: 1000012256155670}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 372142912, guid: 870353891bb340e2b2a9c8707e7419ba, type: 3}
@@ -72,21 +74,21 @@ MonoBehaviour:
   m_SceneId:
     m_Value: 0
   m_AssetId:
-    i0: 92
-    i1: 107
-    i2: 174
-    i3: 19
-    i4: 108
-    i5: 1
-    i6: 247
-    i7: 196
-    i8: 42
-    i9: 252
-    i10: 92
-    i11: 16
-    i12: 155
-    i13: 42
-    i14: 213
-    i15: 173
+    i0: 28
+    i1: 86
+    i2: 79
+    i3: 34
+    i4: 112
+    i5: 95
+    i6: 75
+    i7: 116
+    i8: 251
+    i9: 39
+    i10: 211
+    i11: 135
+    i12: 58
+    i13: 103
+    i14: 128
+    i15: 0
   m_ServerOnly: 0
   m_LocalPlayerAuthority: 1

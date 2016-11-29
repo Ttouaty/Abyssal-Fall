@@ -60,12 +60,15 @@ public class Player : NetworkLobbyPlayer
 		_characterUsed = linkedCharacter;
 		SkinNumber = indexSkinUsed;
 		isReady = true;
+		readyToBegin = true;
+		CmdSelectCharacter();
 	}
 
 	public void UnReady()
 	{
 		_characterUsed = null;
 		isReady = false;
+		readyToBegin = false;
 	}
 
 	void OnDestroy()
@@ -92,6 +95,7 @@ public class Player : NetworkLobbyPlayer
 				{
 					Debug.Log("No joystickBuffer found in menu manager: closing connection.");
 					ServerManager.singleton.StopClient();
+					Destroy(gameObject);
 				}
 			}
 		}
@@ -123,4 +127,5 @@ public class Player : NetworkLobbyPlayer
 	{
 		Debug.Log("PLayer N°"+PlayerNumber+" has selected a character");
 	}
+
 }

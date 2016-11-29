@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,8 +13,9 @@ public enum ETileType : int
 	HOLE        =  2
 }
 
-public class ArenaManager : GenericSingleton<ArenaManager>
+public class ArenaManager : NetworkBehaviour
 {
+	public static ArenaManager Instance;
 	#region private
 	private bool                                    _initialInit = false;
 
@@ -52,7 +54,12 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 	public MapConfiguration_SO						CurrentMapConfig	{ get { return _currentMapConfig;	} }
 	#endregion
 
-	public override void Init ()
+	void Awake()
+	{
+		Instance = this;
+	}
+
+	public void Init ()
 	{
 		if(!_initialInit)
 		{
@@ -64,7 +71,7 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 			ArenaRoot.SetParent(transform, false);
 			TilesRoot				= new GameObject("TilesRoot").transform;
 			TilesRoot.SetParent(ArenaRoot, false);
-			ObstaclesRoot			= new GameObject("ObstaclesRoot").transform;
+			ObstaclesRoot = new GameObject("ObstaclesRoot").transform;
 			ObstaclesRoot.SetParent(ArenaRoot, false);
 			PlayersRoot				= new GameObject("PlayersRoot").transform;
 			PlayersRoot.SetParent(ArenaRoot, false);
@@ -82,7 +89,8 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 			killPlane.transform.localPosition = new Vector3(0, 10, 0);
 			killPlane.layer = LayerMask.NameToLayer("KillPlane");
 
-			ResetMap(true);
+			NetworkServer.Spawn(gameObject);
+			CmdClientReady();
 		}
 		else
 		{
@@ -91,9 +99,21 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 		}
 	}
 
+	[ClientRpc]
+	public void RpcAllClientReady()
+	{
+		ResetMap(true);
+	}
+	[Command]
+	public void CmdClientReady()
+	{
+		ServerManager.Instance.AddArenaWaiting();
+	}
+
 	public void ResetMap(bool animate = true)
 	{
 		CameraManager.Instance.ClearTrackedTargets();
+		gameObject.SetActive(true);
 
 		Transform[] roots = new Transform[] { TilesRoot, ObstaclesRoot, SpecialsRoot, BehavioursRoot };
 		int i;
@@ -173,6 +193,7 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 
 		for(int i = 0; i < list.Count; ++i)
 		{
+			Debug.Log("behaviors needs to be managed by server !");
 			ABaseBehaviour behaviour    = Instantiate(list[i].Behaviour);
 			behaviour.transform.parent  = BehavioursRoot;
 			_behaviours.Add(behaviour);
@@ -180,7 +201,21 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 
 		yield return StartCoroutine(LoadArena(animate));
 
-		// Spanw Players
+		if(isServer)
+		{
+			Debug.Log("placing characters");
+			PlaceCharacters();
+		}
+		else
+			Debug.Log("not server !");
+
+		yield return StartCoroutine(CountdownManager.Instance.Countdown());
+		GameManager.Instance.GameRules.InitGameRules();
+		EnableBehaviours();
+	}
+
+	public void PlaceCharacters()
+	{
 		_players = new GameObject[ServerManager.Instance.RegisteredPlayers.Count];
 		for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; ++i)
 		{
@@ -189,6 +224,7 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 			{
 				_players[i] = Instantiate(player.CharacterUsed.gameObject);
 				_players[i].transform.SetParent(PlayersRoot);
+				NetworkServer.SpawnWithClientAuthority(_players[i], player.gameObject);
 				PlayerController playerController = _players[i].GetComponent<PlayerController>();
 				if (playerController != null)
 				{
@@ -204,10 +240,6 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 				playerController.UnFreeze();
 			}
 		}
-
-		yield return StartCoroutine(CountdownManager.Instance.Countdown());
-		GameManager.Instance.GameRules.InitGameRules();
-		EnableBehaviours();
 	}
 
 	private IEnumerator LoadArena (bool animate = true)
@@ -310,7 +342,7 @@ public class ArenaManager : GenericSingleton<ArenaManager>
 			{
 				if(animate)
 				{
-					float delay = 0.05f * Mathf.Floor(i / _currentMapConfig.MapSize.y);
+					float delay = 0.01f * Mathf.Floor(i / _currentMapConfig.MapSize.y);
 					StartCoroutine(DropGround(_tiles[i].gameObject, delay, index, _tiles[i].transform.localPosition.y));
 					++index;
 				}

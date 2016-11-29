@@ -38,7 +38,7 @@ public class CharacterSlot : NetworkBehaviour
 
 	private bool _canSwitchCharacter = true;
 
-	private CharacterSelectWheel _wheelRef;
+	public CharacterSelectWheel _wheelRef;
 	//private GameObject _selectedCharacterModel;
 
 	//private Coroutine _activeCoroutineRef;
@@ -47,7 +47,7 @@ public class CharacterSlot : NetworkBehaviour
 	{
 		get
 		{
-			return _wheelRef.GetSelectedElement();
+			return GetComponentInChildren<CharacterSelectWheel>().GetSelectedElement();
 		}
 	}
 	
@@ -55,7 +55,7 @@ public class CharacterSlot : NetworkBehaviour
 	{
 		get
 		{
-			return _wheelRef.GetSelectedSkin();
+			return GetComponentInChildren<CharacterSelectWheel>().GetSelectedSkin();
 		}
 	}
 
@@ -70,18 +70,12 @@ public class CharacterSlot : NetworkBehaviour
 			_availableCharacters = _selectorRef._availableCharacters;
 		}
 
-
-		_wheelRef = new GameObject("characterWheel", typeof(NetworkIdentity), typeof(NetworkTransform)).AddComponent<CharacterSelectWheel>();
-		_wheelRef.transform.SetParent(transform);
-		_wheelRef.transform.localRotation = Quaternion.identity;
-		_wheelRef.transform.position = transform.position;
-
-		ClientScene.RegisterPrefab(_wheelRef.gameObject);
-
 		_switchCharacterCooldown = new TimeCooldown(this);
 		_switchCharacterCooldown.onFinish = AllowSwitchCharacter;
 
 	}
+
+	
 
 	int frameDelay = 1; // security for opening a slot. (prevents openning && selecting character in 1 frame)
 	void Update()
@@ -127,7 +121,7 @@ public class CharacterSlot : NetworkBehaviour
 		}
 		//if (_activeCoroutineRef != null)
 		//	StopCoroutine(_activeCoroutineRef);
-		ServerManager.Instance.RegisteredPlayers[_playerIndex].Ready(_wheelRef.GetSelectedElement(), _selectedSkinIndex);
+		ServerManager.Instance.RegisteredPlayers[_playerIndex].Ready(GetComponentInChildren<CharacterSelectWheel>().GetSelectedElement(), _selectedSkinIndex);
 		
 		//PLACEMENT DES PARTICULES A L'ARRACHE
 		Vector3 camDirection = (Camera.main.transform.position - transform.position).normalized;
@@ -231,11 +225,9 @@ public class CharacterSlot : NetworkBehaviour
 		OnSlotOpen.Invoke();
 		_joyToListen = player.JoystickNumber;
 		_playerIndex = playerNumber;
-		_wheelRef.gameObject.SetActive(true);
-		_wheelRef.transform.SetParent(transform);
-		_wheelRef.transform.localRotation = Quaternion.identity;
-		if(_wheelRef.transform.localPosition.z < 1)
-			_wheelRef.transform.position = transform.position + transform.forward.normalized * (_wheelRef._wheelRadius - 1);
+		CharacterSelectWheel newWheel = Instantiate(_wheelRef, transform.position + transform.forward * (_wheelRef._wheelRadius - 1), Quaternion.identity) as CharacterSelectWheel;
+		newWheel.transform.SetParent(transform);
+		newWheel.transform.localRotation = Quaternion.identity;
 		PlayerController[] tempArray = new PlayerController[_availableCharacters.Length];
 
 		for (int i = 0; i < _availableCharacters.Length; i++)
@@ -243,9 +235,9 @@ public class CharacterSlot : NetworkBehaviour
 			tempArray[i] = _availableCharacters[i].CharacterRef;
 		}
 
-		_wheelRef.Generate(tempArray);
-		_wheelRef.GetComponent<NetworkIdentity>().localPlayerAuthority = true;
-		NetworkServer.SpawnWithClientAuthority(_wheelRef.gameObject, player.gameObject);
+		newWheel.Generate(tempArray);
+		newWheel.GetComponent<NetworkIdentity>().localPlayerAuthority = true;
+		NetworkServer.SpawnWithClientAuthority(newWheel.gameObject, player.gameObject);
 
 		ChangeSkin(0);
 		Debug.Log("SLOT: " + name + " Opened, Listening to gamePad n°: " + player.JoystickNumber);
@@ -253,9 +245,9 @@ public class CharacterSlot : NetworkBehaviour
 
 	public void CloseSlot()
 	{
-		_wheelRef.Reset();
+		GetComponentInChildren<CharacterSelectWheel>().Reset();
 		OnSlotClose.Invoke();
-		_wheelRef.gameObject.SetActive(false);
+		GetComponentInChildren<CharacterSelectWheel>().gameObject.SetActive(false);
 		Open = false;
 		frameDelay = 1;
 		_selectedCharacterIndex = 0;
@@ -268,7 +260,7 @@ public class CharacterSlot : NetworkBehaviour
 	{
 		TrySwitchSkin(direction);
 
-		_wheelRef.ChangeCharacterSkin(_selectedSkinIndex);
+		GetComponentInChildren<CharacterSelectWheel>().ChangeCharacterSkin(_selectedSkinIndex);
 	}
 
 	private int tempSkinSwitchAttempts = 0; // used to prevent infinite loop. (security if the character has less skins than players)
@@ -299,7 +291,7 @@ public class CharacterSlot : NetworkBehaviour
 
 		_selectedCharacterIndex = _selectedCharacterIndex.LoopAround(0, _availableCharacters.Length -1);
 
-		_wheelRef.ScrollToIndex(_selectedCharacterIndex);
+		GetComponentInChildren<CharacterSelectWheel>().ScrollToIndex(_selectedCharacterIndex);
 		_canSwitchCharacter = false;
 		_switchCharacterCooldown.Add(_switchCharacterDelay);
 		ChangeSkin(0);

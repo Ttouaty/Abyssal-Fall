@@ -114,10 +114,10 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	public void RegisterNewPlayer(JoystickNumber joystickNumber)
 	{
+		if (_controllerAlreadyInUse[joystickNumber] || LocalJoystickBuffer.Count >= 4)
+			return;
 		if (!ServerManager.Instance.IsOnline)
 		{
-			if (_controllerAlreadyInUse[joystickNumber] || LocalJoystickBuffer.Count >= 4)
-				return;
 
 			LocalJoystickBuffer.Add(joystickNumber);
 			_controllerAlreadyInUse[joystickNumber] = true;

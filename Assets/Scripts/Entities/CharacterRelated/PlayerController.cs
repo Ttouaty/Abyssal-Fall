@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 using System.Collections.Generic;
 using System;
@@ -127,7 +128,7 @@ public interface IDamaging
 }
 
 [RequireComponent(typeof(Rigidbody))]
-public class PlayerController : MonoBehaviour, IDamageable, IDamaging
+public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 {
 	[HideInInspector]
 	public Player _playerRef;
