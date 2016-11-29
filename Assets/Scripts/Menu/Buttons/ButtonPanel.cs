@@ -20,7 +20,7 @@ public class ButtonPanel : MonoBehaviour
 	private bool[] _originalInteractables;
 	private Button _lastSelectedButton;
 
-	private bool _offseted = false;
+	private bool _isOffset = false;
 
 	private Coroutine _activeMovementCoroutine;
 
@@ -44,19 +44,22 @@ public class ButtonPanel : MonoBehaviour
 			_originalInteractables[i] = _buttonChildren[i].interactable;
 		}
 
-		_offseted = !Preselected;
+		_isOffset = !Preselected;
+		targetAlpha = _canvasGroup.alpha;
+
+		if (OffsetTransf == null)
+			OffsetTransf = transform;
 
 		if (Preselected)
 		{
-			ActivePanel = this;
-			_canvasGroup.alpha = 1;
+			_isOffset = true; //hack
+			Open(null);
 		}
 		else
-			_canvasGroup.alpha = ClosedAlpha;
-
-		targetAlpha = _canvasGroup.alpha;
-		if (OffsetTransf == null)
-			OffsetTransf = transform;
+		{
+			_isOffset = false; //hack
+			Close();
+		}
 	}
 
 	void Update()
@@ -72,9 +75,14 @@ public class ButtonPanel : MonoBehaviour
 				}
 			}
 		}
-		else if (!_offseted)
+		else if (!_isOffset)
 		{
 			targetAlpha = InactiveAlpha;
+		}
+
+		for (int i = 0; i < _buttonChildren.Length; i++)
+		{
+			_buttonChildren[i].interactable = _active;
 		}
 
 		_canvasGroup.alpha = Mathf.Lerp(_canvasGroup.alpha, targetAlpha, 10 * Time.deltaTime);
@@ -83,7 +91,7 @@ public class ButtonPanel : MonoBehaviour
 	public void Close()
 	{
 		targetAlpha = ClosedAlpha;
-		if (_offseted)
+		if (_isOffset)
 			return;
 
 		for (int i = 0; i < _buttonChildren.Length; i++)
@@ -99,14 +107,15 @@ public class ButtonPanel : MonoBehaviour
 		if (ButtonParent != null)
 			ButtonParent.Select();
 
-		_offseted = true;
+		_isOffset = true;
+
 	}
 
 	public void Open(Button newParent)
 	{
 		ActivePanel = this;
 		targetAlpha = 1;
-		if (!_offseted)
+		if (!_isOffset)
 			return;
 
 		for (int i = 0; i < _buttonChildren.Length; i++)
@@ -122,7 +131,7 @@ public class ButtonPanel : MonoBehaviour
 
 		ActivePanel = this;
 		ButtonParent = newParent;
-		_offseted = false;
+		_isOffset = false;
 	}
 
 

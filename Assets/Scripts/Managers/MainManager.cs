@@ -32,7 +32,8 @@ public class MainManager : GenericSingleton<MainManager>
 		base.Awake();
 		//DontDestroyOnLoad(gameObject);
 
-		Cursor.visible = false;
+		//Cursor.visible = false;
+		Application.targetFrameRate = 60;
 
 		GAME_OBJECT_POOL = GameObjectPool.Instance;
 		DYNAMIC_CONFIG      = DynamicConfig.Instance;

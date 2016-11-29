@@ -9,17 +9,30 @@ public class MenuPanel : MonoBehaviour {
 	[Space]
 	public MenuPanel ParentMenu;
 	[HideInInspector]
-	public Button LastButtonSelected; // NOT YET IMPLEMENTED
+	public Selectable LastElementSelected;
 
+	private Selectable[] _selectables;
+
+	[HideInInspector]
+	public bool NeedReselect = false;
 	void Start()
 	{
-		Button[] tempButtonArray = GetComponentsInChildren<Button>();
-		for (int i = 0; i < tempButtonArray.Length; i++)
+		_selectables = GetComponentsInChildren<Selectable>();
+		for (int i = 0; i < _selectables.Length; i++)
 		{
-			if (tempButtonArray[i].GetComponent<LastSelectedComponent>() == null)
-				tempButtonArray[i].gameObject.AddComponent<LastSelectedComponent>();
+			if (_selectables[i].GetComponent<LastSelectedComponent>() == null)
+				_selectables[i].gameObject.AddComponent<LastSelectedComponent>();
 
-			tempButtonArray[i].GetComponent<LastSelectedComponent>().ParentMenu = this;
+			_selectables[i].gameObject.GetComponent<LastSelectedComponent>().ParentMenu = this;
 		}
+	}
+
+	void Update()
+	{
+		if (LastElementSelected == null)
+			return;
+
+		if (InputManager.AnyDown() && NeedReselect)
+			LastElementSelected.Select();
 	}
 }

@@ -18,9 +18,9 @@ public enum InputEnum
 
 public class InputManager : GenericSingleton<InputManager>
 {
-	//  Buttons						0		1		 2			3		4		5		6		7
+	//  Buttons							0		1		  2		  3		4	  5		  6			7
 	private string[] InputNames = { "Dash", "Cancel", "Special", null, null, null, "Select", "Start" };
-	private KeyCode[] KeyboardControls = { KeyCode.H, KeyCode.J, KeyCode.K, KeyCode.L, KeyCode.None, KeyCode.None, KeyCode.Return, KeyCode.Space };
+	private KeyCode[][] KeyboardControls = { new KeyCode[] { KeyCode.H, KeyCode.Mouse0 }, new KeyCode[] { KeyCode.J, KeyCode.Mouse1 }, new KeyCode[] { KeyCode.K, KeyCode.Mouse1 }, new KeyCode[] { KeyCode.L }, new KeyCode[] { KeyCode.None }, new KeyCode[] { KeyCode.None }, new KeyCode[] { KeyCode.Return }, new KeyCode[] { KeyCode.Space } };
 	private static float _inputLockTime = 0;
 
 	public static bool InputLocked { get { return _inputLockTime != 0; } }
@@ -43,6 +43,59 @@ public class InputManager : GenericSingleton<InputManager>
 		}
 		else if (_eventSystemGO.activeInHierarchy != !InputLocked)
 			_eventSystemGO.SetActive(!InputLocked);
+	}
+
+	static string[] _tempJoyNames;
+	/// <summary>
+	/// It's a bit heavy since you have to check for every button of every controller + axis, don't abuse it.
+	/// </summary>
+	public static bool AnyDown(bool withAxis = true)
+	{
+		if (Input.anyKeyDown)
+			return true;
+
+		_tempJoyNames = Input.GetJoystickNames();
+		for (int i = 0; i < _tempJoyNames.Length; i++)
+		{
+			for (int j = 0; j < 7; j++)
+			{
+				if (GetButtonDown(j, i))
+					return true;
+			}
+
+			if(withAxis)
+			{
+				if (Mathf.Abs(GetAxis("x", i)) > 0.5f || Mathf.Abs(GetAxis("y", i)) > 0.5f)
+					return true;
+			}
+		}
+
+		return false;
+	}
+
+	public static string AnyKeyDown()
+	{
+		return (string)Input.inputString;
+	}
+
+	/// <summary>
+	/// Get any button pressed this frames on any gamepad
+	/// </summary>
+	/// <param name="gamepadNumber">True for gamepadNumber / false for button number</param>
+	/// <returns> -1 if nothing is pressed</returns>
+	public static int AnyButtonDown(bool gamepadNumber = true)
+	{
+		_tempJoyNames = Input.GetJoystickNames();
+		for (int i = 0; i < _tempJoyNames.Length; i++)
+		{
+			for (int j = 0; j < 7; j++)
+			{
+				if (GetButtonDown(j, i))
+					return gamepadNumber? i : j;
+			}
+		}
+
+		return -1;
 	}
 
 	#region GetButtonDown
@@ -72,11 +125,21 @@ public class InputManager : GenericSingleton<InputManager>
 		if (InputLocked)
 			return false;
 		if (JoystickNumber == -1)
-			return Input.GetKeyDown("joystick button " + buttonNumber) || Input.GetKeyDown(Instance.KeyboardControls[buttonNumber]);
+			return Input.GetKeyDown("joystick button " + buttonNumber) || TestKeysDown(buttonNumber);
 		else if (JoystickNumber == 0)
-			return Input.GetKeyDown(Instance.KeyboardControls[buttonNumber]);
+			return TestKeysDown(buttonNumber);
 		else
 			return Input.GetKeyDown("joystick " + JoystickNumber + " button " + buttonNumber);
+	}
+
+	public static bool TestKeysDown(int buttonNumber)
+	{
+		for (int i = 0; i < Instance.KeyboardControls[buttonNumber].Length; i++)
+		{
+			if (Input.GetKeyDown(Instance.KeyboardControls[buttonNumber][i]))
+				return true;
+		}
+		return false;
 	}
 	#endregion
 
@@ -107,11 +170,21 @@ public class InputManager : GenericSingleton<InputManager>
 		if (InputLocked)
 			return false;
 		if (JoystickNumber == -1)
-			return Input.GetKeyUp("joystick button " + buttonNumber) || Input.GetKeyUp(Instance.KeyboardControls[buttonNumber]);
+			return Input.GetKeyUp("joystick button " + buttonNumber) || TestKeysUp(buttonNumber);
 		else if (JoystickNumber == 0)
-			return Input.GetKeyUp(Instance.KeyboardControls[buttonNumber]);
+			return TestKeysUp(buttonNumber);
 		else
 			return Input.GetKeyUp("joystick " + JoystickNumber + " button " + buttonNumber);
+	}
+
+	public static bool TestKeysUp(int buttonNumber)
+	{
+		for (int i = 0; i < Instance.KeyboardControls[buttonNumber].Length; i++)
+		{
+			if (Input.GetKeyUp(Instance.KeyboardControls[buttonNumber][i]))
+				return true;
+		}
+		return false;
 	}
 	#endregion
 
@@ -143,13 +216,21 @@ public class InputManager : GenericSingleton<InputManager>
 			return false;
 
 		if (JoystickNumber == -1)
-		{
-			return Input.GetKey("joystick button " + buttonNumber) || Input.GetKey(Instance.KeyboardControls[buttonNumber]);
-		}
+			return Input.GetKey("joystick button " + buttonNumber) || TestKeysHeld(buttonNumber);
 		else if (JoystickNumber == 0)
-			return Input.GetKey(Instance.KeyboardControls[buttonNumber]);
+			return TestKeysHeld(buttonNumber);
 		else
 			return Input.GetKey("joystick " + JoystickNumber + " button " + buttonNumber);
+	}
+
+	public static bool TestKeysHeld(int buttonNumber)
+	{
+		for (int i = 0; i < Instance.KeyboardControls[buttonNumber].Length; i++)
+		{
+			if (Input.GetKey(Instance.KeyboardControls[buttonNumber][i]))
+				return true;
+		}
+		return false;
 	}
 	#endregion
 

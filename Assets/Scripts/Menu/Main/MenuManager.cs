@@ -187,14 +187,14 @@ public class MenuManager : GenericSingleton<MenuManager>
 		StartCoroutine(Transition(newMenu, forward));
 	}
 
-	private void SetActiveButtons(MenuPanel target, bool active)
-	{
-		Button[] buttons = target.GetComponentsInChildren<Button>();
-		for (int i = 0; i < buttons.Length; ++i)
-		{
-			buttons[i].interactable = active;
-		}
-	}
+	//private void SetActiveButtons(MenuPanel target, bool active)
+	//{
+	//	Button[] buttons = target.GetComponentsInChildren<Button>();
+	//	for (int i = 0; i < buttons.Length; ++i)
+	//	{
+	//		buttons[i].interactable = active;
+	//	}
+	//}
 
 	public void StartFtue()
 	{
@@ -221,7 +221,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 		if (_activeMenu != null)
 		{
-			SetActiveButtons(_activeMenu, false);
+			//SetActiveButtons(_activeMenu, false);
 			//StopAllCoroutines();
 			if (forward)
 			{
@@ -250,7 +250,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 			_characterSlotsContainerRef.CancelAllSelections(true);
 		}
 
-		SetActiveButtons(newMenu, true); // Attention peux poser des problemes si on veux avoir des boutons verrouillés
+		//SetActiveButtons(newMenu, true); 
 
 
 		_activeMenu = newMenu;
@@ -258,14 +258,17 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 		yield return new WaitForSeconds(InputDelayBetweenTransition);
 
-		if (_activeMenu.LastButtonSelected == null)
+		if (_activeMenu.LastElementSelected == null)
 		{
 			if (_activeMenu.PreSelectedButton != null)
+			{
 				_activeMenu.PreSelectedButton.Select();
+				_activeMenu.LastElementSelected = _activeMenu.PreSelectedButton;
+			}
 		}
 		else
 		{
-			_activeMenu.LastButtonSelected.Select();
+			_activeMenu.LastElementSelected.Select();
 		}
 	}
 
@@ -321,7 +324,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	IEnumerator FadeSplashscreens_Implementation(bool shouldShowSplashscreens)
 	{
-		SetActiveButtons(_activeMenu, false);
+		//SetActiveButtons(_activeMenu, false);
 		_activeMenu.gameObject.SetActive(false);
 		Color color;
 		int i = 0;
@@ -353,9 +356,12 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 		yield return StartCoroutine(WaitForFixedCamera());
 
-		SetActiveButtons(_activeMenu, true);
+		//SetActiveButtons(_activeMenu, true);
 		if (_activeMenu.PreSelectedButton != null)
+		{
 			_activeMenu.PreSelectedButton.Select();
+			_activeMenu.LastElementSelected = _activeMenu.PreSelectedButton;
+		}
 	}
 
 	public void LoadPreview(EArenaConfiguration levelName)
@@ -404,7 +410,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	public static void DeactivateMenu(bool instant = false)
 	{
-		Instance.SetActiveButtons(Instance._activeMenu, false);
+		//Instance.SetActiveButtons(Instance._activeMenu, false);
 		if (instant)
 		{
 			Instance.StartCoroutine(Instance.SendOutLeft(Instance._activeMenu));

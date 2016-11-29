@@ -549,16 +549,16 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_activeSpeed.y = 0f;
 
 
-		Physics.Raycast(transform.position, Vector3.down, out _hit, 3, 1 << LayerMask.NameToLayer("Ground"));
+		//Physics.Raycast(transform.position, Vector3.down, out _hit, 3, 1 << LayerMask.NameToLayer("Ground"));
 
-		if (_hit.point.magnitude > 1)
-		{
-			Vector3 tempPosition = transform.position;
-			tempPosition.y = _hit.point.y + (transform.position.y - (GetComponent<Collider>().bounds.center.y - GetComponent<Collider>().bounds.extents.y));
-			transform.position = tempPosition;
-		}
-		else
-			Debug.Log("point zero detected");
+		//if (_hit.point.magnitude > 1)
+		//{
+		//	Vector3 tempPosition = transform.position;
+		//	tempPosition.y = _hit.point.y + (transform.position.y - (GetComponent<Collider>().bounds.center.y - GetComponent<Collider>().bounds.extents.y));
+		//	transform.position = tempPosition;
+		//}
+		//else
+		//	Debug.Log("point zero detected");
 		//_airborneTimeout.Set(_airborneDelay);
 		_dashMaxed = false;
 	}

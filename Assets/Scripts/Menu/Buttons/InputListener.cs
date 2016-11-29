@@ -35,8 +35,8 @@ public class InputListener : MonoBehaviour
 	private bool[] _firstHeldFrame = new bool[12] { true, true, true, true, true, true, true, true, true, true, true, true }; // init dégueux => doigt
 	private bool _isInputDown = false;
 
-	private int _JoystickRequestCallback = -1;
-	private int _JoystickHeld = -1;
+	protected int _JoystickRequestCallback = -1;
+	protected int _JoystickHeld = -1;
 	private Vector2 _tempStickPosition;
 
 	protected virtual void Start()
