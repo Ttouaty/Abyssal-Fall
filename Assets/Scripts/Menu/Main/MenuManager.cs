@@ -449,6 +449,9 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	public void StartLocalHost()
 	{
+		Network.natFacilitatorIP = ServerManager.singleton.networkAddress;
+		Network.natFacilitatorPort = ServerManager.singleton.networkPort;
+		Network.InitializeServer(ServerManager.singleton.maxConnections, ServerManager.singleton.networkPort, true);
 		ServerManager.singleton.StartHost();
 	}
 

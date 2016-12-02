@@ -80,6 +80,13 @@ public class Player : NetworkLobbyPlayer
 		}
 	}
 
+	public override void OnStartClient()
+	{
+		//base.OnStartClient();
+		//prevents a array index out of range error :x
+
+	}
+
 	public override void OnStartLocalPlayer()
 	{
 		if (isLocalPlayer)

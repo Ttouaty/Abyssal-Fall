@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
+using System.IO;
+using System.Net;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -24,6 +26,8 @@ public class ServerManager : NetworkLobbyManager
 	public bool IsInLobby = false;
 
 	private bool _isInGame = false;
+	public string ExternalIp = "";
+
 
 	public bool AreAllPlayerReady
 	{
@@ -114,6 +118,7 @@ public class ServerManager : NetworkLobbyManager
 	{
 		lobbyScene = ""; // Ensures we don't reload the scene after quitting
 	}
+
 	public override void OnStartServer()
 	{
 		NetworkServer.SetAllClientsNotReady();
@@ -124,6 +129,10 @@ public class ServerManager : NetworkLobbyManager
 		lobbyScene = ""; // Ensures we don't reload the scene after quitting
 	}
 
+	public override void OnServerConnect(NetworkConnection conn)
+	{
+		base.OnServerConnect(conn);
+	}
 
 	public static void ResetRegisteredPlayers()
 	{
@@ -194,5 +203,17 @@ public class ServerManager : NetworkLobbyManager
 			_isInGame = true;
 			ArenaManager.Instance.RpcAllClientReady();
 		}
+	}
+
+	public static string GetExternalIp()
+	{
+		if(Instance.ExternalIp.Length == 0)
+		{
+			Network.Connect("http://www.google.com");
+			Instance.ExternalIp = Network.player.externalIP;
+			Network.Disconnect();
+		}
+
+		return Instance.ExternalIp;
 	}
 }

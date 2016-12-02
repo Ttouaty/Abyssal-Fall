@@ -20,7 +20,7 @@ public class InputManager : GenericSingleton<InputManager>
 {
 	//  Buttons							0		1		  2		  3		4	  5		  6			7
 	private string[] InputNames = { "Dash", "Cancel", "Special", null, null, null, "Select", "Start" };
-	private KeyCode[][] KeyboardControls = { new KeyCode[] { KeyCode.H, KeyCode.Mouse0 }, new KeyCode[] { KeyCode.J, KeyCode.Mouse1 }, new KeyCode[] { KeyCode.K, KeyCode.Mouse1 }, new KeyCode[] { KeyCode.L }, new KeyCode[] { KeyCode.None }, new KeyCode[] { KeyCode.None }, new KeyCode[] { KeyCode.Return }, new KeyCode[] { KeyCode.Space } };
+	private KeyCode[][] KeyboardControls = { new KeyCode[] { KeyCode.H }, new KeyCode[] { KeyCode.J, KeyCode.Mouse1 }, new KeyCode[] { KeyCode.K, KeyCode.Mouse1 }, new KeyCode[] { KeyCode.L }, new KeyCode[] { KeyCode.None }, new KeyCode[] { KeyCode.None }, new KeyCode[] { KeyCode.Return }, new KeyCode[] { KeyCode.Space } };
 	private static float _inputLockTime = 0;
 
 	public static bool InputLocked { get { return _inputLockTime != 0; } }
@@ -136,6 +136,11 @@ public class InputManager : GenericSingleton<InputManager>
 	{
 		for (int i = 0; i < Instance.KeyboardControls[buttonNumber].Length; i++)
 		{
+			if (buttonNumber == 0 && GameManager.InProgress)
+			{
+				if (Input.GetKeyDown(KeyCode.Mouse0))
+					return true;
+			}
 			if (Input.GetKeyDown(Instance.KeyboardControls[buttonNumber][i]))
 				return true;
 		}
@@ -181,6 +186,11 @@ public class InputManager : GenericSingleton<InputManager>
 	{
 		for (int i = 0; i < Instance.KeyboardControls[buttonNumber].Length; i++)
 		{
+			if (buttonNumber == 0 && GameManager.InProgress)
+			{
+				if (Input.GetKeyUp(KeyCode.Mouse0))
+					return true;
+			}
 			if (Input.GetKeyUp(Instance.KeyboardControls[buttonNumber][i]))
 				return true;
 		}
@@ -227,7 +237,13 @@ public class InputManager : GenericSingleton<InputManager>
 	{
 		for (int i = 0; i < Instance.KeyboardControls[buttonNumber].Length; i++)
 		{
-			if (Input.GetKey(Instance.KeyboardControls[buttonNumber][i]))
+			if(buttonNumber == 0 && GameManager.InProgress)
+			{
+				if (Input.GetKey(KeyCode.Mouse0))
+					return true;
+			}
+
+			if (Input.GetKey(Instance.KeyboardControls[buttonNumber][i])) 
 				return true;
 		}
 		return false;
