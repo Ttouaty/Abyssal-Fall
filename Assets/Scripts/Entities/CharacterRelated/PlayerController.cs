@@ -163,7 +163,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	
 	//protected float _airborneDelay = 0.02f;
 
-	protected float _fullDashActivationTime = 0.05f;
+	protected float _fullDashActivationTime = 0.08f;
 	private float _timeHeldDash;
 	[HideInInspector]
 	public bool WaitForDashRelease = false;
