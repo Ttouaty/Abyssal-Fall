@@ -453,6 +453,14 @@ public class MenuManager : GenericSingleton<MenuManager>
 		//Network.natFacilitatorIP = ServerManager.singleton.networkAddress;
 		//Network.natFacilitatorPort = ServerManager.singleton.networkPort;
 		//Network.InitializeServer(ServerManager.singleton.maxConnections, ServerManager.singleton.networkPort, false);
+		if(ServerManager.Instance.ExternalIp.Length > 0)
+		{
+			bool useNat = !Network.HavePublicAddress();
+			Network.InitializeServer(ServerManager.singleton.maxConnections, ServerManager.singleton.networkPort, useNat);
+			MasterServer.RegisterHost("AbyssalFall-" + ServerManager.Instance.ExternalIp, "AbyssalFall-" + ServerManager.Instance.ExternalIp, "Testing online connections, thx unity :>");
+
+			Debug.Log("MasterServer.RegisterHost => "+ "AbyssalFall-" + ServerManager.Instance.ExternalIp);
+		}
 		ServerManager.singleton.StartHost();
 	}
 
@@ -463,6 +471,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	public void DisconnectFromServer()
 	{
+		MasterServer.UnregisterHost();
 		ServerManager.singleton.StopHost();
 		ServerManager.singleton.StopClient();
 	}

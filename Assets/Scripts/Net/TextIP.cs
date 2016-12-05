@@ -13,6 +13,6 @@ public class TextIP : MonoBehaviour {
 
 	void OnGetIP(string ip)
 	{
-		GetComponent<InputField>().text = ServerManager.Instance.ExternalIp + ":" + ServerManager.singleton.networkPort;
+		GetComponent<InputField>().text = ServerManager.Instance.ExternalIp/* + ":" + ServerManager.singleton.networkPort*/;
 	}
 }

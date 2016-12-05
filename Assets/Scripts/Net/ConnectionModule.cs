@@ -12,14 +12,6 @@ public class ConnectionModule : MonoBehaviour
 	public UnityEventString OnFailedConnection;
 	public UnityEvent OnSuccess;
 
-	void Update()
-	{
-		if(NetworkClient.active)
-		{
-			Debug.Log("network Client is active !");
-		}
-	}
-
 	public void Connect()
 	{
 		if(TargetIPField == null)
@@ -34,14 +26,52 @@ public class ConnectionModule : MonoBehaviour
 
 	public void Connect(string IPandPort)
 	{
-		string[] fragmentIp = IPandPort.Split(':');
-		if(fragmentIp.Length < 2)
+		if(ServerManager.Instance.ExternalIp.Length == 0)
 		{
-			Debug.LogWarning("could not divide Ip and port for IP string: "+IPandPort);
-			OnFailedConnection.Invoke("could not divide Ip and port for IP string: " + IPandPort);
+			Debug.LogWarning("No internet connection found");
+			OnFailedConnection.Invoke("Could not connect to Host: No Internet found.");
+			return;
 		}
 
-		Network.Connect(fragmentIp[0], Convert.ToInt32(fragmentIp[1]));
+		string[] fragmentIp = IPandPort.Split(':');
+		if(fragmentIp[0].Split('.').Length < 3)
+		{
+			Debug.LogWarning("invalid IP address");
+			OnFailedConnection.Invoke("Wrong Ip and port format, it should look like this: 123.123.123.123");
+			return;
+		}
+		MasterServer.RequestHostList("AbyssalFall-"+ fragmentIp[0]);
+		Debug.Log("looking for games with ip: "+ "AbyssalFall-" + fragmentIp[0]);
+		StartCoroutine(ConnectionCoroutine());
+		//Network.Connect(fragmentIp[0], Convert.ToInt32(fragmentIp[1]));
+	}
+
+	IEnumerator ConnectionCoroutine()
+	{
+		HostData[] tempHostData = MasterServer.PollHostList();
+		int tries = 0;
+		while (tempHostData.Length == 0 &&  tries < 5)
+		{
+			tries++;
+			Debug.Log("trying to poll results");
+			tempHostData = MasterServer.PollHostList();
+			yield return new WaitForSeconds(1);
+		}
+
+		if(tries >= 5)
+		{
+			//too many tries, cancelling;
+
+			Debug.Log("too many tries");
+			MasterServer.ClearHostList();
+			OnFailedToConnect(NetworkConnectionError.ConnectionFailed);
+			yield break;
+		}
+		else
+		{
+			Debug.Log("Server found ! "+ tempHostData[0].gameType);
+			Network.Connect(tempHostData[0].guid);
+		}
 	}
 
 	void OnConnectedToServer()
@@ -51,7 +81,7 @@ public class ConnectionModule : MonoBehaviour
 
 	void OnFailedToConnect(NetworkConnectionError error)
 	{
-		OnFailedConnection.Invoke("Could not connect to server, Maybe the port 1358 was not open on the host router.");
+		OnFailedConnection.Invoke("Could not connect to server: "+error);
 	}
 }
 

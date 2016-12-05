@@ -26,6 +26,7 @@ public class ServerManager : NetworkLobbyManager
 	public bool IsInLobby = false;
 
 	private bool _isInGame = false;
+	[HideInInspector]
 	public string ExternalIp = "";
 	public UnityEventString OnExternalIpRetrieved;	
 
@@ -49,7 +50,6 @@ public class ServerManager : NetworkLobbyManager
 	{
 		if (_initialised)
 		{
-			Debug.Log("ServerManager was already Initialised.");
 			return Instance;
 		}
 
@@ -107,6 +107,7 @@ public class ServerManager : NetworkLobbyManager
 		originalLobbyScene = lobbyScene;
 		_isInGame = false;
 		_playersReadyForMapSpawn = 0;
+		Init();
 	}
 	public override void OnStartClient(NetworkClient lobbyClient)
 	{
@@ -220,10 +221,11 @@ public class ServerManager : NetworkLobbyManager
 		{
 			MenuManager.Instance.StartLocalHost();
 		}
-		if(Instance.IsInLobby)
+		if(!Instance.IsInLobby)
 		{
 			Instance.networkAddress = Network.player.externalIP;
 		}
+
 		Debug.Log("ExternalIp Retrieved: " + Network.player.externalIP);
 		ExternalIp = Network.player.externalIP;
 		OnExternalIpRetrieved.Invoke(ExternalIp);
