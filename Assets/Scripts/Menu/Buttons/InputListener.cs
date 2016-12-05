@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Collections.Generic;
 using System;
@@ -184,6 +185,14 @@ public class InputListener : MonoBehaviour
 		for (int i = 0; i < _waitForRelease.Length; i++)
 		{
 			_waitForRelease[i] = false;
+		}
+	}
+
+	public void ClickSelfButton()
+	{
+		if(GetComponent<Button>() != null)
+		{
+			GetComponent<Button>().onClick.Invoke();
 		}
 	}
 }

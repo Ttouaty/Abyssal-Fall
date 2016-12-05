@@ -990,6 +990,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a48a32887148abd4fb5c18ac18812df5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CanStartServer: 0
 --- !u!1001 &1576437437
 Prefab:
   m_ObjectHideFlags: 0
@@ -1186,6 +1187,7 @@ GameObject:
   - 4: {fileID: 2142853590}
   - 114: {fileID: 2142853592}
   - 114: {fileID: 2142853591}
+  - 114: {fileID: 2142853593}
   m_Layer: 0
   m_Name: ServerManager
   m_TagString: Untagged
@@ -1303,3 +1305,21 @@ MonoBehaviour:
   _alivePlayers: []
   IsOnline: 0
   IsInLobby: 0
+  ExternalIp: 
+  OnExternalIpRetrieved:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEventString, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+--- !u!114 &2142853593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2142853589}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a48a32887148abd4fb5c18ac18812df5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CanStartServer: 0

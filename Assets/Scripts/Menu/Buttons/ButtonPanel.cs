@@ -80,7 +80,7 @@ public class ButtonPanel : MonoBehaviour
 			targetAlpha = InactiveAlpha;
 		}
 
-		for (int i = 0; i < _buttonChildren.Length; i++)
+		for (int i = 0; i < _buttonChildren.Length; i++) // dégueux et va poser probleme :p
 		{
 			_buttonChildren[i].interactable = _active;
 		}
@@ -105,7 +105,9 @@ public class ButtonPanel : MonoBehaviour
 		_activeMovementCoroutine = StartCoroutine(MoveOverTime(_basePosition, OffsetTransf.localPosition, false));
 
 		if (ButtonParent != null)
-			ButtonParent.Select();
+		{
+			GetComponentInParent<MenuPanel>().ForceSelectedButton(ButtonParent.gameObject);
+		}
 
 		_isOffset = true;
 

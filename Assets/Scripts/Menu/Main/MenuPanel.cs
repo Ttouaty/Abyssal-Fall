@@ -9,30 +9,58 @@ public class MenuPanel : MonoBehaviour {
 	[Space]
 	public MenuPanel ParentMenu;
 	[HideInInspector]
-	public Selectable LastElementSelected;
+	public LastSelectedComponent LastElementSelected;
 
-	private Selectable[] _selectables;
-
-	[HideInInspector]
-	public bool NeedReselect = false;
+	private LastSelectedComponent[] _selectables;
+	private EventSystem _eventSystemRef;
 	void Start()
 	{
-		_selectables = GetComponentsInChildren<Selectable>();
-		for (int i = 0; i < _selectables.Length; i++)
+		_eventSystemRef = FindObjectOfType<EventSystem>();
+		Selectable[] Tempselectables = GetComponentsInChildren<Selectable>();
+		_selectables = new LastSelectedComponent[Tempselectables.Length];
+		for (int i = 0; i < Tempselectables.Length; i++)
 		{
-			if (_selectables[i].GetComponent<LastSelectedComponent>() == null)
-				_selectables[i].gameObject.AddComponent<LastSelectedComponent>();
+			if (Tempselectables[i].GetComponent<LastSelectedComponent>() == null)
+				_selectables[i] = Tempselectables[i].gameObject.AddComponent<LastSelectedComponent>();
 
-			_selectables[i].gameObject.GetComponent<LastSelectedComponent>().ParentMenu = this;
+			Tempselectables[i].gameObject.GetComponent<LastSelectedComponent>().ParentMenu = this;
 		}
 	}
 
-	void Update()
+	void LateUpdate()
 	{
 		if (LastElementSelected == null)
 			return;
 
-		if (InputManager.AnyDown() && NeedReselect)
-			LastElementSelected.Select();
+		if(!LastElementSelected.IsSelected)
+		{
+			if (FindSelected() != null)
+			{
+				LastElementSelected = FindSelected();
+			}
+			SelectLastButton();
+		}
+	}
+
+	LastSelectedComponent FindSelected()
+	{
+		for (int i = 0; i < _selectables.Length; i++)
+		{
+			if (_selectables[i].IsSelected)
+				return _selectables[i];
+		}
+		return null;
+	}
+
+	public void SelectLastButton()
+	{
+		_eventSystemRef.SetSelectedGameObject(null);
+		_eventSystemRef.SetSelectedGameObject(LastElementSelected.gameObject);
+	}
+
+	public void ForceSelectedButton(GameObject target)
+	{
+		_eventSystemRef.SetSelectedGameObject(null);
+		_eventSystemRef.SetSelectedGameObject(target);
 	}
 }

@@ -9,6 +9,7 @@ public class LastSelectedComponent : MonoBehaviour, ISelectHandler, IDeselectHan
 
 	public MenuPanel ParentMenu;
 	private Selectable _selectRef;
+	public bool IsSelected = false;
 	void Awake()
 	{
 		_selectRef = GetComponent<Selectable>();
@@ -40,9 +41,8 @@ public class LastSelectedComponent : MonoBehaviour, ISelectHandler, IDeselectHan
 	{
 		if (!_selectRef.interactable || ParentMenu.LastElementSelected == _selectRef)
 			return;
-
-		ParentMenu.NeedReselect = false;
-		ParentMenu.LastElementSelected = _selectRef;
+		IsSelected = true;
+		ParentMenu.LastElementSelected = this;	
 		_selectRef.Select();
 	}
 
@@ -50,6 +50,11 @@ public class LastSelectedComponent : MonoBehaviour, ISelectHandler, IDeselectHan
 	{
 		if (!_selectRef.interactable)
 			return;
-		ParentMenu.NeedReselect = true;
+		IsSelected = false;
+	}
+
+	public void Select()
+	{
+		_selectRef.Select();
 	}
 }

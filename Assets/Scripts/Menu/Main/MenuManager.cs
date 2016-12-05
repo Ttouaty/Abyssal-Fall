@@ -254,22 +254,23 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 
 		_activeMenu = newMenu;
-		InputManager.SetInputLockTime(InputDelayBetweenTransition);
-
-		yield return new WaitForSeconds(InputDelayBetweenTransition);
 
 		if (_activeMenu.LastElementSelected == null)
 		{
 			if (_activeMenu.PreSelectedButton != null)
 			{
 				_activeMenu.PreSelectedButton.Select();
-				_activeMenu.LastElementSelected = _activeMenu.PreSelectedButton;
+				_activeMenu.LastElementSelected = _activeMenu.PreSelectedButton.GetComponent<LastSelectedComponent>();
 			}
 		}
 		else
 		{
-			_activeMenu.LastElementSelected.Select();
+			_activeMenu.SelectLastButton();
 		}
+
+		InputManager.SetInputLockTime(InputDelayBetweenTransition);
+
+		yield return new WaitForSeconds(InputDelayBetweenTransition);
 	}
 
 	IEnumerator SendOutLeft(MenuPanel targetMenu)
@@ -359,8 +360,8 @@ public class MenuManager : GenericSingleton<MenuManager>
 		//SetActiveButtons(_activeMenu, true);
 		if (_activeMenu.PreSelectedButton != null)
 		{
+			_activeMenu.LastElementSelected = _activeMenu.PreSelectedButton.GetComponent<LastSelectedComponent>();
 			_activeMenu.PreSelectedButton.Select();
-			_activeMenu.LastElementSelected = _activeMenu.PreSelectedButton;
 		}
 	}
 
@@ -449,9 +450,9 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	public void StartLocalHost()
 	{
-		Network.natFacilitatorIP = ServerManager.singleton.networkAddress;
-		Network.natFacilitatorPort = ServerManager.singleton.networkPort;
-		Network.InitializeServer(ServerManager.singleton.maxConnections, ServerManager.singleton.networkPort, true);
+		//Network.natFacilitatorIP = ServerManager.singleton.networkAddress;
+		//Network.natFacilitatorPort = ServerManager.singleton.networkPort;
+		//Network.InitializeServer(ServerManager.singleton.maxConnections, ServerManager.singleton.networkPort, false);
 		ServerManager.singleton.StartHost();
 	}
 
@@ -464,5 +465,10 @@ public class MenuManager : GenericSingleton<MenuManager>
 	{
 		ServerManager.singleton.StopHost();
 		ServerManager.singleton.StopClient();
+	}
+
+	public void LogMessage(string message)
+	{
+		MessageManager.Log(message);
 	}
 }

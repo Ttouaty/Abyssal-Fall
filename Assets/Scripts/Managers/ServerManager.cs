@@ -27,7 +27,7 @@ public class ServerManager : NetworkLobbyManager
 
 	private bool _isInGame = false;
 	public string ExternalIp = "";
-
+	public UnityEventString OnExternalIpRetrieved;	
 
 	public bool AreAllPlayerReady
 	{
@@ -98,8 +98,6 @@ public class ServerManager : NetworkLobbyManager
 	public override void ServerChangeScene(string sceneName)
 	{
 		// Do nothing
-
-		Debug.Log("ass");
 	}
 
 	void Start()
@@ -205,15 +203,29 @@ public class ServerManager : NetworkLobbyManager
 		}
 	}
 
-	public static string GetExternalIp()
+	public IEnumerator GetExternalIP()
 	{
-		if(Instance.ExternalIp.Length == 0)
+		if(ExternalIp.Length > 0)
 		{
-			Network.Connect("http://www.google.com");
-			Instance.ExternalIp = Network.player.externalIP;
-			Network.Disconnect();
+
+			Debug.Log("IP already retrieved");
+			OnExternalIpRetrieved.Invoke(ExternalIp);
+			yield break;
 		}
 
-		return Instance.ExternalIp;
+		yield return Network.Connect("http://www.google.com");
+
+		Network.Disconnect();
+		if(ServerManager.Instance.IsInLobby)
+		{
+			MenuManager.Instance.StartLocalHost();
+		}
+		if(Instance.IsInLobby)
+		{
+			Instance.networkAddress = Network.player.externalIP;
+		}
+		Debug.Log("ExternalIp Retrieved: " + Network.player.externalIP);
+		ExternalIp = Network.player.externalIP;
+		OnExternalIpRetrieved.Invoke(ExternalIp);
 	}
 }

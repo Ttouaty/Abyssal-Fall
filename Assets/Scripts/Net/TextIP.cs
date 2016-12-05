@@ -4,13 +4,15 @@ using System.Collections;
 
 public class TextIP : MonoBehaviour {
 
-	void Awake ()
+	void Start ()
+	{
+		GetComponent<InputField>().text = "Could not connect to the internet";
+		ServerManager.Instance.OnExternalIpRetrieved.AddListener(OnGetIP);
+
+	}
+
+	void OnGetIP(string ip)
 	{
 		GetComponent<InputField>().text = ServerManager.Instance.ExternalIp + ":" + ServerManager.singleton.networkPort;
-
-		if(ServerManager.Instance.ExternalIp.Length == 0)
-		{
-			GetComponent<InputField>().text = "Could not connect to the internet";
-		}
 	}
 }
