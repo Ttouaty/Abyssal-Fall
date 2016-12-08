@@ -60,7 +60,7 @@ public class Player : NetworkLobbyPlayer
 		_characterUsed = linkedCharacter;
 		SkinNumber = indexSkinUsed;
 		isReady = true;
-		readyToBegin = true;
+		isSelectingCharacter = false;
 		CmdSelectCharacter();
 	}
 
@@ -68,7 +68,6 @@ public class Player : NetworkLobbyPlayer
 	{
 		_characterUsed = null;
 		isReady = false;
-		readyToBegin = false;
 	}
 
 	void OnDestroy()
@@ -109,13 +108,13 @@ public class Player : NetworkLobbyPlayer
 	}
 
 	[ClientRpc]
-	public void RpcOpenTargetSlot(int slotNumber)
+	public void RpcOpenTargetSlot(OpenSlots SlotsOpen)
 	{
 		if (isLocalPlayer && !isSelectingCharacter)
 		{
-			MenuManager.Instance.OpenCharacterSlot(slotNumber, this);
+			MenuManager.Instance.OpenCharacterSlot(SlotsOpen, this);
 
-			Debug.LogWarning("player N°"+PlayerNumber+" listening to joystick "+JoystickNumber+" has openned slot "+slotNumber);
+			Debug.LogWarning("player N°"+PlayerNumber+" listening to joystick "+JoystickNumber+" has openned slot "+SlotsOpen.ToString());
 			isSelectingCharacter = true;
 		}
 	}
@@ -132,6 +131,7 @@ public class Player : NetworkLobbyPlayer
 	[Command]
 	public void CmdSelectCharacter()
 	{
+		isReady = true;
 		Debug.Log("PLayer N°"+PlayerNumber+" has selected a character");
 	}
 

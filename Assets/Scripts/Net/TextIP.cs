@@ -6,13 +6,6 @@ public class TextIP : MonoBehaviour {
 
 	void Start ()
 	{
-		GetComponent<InputField>().text = "Could not connect to the internet";
-		ServerManager.Instance.OnExternalIpRetrieved.AddListener(OnGetIP);
-
-	}
-
-	void OnGetIP(string ip)
-	{
-		GetComponent<InputField>().text = ServerManager.Instance.ExternalIp/* + ":" + ServerManager.singleton.networkPort*/;
+		GetComponent<InputField>().text = ServerManager.Instance.GameId.ToString()/* + ":" + ServerManager.singleton.networkPort*/;
 	}
 }

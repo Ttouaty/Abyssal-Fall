@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using System;
 using UnityEngine.Networking;
+using System.Linq;
 
 public class MenuManager : GenericSingleton<MenuManager>
 {
@@ -109,38 +110,46 @@ public class MenuManager : GenericSingleton<MenuManager>
 	{
 		//Trashy way but fuck it.
 		_controllerAlreadyInUse = new bool[12];
+		LocalJoystickBuffer.Clear();
 		ServerManager.ResetRegisteredPlayers();
 	}
 
 	public void RegisterNewPlayer(JoystickNumber joystickNumber)
 	{
 		if (_controllerAlreadyInUse[joystickNumber] || LocalJoystickBuffer.Count >= 4)
-			return;
-		if (!ServerManager.Instance.IsOnline)
 		{
+			return;
+		}
 
-			LocalJoystickBuffer.Add(joystickNumber);
-			_controllerAlreadyInUse[joystickNumber] = true;
+		LocalJoystickBuffer.Add(joystickNumber);
+		_controllerAlreadyInUse[joystickNumber] = true;
 
-			if (!ServerManager.singleton.isNetworkActive)
-			{
-				StartLocalHost();
-				ServerManager.Instance.IsInLobby = true;
-			}
-			else
-			{
-				ServerManager.Instance.TryToAddPlayer();
-			}
-
+		if (Network.connections.Length == 0 && !Network.isServer)
+		{
+			Debug.Log("trying to start host");
+			StartLocalHost(); //Server side or starting server
 		}
 		else
-			Debug.Log("need to start client with correct IP and stuff");
+		{
+			Debug.LogError("TryToAddPlayer");
+			ServerManager.Instance.TryToAddPlayer();
+		}
 	}
 
-	public void OpenCharacterSlot(int slotNumber, Player player)
+	public void OpenCharacterSlot(OpenSlots slotNumbers, Player player)
 	{
-		_characterSlotsContainerRef.OpenTargetSlot(slotNumber, player);
+		int i = -1;
+		foreach (OpenSlots slot in Enum.GetValues(typeof(OpenSlots)))
+		{
+			if ((slotNumbers & slot) != 0 && i != -1)
+			{
+				_characterSlotsContainerRef.OpenTargetSlot(i, player);
+			}
+			i++;
+		}
 	}
+
+	
 
 	public void CloseCharacterSlot(int slotNumber)
 	{
@@ -150,7 +159,6 @@ public class MenuManager : GenericSingleton<MenuManager>
 	public void StartGame()
 	{
 		Debug.Log("game started");
-		ServerManager.Instance.IsInLobby = false;
 		GameManager.Instance.StartGame();
 		// SpawnFallingGround.instance.Init();
 		//DeactivateMenu();
@@ -218,6 +226,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 	IEnumerator Transition(MenuPanel newMenu, bool forward = true)
 	{
 		//yield return null; // delay by one frame to avoid input error.
+		ServerManager.Instance.IsInLobby = false;
 
 		if (_activeMenu != null)
 		{
@@ -248,6 +257,10 @@ public class MenuManager : GenericSingleton<MenuManager>
 		{
 			ResetPlayers();
 			_characterSlotsContainerRef.CancelAllSelections(true);
+		}
+		else if(newMenu.MenuName == "Lobby")
+		{
+			ServerManager.Instance.IsInLobby = true;
 		}
 
 		//SetActiveButtons(newMenu, true); 
@@ -457,16 +470,14 @@ public class MenuManager : GenericSingleton<MenuManager>
 		{
 			bool useNat = !Network.HavePublicAddress();
 			Network.InitializeServer(ServerManager.singleton.maxConnections, ServerManager.singleton.networkPort, useNat);
-			MasterServer.RegisterHost("AbyssalFall-" + ServerManager.Instance.ExternalIp, "AbyssalFall-" + ServerManager.Instance.ExternalIp, "Testing online connections, thx unity :>");
-
-			Debug.Log("MasterServer.RegisterHost => "+ "AbyssalFall-" + ServerManager.Instance.ExternalIp);
 		}
-		ServerManager.singleton.StartHost();
 	}
 
-	public void SetGameIsOnline(bool online)
+	protected void OnServerInitialized(NetworkPlayer player)
 	{
-		ServerManager.Instance.IsOnline = online;
+		MasterServer.RegisterHost("AbyssalFall-" + ServerManager.Instance.GameId, "AbyssalFall-" + ServerManager.Instance.GameId, "");
+		Debug.Log("MasterServer.RegisterHost => " + "AbyssalFall-" + ServerManager.Instance.GameId);
+		ServerManager.singleton.StartHost();
 	}
 
 	public void DisconnectFromServer()

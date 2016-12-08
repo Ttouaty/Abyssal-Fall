@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37356448, g: 0.3811204, b: 0.35887685, a: 1}
+  m_IndirectSpecularColor: {r: 0.22385725, g: 0.24379516, b: 0.26534563, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -1187,7 +1187,6 @@ GameObject:
   - 4: {fileID: 2142853590}
   - 114: {fileID: 2142853592}
   - 114: {fileID: 2142853591}
-  - 114: {fileID: 2142853593}
   m_Layer: 0
   m_Name: ServerManager
   m_TagString: Untagged
@@ -1235,8 +1234,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_NetworkPort: 1358
-  m_ServerBindToIP: 0
-  m_ServerBindAddress: 
+  m_ServerBindToIP: 1
+  m_ServerBindAddress: localhost
   m_NetworkAddress: localhost
   m_DontDestroyOnLoad: 0
   m_RunInBackground: 1
@@ -1251,7 +1250,7 @@ MonoBehaviour:
   m_OnlineScene: 
   m_SpawnPrefabs:
   - {fileID: 1000013645422232, guid: 14a7caba18a68b849af8def2e2e34e2a, type: 2}
-  m_CustomConfig: 0
+  m_CustomConfig: 1
   m_MaxConnections: 4
   m_ConnectionConfig:
     m_PacketSize: 1500
@@ -1297,13 +1296,13 @@ MonoBehaviour:
   m_MaxPlayers: 4
   m_MaxPlayersPerConnection: 4
   m_MinPlayers: 2
-  m_LobbyPlayerPrefab: {fileID: 0}
-  m_GamePlayerPrefab: {fileID: 0}
-  m_LobbyScene: 
-  m_PlayScene: 
+  m_LobbyPlayerPrefab: {fileID: 114000012342111342, guid: 5c6bae136c01f7c42afc5c109b2ad5ad,
+    type: 2}
+  m_GamePlayerPrefab: {fileID: 1000010873507134, guid: 5c6bae136c01f7c42afc5c109b2ad5ad,
+    type: 2}
+  m_LobbyScene: Scene_Root
+  m_PlayScene: Scene_Root
   lobbySlots: []
-  _alivePlayers: []
-  IsOnline: 0
   IsInLobby: 0
   ExternalIp: 
   OnExternalIpRetrieved:
@@ -1311,15 +1310,6 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEventString, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
---- !u!114 &2142853593
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 2142853589}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a48a32887148abd4fb5c18ac18812df5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CanStartServer: 0
+  GameId: 
+  ExternalPlayerNumber: 0
+  LobbySlotsOpen: 0

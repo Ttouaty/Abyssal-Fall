@@ -58,7 +58,7 @@ public class ButtonPanel : MonoBehaviour
 		else
 		{
 			_isOffset = false; //hack
-			Close();
+			Close(true);
 		}
 	}
 
@@ -88,9 +88,12 @@ public class ButtonPanel : MonoBehaviour
 		_canvasGroup.alpha = Mathf.Lerp(_canvasGroup.alpha, targetAlpha, 10 * Time.deltaTime);
 	}
 
-	public void Close()
+	public void Close(bool instant = false)
 	{
 		targetAlpha = ClosedAlpha;
+		if (instant)
+			_canvasGroup.alpha = targetAlpha;
+
 		if (_isOffset)
 			return;
 

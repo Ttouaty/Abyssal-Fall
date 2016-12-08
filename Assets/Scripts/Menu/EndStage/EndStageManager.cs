@@ -46,7 +46,7 @@ public class EndStageManager : GenericSingleton<EndStageManager>
 	public void Open()
 	{
 		MenuPauseManager.Instance.CanPause = false;
-		InputManager.SetInputLockTime(0.3f);
+		InputManager.SetInputLockTime(0.7f);
 		TimeManager.Pause();
 		for (int i = 0; i < ScoresFields.Length; ++i)
 		{

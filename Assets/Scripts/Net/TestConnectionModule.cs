@@ -27,8 +27,8 @@ public class TestConnectionModule : MonoBehaviour
 		//GUILayout.Label("Test result : " + testMessage);
 		//GUILayout.Label(shouldEnableNatMessage);
 		//GUILayout.Label("port listening: "+serverPort);
-		if (!doneTesting)
-			TestConnection();
+		//if (!doneTesting)
+		//	TestConnection();
 	}
 
 	void TestConnection()

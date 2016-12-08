@@ -18,6 +18,7 @@ public class EndGameManager : GenericSingleton<EndGameManager>
 			MainManager.Instance.LEVEL_MANAGER.CurrentArenaConfig = null;
 			CameraManager.Instance.Reset();
 			MainManager.Instance.LEVEL_MANAGER.OpenMenu();
+			ServerManager.Instance.OnGameEnd();
 		}
 	}
 
@@ -41,7 +42,7 @@ public class EndGameManager : GenericSingleton<EndGameManager>
 	public void Open()
 	{
 		MenuPauseManager.Instance.CanPause = false;
-		InputManager.SetInputLockTime(0.3f);
+		InputManager.SetInputLockTime(0.5f);
 		TimeManager.Pause();
 		transform.GetChild(0).gameObject.SetActive(true);
 		IsOpen = true;

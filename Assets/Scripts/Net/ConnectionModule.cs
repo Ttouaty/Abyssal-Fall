@@ -24,7 +24,7 @@ public class ConnectionModule : MonoBehaviour
 		Connect(TargetIPField.text);
 	}
 
-	public void Connect(string IPandPort)
+	public void Connect(string Code)
 	{
 		if(ServerManager.Instance.ExternalIp.Length == 0)
 		{
@@ -33,15 +33,8 @@ public class ConnectionModule : MonoBehaviour
 			return;
 		}
 
-		string[] fragmentIp = IPandPort.Split(':');
-		if(fragmentIp[0].Split('.').Length < 3)
-		{
-			Debug.LogWarning("invalid IP address");
-			OnFailedConnection.Invoke("Wrong Ip and port format, it should look like this: 123.123.123.123");
-			return;
-		}
-		MasterServer.RequestHostList("AbyssalFall-"+ fragmentIp[0]);
-		Debug.Log("looking for games with ip: "+ "AbyssalFall-" + fragmentIp[0]);
+		MasterServer.RequestHostList("AbyssalFall-"+ Code);
+		Debug.Log("looking for games with gameType: "+ "AbyssalFall-" + Code);
 		StartCoroutine(ConnectionCoroutine());
 		//Network.Connect(fragmentIp[0], Convert.ToInt32(fragmentIp[1]));
 	}
@@ -50,18 +43,18 @@ public class ConnectionModule : MonoBehaviour
 	{
 		HostData[] tempHostData = MasterServer.PollHostList();
 		int tries = 0;
-		while (tempHostData.Length == 0 &&  tries < 5)
+		int maxTries = 10;
+		while (tempHostData.Length == 0 &&  tries < maxTries)
 		{
 			tries++;
-			Debug.Log("trying to poll results");
+			Debug.Log("trying to poll results: "+tries);
 			tempHostData = MasterServer.PollHostList();
 			yield return new WaitForSeconds(1);
 		}
 
-		if(tries >= 5)
+		if(tries >= maxTries)
 		{
 			//too many tries, cancelling;
-
 			Debug.Log("too many tries");
 			MasterServer.ClearHostList();
 			OnFailedToConnect(NetworkConnectionError.ConnectionFailed);
@@ -76,13 +69,15 @@ public class ConnectionModule : MonoBehaviour
 
 	void OnConnectedToServer()
 	{
+		ServerManager.Instance.TryToAddPlayer();
 		OnSuccess.Invoke();
 	}
 
 	void OnFailedToConnect(NetworkConnectionError error)
 	{
-		OnFailedConnection.Invoke("Could not connect to server: "+error);
+		OnFailedConnection.Invoke("Could not connect to server: " + error);
 	}
+
 }
 
 [Serializable]

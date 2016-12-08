@@ -13,6 +13,16 @@ public struct SelectableCharacter
 	public Image InfoImage;//Unused for now
 }
 
+[Flags]
+public enum OpenSlots
+{
+	None = 0,
+	One = 1,
+	Two = 2,
+	Three = 4,
+	Four = 8
+};
+
 public class CharacterSelector : MonoBehaviour
 {
 	public ParticleSystem OnCharacterSelectedParticles;
@@ -30,12 +40,13 @@ public class CharacterSelector : MonoBehaviour
 	{
 		if (SlotsAvailable[slotNumber].Open)
 		{
-			Debug.Log("Slot "+slotNumber+" is already open !");
+			Debug.Log("Slot " + slotNumber + " is already open !");
 			return;
 		}
 
 		SlotsAvailable[slotNumber].OpenSlot(slotNumber, player);
 	}
+
 
 	public void CloseTargetSlot(int slotNumber)
 	{
@@ -44,7 +55,6 @@ public class CharacterSelector : MonoBehaviour
 		if (SlotsAvailable[slotNumber].Open)
 			SlotsAvailable[slotNumber].CloseSlot();
 	}
-
 
 	public void CancelAllSelections(bool needClose = true)
 	{

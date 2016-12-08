@@ -71,6 +71,8 @@ public class InputListener : MonoBehaviour
 
 			if (_timeHeld > TimeToHold)
 			{
+
+				Debug.Log(_timeHeld);
 				LaunchCallback(_JoystickHeld);
 			}
 		}
@@ -180,6 +182,8 @@ public class InputListener : MonoBehaviour
 
 	void OnEnable()
 	{
+		_JoystickHeld = -1;
+		_JoystickRequestCallback = -1;
 		_isInputDown = false;
 		_timeHeld = 0;
 		for (int i = 0; i < _waitForRelease.Length; i++)

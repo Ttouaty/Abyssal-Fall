@@ -11,7 +11,7 @@ struct SelectedCharacters
 	public int skinIndex;
 }
 
-public class CharacterSlot : NetworkBehaviour
+public class CharacterSlot : MonoBehaviour
 {
 	private static SelectableCharacter[] _availableCharacters;
 	public static ParticleSystem OnCharacterSelectedParticles;
@@ -27,10 +27,8 @@ public class CharacterSlot : NetworkBehaviour
 	private int _joyToListen; 
 	private int _playerIndex;
 	[HideInInspector]
-	[SyncVar]
 	public bool Open = false;
 	[HideInInspector]
-	[SyncVar]
 	public bool Selected = false;
 
 	public UnityEvent OnSlotOpen;
@@ -60,7 +58,6 @@ public class CharacterSlot : NetworkBehaviour
 	}
 
 	private CharacterSelector _selectorRef;
-
 	void Start()
 	{
 		_selectorRef = GetComponentInParent<CharacterSelector>();
@@ -165,6 +162,9 @@ public class CharacterSlot : NetworkBehaviour
 		//	StopCoroutine(_activeCoroutineRef);
 
 		Selected = false;
+		if (ServerManager.Instance.RegisteredPlayers.Count == 0)
+			return;
+
 		if (ServerManager.Instance.RegisteredPlayers[_playerIndex] != null)
 			ServerManager.Instance.RegisteredPlayers[_playerIndex].UnReady();
 
@@ -223,6 +223,13 @@ public class CharacterSlot : NetworkBehaviour
 	{
 		Open = true;
 		OnSlotOpen.Invoke();
+
+		if(!player.isLocalPlayer)
+		{
+			Debug.LogError("External Wheel Detected aborting spawn");
+			return;
+		}
+
 		_joyToListen = player.JoystickNumber;
 		_playerIndex = playerNumber;
 		CharacterSelectWheel newWheel = Instantiate(_wheelRef, transform.position + transform.forward * (_wheelRef._wheelRadius - 1), Quaternion.identity) as CharacterSelectWheel;
