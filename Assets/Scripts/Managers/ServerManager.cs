@@ -6,9 +6,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.Net.Sockets;
+using UnityEngine.Networking.Match;
+using UnityEngine.Events;
 
-public class ServerManager : NetworkLobbyManager
+public class ServerManager : NATTraversal.NetworkManager
 {
+	[Header("Custom Vars")]
 	public static ServerManager Instance;
 	private static bool _initialised = false;
 
@@ -26,7 +29,6 @@ public class ServerManager : NetworkLobbyManager
 	private bool _isInGame = false;
 	[HideInInspector]
 	public string ExternalIp = "";
-	public UnityEventString OnExternalIpRetrieved;
 
 	[HideInInspector]
 	public string GameId;
@@ -53,7 +55,6 @@ public class ServerManager : NetworkLobbyManager
 
 	public static ServerManager Init()
 	{
-
 		if (_initialised)
 		{
 			return Instance;
@@ -99,40 +100,38 @@ public class ServerManager : NetworkLobbyManager
 	}
 
 	private string originalLobbyScene;
-	void Start()
+	public override void Start()
 	{
-		offlineScene = "";
-		lobbyScene = "Scene_Root"; // Name of the scene with the network manager
+		//offlineScene = "";
+		//lobbyScene = "Scene_Root"; // Name of the scene with the network manager
 
-		originalLobbyScene = lobbyScene;
+		//originalLobbyScene = lobbyScene;
+		//if (matchMaker == null) matchMaker = gameObject.AddComponent<NetworkMatch>();
 		_isInGame = false;
 		_playersReadyForMapSpawn = 0;
 		Init();
-	}
-
-	public override void ServerChangeScene(string sceneName)
-	{
-		// Do nothing
+		base.Start();
 	}
 
 	public override void OnStartClient(NetworkClient lobbyClient)
 	{
-		lobbyScene = originalLobbyScene; // Ensures the client loads correctly
+		//lobbyScene = originalLobbyScene; // Ensures the client loads correctly
 		Debug.Log("start client");
 		base.OnStartClient(lobbyClient);
 	}
-	public override void OnStopClient()
-	{
-		lobbyScene = ""; // Ensures we don't reload the scene after quitting
-	}
+	//public override void OnStopClient()
+	//{
+	//	lobbyScene = ""; // Ensures we don't reload the scene after quitting
+	//}
 
 	public override void OnStartServer()
 	{
-		lobbyScene = originalLobbyScene; // Ensures the server loads correctly
+		Debug.Log("serverStarted");
+		//lobbyScene = originalLobbyScene; // Ensures the server loads correctly
 	}
 	public override void OnStopServer()
 	{
-		lobbyScene = ""; // Ensures we don't reload the scene after quitting
+		//lobbyScene = ""; // Ensures we don't reload the scene after quitting
 		ResetNetwork(true);
 	}
 
@@ -142,7 +141,21 @@ public class ServerManager : NetworkLobbyManager
 		Debug.Log("error");
 		base.OnClientError(conn, errorCode);
 	}
-	
+
+	public void TryToAddPlayer()
+	{
+		Debug.LogError("TryToAddPlayer");
+
+		if(NetworkClient.allClients.Count != 0)
+		{
+			ClientScene.AddPlayer(NetworkClient.allClients[0].connection, (short)ServerManager.Instance.RegisteredPlayers.Count);
+		}
+		else
+		{
+			Debug.Log("No client found to add player to! Create a new Client before calling TryToAddPlayer(); if used locally");
+		}
+	}
+
 	public override void OnClientConnect(NetworkConnection conn)
 	{
 		Debug.Log("client connection detected with adress: " + conn.address);
@@ -154,11 +167,11 @@ public class ServerManager : NetworkLobbyManager
 		base.OnClientConnect(conn);
 	}
 
-	public override void OnLobbyClientConnect(NetworkConnection conn)
-	{
-		Debug.Log("LOBBY CLIENT");
-		base.OnLobbyClientConnect(conn);
-	}
+	//public override void OnLobbyClientConnect(NetworkConnection conn)
+	//{
+	//	Debug.Log("LOBBY CLIENT");
+	//	base.OnLobbyClientConnect(conn);
+	//}
 
 	public override void OnClientDisconnect(NetworkConnection conn)
 	{
@@ -180,6 +193,7 @@ public class ServerManager : NetworkLobbyManager
 
 			ResetNetwork(true);
 		}
+		base.OnClientDisconnect(conn);
 	}
 
 	public override void OnServerConnect(NetworkConnection conn)
@@ -207,7 +221,11 @@ public class ServerManager : NetworkLobbyManager
 	{
 		Debug.Log("trying to add a new Player");
 		if (!IsInLobby || RegisteredPlayers.Count >= 4)
+		{
 			conn.Disconnect();
+			Debug.Log("Max players registered !");
+			return;
+		}
 
 		if(conn.address != "localClient")
 		{
@@ -242,11 +260,11 @@ public class ServerManager : NetworkLobbyManager
 		Send currently Open slots + next one
 		*/
 		player.GetComponent<Player>().RpcOpenTargetSlot(LobbySlotsOpen);
+		MenuManager.Instance.OpenCharacterSlot(LobbySlotsOpen, player.GetComponent<Player>());
 	}
 
 	public override void OnServerRemovePlayer(NetworkConnection conn, UnityEngine.Networking.PlayerController player)
 	{
-
 		RegisteredPlayers.Remove(player.gameObject.GetComponent<Player>());
 		OpenSlots[] tempArray = Enum.GetValues(typeof(OpenSlots)) as OpenSlots[];
 		LobbySlotsOpen &= ~tempArray[player.gameObject.GetComponent<Player>().PlayerNumber];
@@ -291,19 +309,50 @@ public class ServerManager : NetworkLobbyManager
 		IsInLobby = false;
 		_isInGame = false;
 		ExternalPlayerNumber = 0;
+		if (NetworkServer.active)
+		{
+			matchMaker.DestroyMatch(matchID, 0, OnMatchDropped);
+		}
+		else
+		{
+			matchMaker.DropConnection(matchID, matchmakingNodeID, 0, OnMatchDropped);
+		}
+
 	}
+
+	public void ConnectToMatch(string code)
+	{
+		matchMaker.ListMatches(0, 1, "AbyssalFall-" + code, true, 0, 0, OnMatchList);
+	}
+
+
+	public override void OnMatchList(bool success, string extendedInfo, List<MatchInfoSnapshot> matchList)
+	{
+		if(success)
+		{
+			if(matchList.Count != 0)
+			{
+				FindObjectOfType<ConnectionModule>().OnSuccess.Invoke();
+				StartClientAll(matchList[0]);
+			}
+			else
+				Debug.Log("match list is empty");
+
+		}
+		else
+			Debug.Log("failed to retreive match list");
+	}
+
+
+
 
 	public IEnumerator GetExternalIP()
 	{
-		if(ExternalIp.Length > 0)
+		while(!isDoneFetchingExternalIP)
 		{
-			Debug.Log("IP already retrieved");
-			OnExternalIpRetrieved.Invoke(ExternalIp);
-			yield break;
+			yield return true;
 		}
-
-		Debug.Log("ExternalIp Retrieved: " + Network.player.externalIP);
-		ExternalIp = Network.player.externalIP;
-		OnExternalIpRetrieved.Invoke(ExternalIp);
+		
+		ExternalIp = externalIP;
 	}
 }

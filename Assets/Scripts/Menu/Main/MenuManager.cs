@@ -124,14 +124,13 @@ public class MenuManager : GenericSingleton<MenuManager>
 		LocalJoystickBuffer.Add(joystickNumber);
 		_controllerAlreadyInUse[joystickNumber] = true;
 
-		if (Network.connections.Length == 0 && !Network.isServer)
+		if (Network.connections.Length == 0 && !ServerManager.Instance.isNetworkActive)
 		{
 			Debug.Log("trying to start host");
 			StartLocalHost(); //Server side or starting server
 		}
 		else
 		{
-			Debug.LogError("TryToAddPlayer");
 			ServerManager.Instance.TryToAddPlayer();
 		}
 	}
@@ -463,22 +462,24 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	public void StartLocalHost()
 	{
-		//Network.natFacilitatorIP = ServerManager.singleton.networkAddress;
-		//Network.natFacilitatorPort = ServerManager.singleton.networkPort;
-		//Network.InitializeServer(ServerManager.singleton.maxConnections, ServerManager.singleton.networkPort, false);
-		if(ServerManager.Instance.ExternalIp.Length > 0)
-		{
-			bool useNat = !Network.HavePublicAddress();
-			Network.InitializeServer(ServerManager.singleton.maxConnections, ServerManager.singleton.networkPort, useNat);
-		}
+		ServerManager.Instance.StartHostAll("AbyssalFall-"+ServerManager.Instance.GameId, 4, true);
 	}
 
-	protected void OnServerInitialized(NetworkPlayer player)
+	void OnConnectedToServer()
 	{
-		MasterServer.RegisterHost("AbyssalFall-" + ServerManager.Instance.GameId, "AbyssalFall-" + ServerManager.Instance.GameId, "");
-		Debug.Log("MasterServer.RegisterHost => " + "AbyssalFall-" + ServerManager.Instance.GameId);
-		ServerManager.singleton.StartHost();
+		Debug.Log("OnConnectedToServer() from menuManager:");
+		Debug.Log("Creating new Client");
+		Debug.Log("Number of clients before creating: "+NetworkClient.allClients.Count);
+		Debug.Log("Number of connections: " + Network.connections.Length);
+
+		ServerManager.Instance.TryToAddPlayer();
 	}
+
+	void OnFailedToConnect(NetworkConnectionError error)
+	{
+		Debug.Log("Could not connect to server: " + error);
+	}
+
 
 	public void DisconnectFromServer()
 	{

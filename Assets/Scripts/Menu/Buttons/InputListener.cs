@@ -71,8 +71,6 @@ public class InputListener : MonoBehaviour
 
 			if (_timeHeld > TimeToHold)
 			{
-
-				Debug.Log(_timeHeld);
 				LaunchCallback(_JoystickHeld);
 			}
 		}

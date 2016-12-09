@@ -2,7 +2,7 @@
 using UnityEngine.Networking;
 using System.Collections;
 
-public class Player : NetworkLobbyPlayer
+public class Player : NetworkBehaviour
 {
 
 	[HideInInspector]
@@ -101,6 +101,7 @@ public class Player : NetworkLobbyPlayer
 				{
 					Debug.Log("No joystickBuffer found in menu manager: closing connection.");
 					ServerManager.singleton.StopClient();
+					Network.Disconnect();
 					Destroy(gameObject);
 				}
 			}
@@ -126,6 +127,14 @@ public class Player : NetworkLobbyPlayer
 		{
 			MenuManager.Instance.CloseCharacterSlot(slotNumber);
 		}
+	}
+
+	void OnPlayerDisconnected(NetworkPlayer player)
+	{
+		Debug.Log("Clean up after player " + player);
+		RpcCloseTargetSlot(PlayerNumber - 1);
+		Network.RemoveRPCs(player);
+		Network.DestroyPlayerObjects(player);
 	}
 
 	[Command]

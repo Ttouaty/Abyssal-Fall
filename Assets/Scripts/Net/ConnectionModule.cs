@@ -33,44 +33,15 @@ public class ConnectionModule : MonoBehaviour
 			return;
 		}
 
-		MasterServer.RequestHostList("AbyssalFall-"+ Code);
 		Debug.Log("looking for games with gameType: "+ "AbyssalFall-" + Code);
-		StartCoroutine(ConnectionCoroutine());
-		//Network.Connect(fragmentIp[0], Convert.ToInt32(fragmentIp[1]));
-	}
+		Debug.Log("Setting MenuManager joystick buffer");
 
-	IEnumerator ConnectionCoroutine()
-	{
-		HostData[] tempHostData = MasterServer.PollHostList();
-		int tries = 0;
-		int maxTries = 10;
-		while (tempHostData.Length == 0 &&  tries < maxTries)
-		{
-			tries++;
-			Debug.Log("trying to poll results: "+tries);
-			tempHostData = MasterServer.PollHostList();
-			yield return new WaitForSeconds(1);
-		}
+		MenuManager.Instance.LocalJoystickBuffer.Add(0);
+		if (InputManager.AnyButtonDown(true) != -1)
+			MenuManager.Instance.LocalJoystickBuffer.Add(InputManager.AnyButtonDown(true));
 
-		if(tries >= maxTries)
-		{
-			//too many tries, cancelling;
-			Debug.Log("too many tries");
-			MasterServer.ClearHostList();
-			OnFailedToConnect(NetworkConnectionError.ConnectionFailed);
-			yield break;
-		}
-		else
-		{
-			Debug.Log("Server found ! "+ tempHostData[0].gameType);
-			Network.Connect(tempHostData[0].guid);
-		}
-	}
 
-	void OnConnectedToServer()
-	{
-		ServerManager.Instance.TryToAddPlayer();
-		OnSuccess.Invoke();
+		ServerManager.Instance.ConnectToMatch(Code);
 	}
 
 	void OnFailedToConnect(NetworkConnectionError error)

@@ -16,8 +16,8 @@ public class CharacterSelectWheel : MenuWheel<PlayerController>
 		{
 			tempGenerationSelectableCharacters[i] = Instantiate(elementsToAdd[i]._characterData.CharacterModel.gameObject) as GameObject;
 			tempGenerationSelectableCharacters[i].transform.localScale = transform.parent.localScale * 1.8f;
-			tempGenerationSelectableCharacters[i].AddComponent<NetworkIdentity>();
-			NetworkServer.Spawn(tempGenerationSelectableCharacters[i]);
+			//tempGenerationSelectableCharacters[i].AddComponent<NetworkIdentity>();
+			//NetworkServer.Spawn(tempGenerationSelectableCharacters[i]);
 		}
 
 		_wheelRadius = Mathf.Abs(transform.localPosition.z);

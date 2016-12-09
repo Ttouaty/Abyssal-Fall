@@ -35,7 +35,7 @@ public class CharacterSlot : MonoBehaviour
 	public UnityEvent OnSlotClose;
 
 	private bool _canSwitchCharacter = true;
-
+	public Player _playerRef;
 	public CharacterSelectWheel _wheelRef;
 	//private GameObject _selectedCharacterModel;
 
@@ -77,13 +77,18 @@ public class CharacterSlot : MonoBehaviour
 	int frameDelay = 1; // security for opening a slot. (prevents openning && selecting character in 1 frame)
 	void Update()
 	{
+		
+
 		if (!Open)
 			return;
 		if (frameDelay-- >= 0)
 			return;
+		if (_playerRef == null)
+			return;
+		if (!_playerRef.isLocalPlayer)
+			return;
 		if (InputManager.GetButtonDown(InputEnum.B, _joyToListen) && Selected)
 			CancelCharacterSelection();
-
 		if (Selected)
 			return;
 
@@ -229,7 +234,7 @@ public class CharacterSlot : MonoBehaviour
 			Debug.LogError("External Wheel Detected aborting spawn");
 			return;
 		}
-
+		_playerRef = player;
 		_joyToListen = player.JoystickNumber;
 		_playerIndex = playerNumber;
 		CharacterSelectWheel newWheel = Instantiate(_wheelRef, transform.position + transform.forward * (_wheelRef._wheelRadius - 1), Quaternion.identity) as CharacterSelectWheel;
@@ -244,8 +249,10 @@ public class CharacterSlot : MonoBehaviour
 
 		newWheel.Generate(tempArray);
 		newWheel.GetComponent<NetworkIdentity>().localPlayerAuthority = true;
-		NetworkServer.SpawnWithClientAuthority(newWheel.gameObject, player.gameObject);
 
+		if (player.isServer)
+			NetworkServer.SpawnWithClientAuthority(newWheel.gameObject, player.gameObject);
+		
 		ChangeSkin(0);
 		Debug.Log("SLOT: " + name + " Opened, Listening to gamePad n°: " + player.JoystickNumber);
 	}
