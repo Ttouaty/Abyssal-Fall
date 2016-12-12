@@ -10,7 +10,12 @@ public class ConnectionModule : MonoBehaviour
 	public InputField TargetIPField;
 
 	public UnityEventString OnFailedConnection;
-	public UnityEvent OnSuccess;
+	public UnityEventString OnSuccess;
+
+	void Start()
+	{
+		OnSuccess.AddListener(OnSuccessCallBack);
+	}
 
 	public void Connect()
 	{
@@ -42,6 +47,11 @@ public class ConnectionModule : MonoBehaviour
 
 
 		ServerManager.Instance.ConnectToMatch(Code);
+	}
+
+	void OnSuccessCallBack(string Code)
+	{
+		FindObjectOfType<TextIP>().GetComponent<InputField>().text = Code;
 	}
 
 	void OnFailedToConnect(NetworkConnectionError error)

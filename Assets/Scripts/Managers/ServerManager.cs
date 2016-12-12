@@ -37,6 +37,8 @@ public class ServerManager : NATTraversal.NetworkManager
 
 	public OpenSlots LobbySlotsOpen = OpenSlots.None;
 
+	public Player HostingClient;
+
 	public bool AreAllPlayerReady
 	{
 		get
@@ -102,44 +104,17 @@ public class ServerManager : NATTraversal.NetworkManager
 	private string originalLobbyScene;
 	public override void Start()
 	{
-		//offlineScene = "";
-		//lobbyScene = "Scene_Root"; // Name of the scene with the network manager
-
-		//originalLobbyScene = lobbyScene;
-		//if (matchMaker == null) matchMaker = gameObject.AddComponent<NetworkMatch>();
+		
 		_isInGame = false;
 		_playersReadyForMapSpawn = 0;
 		Init();
 		base.Start();
 	}
 
-	public override void OnStartClient(NetworkClient lobbyClient)
-	{
-		//lobbyScene = originalLobbyScene; // Ensures the client loads correctly
-		Debug.Log("start client");
-		base.OnStartClient(lobbyClient);
-	}
-	//public override void OnStopClient()
-	//{
-	//	lobbyScene = ""; // Ensures we don't reload the scene after quitting
-	//}
-
-	public override void OnStartServer()
-	{
-		Debug.Log("serverStarted");
-		//lobbyScene = originalLobbyScene; // Ensures the server loads correctly
-	}
 	public override void OnStopServer()
 	{
 		//lobbyScene = ""; // Ensures we don't reload the scene after quitting
 		ResetNetwork(true);
-	}
-
-	public override void OnClientError(NetworkConnection conn, int errorCode)
-	{
-
-		Debug.Log("error");
-		base.OnClientError(conn, errorCode);
 	}
 
 	public void TryToAddPlayer()
@@ -159,26 +134,12 @@ public class ServerManager : NATTraversal.NetworkManager
 	public override void OnClientConnect(NetworkConnection conn)
 	{
 		Debug.Log("client connection detected with adress: " + conn.address);
-		//if (NetworkClient.active)
-		//{
-		//	Debug.Log("add clientscene player");
-		//	ClientScene.AddPlayer(NetworkClient.allClients[0].connection, (short)RegisteredPlayers.Count);
-		//}
 		base.OnClientConnect(conn);
 	}
 
-	//public override void OnLobbyClientConnect(NetworkConnection conn)
-	//{
-	//	Debug.Log("LOBBY CLIENT");
-	//	base.OnLobbyClientConnect(conn);
-	//}
-
 	public override void OnClientDisconnect(NetworkConnection conn)
 	{
-		if (Network.connections.Length == 0)
-			return;
-
-		if (!Network.isServer)
+		if (!NetworkServer.active)
 		{
 			Debug.Log("client was disconnected");
 			if (MenuManager.Instance != null)
@@ -236,15 +197,15 @@ public class ServerManager : NATTraversal.NetworkManager
 		GameObject player = Instantiate(playerPrefab, transform) as GameObject;
 		RegisteredPlayers.Add(player.GetComponent<Player>());
 
-		player.GetComponent<Player>().PlayerNumber = RegisteredPlayers.Count;
 
-		NetworkServer.AddPlayerForConnection(conn, player, playerControllerId);
-		NetworkServer.Spawn(player);
-		if(LobbySlotsOpen == OpenSlots.None)
+		int i = 0;
+		if (LobbySlotsOpen == OpenSlots.None)
+		{
+			i++;
 			LobbySlotsOpen = OpenSlots.One;
+		}
 		else
 		{
-			int i = 0;
 			foreach (OpenSlots slot in Enum.GetValues(typeof(OpenSlots)))
 			{
 				if ((LobbySlotsOpen & slot) == 0 && i != 0) //get first unused slot and take it && skip .None
@@ -256,11 +217,15 @@ public class ServerManager : NATTraversal.NetworkManager
 			}
 		}
 
-		/*
-		Send currently Open slots + next one
-		*/
-		player.GetComponent<Player>().RpcOpenTargetSlot(LobbySlotsOpen);
-		MenuManager.Instance.OpenCharacterSlot(LobbySlotsOpen, player.GetComponent<Player>());
+		player.GetComponent<Player>().PlayerNumber = i;
+
+		NetworkServer.AddPlayerForConnection(conn, player, playerControllerId);
+		NetworkServer.SpawnWithClientAuthority(player, conn);
+
+		if (HostingClient == null) // if that is the first client
+			HostingClient = player.GetComponent<Player>();
+
+		HostingClient.RpcOpenSlot(LobbySlotsOpen, player.GetComponent<Player>().PlayerNumber);
 	}
 
 	public override void OnServerRemovePlayer(NetworkConnection conn, UnityEngine.Networking.PlayerController player)
@@ -309,6 +274,7 @@ public class ServerManager : NATTraversal.NetworkManager
 		IsInLobby = false;
 		_isInGame = false;
 		ExternalPlayerNumber = 0;
+		HostingClient = null;
 		if (NetworkServer.active)
 		{
 			matchMaker.DestroyMatch(matchID, 0, OnMatchDropped);
@@ -322,6 +288,7 @@ public class ServerManager : NATTraversal.NetworkManager
 
 	public void ConnectToMatch(string code)
 	{
+		if (matchMaker == null) matchMaker = gameObject.AddComponent<NetworkMatch>();
 		matchMaker.ListMatches(0, 1, "AbyssalFall-" + code, true, 0, 0, OnMatchList);
 	}
 
@@ -332,19 +299,17 @@ public class ServerManager : NATTraversal.NetworkManager
 		{
 			if(matchList.Count != 0)
 			{
-				FindObjectOfType<ConnectionModule>().OnSuccess.Invoke();
+				FindObjectOfType<ConnectionModule>().OnSuccess.Invoke(GameId);
 				StartClientAll(matchList[0]);
 			}
 			else
-				Debug.Log("match list is empty");
-
+				FindObjectOfType<ConnectionModule>().OnFailedConnection.Invoke("Failed to find target game. (No Match found)");
 		}
 		else
-			Debug.Log("failed to retreive match list");
+		{
+			FindObjectOfType<ConnectionModule>().OnFailedConnection.Invoke("Failed to find target game. (Connection error)");
+		}
 	}
-
-
-
 
 	public IEnumerator GetExternalIP()
 	{

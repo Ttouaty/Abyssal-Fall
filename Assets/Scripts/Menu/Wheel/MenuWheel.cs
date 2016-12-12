@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
@@ -22,6 +23,9 @@ public class MenuWheel<ReturnType> : MonoBehaviour
 
 	protected Color _tempColor;
 	protected float _tempElementAngle;
+	public Player ParentPlayer;
+
+	public bool isGenerated = false;
 
 	protected virtual void Start()
 	{
@@ -54,6 +58,8 @@ public class MenuWheel<ReturnType> : MonoBehaviour
 		}
 
 		ScrollToIndex(_selectedElementIndex);
+		isGenerated = true;
+		Update();
 	}
 
 	protected virtual void ElementGenerate(GameObject element, Vector3 localPos)
@@ -70,12 +76,14 @@ public class MenuWheel<ReturnType> : MonoBehaviour
 
 	protected virtual void Update()
 	{
-		transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(0, _selectedElementIndex * _rotationBetweenElements, 0), _rotateSpeed);
+		
+		if (ParentPlayer != null)
+			if (ParentPlayer.isLocalPlayer)
+				transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(0, _selectedElementIndex * _rotationBetweenElements, 0), _rotateSpeed);
 
 		//######## apply alpha to Image elements #########
-		ApplyAlpha();
-
 		RotateElementsFacingCam();
+		ApplyAlpha();
 	}
 
 	protected virtual void ApplyAlpha()

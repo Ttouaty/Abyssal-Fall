@@ -224,36 +224,71 @@ public class CharacterSlot : MonoBehaviour
 		_canSwitchCharacter = true;
 	}
 
+	
 	public void OpenSlot(int playerNumber, Player player)
 	{
-		Open = true;
-		OnSlotOpen.Invoke();
-
-		if(!player.isLocalPlayer)
+		if(!Open)
 		{
-			Debug.LogError("External Wheel Detected aborting spawn");
+			Open = true;
+			OnSlotOpen.Invoke();
+		}
+
+		
+
+		if (player == null)
+		{
+			if (!_wheelRef.isGenerated)
+			{
+				PlayerController[] tempArray = new PlayerController[_availableCharacters.Length];
+
+				for (int i = 0; i < _availableCharacters.Length; i++)
+				{
+					tempArray[i] = _availableCharacters[i].CharacterRef;
+				}
+
+				_wheelRef.Generate(tempArray, null);
+			}
 			return;
 		}
-		_playerRef = player;
-		_joyToListen = player.JoystickNumber;
-		_playerIndex = playerNumber;
-		CharacterSelectWheel newWheel = Instantiate(_wheelRef, transform.position + transform.forward * (_wheelRef._wheelRadius - 1), Quaternion.identity) as CharacterSelectWheel;
-		newWheel.transform.SetParent(transform);
-		newWheel.transform.localRotation = Quaternion.identity;
-		PlayerController[] tempArray = new PlayerController[_availableCharacters.Length];
-
-		for (int i = 0; i < _availableCharacters.Length; i++)
+		else
 		{
-			tempArray[i] = _availableCharacters[i].CharacterRef;
+			_playerRef = player;
+			_joyToListen = player.JoystickNumber;
+			_playerIndex = playerNumber;
 		}
 
-		newWheel.Generate(tempArray);
-		newWheel.GetComponent<NetworkIdentity>().localPlayerAuthority = true;
-
-		if (player.isServer)
-			NetworkServer.SpawnWithClientAuthority(newWheel.gameObject, player.gameObject);
 		
-		ChangeSkin(0);
+		
+		//CharacterSelectWheel newWheel = Instantiate(_wheelRef, transform.position + transform.forward * (_wheelRef._wheelRadius - 1), Quaternion.identity) as CharacterSelectWheel;
+		//newWheel.transform.SetParent(transform);
+		_wheelRef.transform.localRotation = Quaternion.identity;
+
+		if(!_wheelRef.isGenerated)
+		{
+			PlayerController[] tempArray = new PlayerController[_availableCharacters.Length];
+
+			for (int i = 0; i < _availableCharacters.Length; i++)
+			{
+				tempArray[i] = _availableCharacters[i].CharacterRef;
+			}
+
+			_wheelRef.Generate(tempArray, player);
+		}
+
+
+		if (!NetworkServer.active)
+		{
+			Debug.Log("no local server detected.");
+			return;
+		}
+
+		Debug.LogError("Creating wheel here");
+
+		_wheelRef.GetComponent<NetworkIdentity>().localPlayerAuthority = true;
+		NetworkServer.SpawnWithClientAuthority(_wheelRef.gameObject, player.gameObject);
+		_wheelRef.gameObject.SetActive(true);
+		//player.RpcSetNetworkParent(newWheel.transform, transform);
+
 		Debug.Log("SLOT: " + name + " Opened, Listening to gamePad n°: " + player.JoystickNumber);
 	}
 
@@ -309,7 +344,5 @@ public class CharacterSlot : MonoBehaviour
 		_canSwitchCharacter = false;
 		_switchCharacterCooldown.Add(_switchCharacterDelay);
 		ChangeSkin(0);
-
-
 	}
 }

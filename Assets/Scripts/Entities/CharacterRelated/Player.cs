@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections;
+using System;
 
 public class Player : NetworkBehaviour
 {
@@ -83,14 +84,16 @@ public class Player : NetworkBehaviour
 	{
 		//base.OnStartClient();
 		//prevents a array index out of range error :x
-
+		
 	}
 
 	public override void OnStartLocalPlayer()
 	{
 		if (isLocalPlayer)
 		{
-			if(MenuManager.Instance != null)
+			if (!ClientScene.ready)
+				ClientScene.Ready(connectionToServer);
+			if (MenuManager.Instance != null)
 			{
 				if (MenuManager.Instance.LocalJoystickBuffer.Count != 0)
 				{
@@ -105,21 +108,35 @@ public class Player : NetworkBehaviour
 					Destroy(gameObject);
 				}
 			}
+
+			name += "_" + PlayerNumber;
 		}
 	}
 
 	[ClientRpc]
-	public void RpcOpenTargetSlot(OpenSlots SlotsOpen)
+	public void RpcOpenSlot(OpenSlots NewSlotToOpen, int playerOpenning)
 	{
-		if (isLocalPlayer && !isSelectingCharacter)
+		if (isLocalPlayer)
 		{
-			MenuManager.Instance.OpenCharacterSlot(SlotsOpen, this);
+			int i = -1;
+			foreach (OpenSlots slot in Enum.GetValues(typeof(OpenSlots)))
+			{
+				if ((NewSlotToOpen & slot) != 0 && i != -1)
+				{
+					MenuManager.Instance.OpenCharacterSlot(slot, playerOpenning == (i+1) ? this : null); //open his own slot
+					Debug.Log("openning slots: "+ slot + " and is target player: "+(playerOpenning == (i + 1)));
+				}
+				i++;
+			}
 
-			Debug.LogWarning("player N°"+PlayerNumber+" listening to joystick "+JoystickNumber+" has openned slot "+SlotsOpen.ToString());
+			//Debug.LogWarning("player N°"+PlayerNumber+" listening to joystick "+JoystickNumber+" has openned slot "+ NewSlotToOpen.ToString());
 			isSelectingCharacter = true;
 		}
+		else
+		{
+			Debug.Log("is non localPlayer "+name);
+		}
 	}
-
 	[ClientRpc]
 	public void RpcCloseTargetSlot(int slotNumber)
 	{

@@ -8,8 +8,9 @@ public class CharacterSelectWheel : MenuWheel<PlayerController>
 {
 	public int _selectedSkinIndex = 0;
 
-	public void Generate(PlayerController[] elementsToAdd)
+	public void Generate(PlayerController[] elementsToAdd, Player parentPlayer)
 	{
+		ParentPlayer = parentPlayer;
 		GameObject[] tempGenerationSelectableCharacters = new GameObject[elementsToAdd.Length];
 
 		for (int i = 0; i < tempGenerationSelectableCharacters.Length; i++)

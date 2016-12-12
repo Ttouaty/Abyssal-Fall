@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -296,4 +297,13 @@ public static class MonoBehaviourExtensions
 		MonoBehaviour.Destroy(target.gameObject);
 	}
 
+}
+
+public static class NetworkBehaviorExtensions
+{
+	[ClientRpc]
+	public static void RpcSetNetworkParent(this NetworkBehaviour me, Transform child, Transform target)
+	{
+		child.transform.SetParent(target);
+	}
 }

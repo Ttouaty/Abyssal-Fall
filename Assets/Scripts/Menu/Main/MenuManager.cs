@@ -27,7 +27,8 @@ public class MenuManager : GenericSingleton<MenuManager>
 	private Transform _rightMenuAnchor;
 
 	private bool[] _controllerAlreadyInUse = new bool[12];
-	private CharacterSelector _characterSlotsContainerRef;
+	[HideInInspector]
+	public CharacterSelector _characterSlotsContainerRef;
 	private RawImage[] _splashscreens;
 	private Coroutine _miniLoadingCoroutine;
 	private bool _needFTUE = false;
@@ -124,7 +125,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 		LocalJoystickBuffer.Add(joystickNumber);
 		_controllerAlreadyInUse[joystickNumber] = true;
 
-		if (Network.connections.Length == 0 && !ServerManager.Instance.isNetworkActive)
+		if (!NetworkServer.active && !NetworkClient.active)
 		{
 			Debug.Log("trying to start host");
 			StartLocalHost(); //Server side or starting server
@@ -260,6 +261,10 @@ public class MenuManager : GenericSingleton<MenuManager>
 		else if(newMenu.MenuName == "Lobby")
 		{
 			ServerManager.Instance.IsInLobby = true;
+			//if(!NetworkClient.active)
+			//{
+			//	RegisterNewPlayer(new JoystickNumber(InputManager.AnyButtonDown(true) == -1 ? 0 : InputManager.AnyButtonDown(true)));
+			//}
 		}
 
 		//SetActiveButtons(newMenu, true); 
