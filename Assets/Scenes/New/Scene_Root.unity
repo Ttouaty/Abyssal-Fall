@@ -1235,7 +1235,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_NetworkPort: 1358
-  m_ServerBindToIP: 0
+  m_ServerBindToIP: 1
   m_ServerBindAddress: localhost
   m_NetworkAddress: localhost
   m_DontDestroyOnLoad: 0
@@ -1251,7 +1251,7 @@ MonoBehaviour:
   m_OnlineScene: 
   m_SpawnPrefabs:
   - {fileID: 1000013645422232, guid: 14a7caba18a68b849af8def2e2e34e2a, type: 2}
-  m_CustomConfig: 1
+  m_CustomConfig: 0
   m_MaxConnections: 4
   m_ConnectionConfig:
     m_PacketSize: 1500
@@ -1293,7 +1293,7 @@ MonoBehaviour:
   matchSize: 4
   isNetworkActive: 0
   matchMaker: {fileID: 0}
-  connectDirectly: 1
+  connectDirectly: 0
   connectPunchthrough: 1
   connectRelay: 1
   useUnityMatchmaking: 1
@@ -1306,6 +1306,7 @@ MonoBehaviour:
   GameId: 
   ExternalPlayerNumber: 0
   LobbySlotsOpen: 0
+  HostingClient: {fileID: 0}
 --- !u!114 &2142853593
 MonoBehaviour:
   m_ObjectHideFlags: 0

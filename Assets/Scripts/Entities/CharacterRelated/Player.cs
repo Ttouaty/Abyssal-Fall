@@ -22,7 +22,6 @@ public class Player : NetworkBehaviour
 	[SyncVar]
 	public int SkinNumber = 0; //the index of the material used by the playerMesh
 	[HideInInspector]
-	[SyncVar]
 	public int PlayerNumber;
 	[HideInInspector]
 	public PlayerController Controller;// PlayerController Instantiated
@@ -73,32 +72,29 @@ public class Player : NetworkBehaviour
 
 	void OnDestroy()
 	{
-		if (isServer)
-		{
-			if (Controller != null)
-				Destroy(Controller.gameObject);
-		}
+		if (Controller != null)
+			Destroy(Controller.gameObject);
 	}
 
 	public override void OnStartClient()
 	{
-		//base.OnStartClient();
+		base.OnStartClient();
 		//prevents a array index out of range error :x
-		
+
 	}
 
 	public override void OnStartLocalPlayer()
 	{
 		if (isLocalPlayer)
 		{
-			if (!ClientScene.ready)
-				ClientScene.Ready(connectionToServer);
+			name += "_" + PlayerNumber;
+
 			if (MenuManager.Instance != null)
 			{
 				if (MenuManager.Instance.LocalJoystickBuffer.Count != 0)
 				{
 					Init(MenuManager.Instance.LocalJoystickBuffer[MenuManager.Instance.LocalJoystickBuffer.Count - 1]);
-					Debug.Log("player created with joystick number :" + JoystickNumber);
+					Debug.Log("player"+name+" created with joystick number :" + JoystickNumber);
 				}
 				else
 				{
@@ -109,15 +105,22 @@ public class Player : NetworkBehaviour
 				}
 			}
 
-			name += "_" + PlayerNumber;
 		}
 	}
 
-	[ClientRpc]
-	public void RpcOpenSlot(OpenSlots NewSlotToOpen, int playerOpenning)
+	[Command]
+	public void CmdRequestOpenSlot(int newNumber)
 	{
+	}
+
+	[ClientRpc]
+	public void RpcOpenSlot(string slotsToOpen, int playerOpenning)
+	{
+
+		Debug.Log("Object with netId "+ netId+" has received RpcOpenSLot() call ");
 		if (isLocalPlayer)
 		{
+			OpenSlots NewSlotToOpen = (OpenSlots)Enum.Parse(typeof(OpenSlots), slotsToOpen);
 			int i = -1;
 			foreach (OpenSlots slot in Enum.GetValues(typeof(OpenSlots)))
 			{
@@ -159,6 +162,12 @@ public class Player : NetworkBehaviour
 	{
 		isReady = true;
 		Debug.Log("PLayer N°"+PlayerNumber+" has selected a character");
+	}
+
+	[ClientRpc]
+	public void RpcPingClient(string message)
+	{
+		Debug.LogError("Client with id "+netId+" received the ping: "+message);
 	}
 
 }

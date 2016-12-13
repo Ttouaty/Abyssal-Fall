@@ -104,7 +104,6 @@ public class ServerManager : NATTraversal.NetworkManager
 	private string originalLobbyScene;
 	public override void Start()
 	{
-		
 		_isInGame = false;
 		_playersReadyForMapSpawn = 0;
 		Init();
@@ -121,8 +120,15 @@ public class ServerManager : NATTraversal.NetworkManager
 	{
 		Debug.LogError("TryToAddPlayer");
 
+		if (!NetworkServer.active)
+		{
+			Debug.Log("is not server, abording player creation");
+			return;
+		}
+
 		if(NetworkClient.allClients.Count != 0)
 		{
+			Debug.Log("add player");
 			ClientScene.AddPlayer(NetworkClient.allClients[0].connection, (short)ServerManager.Instance.RegisteredPlayers.Count);
 		}
 		else
@@ -134,6 +140,11 @@ public class ServerManager : NATTraversal.NetworkManager
 	public override void OnClientConnect(NetworkConnection conn)
 	{
 		Debug.Log("client connection detected with adress: " + conn.address);
+		if (!IsInLobby)
+		{
+			FindObjectOfType<ConnectionModule>().OnSuccess.Invoke(GameId);
+		}
+
 		base.OnClientConnect(conn);
 	}
 
@@ -194,9 +205,10 @@ public class ServerManager : NATTraversal.NetworkManager
 			Debug.Log("External player connected with address: "+conn.address);
 		}
 
-		GameObject player = Instantiate(playerPrefab, transform) as GameObject;
-		RegisteredPlayers.Add(player.GetComponent<Player>());
+		GameObject playerGo = (GameObject)Instantiate(playerPrefab);
 
+		Player player = playerGo.GetComponent<Player>();
+		RegisteredPlayers.Add(player);
 
 		int i = 0;
 		if (LobbySlotsOpen == OpenSlots.None)
@@ -217,15 +229,18 @@ public class ServerManager : NATTraversal.NetworkManager
 			}
 		}
 
-		player.GetComponent<Player>().PlayerNumber = i;
-
-		NetworkServer.AddPlayerForConnection(conn, player, playerControllerId);
-		NetworkServer.SpawnWithClientAuthority(player, conn);
+		player.PlayerNumber = i;
 
 		if (HostingClient == null) // if that is the first client
-			HostingClient = player.GetComponent<Player>();
+			HostingClient = player;
 
-		HostingClient.RpcOpenSlot(LobbySlotsOpen, player.GetComponent<Player>().PlayerNumber);
+		NetworkServer.AddPlayerForConnection(conn, playerGo, playerControllerId);
+
+		for (int j = 0; j < RegisteredPlayers.Count; j++)
+		{
+			RegisteredPlayers[j].RpcOpenSlot(LobbySlotsOpen.ToString(), i);
+		}
+		//HostingClient.RpcOpenSlot(LobbySlotsOpen.ToString(), player.PlayerNumber);
 	}
 
 	public override void OnServerRemovePlayer(NetworkConnection conn, UnityEngine.Networking.PlayerController player)
@@ -299,7 +314,6 @@ public class ServerManager : NATTraversal.NetworkManager
 		{
 			if(matchList.Count != 0)
 			{
-				FindObjectOfType<ConnectionModule>().OnSuccess.Invoke(GameId);
 				StartClientAll(matchList[0]);
 			}
 			else

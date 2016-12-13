@@ -45,7 +45,6 @@ public class ConnectionModule : MonoBehaviour
 		if (InputManager.AnyButtonDown(true) != -1)
 			MenuManager.Instance.LocalJoystickBuffer.Add(InputManager.AnyButtonDown(true));
 
-
 		ServerManager.Instance.ConnectToMatch(Code);
 	}
 

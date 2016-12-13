@@ -233,37 +233,18 @@ public class CharacterSlot : MonoBehaviour
 			OnSlotOpen.Invoke();
 		}
 
-		
-
-		if (player == null)
-		{
-			if (!_wheelRef.isGenerated)
-			{
-				PlayerController[] tempArray = new PlayerController[_availableCharacters.Length];
-
-				for (int i = 0; i < _availableCharacters.Length; i++)
-				{
-					tempArray[i] = _availableCharacters[i].CharacterRef;
-				}
-
-				_wheelRef.Generate(tempArray, null);
-			}
-			return;
-		}
-		else
+		if (player != null)
 		{
 			_playerRef = player;
 			_joyToListen = player.JoystickNumber;
 			_playerIndex = playerNumber;
+			_wheelRef.transform.localRotation = Quaternion.identity;
 		}
 
-		
-		
 		//CharacterSelectWheel newWheel = Instantiate(_wheelRef, transform.position + transform.forward * (_wheelRef._wheelRadius - 1), Quaternion.identity) as CharacterSelectWheel;
 		//newWheel.transform.SetParent(transform);
-		_wheelRef.transform.localRotation = Quaternion.identity;
 
-		if(!_wheelRef.isGenerated)
+		if (!_wheelRef.isGenerated)
 		{
 			PlayerController[] tempArray = new PlayerController[_availableCharacters.Length];
 
@@ -278,16 +259,12 @@ public class CharacterSlot : MonoBehaviour
 
 		if (!NetworkServer.active)
 		{
-			Debug.Log("no local server detected.");
 			return;
 		}
-
-		Debug.LogError("Creating wheel here");
 
 		_wheelRef.GetComponent<NetworkIdentity>().localPlayerAuthority = true;
 		NetworkServer.SpawnWithClientAuthority(_wheelRef.gameObject, player.gameObject);
 		_wheelRef.gameObject.SetActive(true);
-		//player.RpcSetNetworkParent(newWheel.transform, transform);
 
 		Debug.Log("SLOT: " + name + " Opened, Listening to gamePad n°: " + player.JoystickNumber);
 	}
