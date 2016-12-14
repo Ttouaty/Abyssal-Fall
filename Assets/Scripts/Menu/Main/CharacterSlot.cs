@@ -37,6 +37,7 @@ public class CharacterSlot : MonoBehaviour
 	private bool _canSwitchCharacter = true;
 	public Player _playerRef;
 	public CharacterSelectWheel _wheelRef;
+	private bool _netSpawned = false;
 	//private GameObject _selectedCharacterModel;
 
 	//private Coroutine _activeCoroutineRef;
@@ -83,6 +84,7 @@ public class CharacterSlot : MonoBehaviour
 			return;
 		if (frameDelay-- >= 0)
 			return;
+
 		if (_playerRef == null)
 			return;
 		if (!_playerRef.isLocalPlayer)
@@ -91,7 +93,6 @@ public class CharacterSlot : MonoBehaviour
 			CancelCharacterSelection();
 		if (Selected)
 			return;
-
 
 		if (Mathf.Abs(InputManager.GetAxis("x", _joyToListen)) < 0.5f)
 		{
@@ -232,18 +233,7 @@ public class CharacterSlot : MonoBehaviour
 			Open = true;
 			OnSlotOpen.Invoke();
 		}
-
-		if (player != null)
-		{
-			_playerRef = player;
-			_joyToListen = player.JoystickNumber;
-			_playerIndex = playerNumber;
-			_wheelRef.transform.localRotation = Quaternion.identity;
-		}
-
-		//CharacterSelectWheel newWheel = Instantiate(_wheelRef, transform.position + transform.forward * (_wheelRef._wheelRadius - 1), Quaternion.identity) as CharacterSelectWheel;
-		//newWheel.transform.SetParent(transform);
-
+		
 		if (!_wheelRef.isGenerated)
 		{
 			PlayerController[] tempArray = new PlayerController[_availableCharacters.Length];
@@ -253,27 +243,38 @@ public class CharacterSlot : MonoBehaviour
 				tempArray[i] = _availableCharacters[i].CharacterRef;
 			}
 
-			_wheelRef.Generate(tempArray, player);
+			_wheelRef.Generate(tempArray, null);
 		}
+		_wheelRef.gameObject.SetActive(true);
+
+		if (player != null)
+		{
+			_playerRef = player;
+			_joyToListen = player.JoystickNumber;
+			_playerIndex = playerNumber;
+			_wheelRef.transform.localRotation = Quaternion.identity;
+			_wheelRef.ParentPlayer = player;
+		}
+		else
+			return;
 
 
-		if (!NetworkServer.active)
+
+		if (!NetworkServer.active || _netSpawned)
 		{
 			return;
 		}
 
-		_wheelRef.GetComponent<NetworkIdentity>().localPlayerAuthority = true;
-		NetworkServer.SpawnWithClientAuthority(_wheelRef.gameObject, player.gameObject);
-		_wheelRef.gameObject.SetActive(true);
-
+		NetworkServer.SpawnWithClientAuthority(_wheelRef.gameObject, player.connectionToClient);
+		_netSpawned = true;
 		Debug.Log("SLOT: " + name + " Opened, Listening to gamePad n°: " + player.JoystickNumber);
 	}
 
 	public void CloseSlot()
 	{
-		GetComponentInChildren<CharacterSelectWheel>().Reset();
+		_wheelRef.Reset();
 		OnSlotClose.Invoke();
-		GetComponentInChildren<CharacterSelectWheel>().gameObject.SetActive(false);
+		_wheelRef.gameObject.SetActive(false);
 		Open = false;
 		frameDelay = 1;
 		_selectedCharacterIndex = 0;
@@ -286,7 +287,7 @@ public class CharacterSlot : MonoBehaviour
 	{
 		TrySwitchSkin(direction);
 
-		GetComponentInChildren<CharacterSelectWheel>().ChangeCharacterSkin(_selectedSkinIndex);
+		_wheelRef.ChangeCharacterSkin(_selectedSkinIndex);
 	}
 
 	private int tempSkinSwitchAttempts = 0; // used to prevent infinite loop. (security if the character has less skins than players)
@@ -317,7 +318,7 @@ public class CharacterSlot : MonoBehaviour
 
 		_selectedCharacterIndex = _selectedCharacterIndex.LoopAround(0, _availableCharacters.Length -1);
 
-		GetComponentInChildren<CharacterSelectWheel>().ScrollToIndex(_selectedCharacterIndex);
+		_wheelRef.ScrollToIndex(_selectedCharacterIndex);
 		_canSwitchCharacter = false;
 		_switchCharacterCooldown.Add(_switchCharacterDelay);
 		ChangeSkin(0);

@@ -38,12 +38,6 @@ public class CharacterSelector : MonoBehaviour
 
 	public void OpenTargetSlot(int slotNumber, Player player)
 	{
-		if (SlotsAvailable[slotNumber].Open)
-		{
-			Debug.Log("Slot " + slotNumber + " is already open !");
-			return;
-		}
-
 		SlotsAvailable[slotNumber].OpenSlot(slotNumber, player);
 	}
 

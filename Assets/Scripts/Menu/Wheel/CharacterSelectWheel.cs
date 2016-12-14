@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class CharacterSelectWheel : MenuWheel<PlayerController>
 {
+	[HideInInspector]
 	public int _selectedSkinIndex = 0;
 
 	public void Generate(PlayerController[] elementsToAdd, Player parentPlayer)

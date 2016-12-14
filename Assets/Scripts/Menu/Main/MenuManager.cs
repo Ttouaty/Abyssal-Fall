@@ -117,10 +117,10 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	public void RegisterNewPlayer(JoystickNumber joystickNumber)
 	{
-		//if (_controllerAlreadyInUse[joystickNumber] || LocalJoystickBuffer.Count >= 4)
-		//{
-		//	return;
-		//}
+		if (_controllerAlreadyInUse[joystickNumber] || LocalJoystickBuffer.Count >= 4)
+		{
+			return;
+		}
 
 		LocalJoystickBuffer.Add(joystickNumber);
 		_controllerAlreadyInUse[joystickNumber] = true;
@@ -323,7 +323,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 	IEnumerator MovePanelOverTime(MenuPanel targetMenu, Vector3 start, Vector3 end)
 	{
 		float eT = 0;
-		float timeTaken = 0.3f;
+		float timeTaken = 0.2f;
 
 		targetMenu.transform.localPosition = start;
 		while (eT < timeTaken)

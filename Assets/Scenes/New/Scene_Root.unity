@@ -1235,7 +1235,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_NetworkPort: 1358
-  m_ServerBindToIP: 1
+  m_ServerBindToIP: 0
   m_ServerBindAddress: localhost
   m_NetworkAddress: localhost
   m_DontDestroyOnLoad: 0
@@ -1251,6 +1251,7 @@ MonoBehaviour:
   m_OnlineScene: 
   m_SpawnPrefabs:
   - {fileID: 1000013645422232, guid: 14a7caba18a68b849af8def2e2e34e2a, type: 2}
+  - {fileID: 1000012256155670, guid: 1c564f22705f4b74fb27d3873a678000, type: 2}
   m_CustomConfig: 0
   m_MaxConnections: 4
   m_ConnectionConfig:
@@ -1323,4 +1324,4 @@ MonoBehaviour:
   facilitatorTimeOut: 10
   portForwardingEnabled: 1
   portForwardingTimeOut: 10
-  punchthroughTimeout: 30
+  punchthroughTimeout: 15

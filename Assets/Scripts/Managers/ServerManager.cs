@@ -61,7 +61,6 @@ public class ServerManager : NATTraversal.NetworkManager
 		{
 			return Instance;
 		}
-
 		//#########################
 		//### ADD SPAWN PREFABS ###
 		//#########################
@@ -118,8 +117,6 @@ public class ServerManager : NATTraversal.NetworkManager
 
 	public void TryToAddPlayer()
 	{
-		Debug.LogError("TryToAddPlayer");
-
 		if (!NetworkServer.active)
 		{
 			Debug.Log("is not server, abording player creation");
@@ -140,6 +137,7 @@ public class ServerManager : NATTraversal.NetworkManager
 	public override void OnClientConnect(NetworkConnection conn)
 	{
 		Debug.Log("client connection detected with adress: " + conn.address);
+
 		if (!IsInLobby)
 		{
 			FindObjectOfType<ConnectionModule>().OnSuccess.Invoke(GameId);
@@ -152,7 +150,7 @@ public class ServerManager : NATTraversal.NetworkManager
 	{
 		if (!NetworkServer.active)
 		{
-			Debug.Log("client was disconnected");
+			MessageManager.Log("Connection with the host was lost!");
 			if (MenuManager.Instance != null)
 			{
 				MenuManager.Instance.MakeTransition("Main");
@@ -160,7 +158,6 @@ public class ServerManager : NATTraversal.NetworkManager
 			else if (EndGameManager.Instance != null)
 			{
 				EndGameManager.Instance.ResetGame(false);
-				MessageManager.Log("Connection with the host was lost!");
 			}
 
 			ResetNetwork(true);
@@ -210,11 +207,13 @@ public class ServerManager : NATTraversal.NetworkManager
 		Player player = playerGo.GetComponent<Player>();
 		RegisteredPlayers.Add(player);
 
+
+		OpenSlots newSlot = OpenSlots.None;
 		int i = 0;
 		if (LobbySlotsOpen == OpenSlots.None)
 		{
 			i++;
-			LobbySlotsOpen = OpenSlots.One;
+			newSlot = OpenSlots.One;
 		}
 		else
 		{
@@ -222,25 +221,28 @@ public class ServerManager : NATTraversal.NetworkManager
 			{
 				if ((LobbySlotsOpen & slot) == 0 && i != 0) //get first unused slot and take it && skip .None
 				{
-					LobbySlotsOpen |= slot;
+					newSlot = slot;
 					break;
 				}
 				i++;
 			}
 		}
 
-		player.PlayerNumber = i;
+
+		Debug.LogWarning("new Player number => "+i);
 
 		if (HostingClient == null) // if that is the first client
 			HostingClient = player;
 
+
 		NetworkServer.AddPlayerForConnection(conn, playerGo, playerControllerId);
 
+		player.RpcOpenExistingSlots(LobbySlotsOpen.ToString());
+		LobbySlotsOpen |= newSlot;
 		for (int j = 0; j < RegisteredPlayers.Count; j++)
 		{
-			RegisteredPlayers[j].RpcOpenSlot(LobbySlotsOpen.ToString(), i);
+			RegisteredPlayers[j].RpcOpenSlot(newSlot.ToString(), playerGo, i);
 		}
-		//HostingClient.RpcOpenSlot(LobbySlotsOpen.ToString(), player.PlayerNumber);
 	}
 
 	public override void OnServerRemovePlayer(NetworkConnection conn, UnityEngine.Networking.PlayerController player)
@@ -251,7 +253,10 @@ public class ServerManager : NATTraversal.NetworkManager
 
 		if (IsInLobby)
 		{
-			player.gameObject.GetComponent<Player>().RpcCloseTargetSlot(player.gameObject.GetComponent<Player>().PlayerNumber -1);
+			for (int j = 0; j < RegisteredPlayers.Count; j++)
+			{
+				RegisteredPlayers[j].RpcCloseTargetSlot(player.gameObject.GetComponent<Player>().PlayerNumber - 1);
+			}
 		}
 		base.OnServerRemovePlayer(conn, player);
 	}

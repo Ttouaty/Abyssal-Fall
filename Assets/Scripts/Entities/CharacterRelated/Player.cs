@@ -36,8 +36,6 @@ public class Player : NetworkBehaviour
 		}
 	}
 
-	private bool isSelectingCharacter = false;
-
 	public void Init(int newJoystickNumber)
 	{
 		if(isLocalPlayer)
@@ -60,7 +58,6 @@ public class Player : NetworkBehaviour
 		_characterUsed = linkedCharacter;
 		SkinNumber = indexSkinUsed;
 		isReady = true;
-		isSelectingCharacter = false;
 		CmdSelectCharacter();
 	}
 
@@ -94,7 +91,7 @@ public class Player : NetworkBehaviour
 				if (MenuManager.Instance.LocalJoystickBuffer.Count != 0)
 				{
 					Init(MenuManager.Instance.LocalJoystickBuffer[MenuManager.Instance.LocalJoystickBuffer.Count - 1]);
-					Debug.Log("player"+name+" created with joystick number :" + JoystickNumber);
+					Debug.Log("player "+name+" created with joystick number: " + JoystickNumber);
 				}
 				else
 				{
@@ -108,36 +105,34 @@ public class Player : NetworkBehaviour
 		}
 	}
 
-	[Command]
-	public void CmdRequestOpenSlot(int newNumber)
-	{
-	}
-
 	[ClientRpc]
-	public void RpcOpenSlot(string slotsToOpen, int playerOpenning)
+	public void RpcOpenExistingSlots(string slotsToOpen)
 	{
-
-		Debug.Log("Object with netId "+ netId+" has received RpcOpenSLot() call ");
 		if (isLocalPlayer)
 		{
 			OpenSlots NewSlotToOpen = (OpenSlots)Enum.Parse(typeof(OpenSlots), slotsToOpen);
-			int i = -1;
+			int i = 0;
 			foreach (OpenSlots slot in Enum.GetValues(typeof(OpenSlots)))
 			{
-				if ((NewSlotToOpen & slot) != 0 && i != -1)
+				if ((NewSlotToOpen & slot) != 0 && i != 0)
 				{
-					MenuManager.Instance.OpenCharacterSlot(slot, playerOpenning == (i+1) ? this : null); //open his own slot
-					Debug.Log("openning slots: "+ slot + " and is target player: "+(playerOpenning == (i + 1)));
+					Debug.Log("openning slots: " + slot + " with player == null");
+					MenuManager.Instance.OpenCharacterSlot(slot, null); //open his own slot
 				}
 				i++;
 			}
-
-			//Debug.LogWarning("player N°"+PlayerNumber+" listening to joystick "+JoystickNumber+" has openned slot "+ NewSlotToOpen.ToString());
-			isSelectingCharacter = true;
 		}
-		else
+	}
+
+	[ClientRpc]
+	public void RpcOpenSlot(string slotToOpen, GameObject OwnerPlayer, int newPlayerNumber)
+	{
+		if (isLocalPlayer)
 		{
-			Debug.Log("is non localPlayer "+name);
+			if (PlayerNumber == 0)
+				PlayerNumber = newPlayerNumber;
+			OpenSlots NewSlotToOpen = (OpenSlots)Enum.Parse(typeof(OpenSlots), slotToOpen);
+			MenuManager.Instance.OpenCharacterSlot(NewSlotToOpen, OwnerPlayer.GetComponent<Player>()); //open his own slot
 		}
 	}
 	[ClientRpc]
@@ -148,6 +143,20 @@ public class Player : NetworkBehaviour
 			MenuManager.Instance.CloseCharacterSlot(slotNumber);
 		}
 	}
+
+	//[Command]
+	//public void CmdCloseTargetSlot(int slotNumber)
+	//{
+	//	Debug.LogError("close slot");
+	//	if (!ServerManager.Instance.IsInLobby)
+	//		return;
+
+	//	for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; i++)
+	//	{
+	//		if(i != slotNumber)
+	//			RpcCloseTargetSlot(slotNumber);
+	//	}
+	//}
 
 	void OnPlayerDisconnected(NetworkPlayer player)
 	{
@@ -163,11 +172,4 @@ public class Player : NetworkBehaviour
 		isReady = true;
 		Debug.Log("PLayer N°"+PlayerNumber+" has selected a character");
 	}
-
-	[ClientRpc]
-	public void RpcPingClient(string message)
-	{
-		Debug.LogError("Client with id "+netId+" received the ping: "+message);
-	}
-
 }
