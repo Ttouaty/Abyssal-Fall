@@ -5,7 +5,7 @@ using System;
 
 public class Player : NetworkBehaviour
 {
-
+	public static Player LocalPlayer;
 	[HideInInspector]
 	public int JoystickNumber = 0;
 	[HideInInspector]
@@ -35,6 +35,8 @@ public class Player : NetworkBehaviour
 			return _characterUsed;
 		}
 	}
+
+
 
 	public void Init(int newJoystickNumber)
 	{
@@ -84,7 +86,7 @@ public class Player : NetworkBehaviour
 	{
 		if (isLocalPlayer)
 		{
-			name += "_" + PlayerNumber;
+			LocalPlayer = this;
 
 			if (MenuManager.Instance != null)
 			{
@@ -130,7 +132,10 @@ public class Player : NetworkBehaviour
 		if (isLocalPlayer)
 		{
 			if (PlayerNumber == 0)
+			{
 				PlayerNumber = newPlayerNumber;
+				name += "_" + PlayerNumber;
+			}
 			OpenSlots NewSlotToOpen = (OpenSlots)Enum.Parse(typeof(OpenSlots), slotToOpen);
 			MenuManager.Instance.OpenCharacterSlot(NewSlotToOpen, OwnerPlayer.GetComponent<Player>()); //open his own slot
 		}

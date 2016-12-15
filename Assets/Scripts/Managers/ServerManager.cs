@@ -26,7 +26,8 @@ public class ServerManager : NATTraversal.NetworkManager
 	[HideInInspector]
 	public bool IsInLobby = false;
 
-	private bool _isInGame = false;
+	[HideInInspector]
+	public bool _isInGame = false;
 	[HideInInspector]
 	public string ExternalIp = "";
 
@@ -115,6 +116,20 @@ public class ServerManager : NATTraversal.NetworkManager
 		ResetNetwork(true);
 	}
 
+	public override void OnClientError(NetworkConnection conn, int errorCode)
+	{
+		Debug.LogError(errorCode);
+		base.OnClientError(conn, errorCode);
+	}
+
+	public override void OnServerReady(NetworkConnection conn)
+	{
+		base.OnServerReady(conn);
+
+		//NetworkServer.SpawnObjects();
+		
+	}
+
 	public void TryToAddPlayer()
 	{
 		if (!NetworkServer.active)
@@ -137,13 +152,11 @@ public class ServerManager : NATTraversal.NetworkManager
 	public override void OnClientConnect(NetworkConnection conn)
 	{
 		Debug.Log("client connection detected with adress: " + conn.address);
-
 		if (!IsInLobby)
 		{
 			FindObjectOfType<ConnectionModule>().OnSuccess.Invoke(GameId);
 		}
-
-		base.OnClientConnect(conn);
+		//base.OnClientConnect(conn);
 	}
 
 	public override void OnClientDisconnect(NetworkConnection conn)
@@ -168,6 +181,13 @@ public class ServerManager : NATTraversal.NetworkManager
 	public override void OnServerConnect(NetworkConnection conn)
 	{
 		Debug.Log("server side detected connection from: "+conn.address);
+		if(conn.address == "localServer")
+		{
+			TryToAddPlayer();
+		}
+		else
+			Debug.Log("external ip waiting for connection replace");
+
 		base.OnServerConnect(conn);
 	}
 
@@ -234,17 +254,17 @@ public class ServerManager : NATTraversal.NetworkManager
 		if (HostingClient == null) // if that is the first client
 			HostingClient = player;
 
-
 		NetworkServer.AddPlayerForConnection(conn, playerGo, playerControllerId);
 
+		HostingClient.RpcOpenSlot(newSlot.ToString(), playerGo, i);
 		player.RpcOpenExistingSlots(LobbySlotsOpen.ToString());
 		LobbySlotsOpen |= newSlot;
-		for (int j = 0; j < RegisteredPlayers.Count; j++)
+		for (int j = 1; j < RegisteredPlayers.Count; j++)
 		{
 			RegisteredPlayers[j].RpcOpenSlot(newSlot.ToString(), playerGo, i);
 		}
 	}
-
+	
 	public override void OnServerRemovePlayer(NetworkConnection conn, UnityEngine.Networking.PlayerController player)
 	{
 		RegisteredPlayers.Remove(player.gameObject.GetComponent<Player>());
@@ -259,6 +279,22 @@ public class ServerManager : NATTraversal.NetworkManager
 			}
 		}
 		base.OnServerRemovePlayer(conn, player);
+	}
+
+
+	public override void OnConnectionReplacedClient(NetworkConnection oldConnection, NetworkConnection newConnection)
+	{
+		Debug.Log("Replaced connection");
+		ClientScene.AddPlayer(NetworkClient.allClients[0].connection, 0);
+		base.OnConnectionReplacedClient(oldConnection, newConnection);
+	}
+
+	public override void OnConnectionReplacedServer(NetworkConnection oldConnection, NetworkConnection newConnection)
+	{
+		Debug.Log("Replaced connection");
+		
+
+		base.OnConnectionReplacedServer(oldConnection, newConnection);
 	}
 
 	public void OnGameEnd()

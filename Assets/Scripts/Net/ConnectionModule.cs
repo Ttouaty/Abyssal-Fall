@@ -50,7 +50,16 @@ public class ConnectionModule : MonoBehaviour
 
 	void OnSuccessCallBack(string Code)
 	{
+		FindObjectOfType<TextIP>().GetComponent<InputField>().readOnly = false;
 		FindObjectOfType<TextIP>().GetComponent<InputField>().text = Code;
+		FindObjectOfType<TextIP>().GetComponent<InputField>().readOnly = true;
+
+		//CharacterSelectWheel[] wheels = MenuManager.Instance._characterSlotsContainerRef.GetComponentsInChildren<CharacterSelectWheel>(true);
+		//for (int i = 0; i < wheels.Length; i++)
+		//{
+		//	Debug.LogError("destroy wheel "+ wheels[i].gameObject.name);
+		//	//Destroy(wheels[i].gameObject);
+		//}
 	}
 
 	void OnFailedToConnect(NetworkConnectionError error)

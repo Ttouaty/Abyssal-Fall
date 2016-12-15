@@ -228,12 +228,14 @@ public class CharacterSlot : MonoBehaviour
 	
 	public void OpenSlot(int playerNumber, Player player)
 	{
-		if(!Open)
+		_wheelRef.gameObject.SetActive(true);
+		if (!Open)
 		{
 			Open = true;
 			OnSlotOpen.Invoke();
 		}
-		
+
+		Debug.LogError("Generate wheel "+name+" with netID => "+_wheelRef.GetComponent<NetworkIdentity>().netId);
 		if (!_wheelRef.isGenerated)
 		{
 			PlayerController[] tempArray = new PlayerController[_availableCharacters.Length];
@@ -245,7 +247,6 @@ public class CharacterSlot : MonoBehaviour
 
 			_wheelRef.Generate(tempArray, null);
 		}
-		_wheelRef.gameObject.SetActive(true);
 
 		if (player != null)
 		{
@@ -258,14 +259,13 @@ public class CharacterSlot : MonoBehaviour
 		else
 			return;
 
-
-
 		if (!NetworkServer.active || _netSpawned)
 		{
 			return;
 		}
 
-		NetworkServer.SpawnWithClientAuthority(_wheelRef.gameObject, player.connectionToClient);
+		//NetworkServer.SpawnWithClientAuthority(_wheelRef.gameObject, player.connectionToClient);
+		_wheelRef.GetComponent<NetworkIdentity>().AssignClientAuthority(player.connectionToClient);
 		_netSpawned = true;
 		Debug.Log("SLOT: " + name + " Opened, Listening to gamePad n°: " + player.JoystickNumber);
 	}

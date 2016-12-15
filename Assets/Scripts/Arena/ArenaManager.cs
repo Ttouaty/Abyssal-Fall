@@ -57,6 +57,8 @@ public class ArenaManager : NetworkBehaviour
 	void Awake()
 	{
 		Instance = this;
+		if (!ServerManager.Instance._isInGame)
+			Destroy(gameObject);
 	}
 
 	public void Init ()
@@ -89,7 +91,6 @@ public class ArenaManager : NetworkBehaviour
 			killPlane.transform.localPosition = new Vector3(0, 10, 0);
 			killPlane.layer = LayerMask.NameToLayer("KillPlane");
 
-			NetworkServer.Spawn(gameObject);
 			CmdClientReady();
 		}
 		else

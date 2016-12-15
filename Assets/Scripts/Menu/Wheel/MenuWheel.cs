@@ -79,7 +79,10 @@ public class MenuWheel<ReturnType> : MonoBehaviour
 	{
 		if (ParentPlayer != null)
 			if (ParentPlayer.isLocalPlayer)
+			{
 				transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(0, _selectedElementIndex * _rotationBetweenElements, 0), _rotateSpeed);
+				//Debug.LogError(GetComponent<NetworkIdentity>().netId);
+			}
 
 
 		//######## apply alpha to Image elements #########

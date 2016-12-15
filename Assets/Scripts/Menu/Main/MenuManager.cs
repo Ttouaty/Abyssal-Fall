@@ -130,7 +130,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 			Debug.Log("trying to start host");
 			StartLocalHost(); //Server side or starting server
 		}
-		else
+		else if(Player.LocalPlayer == null)
 		{
 			ServerManager.Instance.TryToAddPlayer();
 		}
@@ -470,21 +470,10 @@ public class MenuManager : GenericSingleton<MenuManager>
 		ServerManager.Instance.StartHostAll("AbyssalFall-"+ServerManager.Instance.GameId, 4, true);
 	}
 
-	void OnConnectedToServer()
-	{
-		Debug.Log("OnConnectedToServer() from menuManager:");
-		Debug.Log("Creating new Client");
-		Debug.Log("Number of clients before creating: "+NetworkClient.allClients.Count);
-		Debug.Log("Number of connections: " + Network.connections.Length);
-
-		ServerManager.Instance.TryToAddPlayer();
-	}
-
 	void OnFailedToConnect(NetworkConnectionError error)
 	{
 		Debug.Log("Could not connect to server: " + error);
 	}
-
 
 	public void DisconnectFromServer()
 	{
