@@ -4,6 +4,12 @@ using System.Collections;
 
 public class CharacterSelectButton : InputListener
 {
+
+	void Awake()
+	{
+		SetVisibility(false);
+	}
+
 	protected override void Start()
 	{
  		base.Start();

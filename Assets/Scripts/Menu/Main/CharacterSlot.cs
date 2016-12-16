@@ -124,24 +124,14 @@ public class CharacterSlot : MonoBehaviour
 		}
 		//if (_activeCoroutineRef != null)
 		//	StopCoroutine(_activeCoroutineRef);
-		ServerManager.Instance.RegisteredPlayers[_playerIndex].Ready(GetComponentInChildren<CharacterSelectWheel>().GetSelectedElement(), _selectedSkinIndex);
+		_playerRef.Ready(_selectedCharacterIndex, _selectedSkinIndex);
 		
-		//PLACEMENT DES PARTICULES A L'ARRACHE
 		Vector3 camDirection = (Camera.main.transform.position - transform.position).normalized;
 
 		ParticleSystem spawnParticles = (ParticleSystem) Instantiate(OnCharacterSelectedParticles, transform.position + camDirection * 1.5f, Quaternion.identity);
 		spawnParticles.transform.parent = MenuManager.Instance.transform;
 		spawnParticles.transform.rotation = Quaternion.LookRotation(transform.forward, transform.up);
 		spawnParticles.GetComponent<FlashAndRotate>()._rotationAxis = transform.forward;
-
-		//if (_selectedCharacterModel != null)
-		//	Destroy(_selectedCharacterModel);
-
-		//_wheelRef.GetSelectedElement()._characterData.CharacterModel.Reskin(GetSelectedSkin);
-		//_selectedCharacterModel = (GameObject)Instantiate(_wheelRef.GetSelectedElement()._characterData.CharacterModel.gameObject, transform.position, transform.rotation * Quaternion.FromToRotation(Vector3.right, Vector3.left));
-		//_selectedCharacterModel.transform.localScale = transform.localScale * 1.1f;
-		//_selectedCharacterModel.transform.parent = transform;
-		//_selectedCharacterModel.transform.localPosition = Vector3.zero;
 
 		Selected = true;
 		//_activeCoroutineRef = StartCoroutine(SlideCharacterModelIn());
@@ -272,6 +262,13 @@ public class CharacterSlot : MonoBehaviour
 
 	public void CloseSlot()
 	{
+		if(_playerRef != null)
+		{
+			if(NetworkServer.active)
+				_wheelRef.GetComponent<NetworkIdentity>().RemoveClientAuthority(_playerRef.connectionToClient);
+			else
+				_wheelRef.GetComponent<NetworkIdentity>().RemoveClientAuthority(_playerRef.connectionToServer);
+		}
 		_wheelRef.Reset();
 		OnSlotClose.Invoke();
 		_wheelRef.gameObject.SetActive(false);

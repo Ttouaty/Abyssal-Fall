@@ -483,7 +483,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 0.09558821, g: 0.09558821, b: 0.09558821, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -491,7 +491,7 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: fdc26d7b8bd994542bf14a91f2d241ac, type: 3}
     m_FontSize: 14
     m_FontStyle: 0
     m_BestFit: 0
@@ -825,6 +825,10 @@ Prefab:
       propertyPath: _wheelRef
       value: 
       objectReference: {fileID: 1031495003}
+    - target: {fileID: 1000010324499440, guid: e4b5ca1db0274914fb613d3e8440a2ef, type: 2}
+      propertyPath: m_Name
+      value: CharacterSlot 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e4b5ca1db0274914fb613d3e8440a2ef, type: 2}
   m_IsPrefabParent: 0
@@ -4651,6 +4655,10 @@ Prefab:
       propertyPath: _wheelRef
       value: 
       objectReference: {fileID: 1304827899}
+    - target: {fileID: 1000010324499440, guid: e4b5ca1db0274914fb613d3e8440a2ef, type: 2}
+      propertyPath: m_Name
+      value: CharacterSlot 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e4b5ca1db0274914fb613d3e8440a2ef, type: 2}
   m_IsPrefabParent: 0
@@ -6909,6 +6917,10 @@ Prefab:
       propertyPath: _wheelRef
       value: 
       objectReference: {fileID: 667277279}
+    - target: {fileID: 1000010324499440, guid: e4b5ca1db0274914fb613d3e8440a2ef, type: 2}
+      propertyPath: m_Name
+      value: CharacterSlot 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e4b5ca1db0274914fb613d3e8440a2ef, type: 2}
   m_IsPrefabParent: 0
@@ -8438,9 +8450,9 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 224: {fileID: 1077590766}
+  - 114: {fileID: 1077590763}
   - 114: {fileID: 1077590765}
   - 222: {fileID: 1077590764}
-  - 114: {fileID: 1077590763}
   m_Layer: 5
   m_Name: ClientWait
   m_TagString: Untagged
@@ -13385,6 +13397,10 @@ Prefab:
       propertyPath: _wheelRef
       value: 
       objectReference: {fileID: 1987071441}
+    - target: {fileID: 1000010324499440, guid: e4b5ca1db0274914fb613d3e8440a2ef, type: 2}
+      propertyPath: m_Name
+      value: CharacterSlot 4
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e4b5ca1db0274914fb613d3e8440a2ef, type: 2}
   m_IsPrefabParent: 0
@@ -15259,7 +15275,7 @@ RectTransform:
   m_RootOrder: 1
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 2.2, y: 4.3}
+  m_AnchoredPosition: {x: 2.2, y: 0}
   m_SizeDelta: {x: 55, y: 28.4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1903508736

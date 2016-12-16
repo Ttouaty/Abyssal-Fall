@@ -115,6 +115,12 @@ public class MenuManager : GenericSingleton<MenuManager>
 		ServerManager.ResetRegisteredPlayers();
 	}
 
+	public void ResetCharacterSelector()
+	{
+		ResetPlayers();
+		_characterSlotsContainerRef.CancelAllSelections(true);
+	}
+
 	public void RegisterNewPlayer(JoystickNumber joystickNumber)
 	{
 		if (_controllerAlreadyInUse[joystickNumber] || LocalJoystickBuffer.Count >= 4)
@@ -190,9 +196,22 @@ public class MenuManager : GenericSingleton<MenuManager>
 		MakeTransition(GetMenuPanel(newMenu), true);
 	}
 
-	public void MakeTransition(MenuPanel newMenu, bool forward = true)
+	public void MakeTransition(string newMenu, bool dir, bool broadCast)
 	{
-		StartCoroutine(Transition(newMenu, forward));
+		MakeTransition(GetMenuPanel(newMenu), dir, broadCast);
+	}
+
+	public void MakeTransition(MenuPanel newMenu, bool forward = true, bool broadCast = true)
+	{
+		if (NetworkServer.active && broadCast)
+		{
+			for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; i++)
+			{
+				ServerManager.Instance.RegisteredPlayers[i].RpcMenuTransition(newMenu.MenuName, forward);
+			}
+		}
+		else 
+			StartCoroutine(Transition(newMenu, forward));
 	}
 
 	//private void SetActiveButtons(MenuPanel target, bool active)
@@ -255,8 +274,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 			MessageManager.Log("! WIP ! ya rien qui marche ici, laisse tomber.");
 		else if (newMenu.MenuName == "Main")
 		{
-			ResetPlayers();
-			_characterSlotsContainerRef.CancelAllSelections(true);
+			ResetCharacterSelector();
 		}
 		else if(newMenu.MenuName == "Lobby")
 		{
@@ -477,9 +495,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	public void DisconnectFromServer()
 	{
-		MasterServer.UnregisterHost();
-		ServerManager.singleton.StopHost();
-		ServerManager.singleton.StopClient();
+		ServerManager.Instance.ResetNetwork(true);
 	}
 
 	public void LogMessage(string message)

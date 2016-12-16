@@ -96,12 +96,11 @@ public class ServerManager : NATTraversal.NetworkManager
 		}
 
 		Instance = FindObjectOfType<ServerManager>();
-		Instance.GameId = Guid.NewGuid().ToString().Split('-')[0];
+		Instance.GameId = Guid.NewGuid().ToString().Split('-')[0].ToLower();
 		_initialised = true;
 		return Instance;
 	}
 
-	private string originalLobbyScene;
 	public override void Start()
 	{
 		_isInGame = false;
@@ -112,22 +111,16 @@ public class ServerManager : NATTraversal.NetworkManager
 
 	public override void OnStopServer()
 	{
-		//lobbyScene = ""; // Ensures we don't reload the scene after quitting
-		ResetNetwork(true);
-	}
-
-	public override void OnClientError(NetworkConnection conn, int errorCode)
-	{
-		Debug.LogError(errorCode);
-		base.OnClientError(conn, errorCode);
-	}
-
-	public override void OnServerReady(NetworkConnection conn)
-	{
-		base.OnServerReady(conn);
-
-		//NetworkServer.SpawnObjects();
-		
+		base.OnStopServer();
+		if(MenuManager.Instance != null)
+		{
+			//Prevent Wheels from being destroyed
+			NetworkIdentity[] tempIdwheels =  MenuManager.Instance.GetComponentsInChildren<NetworkIdentity>(true);
+			for (int i = 0; i < tempIdwheels.Length; i++) 
+			{
+				NetworkServer.UnSpawn(tempIdwheels[i].gameObject);
+			}
+		}
 	}
 
 	public void TryToAddPlayer()
@@ -138,7 +131,7 @@ public class ServerManager : NATTraversal.NetworkManager
 			return;
 		}
 
-		if(NetworkClient.allClients.Count != 0)
+		if (NetworkClient.allClients.Count != 0)
 		{
 			Debug.Log("add player");
 			ClientScene.AddPlayer(NetworkClient.allClients[0].connection, (short)ServerManager.Instance.RegisteredPlayers.Count);
@@ -147,6 +140,12 @@ public class ServerManager : NATTraversal.NetworkManager
 		{
 			Debug.Log("No client found to add player to! Create a new Client before calling TryToAddPlayer(); if used locally");
 		}
+	}
+
+	public override void OnStartServer()
+	{
+		NetworkServer.SpawnObjects();
+		base.OnStartServer();
 	}
 
 	public override void OnClientConnect(NetworkConnection conn)
@@ -175,7 +174,27 @@ public class ServerManager : NATTraversal.NetworkManager
 
 			ResetNetwork(true);
 		}
+
 		base.OnClientDisconnect(conn);
+	}
+
+	public override void OnServerDisconnect(NetworkConnection conn)
+	{
+
+		if(IsInLobby && NetworkServer.active)
+		{
+			CharacterSelectWheel[] tempWheels = MenuManager.Instance.GetComponentsInChildren<CharacterSelectWheel>();
+			for (int i = 0; i < tempWheels.Length; i++)
+			{
+				if(tempWheels[i].GetComponent<NetworkIdentity>().clientAuthorityOwner == conn)
+				{
+					Debug.Log("removed authority for => "+tempWheels[i].name);
+					//tempWheels[i].GetComponent<NetworkIdentity>().RemoveClientAuthority(conn);
+					//NetworkServer.UnSpawn(tempWheels[i].gameObject);
+				}
+			}
+		}
+		base.OnServerDisconnect(conn);
 	}
 
 	public override void OnServerConnect(NetworkConnection conn)
@@ -248,7 +267,6 @@ public class ServerManager : NATTraversal.NetworkManager
 			}
 		}
 
-
 		Debug.LogWarning("new Player number => "+i);
 
 		if (HostingClient == null) // if that is the first client
@@ -271,6 +289,7 @@ public class ServerManager : NATTraversal.NetworkManager
 		OpenSlots[] tempArray = Enum.GetValues(typeof(OpenSlots)) as OpenSlots[];
 		LobbySlotsOpen &= ~tempArray[player.gameObject.GetComponent<Player>().PlayerNumber];
 
+		Debug.Log("close");
 		if (IsInLobby)
 		{
 			for (int j = 0; j < RegisteredPlayers.Count; j++)
@@ -278,6 +297,7 @@ public class ServerManager : NATTraversal.NetworkManager
 				RegisteredPlayers[j].RpcCloseTargetSlot(player.gameObject.GetComponent<Player>().PlayerNumber - 1);
 			}
 		}
+
 		base.OnServerRemovePlayer(conn, player);
 	}
 
@@ -322,15 +342,30 @@ public class ServerManager : NATTraversal.NetworkManager
 		}
 	}
 
-	private void ResetNetwork(bool disconnect)
+	public void ResetNetwork(bool disconnect)
 	{
-		if(disconnect)
-			Network.Disconnect();
+		if(MenuManager.Instance != null)
+			MenuManager.Instance.ResetCharacterSelector();
+
 		LobbySlotsOpen = OpenSlots.None;
-		IsInLobby = false;
 		_isInGame = false;
 		ExternalPlayerNumber = 0;
 		HostingClient = null;
+
+		MasterServer.UnregisterHost();
+		StopHost();
+		StopClient();
+
+		NetworkServer.Reset();
+		NetworkClient.ShutdownAll();
+
+		if (disconnect)
+		{
+			Network.Disconnect();
+		}
+
+		if (matchMaker == null)
+			return;
 		if (NetworkServer.active)
 		{
 			matchMaker.DestroyMatch(matchID, 0, OnMatchDropped);
@@ -341,6 +376,13 @@ public class ServerManager : NATTraversal.NetworkManager
 		}
 
 	}
+	//void Update()
+	//{
+	//	for (int i = 0; i < RegisteredPlayers.Count; i++)
+	//	{
+	//		Debug.Log("Player n°=> "+ RegisteredPlayers[i].PlayerNumber +" is ready => "+RegisteredPlayers[i].isReady);
+	//	}
+	//}
 
 	public void ConnectToMatch(string code)
 	{

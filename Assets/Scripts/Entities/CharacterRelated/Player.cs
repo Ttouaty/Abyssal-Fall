@@ -6,6 +6,7 @@ using System;
 public class Player : NetworkBehaviour
 {
 	public static Player LocalPlayer;
+	private static PlayerController[] _availablePlayerControllers;
 	[HideInInspector]
 	public int JoystickNumber = 0;
 	[HideInInspector]
@@ -26,17 +27,21 @@ public class Player : NetworkBehaviour
 	[HideInInspector]
 	public PlayerController Controller;// PlayerController Instantiated
 
-	// PlayerController Prefab Model
-	private PlayerController _characterUsed;
+	// PlayerController Prefab Model index
+	[SyncVar]
+	private int _characterUsedIndex = -1;
 	public PlayerController CharacterUsed
 	{
 		get
 		{
-			return _characterUsed;
+			if (_characterUsedIndex == -1)
+				return null;
+			if (_availablePlayerControllers == null)
+				DynamicConfig.Instance.GetConfigs(ref _availablePlayerControllers);
+
+			return _availablePlayerControllers[_characterUsedIndex].GetComponent<PlayerController>();
 		}
 	}
-
-
 
 	public void Init(int newJoystickNumber)
 	{
@@ -55,17 +60,22 @@ public class Player : NetworkBehaviour
 		Score = 0;
 	}
 
-	public void Ready(PlayerController linkedCharacter, int indexSkinUsed)
+	public void Ready(int characterIndex, int indexSkinUsed)
 	{
-		_characterUsed = linkedCharacter;
+		_characterUsedIndex = characterIndex;
 		SkinNumber = indexSkinUsed;
 		isReady = true;
-		CmdSelectCharacter();
+		Debug.Log("PLayer N°" + PlayerNumber + " has selected (name)=> " + CharacterUsed._characterData.IngameName);
+	}
+
+	public void CharacterSelected()
+	{
+
 	}
 
 	public void UnReady()
 	{
-		_characterUsed = null;
+		_characterUsedIndex = -1;
 		isReady = false;
 	}
 
@@ -75,11 +85,23 @@ public class Player : NetworkBehaviour
 			Destroy(Controller.gameObject);
 	}
 
-	public override void OnStartClient()
+	public override void OnNetworkDestroy()
 	{
-		base.OnStartClient();
-		//prevents a array index out of range error :x
-
+		if(MenuManager.Instance != null && isLocalPlayer)
+		{
+			CharacterSelectWheel[] tempWheels = MenuManager.Instance.GetComponentsInChildren<CharacterSelectWheel>();
+			for (int i = 0; i < tempWheels.Length; i++)
+			{
+				if (tempWheels[i].GetComponent<NetworkIdentity>().clientAuthorityOwner == connectionToServer)
+				{
+					Debug.Log("removed authority for => " + tempWheels[i].name);
+					tempWheels[i].GetComponent<NetworkIdentity>().RemoveClientAuthority(connectionToServer);
+					break;
+				}
+			}
+		}
+		RpcCloseTargetSlot(PlayerNumber - 1);
+		base.OnNetworkDestroy();
 	}
 
 	public override void OnStartLocalPlayer()
@@ -143,10 +165,7 @@ public class Player : NetworkBehaviour
 	[ClientRpc]
 	public void RpcCloseTargetSlot(int slotNumber)
 	{
-		if (isLocalPlayer)
-		{
-			MenuManager.Instance.CloseCharacterSlot(slotNumber);
-		}
+		MenuManager.Instance.CloseCharacterSlot(slotNumber);
 	}
 
 	//[Command]
@@ -163,18 +182,13 @@ public class Player : NetworkBehaviour
 	//	}
 	//}
 
-	void OnPlayerDisconnected(NetworkPlayer player)
+	[ClientRpc]
+	public void RpcMenuTransition(string newMenuName, bool dir)
 	{
-		Debug.Log("Clean up after player " + player);
-		RpcCloseTargetSlot(PlayerNumber - 1);
-		Network.RemoveRPCs(player);
-		Network.DestroyPlayerObjects(player);
-	}
-
-	[Command]
-	public void CmdSelectCharacter()
-	{
-		isReady = true;
-		Debug.Log("PLayer N°"+PlayerNumber+" has selected a character");
+		if(isLocalPlayer)
+		{
+			Debug.Log("Making transition on player with netId => "+netId);
+			MenuManager.Instance.MakeTransition(newMenuName, dir, false);
+		}
 	}
 }
