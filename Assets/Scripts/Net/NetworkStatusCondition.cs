@@ -8,12 +8,11 @@ public enum NetStatus
 {
 	Disconnected,
 	IsServer,
-	IsClient,
+	IsClient
 }
 
 public class NetworkStatusCondition : MonoBehaviour
 {
-	[EnumFlag("Required Net Status")]
 	public NetStatus RequiredNetStatus = NetStatus.Disconnected;
 	public GameObject[] TargetObjects = new GameObject[0];
 	public bool ActiveState = true;

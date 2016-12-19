@@ -34,6 +34,8 @@ public class ServerManager : NATTraversal.NetworkManager
 	[HideInInspector]
 	public string GameId;
 	[HideInInspector]
+	public string TargetGameId;
+	[HideInInspector]
 	public int ExternalPlayerNumber = 0;
 
 	public OpenSlots LobbySlotsOpen = OpenSlots.None;
@@ -151,9 +153,9 @@ public class ServerManager : NATTraversal.NetworkManager
 	public override void OnClientConnect(NetworkConnection conn)
 	{
 		Debug.Log("client connection detected with adress: " + conn.address);
-		if (!IsInLobby)
+		if (!NetworkServer.active)
 		{
-			FindObjectOfType<ConnectionModule>().OnSuccess.Invoke(GameId);
+			FindObjectOfType<ConnectionModule>().OnSuccess.Invoke(TargetGameId);
 		}
 		//base.OnClientConnect(conn);
 	}
@@ -180,21 +182,28 @@ public class ServerManager : NATTraversal.NetworkManager
 
 	public override void OnServerDisconnect(NetworkConnection conn)
 	{
-
-		if(IsInLobby && NetworkServer.active)
+		Debug.Log("client disconnected with adress => "+conn.address);
+		if(IsInLobby && NetworkServer.active) //Remove client authority of disconnected player to avoid wheel destruction
 		{
-			CharacterSelectWheel[] tempWheels = MenuManager.Instance.GetComponentsInChildren<CharacterSelectWheel>();
+			Debug.Log("Trying to remove wheel authority");
+
+			CharacterSelectWheel[] tempWheels = MenuManager.Instance._characterSlotsContainerRef.GetComponentsInChildren<CharacterSelectWheel>(true);
 			for (int i = 0; i < tempWheels.Length; i++)
 			{
 				if(tempWheels[i].GetComponent<NetworkIdentity>().clientAuthorityOwner == conn)
 				{
 					Debug.Log("removed authority for => "+tempWheels[i].name);
-					//tempWheels[i].GetComponent<NetworkIdentity>().RemoveClientAuthority(conn);
+					tempWheels[i].GetComponent<NetworkIdentity>().RemoveClientAuthority(conn);
+					tempWheels[i].GetComponent<NetworkIdentity>().RebuildObservers(true);
+					HostingClient.RpcCloseTargetSlot(i);
+
+					ServerRemovePlayer(RegisteredPlayers[i]);
 					//NetworkServer.UnSpawn(tempWheels[i].gameObject);
 				}
 			}
 		}
-		base.OnServerDisconnect(conn);
+
+		NetworkServer.DestroyPlayersForConnection(conn);
 	}
 
 	public override void OnServerConnect(NetworkConnection conn)
@@ -272,6 +281,7 @@ public class ServerManager : NATTraversal.NetworkManager
 		if (HostingClient == null) // if that is the first client
 			HostingClient = player;
 
+		player.PlayerNumber = i;
 		NetworkServer.AddPlayerForConnection(conn, playerGo, playerControllerId);
 
 		HostingClient.RpcOpenSlot(newSlot.ToString(), playerGo, i);
@@ -283,24 +293,13 @@ public class ServerManager : NATTraversal.NetworkManager
 		}
 	}
 	
-	public override void OnServerRemovePlayer(NetworkConnection conn, UnityEngine.Networking.PlayerController player)
+	public void ServerRemovePlayer(Player player)
 	{
-		RegisteredPlayers.Remove(player.gameObject.GetComponent<Player>());
+		RegisteredPlayers.Remove(player);
 		OpenSlots[] tempArray = Enum.GetValues(typeof(OpenSlots)) as OpenSlots[];
-		LobbySlotsOpen &= ~tempArray[player.gameObject.GetComponent<Player>().PlayerNumber];
-
-		Debug.Log("close");
-		if (IsInLobby)
-		{
-			for (int j = 0; j < RegisteredPlayers.Count; j++)
-			{
-				RegisteredPlayers[j].RpcCloseTargetSlot(player.gameObject.GetComponent<Player>().PlayerNumber - 1);
-			}
-		}
-
-		base.OnServerRemovePlayer(conn, player);
+		LobbySlotsOpen &= ~tempArray[player.PlayerNumber];
+		Debug.Log("Removed player " + player.PlayerNumber+ " - Open slots are now => " + LobbySlotsOpen.ToString());
 	}
-
 
 	public override void OnConnectionReplacedClient(NetworkConnection oldConnection, NetworkConnection newConnection)
 	{
@@ -335,7 +334,7 @@ public class ServerManager : NATTraversal.NetworkManager
 		_playersReadyForMapSpawn++;
 		if(_playersReadyForMapSpawn > ExternalPlayerNumber) 
 		{
-			Debug.Log("launching game (online)");
+			Debug.Log("launching game");
 
 			_isInGame = true;
 			ArenaManager.Instance.RpcAllClientReady();
@@ -352,9 +351,13 @@ public class ServerManager : NATTraversal.NetworkManager
 		ExternalPlayerNumber = 0;
 		HostingClient = null;
 
-		MasterServer.UnregisterHost();
-		StopHost();
-		StopClient();
+		if (NetworkServer.active)
+		{
+			MasterServer.UnregisterHost();
+			StopHost();
+		}
+		else
+			StopClient();
 
 		NetworkServer.Reset();
 		NetworkClient.ShutdownAll();
@@ -388,6 +391,7 @@ public class ServerManager : NATTraversal.NetworkManager
 	{
 		if (matchMaker == null) matchMaker = gameObject.AddComponent<NetworkMatch>();
 		matchMaker.ListMatches(0, 1, "AbyssalFall-" + code, true, 0, 0, OnMatchList);
+		TargetGameId = code;
 	}
 
 
@@ -412,7 +416,7 @@ public class ServerManager : NATTraversal.NetworkManager
 	{
 		while(!isDoneFetchingExternalIP)
 		{
-			yield return true;
+			yield return null;
 		}
 		
 		ExternalIp = externalIP;

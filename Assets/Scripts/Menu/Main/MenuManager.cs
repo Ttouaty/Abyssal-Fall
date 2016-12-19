@@ -379,9 +379,9 @@ public class MenuManager : GenericSingleton<MenuManager>
 				color = _splashscreens[i].color;
 				color.a = 1;
 				_splashscreens[i].color = color;
-				yield return new WaitForSeconds(1);
-				_splashscreens[i].CrossFadeAlpha(0, 1, false);
-				yield return new WaitForSeconds(1);
+				yield return new WaitForSeconds(0.5f);
+				_splashscreens[i].CrossFadeAlpha(0, 0.5f, false);
+				yield return new WaitForSeconds(0.5f);
 			}
 		}
 

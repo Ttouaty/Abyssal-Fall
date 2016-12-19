@@ -44,7 +44,6 @@ public class CharacterSelectWheel : MenuWheel<PlayerController>
 
 	public override void ScrollToIndex(int newIndex)
 	{
-		GetComponent<NetworkIdentity>().RebuildObservers(false);
 		ChangeCharacterSkin(0);
 		base.ScrollToIndex(newIndex);
 	}

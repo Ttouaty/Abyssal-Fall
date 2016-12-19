@@ -13,7 +13,7 @@ struct SelectedCharacters
 
 public class CharacterSlot : MonoBehaviour
 {
-	private static SelectableCharacter[] _availableCharacters;
+	private static PlayerController[] _availableCharacters;
 	public static ParticleSystem OnCharacterSelectedParticles;
 	
 
@@ -225,14 +225,14 @@ public class CharacterSlot : MonoBehaviour
 			OnSlotOpen.Invoke();
 		}
 
-		Debug.LogError("Generate wheel "+name+" with netID => "+_wheelRef.GetComponent<NetworkIdentity>().netId);
+		Debug.Log("Generate wheel "+name+" with netID => "+_wheelRef.GetComponent<NetworkIdentity>().netId);
 		if (!_wheelRef.isGenerated)
 		{
 			PlayerController[] tempArray = new PlayerController[_availableCharacters.Length];
 
 			for (int i = 0; i < _availableCharacters.Length; i++)
 			{
-				tempArray[i] = _availableCharacters[i].CharacterRef;
+				tempArray[i] = _availableCharacters[i];
 			}
 
 			_wheelRef.Generate(tempArray, null);
@@ -262,17 +262,11 @@ public class CharacterSlot : MonoBehaviour
 
 	public void CloseSlot()
 	{
-		if(_playerRef != null)
-		{
-			if(NetworkServer.active)
-				_wheelRef.GetComponent<NetworkIdentity>().RemoveClientAuthority(_playerRef.connectionToClient);
-			else
-				_wheelRef.GetComponent<NetworkIdentity>().RemoveClientAuthority(_playerRef.connectionToServer);
-		}
 		_wheelRef.Reset();
 		OnSlotClose.Invoke();
 		_wheelRef.gameObject.SetActive(false);
 		Open = false;
+		_netSpawned = false;
 		frameDelay = 1;
 		_selectedCharacterIndex = 0;
 		_selectedSkinIndex = 0;
@@ -296,7 +290,7 @@ public class CharacterSlot : MonoBehaviour
 		else
 			_selectedSkinIndex += direction;
 
-		_selectedSkinIndex = _selectedSkinIndex.LoopAround(0, _availableCharacters[_selectedCharacterIndex].CharacterRef._characterData.CharacterMaterials.Length - 1);
+		_selectedSkinIndex = _selectedSkinIndex.LoopAround(0, _availableCharacters[_selectedCharacterIndex]._characterData.CharacterMaterials.Length - 1);
 
 		direction = direction == 0 ? 1 : direction;
 		if (!CheckIfCharacterIsAvailable() && tempSkinSwitchAttempts < 5)

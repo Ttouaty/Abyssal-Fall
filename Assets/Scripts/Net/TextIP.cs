@@ -4,8 +4,13 @@ using System.Collections;
 
 public class TextIP : MonoBehaviour {
 
-	void Start ()
+	public void ReGenerate()
 	{
-		GetComponent<InputField>().text = ServerManager.Instance.GameId.ToString()/* + ":" + ServerManager.singleton.networkPort*/;
+		GetComponent<InputField>().text = ServerManager.Instance.GameId.ToString();
+	}
+
+	public void SetText(string newText)
+	{
+		GetComponent<InputField>().text = newText;
 	}
 }

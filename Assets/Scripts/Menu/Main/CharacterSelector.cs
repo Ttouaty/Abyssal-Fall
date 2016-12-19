@@ -5,14 +5,6 @@ using System.Collections.Generic;
 using System;
 using UnityEngine.UI;
 
-[Serializable]
-public struct SelectableCharacter
-{
-	public PlayerController CharacterRef;
-	public Sprite[] ArtWorks;
-	public Image InfoImage;//Unused for now
-}
-
 [Flags]
 public enum OpenSlots
 {
@@ -29,7 +21,12 @@ public class CharacterSelector : MonoBehaviour
 	[Space]
 	[HideInInspector]
 	public CharacterSlot[] SlotsAvailable;
-	public SelectableCharacter[] _availableCharacters;
+	public PlayerController[] _availableCharacters;
+
+	void Awake()
+	{
+		DynamicConfig.Instance.GetConfigs(ref _availableCharacters);
+	}
 
 	void Start()
 	{

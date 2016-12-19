@@ -22,6 +22,7 @@ public class Player : NetworkBehaviour
 	[HideInInspector]
 	[SyncVar]
 	public int SkinNumber = 0; //the index of the material used by the playerMesh
+	[SyncVar]
 	[HideInInspector]
 	public int PlayerNumber;
 	[HideInInspector]
@@ -62,27 +63,42 @@ public class Player : NetworkBehaviour
 
 	public void Ready(int characterIndex, int indexSkinUsed)
 	{
-		_characterUsedIndex = characterIndex;
-		SkinNumber = indexSkinUsed;
-		isReady = true;
-		Debug.Log("PLayer N°" + PlayerNumber + " has selected (name)=> " + CharacterUsed._characterData.IngameName);
+		_ready = true;
+		CmdReadyPlayer(characterIndex, indexSkinUsed);
 	}
 
-	public void CharacterSelected()
+	[Command]
+	public void CmdReadyPlayer(int characterIndex, int indexSkinUsed)
 	{
+		_ready = true;
+		_characterUsedIndex = characterIndex;
+		SkinNumber = indexSkinUsed;
+		Debug.Log("PLayer N°" + PlayerNumber + " has selected (name)=> " + CharacterUsed._characterData.IngameName);
 
 	}
 
 	public void UnReady()
 	{
 		_characterUsedIndex = -1;
-		isReady = false;
+		_ready = false;
+		CmdUnReadyPlayer();
+	}
+
+	[Command]
+	public void CmdUnReadyPlayer()
+	{
+		_ready = false;
+		_characterUsedIndex = -1;
+		SkinNumber = 0;
 	}
 
 	void OnDestroy()
 	{
-		if (Controller != null)
-			Destroy(Controller.gameObject);
+		if(NetworkServer.active)
+		{
+			if (Controller != null)
+				Destroy(Controller.gameObject);
+		}
 	}
 
 	public override void OnNetworkDestroy()
@@ -140,12 +156,18 @@ public class Player : NetworkBehaviour
 			{
 				if ((NewSlotToOpen & slot) != 0 && i != 0)
 				{
-					Debug.Log("openning slots: " + slot + " with player == null");
+					Debug.Log("openning slots: " + slot + " with player null");
 					MenuManager.Instance.OpenCharacterSlot(slot, null); //open his own slot
 				}
 				i++;
 			}
 		}
+	}
+
+	[Command]
+	public void CmdReadyToSpawnMap()
+	{
+		ServerManager.Instance.AddArenaWaiting();
 	}
 
 	[ClientRpc]
@@ -162,26 +184,14 @@ public class Player : NetworkBehaviour
 			MenuManager.Instance.OpenCharacterSlot(NewSlotToOpen, OwnerPlayer.GetComponent<Player>()); //open his own slot
 		}
 	}
+
 	[ClientRpc]
 	public void RpcCloseTargetSlot(int slotNumber)
 	{
 		MenuManager.Instance.CloseCharacterSlot(slotNumber);
 	}
 
-	//[Command]
-	//public void CmdCloseTargetSlot(int slotNumber)
-	//{
-	//	Debug.LogError("close slot");
-	//	if (!ServerManager.Instance.IsInLobby)
-	//		return;
-
-	//	for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; i++)
-	//	{
-	//		if(i != slotNumber)
-	//			RpcCloseTargetSlot(slotNumber);
-	//	}
-	//}
-
+	
 	[ClientRpc]
 	public void RpcMenuTransition(string newMenuName, bool dir)
 	{
@@ -190,5 +200,11 @@ public class Player : NetworkBehaviour
 			Debug.Log("Making transition on player with netId => "+netId);
 			MenuManager.Instance.MakeTransition(newMenuName, dir, false);
 		}
+	}
+
+	[ClientRpc]
+	public void RpcStartGame(GameConfiguration newGameConfig)
+	{
+		GameManager.Instance.StartGameWithConfig(newGameConfig);
 	}
 }

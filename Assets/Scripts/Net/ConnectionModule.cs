@@ -50,10 +50,7 @@ public class ConnectionModule : MonoBehaviour
 
 	void OnSuccessCallBack(string Code)
 	{
-		InputField tempField = MenuManager.Instance.GetComponentInChildren<TextIP>().GetComponent<InputField>();
-		tempField.readOnly = false;
-		tempField.text = Code.ToLower();
-		tempField.readOnly = true;
+		MenuManager.Instance.GetComponentInChildren<TextIP>().SetText(Code.ToLower());
 	}
 
 	void OnFailedToConnect(NetworkConnectionError error)

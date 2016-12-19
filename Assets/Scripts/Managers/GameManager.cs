@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.Events;
 using System;
 using System.Collections;
@@ -66,7 +67,6 @@ public class GameManager : GenericSingleton<GameManager>
 
 	public int CurrentStage = 0;
 	
-
 	public void StartGame()
 	{
 		ServerManager.Instance.ResetAlivePlayers();
@@ -78,10 +78,20 @@ public class GameManager : GenericSingleton<GameManager>
 			case 4: CurrentGameConfiguration.MapConfiguration = EMapConfiguration.TestArena32x32; break;
 		}
 
+		if (NetworkServer.active)
+			ServerManager.Instance.HostingClient.RpcStartGame(CurrentGameConfiguration);
+		else
+			Debug.LogError("StartGame(); called from client! This should not be allowed! Aborting");
+
+	}
+
+
+	public void StartGameWithConfig(GameConfiguration newConfig)
+	{
+		CurrentGameConfiguration = newConfig;
 		CurrentStage = 1;
 		StartCoroutine(StartLevelCoroutine());
 	}
-
 	private IEnumerator StartLevelCoroutine()
 	{
 		yield return StartCoroutine(AutoFade.StartFade(1, LevelManager.Instance.StartLevel(CurrentGameConfiguration), AutoFade.EndFade(0.5f, 1, Color.black), Color.black));
