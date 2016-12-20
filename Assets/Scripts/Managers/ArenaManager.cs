@@ -13,7 +13,7 @@ public enum ETileType : int
 	HOLE        =  2
 }
 
-public class ArenaManager : NetworkBehaviour
+public class ArenaManager : MonoBehaviour
 {
 	public static ArenaManager Instance;
 	#region private
@@ -26,25 +26,28 @@ public class ArenaManager : NetworkBehaviour
 	private int                                     _tilesDropped;
 	private int                                     _obstaclesDropped;
 	private GameObject[]                            _players;
-	private List<Tile>								_tiles;
+	private Tile[]									 _tiles;
 	private List<Obstacle>							_obstacles;
 	private List<ABaseBehaviour>                    _behaviours;
 	private List<Spawn>                             _spawns;
 	#endregion
 	#region public
-	public float                                    TileScale = 1.51f;
+	public float                                    TileScale = 1.50f;
 	public ETileType[,]                             Map;
 	public Vector3                                  Position;
 
-	public Transform                                ArenaRoot;
-	public Transform                                TilesRoot;
-	public Transform                                ObstaclesRoot;
-	public Transform                                PlayersRoot;
-	public Transform                                SpecialsRoot;
-	public Transform                                BehavioursRoot;
+	[HideInInspector] public Transform              ArenaRoot;
+	[HideInInspector] public Transform              TilesRoot;
+	[HideInInspector] public Transform              ObstaclesRoot;
+	[HideInInspector] public Transform              PlayersRoot;
+	[HideInInspector] public Transform              SpecialsRoot;
+	[HideInInspector] public Transform              BehavioursRoot;
+
+	public ArenaMasterManager MasterManagerPrefab;
+
 	#endregion
 	#region getter/setter
-	public List<Tile>								Tiles				{ get { return _tiles;				} }
+	public Tile[]									Tiles				{ get { return _tiles;				} }
 	public List<Obstacle>							Obstacles			{ get { return _obstacles;			} }
 	public GameObject[]                             Players				{ get { return _players;			} }
 	public List<Spawn>                              Spawns				{ get { return _spawns;				} }
@@ -57,12 +60,20 @@ public class ArenaManager : NetworkBehaviour
 	void Awake()
 	{
 		Instance = this;
+
+		if(NetworkServer.active)
+		{
+			GameObject ArenaMasterManagerGo = Instantiate(MasterManagerPrefab.gameObject);
+			NetworkServer.SpawnWithClientAuthority(ArenaMasterManagerGo, ServerManager.Instance.HostingClient.gameObject);
+		}
+
 	}
 
 	public void Init ()
 	{
 		if(!_initialInit)
 		{
+			
 			_currentArenaConfig		= MainManager.Instance.LEVEL_MANAGER.CurrentArenaConfig;
 			_currentModeConfig		= MainManager.Instance.LEVEL_MANAGER.CurrentModeConfig;
 			_currentMapConfig		= MainManager.Instance.LEVEL_MANAGER.CurrentMapConfig;
@@ -97,12 +108,6 @@ public class ArenaManager : NetworkBehaviour
 			Debug.LogError("[ArenaManager] Trying to reinitialize the instance");
 			Debug.Break();
 		}
-	}
-
-	[ClientRpc]
-	public void RpcAllClientReady()
-	{
-		ResetMap(true);
 	}
 
 	public void ResetMap(bool animate = true)
@@ -144,7 +149,7 @@ public class ArenaManager : NetworkBehaviour
 		_tilesDropped       = 0;
 		_obstaclesDropped   = 0;
 
-		_tiles              = new List<Tile>();
+		_tiles              = new Tile[(int)(_currentMapConfig.MapSize.x * _currentMapConfig.MapSize.y)];
 		_obstacles          = new List<Obstacle>();
 		_spawns             = new List<Spawn>();
 		_behaviours         = new List<ABaseBehaviour>();
@@ -154,7 +159,12 @@ public class ArenaManager : NetworkBehaviour
 
 	public void RemoveTile(Tile tile)
 	{
-		_tiles.Remove(tile);
+		Player.LocalPlayer.CmdRemoveTile(Array.IndexOf(_tiles, tile));
+	}
+
+	public void RemoveTile(int index)
+	{
+		_tiles[index] = null;
 	}
 
 	public void RemoveObstacle(Obstacle obstacle)
@@ -196,7 +206,9 @@ public class ArenaManager : NetworkBehaviour
 
 		yield return StartCoroutine(LoadArena(animate));
 
-		if(isServer)
+
+		Debug.LogError("NEEDS TO BE IN MASTER-ARENA-MANAGER !");
+		if(NetworkServer.active)
 		{
 			Debug.Log("placing characters");
 			PlaceCharacters();
@@ -292,8 +304,9 @@ public class ArenaManager : NetworkBehaviour
 					{
 						tileComp = tile.AddComponent<Tile>();
 					}
+					
 					tileComp.SetTimeLeft(tileComp.TimeLeftSave); // TODO -> Regler dans l'inspecteur
-					_tiles.Add(tileComp);
+					_tiles[(int)(y * _currentMapConfig.MapSize.x) + x] = tileComp;
 					tileComp.SpawnComponent = null;
 					tileComp.enabled = true;
 
@@ -331,7 +344,7 @@ public class ArenaManager : NetworkBehaviour
 	{
 		int i = 0;
 		int index = 0;
-		for (i = 0; i < _tiles.Count; ++i)
+		for (i = 0; i < _tiles.Length; ++i)
 		{
 			if(_tiles[i] != null)
 			{
@@ -354,7 +367,7 @@ public class ArenaManager : NetworkBehaviour
 				++_tilesDropped;
 			}
 		}
-		while (_tilesDropped < _tiles.Count)
+		while (_tilesDropped < _tiles.Length)
 		{
 			yield return null;
 		}

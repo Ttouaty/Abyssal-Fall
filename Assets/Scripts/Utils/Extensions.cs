@@ -299,7 +299,7 @@ public static class MonoBehaviourExtensions
 
 }
 
-public static class NetworkBehaviorExtensions
+public static class NetworkBehaviourExtensions
 {
 	[ClientRpc]
 	public static void RpcSetNetworkParent(this NetworkBehaviour me, Transform child, Transform target)

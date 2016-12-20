@@ -347,7 +347,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	}
 	protected void Update()
 	{
-		if (_isDead || TimeManager.IsPaused)
+		if (_isDead || TimeManager.IsPaused || !_playerRef.isLocalPlayer)
 			return;
 
 		if (InputManager.GetButtonDown("f5"))

@@ -39,6 +39,16 @@ public class MapSelectWheel : MenuWheel<EArenaConfiguration>
 		base.Generate(elementsToProcess, returnArray);
 	}
 
+	protected override void Update()
+	{
+		base.Update();
+		for (int i = 0; i < _displayArray.Length; i++)
+		{
+			if (Vector3.Angle(-Camera.main.transform.forward.ZeroY(), (_displayArray[i].transform.position - transform.position).ZeroY()) < _rotationBetweenElements * 0.9f)
+				_displayArray[i].transform.SetAsLastSibling();
+		}
+	}
+
 	public void SendSelectionToGameManager()
 	{
 		if (GetSelectedElement() == EArenaConfiguration.Sea)

@@ -2399,7 +2399,6 @@ GameObject:
   - 224: {fileID: 301002592}
   - 222: {fileID: 301002595}
   - 114: {fileID: 301002594}
-  - 114: {fileID: 301002593}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -2426,19 +2425,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -40, y: -10}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &301002593
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114000011873518116, guid: 04f18436bfd4b10419f1b6628433c808,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 301002591}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b90b5ba724e4a7049835e91d6cea6134, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Fragment: exit
 --- !u!114 &301002594
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2723,31 +2709,10 @@ MonoBehaviour:
     type: 2}
   SlotsAvailable: []
   _availableCharacters:
-  - CharacterRef: {fileID: 11478206, guid: 3ec6965eb1188ff418e7a841ee9f4263, type: 2}
-    ArtWorks:
-    - {fileID: 21300000, guid: 24fdf943611718543b9746db2b52cca2, type: 3}
-    - {fileID: 21300000, guid: c0cd752e878885b46aa7ba77537bd0ff, type: 3}
-    - {fileID: 21300000, guid: 923c02165befcce4e92119a6deee76fa, type: 3}
-    - {fileID: 21300000, guid: f1c204b77dd19df4596cec934627498f, type: 3}
-    InfoImage: {fileID: 0}
-  - CharacterRef: {fileID: 11474260, guid: 9b85bde0b5dc1d74b8ec37b4561a265f, type: 2}
-    ArtWorks:
-    - {fileID: 21300000, guid: 984123f61a4e42446bb4cfaa31afef68, type: 3}
-    - {fileID: 21300000, guid: e03a185ab9f2efb45ac90ef8776aaacd, type: 3}
-    - {fileID: 21300000, guid: b6f3f8bb3fcaa5047b2027c108428cf2, type: 3}
-    InfoImage: {fileID: 0}
-  - CharacterRef: {fileID: 11443824, guid: e44733f7405603a42b6ee4b52dd53d53, type: 2}
-    ArtWorks:
-    - {fileID: 21300000, guid: ee6a7d58d26992342bb8349a42d3c5f7, type: 3}
-    - {fileID: 21300000, guid: 77bb18aaa6d81c646a9eaba8e3e2e324, type: 3}
-    - {fileID: 21300000, guid: 00407b9b576a4a542ac5dcac7b05a767, type: 3}
-    InfoImage: {fileID: 0}
-  - CharacterRef: {fileID: 11405882, guid: ba7fed6ca79414f4c93aa9bb12b559b9, type: 2}
-    ArtWorks:
-    - {fileID: 21300000, guid: 35e31dc974256bd4ebb343e5289b9add, type: 3}
-    - {fileID: 21300000, guid: 1f2b5197fd36d8e46a5730f4a2828ef5, type: 3}
-    - {fileID: 21300000, guid: 564c1ec91956bb449b84a5584525824a, type: 3}
-    InfoImage: {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!1 &323371040
 GameObject:
   m_ObjectHideFlags: 0

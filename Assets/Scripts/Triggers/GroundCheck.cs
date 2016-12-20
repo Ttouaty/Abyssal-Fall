@@ -20,6 +20,9 @@ public class GroundCheck : MonoBehaviour
 		_playerRef = GetComponentInParent<PlayerController>();
 		_colliderRef = GetComponent<Collider>();
 		_rigidBRef = _playerRef.GetComponent<Rigidbody>();
+
+		if(!_playerRef._playerRef.isLocalPlayer)
+			enabled = false; // Deactivate if character is not local
 	}
 
 	void Update()
@@ -45,6 +48,9 @@ public class GroundCheck : MonoBehaviour
 
 	void OnTriggerEnter(Collider colli)
 	{
+		if (!enabled)
+			return;
+
 		if (_colliderIds.Count == 0)
 			_playerRef.ContactGround();
 		_colliderIds.Add(colli.GetInstanceID());
@@ -55,6 +61,8 @@ public class GroundCheck : MonoBehaviour
 
 	void OnTriggerExit(Collider colli)
 	{
+		if (!enabled)
+			return;
 		_colliderIds.Remove(colli.GetInstanceID());
 	}
 }

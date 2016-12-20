@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class GroundFalling_Behaviour : ABaseBehaviour
 {
@@ -9,7 +10,7 @@ public class GroundFalling_Behaviour : ABaseBehaviour
 
 	protected override IEnumerator Run_Implementation()
 	{
-		_availableGrounds = ArenaManager.Instance.Tiles;
+		_availableGrounds = ArenaManager.Instance.Tiles.ToList();
 		if(_availableGrounds.Count > 0)
 		{
 			_availableGrounds.Shuffle();

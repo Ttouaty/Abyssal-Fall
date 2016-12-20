@@ -19,7 +19,7 @@ public class MenuWheel<ReturnType> : MonoBehaviour
 
 	protected int _selectedElementIndex = 0;
 
-	private float _rotationBetweenElements;
+	protected float _rotationBetweenElements;
 
 	protected Color _tempColor;
 	protected float _tempElementAngle;
@@ -78,11 +78,12 @@ public class MenuWheel<ReturnType> : MonoBehaviour
 	protected virtual void Update()
 	{
 		if (ParentPlayer != null)
+		{
 			if (ParentPlayer.isLocalPlayer)
 			{
 				transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(0, _selectedElementIndex * _rotationBetweenElements, 0), _rotateSpeed);
-				//Debug.LogError(GetComponent<NetworkIdentity>().netId);
 			}
+		}
 
 
 		//######## apply alpha to Image elements #########

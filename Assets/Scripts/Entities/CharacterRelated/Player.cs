@@ -164,11 +164,7 @@ public class Player : NetworkBehaviour
 		}
 	}
 
-	[Command]
-	public void CmdReadyToSpawnMap()
-	{
-		ServerManager.Instance.AddArenaWaiting();
-	}
+	
 
 	[ClientRpc]
 	public void RpcOpenSlot(string slotToOpen, GameObject OwnerPlayer, int newPlayerNumber)
@@ -205,6 +201,39 @@ public class Player : NetworkBehaviour
 	[ClientRpc]
 	public void RpcStartGame(GameConfiguration newGameConfig)
 	{
-		GameManager.Instance.StartGameWithConfig(newGameConfig);
+		if(isLocalPlayer)
+		{
+			Debug.LogError("Player N°=> "+PlayerNumber+" is starting game with config.");
+			GameManager.Instance.StartGameWithConfig(newGameConfig);
+		}
+	}
+
+	[Command]
+	public void CmdReadyToSpawnMap()
+	{
+		ServerManager.Instance.AddArenaWaiting();
+	}
+
+	[ClientRpc]
+	public void RpcAllClientReadyForMapSpawn()
+	{
+		ArenaManager.Instance.ResetMap(true);
+	}
+
+	[Command]
+	public void CmdRemoveTile(int index)
+	{
+		if(index == -1)
+		{
+			Debug.Log("tile index was -1");
+			return;
+		}
+
+		if(NetworkServer.active)
+		{
+			ArenaMasterManager.Instance.RpcRemoveTileAtIndex(index);
+		}
+		else
+			Debug.LogError("NOT SERVER FOR TILE REMOVAL !");
 	}
 }

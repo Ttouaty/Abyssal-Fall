@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Networking;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Tile : MonoBehaviour, IPoolable
@@ -124,6 +125,7 @@ public class Tile : MonoBehaviour, IPoolable
 			TimeManager.Instance.OnPause.AddListener(OnPause);
 			TimeManager.Instance.OnResume.AddListener(OnResume);
 		}
+
 		_initialPoisition = transform.localPosition;
 		_isTouched = true;
 		StartCoroutine(ActivateFall_Implementation());

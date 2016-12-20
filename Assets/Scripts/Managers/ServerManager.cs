@@ -103,12 +103,20 @@ public class ServerManager : NATTraversal.NetworkManager
 		return Instance;
 	}
 
+	// ######## Start ##########
+
 	public override void Start()
 	{
 		_isInGame = false;
 		_playersReadyForMapSpawn = 0;
 		Init();
 		base.Start();
+	}
+
+	public override void OnServerSceneChanged(string sceneName)
+	{
+		Debug.LogWarning("Server Change scene detected ! => "+sceneName);
+		base.OnServerSceneChanged(sceneName);
 	}
 
 	public override void OnStopServer()
@@ -337,7 +345,7 @@ public class ServerManager : NATTraversal.NetworkManager
 			Debug.Log("launching game");
 
 			_isInGame = true;
-			ArenaManager.Instance.RpcAllClientReady();
+			HostingClient.RpcAllClientReadyForMapSpawn();
 		}
 	}
 
