@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,9 @@ public class GroundFalling_Behaviour : ABaseBehaviour
 
 	protected override IEnumerator Run_Implementation()
 	{
+		if (!NetworkServer.active)
+			yield break;
+
 		_availableGrounds = ArenaManager.Instance.Tiles.ToList();
 		if(_availableGrounds.Count > 0)
 		{
@@ -18,7 +22,11 @@ public class GroundFalling_Behaviour : ABaseBehaviour
 			int nbTilesToFall = Mathf.Min(_availableGrounds.Count, NumberOfTiles);
 			for (int i = 0; i < nbTilesToFall; ++i)
 			{
-				_availableGrounds.ShiftRandomElement().ActivateFall();
+				Tile tempTile = _availableGrounds.ShiftRandomElement();
+				if(tempTile != null)
+					tempTile.ActivateFall();
+				else
+					Debug.Log("tile was null");
 			}
 		}
 

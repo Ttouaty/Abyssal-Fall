@@ -19,7 +19,7 @@ public class CharacterPlayerLock : MonoBehaviour
 				tempPlayer =  new Player();
 			tempPlayer.SkinNumber = 0;
 			tempPlayer.JoystickNumber = JoystickListening[i];
-			Characters[i].Init(tempPlayer);
+			Characters[i].Init(tempPlayer.gameObject);
 		}
 	}
 

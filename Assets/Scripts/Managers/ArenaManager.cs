@@ -198,7 +198,7 @@ public class ArenaManager : MonoBehaviour
 
 		for(int i = 0; i < list.Count; ++i)
 		{
-			Debug.Log("behaviors needs to be managed by server !");
+			Debug.LogWarning("behaviors needs to be managed by server !");
 			ABaseBehaviour behaviour    = Instantiate(list[i].Behaviour);
 			behaviour.transform.parent  = BehavioursRoot;
 			_behaviours.Add(behaviour);
@@ -206,15 +206,8 @@ public class ArenaManager : MonoBehaviour
 
 		yield return StartCoroutine(LoadArena(animate));
 
-
-		Debug.LogError("NEEDS TO BE IN MASTER-ARENA-MANAGER !");
 		if(NetworkServer.active)
-		{
-			Debug.Log("placing characters");
 			PlaceCharacters();
-		}
-		else
-			Debug.Log("not server !");
 
 		yield return StartCoroutine(CountdownManager.Instance.Countdown());
 		GameManager.Instance.GameRules.InitGameRules();
@@ -230,21 +223,12 @@ public class ArenaManager : MonoBehaviour
 			if (player != null)
 			{
 				_players[i] = Instantiate(player.CharacterUsed.gameObject);
-				_players[i].transform.SetParent(PlayersRoot);
-				NetworkServer.SpawnWithClientAuthority(_players[i], player.gameObject);
 				PlayerController playerController = _players[i].GetComponent<PlayerController>();
-				if (playerController != null)
-				{
-					playerController.Init(player);
-					player.Controller = playerController;
-				}
-				else
-				{
-					Debug.LogError("No player controller");
-					Debug.Break();
-				}
 				_spawns[i].SpawnPlayer(playerController);
 				playerController.UnFreeze();
+
+				NetworkServer.SpawnWithClientAuthority(_players[i], player.gameObject);
+				player.RpcInitController(_players[i]);
 			}
 		}
 	}

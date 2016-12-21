@@ -138,10 +138,12 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	public Spawn Spawn;
 	[HideInInspector]
 	public Animator _animator;
+	private NetworkAnimator _networkAnimator;
 	[HideInInspector]
 	public bool _isDead = false;
 	[HideInInspector]
 	public bool IsGrounded = false;
+
 
 	protected CharacterProp _characterProp;
 
@@ -247,28 +249,37 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_rigidB = GetComponent<Rigidbody>();
 	}
 
-	public void Init(Player player)
+	public void Init(GameObject player)
 	{
-		_playerRef = player;
+		_playerRef = player.GetComponent<Player>();
 		_playerRef.Controller = this;
+
 		if (_characterData == null)
 		{
 			Debug.Log("No SO_Character found for character " + gameObject.name + ". Seriously ?");
 			return;
 		}
-
+		CharacterModel playerMesh = _transf.GetComponentInChildren<CharacterModel>();
 		_characterData.SoundList.Generate();
 
-		//Instantiates player mesh and retrieves its props and particles
-		GameObject playerMesh = Instantiate(_characterData.CharacterModel.gameObject) as GameObject;
-		playerMesh.transform.SetParent(_transf.FindChild("CharacterModel"));
-		playerMesh.transform.localPosition = Vector3.zero;
-		playerMesh.transform.localRotation = Quaternion.identity;
+			//Instantiates player mesh and retrieves its props and particles
+			//playerMesh = Instantiate(_characterData.CharacterModel.gameObject) as GameObject;
+			//playerMesh.transform.SetParent(_transf.FindChild("CharacterModel"));
+			//playerMesh.transform.localPosition = Vector3.zero;
+			//playerMesh.transform.localRotation = Quaternion.identity;
 
-		_transf.GetComponentInChildren<CharacterModel>().Reskin(_characterData.CharacterMaterials[_playerRef.SkinNumber]);
+		playerMesh.Reskin(_characterData.CharacterMaterials[_playerRef.SkinNumber]);
 
-		_animator = _transf.GetComponentInChildren<Animator>();
+		_animator = playerMesh.GetComponentInChildren<Animator>();
 		_characterProp = transform.GetComponentInChildren<CharacterProp>();
+		_networkAnimator = GetComponent<NetworkAnimator>();
+
+		//_networkAnimator.animator = _animator;
+
+		for (int i = 0; i < _animator.parameterCount; i++)
+		{
+			_networkAnimator.SetParameterAutoSend(i, true);
+		}
 
 		if (_characterProp == null)
 			Debug.LogError("No player prop found in playermesh: " + gameObject.name + " !");
@@ -341,13 +352,14 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_activeDirection = transform.rotation * Vector3.forward;
 
 
-
-			CustomStart();
-
+		CustomStart();
 	}
 	protected void Update()
 	{
-		if (_isDead || TimeManager.IsPaused || !_playerRef.isLocalPlayer)
+		if (_isDead || TimeManager.IsPaused || _playerRef == null)
+			return;
+
+		if (!_playerRef.isLocalPlayer)
 			return;
 
 		if (InputManager.GetButtonDown("f5"))
@@ -582,7 +594,12 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		Debug.Log("Player n°"+_playerRef.PlayerNumber+" with character "+_characterData.IngameName+" is DED!");
 
 		_FEMref.SetExpression("Fear");
-		_animator.SetTrigger("Death");
+		//_animator.SetTrigger("Death");
+		_networkAnimator.SetTrigger("Death");
+
+		if (NetworkServer.active)
+			_animator.ResetTrigger("Death");
+
 		_characterData.SoundList["OnDeath"].Play(gameObject);
 		_isDead = true;
 		Player killer = _playerRef.Controller.LastDamageDealer != null ? _playerRef.Controller.LastDamageDealer.PlayerRef : null;
@@ -630,7 +647,12 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		transform.LookAt(transform.position + _activeDirection, Vector3.up);
 
 		_characterData.SoundList["OnHit"].Play(gameObject);
-		_animator.SetTrigger("Hit");
+		//_animator.SetTrigger("Hit");
+
+		_networkAnimator.SetTrigger("Hit");
+
+		if (NetworkServer.active)
+			_animator.ResetTrigger("Hit");
 	}
 
 	public void Parry(ABaseProjectile projectileParried)
@@ -653,7 +675,11 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 		_stunTimer.Add(_characterData.Dash.endingLag);
 
-		_animator.SetTrigger("Dash_Start");
+		//_animator.SetTrigger("Dash_Start");
+		_networkAnimator.SetTrigger("Dash_Start");
+
+		if (NetworkServer.active)
+			_animator.ResetTrigger("Dash_Start");
 		_characterData.SoundList["OnDashStart"].Play(gameObject);
 		gameObject.layer = LayerMask.NameToLayer("PlayerInvul");
 
@@ -669,7 +695,11 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		gameObject.layer = LayerMask.NameToLayer("PlayerDefault");
 
 		_isInvul = false;
-		_animator.SetTrigger("Dash_End");
+		//_animator.SetTrigger("Dash_End");
+		_networkAnimator.SetTrigger("Dash_End");
+
+		if (NetworkServer.active)
+			_animator.ResetTrigger("Dash_End");
 		_characterData.SoundList["OnDashEnd"].Play(gameObject);
 
 		yield return new WaitForSeconds(_characterData.Dash.endingLag);

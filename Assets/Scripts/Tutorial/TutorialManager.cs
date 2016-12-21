@@ -53,7 +53,7 @@ public class TutorialManager : GenericSingleton<TutorialManager> {
 	{
 		TutorialCharacterInstance = (PlayerController)Instantiate(TutorialCharacter, _respawnPoint.position, Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized) * Quaternion.AngleAxis(180, Vector3.up), transform);
 		TempPlayer.Controller = TutorialCharacterInstance;
-		TutorialCharacterInstance.Init(TempPlayer);
+		TutorialCharacterInstance.Init(TempPlayer.gameObject);
 		TutorialCharacterInstance.AddStun(1f);
 	}
 

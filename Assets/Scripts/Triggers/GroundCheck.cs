@@ -21,12 +21,15 @@ public class GroundCheck : MonoBehaviour
 		_colliderRef = GetComponent<Collider>();
 		_rigidBRef = _playerRef.GetComponent<Rigidbody>();
 
-		if(!_playerRef._playerRef.isLocalPlayer)
-			enabled = false; // Deactivate if character is not local
+		
 	}
 
 	void Update()
 	{
+		if(_playerRef._playerRef != null)
+			if (!_playerRef._playerRef.isLocalPlayer)
+				enabled = false; // Deactivate if character is not local
+
 		if (_rigidBRef.velocity.y > 1f)
 		{
 			if (_colliderRef.enabled)

@@ -14,6 +14,19 @@ public class ArenaMasterManager : NetworkBehaviour
 		
 	*/
 
+	void Start()
+	{
+		if(ArenaManager.Instance != null)
+			transform.SetParent(ArenaManager.Instance.transform); // parent to ArenaManager so it is destroyed when changing scenes (May cause bugs !)
+	}
+
+	void Update()
+	{
+		if(transform.parent == null)
+			if (ArenaManager.Instance != null)
+				transform.SetParent(ArenaManager.Instance.transform);
+	}
+
 	void Awake()
 	{
 		Instance = this;
@@ -22,10 +35,6 @@ public class ArenaMasterManager : NetworkBehaviour
 	public override void OnStartClient()
 	{
 		base.OnStartClient();
-		transform.SetParent(ArenaManager.Instance.transform); // parent to ArenaManager so it is destroyed when changing scenes (May cause bugs !)
-
-
-
 	}
 
 	[ClientRpc]

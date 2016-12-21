@@ -236,4 +236,10 @@ public class Player : NetworkBehaviour
 		else
 			Debug.LogError("NOT SERVER FOR TILE REMOVAL !");
 	}
+
+	[ClientRpc]
+	public void RpcInitController(GameObject targetObject)
+	{
+		targetObject.GetComponent<PlayerController>().Init(gameObject);
+	}
 }

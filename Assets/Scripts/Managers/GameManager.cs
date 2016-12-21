@@ -79,7 +79,12 @@ public class GameManager : GenericSingleton<GameManager>
 		}
 
 		if (NetworkServer.active)
-			ServerManager.Instance.HostingClient.RpcStartGame(CurrentGameConfiguration);
+		{
+			for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; i++)
+			{
+				ServerManager.Instance.RegisteredPlayers[i].RpcStartGame(CurrentGameConfiguration);
+			}
+		}
 		else
 			Debug.LogError("StartGame(); called from client! This should not be allowed! Aborting");
 

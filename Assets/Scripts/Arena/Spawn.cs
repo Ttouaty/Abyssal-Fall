@@ -20,6 +20,6 @@ public class Spawn : MonoBehaviour
 	{
 		_player = player.gameObject;
 		_player.transform.position = transform.position + Vector3.up;
-		_player.transform.LookAt(new Vector3(0, _player.transform.position.y, 0));
+		_player.transform.LookAt(transform.parent.position.SetAxis(Axis.y, _player.transform.position.y));
 	}
 }
