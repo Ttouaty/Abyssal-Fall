@@ -17,7 +17,7 @@ public struct GameConfiguration
 [System.Serializable]
 public class GameEventDeath : UnityEvent<Player, Player> { }
 [System.Serializable]
-public class GameEventWin : UnityEvent { }
+public class GameEventWin : UnityEvent<Player> { }
 
 public class GameManager : GenericSingleton<GameManager>
 {
@@ -34,13 +34,13 @@ public class GameManager : GenericSingleton<GameManager>
 		{
 			if(_gameRules != null)
 			{
-				OnPlayerDeath.RemoveListener(_gameRules.OnPlayerDeath_Listener);
+				OnLocalPlayerDeath.RemoveListener(_gameRules.OnPlayerDeath_Listener);
 				OnPlayerWin.RemoveListener(_gameRules.OnPlayerWin_Listener);
 			}
 
 			_gameRules = value;
 
-			OnPlayerDeath.AddListener(_gameRules.OnPlayerDeath_Listener);
+			OnLocalPlayerDeath.AddListener(_gameRules.OnPlayerDeath_Listener);
 			OnPlayerWin.AddListener(_gameRules.OnPlayerWin_Listener);
 		}
 	}
@@ -59,7 +59,7 @@ public class GameManager : GenericSingleton<GameManager>
 	//// [HideInInspector]
 	//public int nbPlayers = -1;
 
-	public GameEventDeath OnPlayerDeath;
+	public GameEventDeath OnLocalPlayerDeath;
 	public GameEventWin OnPlayerWin;
 
 	[Space()]

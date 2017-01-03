@@ -16,13 +16,13 @@ public class ArenaMasterManager : NetworkBehaviour
 
 	void Start()
 	{
-		if(ArenaManager.Instance != null)
+		if (ArenaManager.Instance != null)
 			transform.SetParent(ArenaManager.Instance.transform); // parent to ArenaManager so it is destroyed when changing scenes (May cause bugs !)
 	}
 
 	void Update()
 	{
-		if(transform.parent == null)
+		if (transform.parent == null)
 			if (ArenaManager.Instance != null)
 				transform.SetParent(ArenaManager.Instance.transform);
 	}
@@ -42,5 +42,4 @@ public class ArenaMasterManager : NetworkBehaviour
 	{
 		ArenaManager.Instance.RemoveTile(index);
 	}
-
 }

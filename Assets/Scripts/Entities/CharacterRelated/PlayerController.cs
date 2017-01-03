@@ -259,6 +259,8 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 			Debug.Log("No SO_Character found for character " + gameObject.name + ". Seriously ?");
 			return;
 		}
+
+		CameraManager.Instance.AddTargetToTrack(transform);
 		CharacterModel playerMesh = _transf.GetComponentInChildren<CharacterModel>();
 		_characterData.SoundList.Generate();
 
@@ -348,7 +350,6 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		TimeManager.Instance.OnResume.AddListener(OnResume);
 		TimeManager.Instance.OnTimeScaleChange.AddListener(OnTimeScaleChange);
 
-		CameraManager.Instance.AddTargetToTrack(transform);
 		_activeDirection = transform.rotation * Vector3.forward;
 
 
@@ -429,10 +430,14 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	}
 
 
-	protected virtual void OnPlayerWin()
+	protected virtual void OnPlayerWin(Player winner)
 	{
 		_allowInput = false;
-		_FEMref.SetExpression("Happy");
+		if(winner == _playerRef)
+		{
+			Debug.LogWarning("Character "+_characterData.IngameName+" controller by player N°=> " +_playerRef.PlayerNumber+" has won !");
+			_FEMref.SetExpression("Happy");
+		}
 		//enabled = false;
 		Freeze();
 		//_animator.SetTrigger("Reset");
@@ -594,17 +599,38 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		Debug.Log("Player n°"+_playerRef.PlayerNumber+" with character "+_characterData.IngameName+" is DED!");
 
 		_FEMref.SetExpression("Fear");
+		_characterData.SoundList["OnDeath"].Play(gameObject);
+
 		//_animator.SetTrigger("Death");
-		_networkAnimator.SetTrigger("Death");
+		if(_playerRef.isLocalPlayer)
+			_networkAnimator.SetTrigger("Death");
 
 		if (NetworkServer.active)
+		{
+			Debug.Log("Kill detected from server for character "+_characterData.IngameName+" / Player n°=> "+_playerRef.PlayerNumber);
 			_animator.ResetTrigger("Death");
+		}
 
-		_characterData.SoundList["OnDeath"].Play(gameObject);
 		_isDead = true;
 		Player killer = _playerRef.Controller.LastDamageDealer != null ? _playerRef.Controller.LastDamageDealer.PlayerRef : null;
-		GameManager.Instance.OnPlayerDeath.Invoke(_playerRef, killer);
+		GameManager.Instance.OnLocalPlayerDeath.Invoke(_playerRef, killer);
 		CameraManager.Instance.RemoveTargetToTrack(transform);
+	}
+
+	[ClientRpc]
+	public void RpcRespawn(Vector3 newPos)
+	{
+		_isDead = false;
+		CameraManager.Instance.AddTargetToTrack(transform);
+
+		if (_playerRef.isLocalPlayer)
+		{
+			transform.position = newPos;
+			_networkAnimator.SetTrigger("Reset");
+		}
+
+		if (NetworkServer.active)
+			_animator.ResetTrigger("Reset");
 	}
 
 	public void Eject(Vector3 direction)

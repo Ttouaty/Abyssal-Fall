@@ -10,7 +10,8 @@ public class TutorialSequence
 	public Message[] _messageKeys;
 }
 
-public class TutorialManager : GenericSingleton<TutorialManager> {
+public class TutorialManager : GenericSingleton<TutorialManager>
+{
 
 	public Transform _respawnPoint;
 	public DialogBox DialogBoxObject;
@@ -125,7 +126,7 @@ public class TutorialManager : GenericSingleton<TutorialManager> {
 		yield return LevelManager.Instance.OpenMenu();
 	}
 
-	public void SetPlayerDash(bool value){ TutorialCharacterInstance.AllowDash = value; }
-	public void SetPlayerSpecial(bool value){ TutorialCharacterInstance.AllowSpecial = value; }
-	public void SetInputLockTime(float value){ InputManager.AddInputLockTime(value); }
+	public void SetPlayerDash(bool value) { TutorialCharacterInstance.AllowDash = value; }
+	public void SetPlayerSpecial(bool value) { TutorialCharacterInstance.AllowSpecial = value; }
+	public void SetInputLockTime(float value) { InputManager.AddInputLockTime(value); }
 }

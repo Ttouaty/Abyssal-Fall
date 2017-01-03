@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37356448, g: 0.3811204, b: 0.35887685, a: 1}
+  m_IndirectSpecularColor: {r: 0.22385725, g: 0.24379516, b: 0.26534563, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -420,6 +420,8 @@ GameObject:
   m_Component:
   - 224: {fileID: 212606370}
   - 114: {fileID: 212606371}
+  - 114: {fileID: 212606372}
+  - 114: {fileID: 212606373}
   m_Layer: 5
   m_Name: MainMenu
   m_TagString: Untagged
@@ -462,11 +464,10 @@ MonoBehaviour:
   directionToListen: {x: 1, y: 0}
   AxisPrecision: 0.4
   InputToListen: 6
+  InputStringToListen: 
   InputMethodUsed: 0
   TimeToHold: 0.5
   CanLoop: 0
-  ListenToAllJoysticks: 1
-  JoysticksToListen: 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   Callback:
     m_PersistentCalls:
       m_Calls:
@@ -481,8 +482,81 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+    m_TypeName: UnityEventInt, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
+  UseKeyboard: 0
+--- !u!114 &212606372
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 212606369}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a78359f65bc067341a55ce067027940d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UseAxis: 0
+  directionToListen: {x: 1, y: 0}
+  AxisPrecision: 0.4
+  InputToListen: 6
+  InputStringToListen: backspace
+  InputMethodUsed: 0
+  TimeToHold: 0.5
+  CanLoop: 0
+  Callback:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 344450002}
+        m_MethodName: BackToMainMenu
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_TypeName: UnityEventInt, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  UseKeyboard: 1
+--- !u!114 &212606373
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 212606369}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a78359f65bc067341a55ce067027940d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UseAxis: 0
+  directionToListen: {x: 1, y: 0}
+  AxisPrecision: 0.4
+  InputToListen: 6
+  InputStringToListen: escape
+  InputMethodUsed: 0
+  TimeToHold: 0.5
+  CanLoop: 0
+  Callback:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 344450002}
+        m_MethodName: BackToMainMenu
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_TypeName: UnityEventInt, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  UseKeyboard: 1
 --- !u!1 &344450000
 GameObject:
   m_ObjectHideFlags: 0
@@ -547,11 +621,10 @@ MonoBehaviour:
   directionToListen: {x: 1, y: 0}
   AxisPrecision: 0.4
   InputToListen: 7
+  InputStringToListen: 
   InputMethodUsed: 0
   TimeToHold: 0.5
   CanLoop: 0
-  ListenToAllJoysticks: 1
-  JoysticksToListen: 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   Callback:
     m_PersistentCalls:
       m_Calls:
@@ -566,8 +639,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+    m_TypeName: UnityEventInt, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
+  UseKeyboard: 0
 --- !u!1 &375046491
 GameObject:
   m_ObjectHideFlags: 0
@@ -844,7 +918,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &957855547
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -931,6 +1005,7 @@ GameObject:
   - 222: {fileID: 1057207803}
   - 114: {fileID: 1057207802}
   - 114: {fileID: 1057207801}
+  - 114: {fileID: 1057207804}
   m_Layer: 5
   m_Name: Resume
   m_TagString: Untagged
@@ -972,11 +1047,10 @@ MonoBehaviour:
   directionToListen: {x: 1, y: 0}
   AxisPrecision: 0.4
   InputToListen: 1
+  InputStringToListen: 
   InputMethodUsed: 0
   TimeToHold: 0.5
   CanLoop: 0
-  ListenToAllJoysticks: 1
-  JoysticksToListen: 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   Callback:
     m_PersistentCalls:
       m_Calls:
@@ -991,8 +1065,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+    m_TypeName: UnityEventInt, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
+  UseKeyboard: 0
 --- !u!114 &1057207802
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1026,6 +1101,42 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1057207799}
+--- !u!114 &1057207804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1057207799}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a78359f65bc067341a55ce067027940d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UseAxis: 0
+  directionToListen: {x: 1, y: 0}
+  AxisPrecision: 0.4
+  InputToListen: 0
+  InputStringToListen: 
+  InputMethodUsed: 0
+  TimeToHold: 0.5
+  CanLoop: 0
+  Callback:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 344450002}
+        m_MethodName: Close
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_TypeName: UnityEventInt, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  UseKeyboard: 0
 --- !u!1001 &1176447745
 Prefab:
   m_ObjectHideFlags: 0

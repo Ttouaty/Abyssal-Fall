@@ -158,11 +158,8 @@ public class CharacterSlot : MonoBehaviour
 		//	StopCoroutine(_activeCoroutineRef);
 
 		Selected = false;
-		if (ServerManager.Instance.RegisteredPlayers.Count == 0)
-			return;
-
-		if (ServerManager.Instance.RegisteredPlayers[_playerIndex] != null)
-			ServerManager.Instance.RegisteredPlayers[_playerIndex].UnReady();
+		if(_playerRef != null)
+			_playerRef.UnReady();
 
 		//_activeCoroutineRef = StartCoroutine(SlideCharacterModelOut());
 

@@ -6,19 +6,21 @@ public class EndGameManager : GenericSingleton<EndGameManager>
 {
 	public bool IsOpen = false;
 	public int WinnerId = -1;
-
+	
 	public Text WinnerText;
 
 	public void ResetGame(bool checkIfOpen = true)
 	{
 		if (!checkIfOpen || IsOpen)
 		{
+			Debug.LogError("Donner la possibilité de reset la partie !");
 			Destroy(GameManager.Instance.GameRules.gameObject);
 			MainManager.Instance.LEVEL_MANAGER.UnloadScene(LevelManager.Instance.CurrentArenaConfig.BackgroundLevel);
 			MainManager.Instance.LEVEL_MANAGER.CurrentArenaConfig = null;
 			CameraManager.Instance.Reset();
 			MainManager.Instance.LEVEL_MANAGER.OpenMenu();
 			ServerManager.Instance.OnGameEnd();
+			ServerManager.Instance.ResetNetwork(true);
 		}
 	}
 

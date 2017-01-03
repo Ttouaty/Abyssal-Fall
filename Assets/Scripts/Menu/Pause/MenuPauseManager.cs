@@ -56,21 +56,25 @@ public class MenuPauseManager : GenericSingleton<MenuPauseManager>
 			return;
 
 		InputManager.SetInputLockTime(0.3f);
-		TimeManager.Pause();
+
 		for (int i = 0; i < ScoresFields.Length; ++i)
 		{
 			ScoresFields[i].DisplayScore();
 		}
 		transform.GetChild(0).gameObject.SetActive(true);
 
-		List<Player> alives = ServerManager.Instance.AlivePlayers;
-		if (alives != null)
+		if (ServerManager.Instance.ExternalPlayerNumber == 0 && Player.LocalPlayer.isServer)
 		{
-			for (int i = 0; i < alives.Count; ++i)
+			TimeManager.Pause();
+			List<Player> alives = ServerManager.Instance.AlivePlayers;
+			if (alives != null)
 			{
-				if (alives[i].Controller != null)
+				for (int i = 0; i < alives.Count; ++i)
 				{
-					alives[i].Controller.Freeze();
+					if (alives[i].Controller != null)
+					{
+						alives[i].Controller.Freeze();
+					}
 				}
 			}
 		}

@@ -205,6 +205,12 @@ public class ServerManager : NATTraversal.NetworkManager
 					tempWheels[i].GetComponent<NetworkIdentity>().RebuildObservers(true);
 					HostingClient.RpcCloseTargetSlot(i);
 
+					if(conn.address != "localServer")
+					{
+						//external Player decreasing external player count
+						ExternalPlayerNumber--;
+					}
+
 					ServerRemovePlayer(RegisteredPlayers[i]);
 					//NetworkServer.UnSpawn(tempWheels[i].gameObject);
 				}
@@ -255,7 +261,6 @@ public class ServerManager : NATTraversal.NetworkManager
 		if(conn.address != "localClient")
 		{
 			ExternalPlayerNumber++;
-			Debug.Log("External player connected with address: "+conn.address);
 		}
 
 		GameObject playerGo = (GameObject)Instantiate(playerPrefab);
@@ -289,6 +294,8 @@ public class ServerManager : NATTraversal.NetworkManager
 		if (HostingClient == null) // if that is the first client
 			HostingClient = player;
 
+		HostingClient.PlayerList.Add(player.gameObject);
+
 		player.PlayerNumber = i;
 		NetworkServer.AddPlayerForConnection(conn, playerGo, playerControllerId);
 
@@ -300,13 +307,14 @@ public class ServerManager : NATTraversal.NetworkManager
 			RegisteredPlayers[j].RpcOpenSlot(newSlot.ToString(), playerGo, i);
 		}
 	}
-	
+
 	public void ServerRemovePlayer(Player player)
 	{
+		HostingClient.PlayerList.Remove(player.gameObject);
 		RegisteredPlayers.Remove(player);
 		OpenSlots[] tempArray = Enum.GetValues(typeof(OpenSlots)) as OpenSlots[];
 		LobbySlotsOpen &= ~tempArray[player.PlayerNumber];
-		Debug.Log("Removed player " + player.PlayerNumber+ " - Open slots are now => " + LobbySlotsOpen.ToString());
+		Debug.Log("Removed player " + player.PlayerNumber + " - Open slots are now => " + LobbySlotsOpen.ToString());
 	}
 
 	public override void OnConnectionReplacedClient(NetworkConnection oldConnection, NetworkConnection newConnection)
@@ -319,14 +327,13 @@ public class ServerManager : NATTraversal.NetworkManager
 	public override void OnConnectionReplacedServer(NetworkConnection oldConnection, NetworkConnection newConnection)
 	{
 		Debug.Log("Replaced connection");
-		
-
 		base.OnConnectionReplacedServer(oldConnection, newConnection);
 	}
 
 	public void OnGameEnd()
 	{
 		_isInGame = false;
+		_playersReadyForMapSpawn = 0;
 		NetworkServer.SetAllClientsNotReady();
 	}
 

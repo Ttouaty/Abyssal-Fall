@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Networking;
 
 public abstract class AGameRules : MonoBehaviour 
 {
@@ -56,10 +57,13 @@ public abstract class AGameRules : MonoBehaviour
 		CameraManager.Instance.RemoveTargetToTrack(player.Controller.transform);
 	}
 
-	public virtual void OnPlayerWin_Listener ()
+	public virtual void OnPlayerWin_Listener (Player winner)
 	{
 		// On player win common stuff
-		ServerManager.Instance.ResetAlivePlayers();
+		if (NetworkServer.active)
+		{
+			ServerManager.Instance.ResetAlivePlayers();
+		}
 		ArenaManager.Instance.DisableBehaviours();
 		CameraManager.Instance.ClearTrackedTargets();
 	}

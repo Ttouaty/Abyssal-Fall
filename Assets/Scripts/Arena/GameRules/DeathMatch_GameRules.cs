@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,25 +10,29 @@ public class DeathMatch_GameRules : AGameRules
 	{
 		base.InitGameRules();
 		GUIManager.Instance.RunTimer(MatchDuration);
-		GUIManager.Instance.Timer.OnCompleteCallback.AddListener(OnPlayerWin_Listener);
+		GUIManager.Instance.Timer.OnCompleteCallback.AddListener(OnTimeOut);
 	}
 
 	public override void OnPlayerDeath_Listener (Player player, Player killer)
 	{
 		base.OnPlayerDeath_Listener(player, killer);
 
-		if (killer != null)
+		if(NetworkServer.active)
 		{
-			killer.Score += PointsGainPerKill;
-			--player.Score;
-		}
-		else
-		{
-			player.Score -= PointsLoosePerSuicide;
+			if (killer != null)
+			{
+				killer.Score += PointsGainPerKill;
+				--player.Score;
+			}
+			else
+			{
+				player.Score -= PointsLoosePerSuicide;
+			}
+			RespawnPlayer(player);
 		}
 
 
-		RespawnPlayer(player);
+		
 	}
 
 	private void RespawnPlayer (Player player)
@@ -45,13 +50,11 @@ public class DeathMatch_GameRules : AGameRules
 			Tile tile = tiles.RandomElement();
 			tile.SetTimeLeft(tile.TimeLeftSave);
 
-			Spawn spawn = tile.gameObject.AddComponent<Spawn>();
-
-			spawn.SpawnPlayer(player.Controller);
-			player.Controller._animator.SetTrigger("Reset");
-			player.Controller._isDead = false;
-
-			CameraManager.Instance.AddTargetToTrack(player.Controller.transform);
+			//Spawn spawn = tile.gameObject.AddComponent<Spawn>();
+			//transform.position + Vector3.up
+			//spawn.SpawnPlayer(player.Controller);
+			
+			player.Controller.RpcRespawn(tile.transform.position + Vector3.up);
 		}
 	}
 
@@ -61,31 +64,39 @@ public class DeathMatch_GameRules : AGameRules
 		RespawnPlayer(player);
 	}
 
-	public override void OnPlayerWin_Listener ()
+	private void OnTimeOut()
 	{
-		base.OnPlayerWin_Listener();
-
-		// TODO : Gérer les égalités
-		int i;
-		int winnerId		= 0;
-		Player winnerPlayer = ServerManager.Instance.RegisteredPlayers[winnerId];
-		for (i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; ++i)
+		if(NetworkServer.active)
 		{
-			Player currentPlayer = ServerManager.Instance.RegisteredPlayers[i];
-			if (currentPlayer != null)
+			int i;
+			int winnerId = 0;
+			Player winnerPlayer = ServerManager.Instance.RegisteredPlayers[winnerId];
+			for (i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; ++i)
 			{
-				currentPlayer.Controller.Freeze();
-				if (currentPlayer.Score > winnerPlayer.Score)
+				Player currentPlayer = ServerManager.Instance.RegisteredPlayers[i];
+				if (currentPlayer != null)
 				{
-					winnerId		= i;
-					winnerPlayer	= currentPlayer;
+					currentPlayer.Controller.Freeze();
+					if (currentPlayer.Score > winnerPlayer.Score)
+					{
+						winnerId = i;
+						winnerPlayer = currentPlayer;
+					}
 				}
 			}
-		}
 
-		EndGameManager.Instance.WinnerId = winnerId;
+			Player.LocalPlayer.RpcOnPlayerWin(winnerPlayer.gameObject);
+		}
+	}
+
+	public override void OnPlayerWin_Listener (Player winner)
+	{
+		base.OnPlayerWin_Listener(winner);
+
+		// TODO : Gérer les égalités
+		EndGameManager.Instance.WinnerId = winner.PlayerNumber;
 		EndGameManager.Instance.Open();
 
-		GUIManager.Instance.Timer.OnCompleteCallback.RemoveListener(OnPlayerWin_Listener);
+		GUIManager.Instance.Timer.OnCompleteCallback.RemoveListener(OnTimeOut);
 	}
 }

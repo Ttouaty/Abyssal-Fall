@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37356448, g: 0.3811204, b: 0.35887685, a: 1}
+  m_IndirectSpecularColor: {r: 0.22385725, g: 0.24379516, b: 0.26534563, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -553,6 +553,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 894872565}
+  - {fileID: 1786495095}
   m_Father: {fileID: 0}
   m_RootOrder: 0
 --- !u!114 &957316698
@@ -581,34 +582,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 957316696}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a78359f65bc067341a55ce067027940d, type: 3}
+  m_Script: {fileID: 11500000, guid: 75009ccc1a593614683f01e37e96f93e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UseAxis: 0
-  directionToListen: {x: 1, y: 0}
-  AxisPrecision: 0.4
-  InputToListen: 0
-  InputMethodUsed: 0
-  TimeToHold: 0.5
-  CanLoop: 0
-  ListenToAllJoysticks: 1
-  JoysticksToListen: 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-  Callback:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 957316698}
-        m_MethodName: ResetMap
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
+  RequiredNetStatus: 1
+  TargetObjects:
+  - {fileID: 1786495093}
+  ActiveState: 1
 --- !u!1001 &1417205606
 Prefab:
   m_ObjectHideFlags: 0
@@ -744,6 +724,71 @@ RectTransform:
   m_AnchoredPosition: {x: -250, y: -2.7}
   m_SizeDelta: {x: 500, y: 0}
   m_Pivot: {x: 0, y: 0.5}
+--- !u!1 &1786495093
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1786495095}
+  - 114: {fileID: 1786495094}
+  m_Layer: 0
+  m_Name: Controls
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &1786495094
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1786495093}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a78359f65bc067341a55ce067027940d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UseAxis: 0
+  directionToListen: {x: 1, y: 0}
+  AxisPrecision: 0.4
+  InputToListen: 0
+  InputStringToListen: 
+  InputMethodUsed: 0
+  TimeToHold: 0.5
+  CanLoop: 0
+  Callback:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 957316698}
+        m_MethodName: ResetMap
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+    m_TypeName: UnityEventInt, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  UseKeyboard: 0
+--- !u!4 &1786495095
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1786495093}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 957316697}
+  m_RootOrder: 1
 --- !u!1 &1840886694
 GameObject:
   m_ObjectHideFlags: 0

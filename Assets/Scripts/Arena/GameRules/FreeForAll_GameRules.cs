@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 using System;
 
@@ -14,18 +15,27 @@ public class FreeForAll_GameRules : AGameRules
 	{
 		base.OnPlayerDeath_Listener(player, killer);
 
-		if (ServerManager.Instance.AlivePlayers.IndexOf(player) >= 0)
+		if(NetworkServer.active)
 		{
-			ServerManager.Instance.AlivePlayers.Remove(player);
-			// Round won
-			if (ServerManager.Instance.AlivePlayers.Count == 1)
+			if (ServerManager.Instance.AlivePlayers.IndexOf(player) >= 0)
 			{
-				// Increment score
-				ServerManager.Instance.AlivePlayers[0].Score += PointsGainPerKill;
-				// Invoke win event
-				GameManager.Instance.OnPlayerWin.Invoke();
+				ServerManager.Instance.AlivePlayers.Remove(player);
+				// Round won
+				if (ServerManager.Instance.AlivePlayers.Count == 1)
+				{
+					// Increment score (pas en FFA)
+					ServerManager.Instance.AlivePlayers[0].Score += PointsGainPerKill;
+					// Invoke win event
+					Player.LocalPlayer.RpcOnPlayerWin(ServerManager.Instance.AlivePlayers[0].gameObject);
+				}
+			}
+			else
+			{
+				Debug.LogError("DRAW DETECTED !");
+				Player.LocalPlayer.RpcOnPlayerWin(null);
 			}
 		}
+
 	}
 
 	protected override IEnumerator RespawnFalledTiles_Implementation (Tile tile)
@@ -35,9 +45,9 @@ public class FreeForAll_GameRules : AGameRules
 		yield return null;
 	}
 
-	public override void OnPlayerWin_Listener ()
+	public override void OnPlayerWin_Listener (Player winner)
 	{
-		if (ServerManager.Instance.AlivePlayers.Count == 0)
+		if (winner == null)
 		{
 			Debug.LogWarning("DRAW !!! Aucun joueur restant, est ce qu'une personne a déco ?");
 
@@ -52,11 +62,11 @@ public class FreeForAll_GameRules : AGameRules
 				GUIManager.Instance.StopTimer();
 			}
 
-			base.OnPlayerWin_Listener();
+			base.OnPlayerWin_Listener(winner);
 
 			return;
 		}
-		Player winner = ServerManager.Instance.AlivePlayers[0];
+		//Player winner = ServerManager.Instance.AlivePlayers[0];
 		winner.Controller.Freeze();
 		InputManager.AddInputLockTime(1);
 
@@ -80,6 +90,6 @@ public class FreeForAll_GameRules : AGameRules
 			}
 		}
 
-		base.OnPlayerWin_Listener();
+		base.OnPlayerWin_Listener(winner);
 	}
 }

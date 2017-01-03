@@ -302,8 +302,23 @@ public static class MonoBehaviourExtensions
 public static class NetworkBehaviourExtensions
 {
 	[ClientRpc]
-	public static void RpcSetNetworkParent(this NetworkBehaviour me, Transform child, Transform target)
+	public static void RpcSetNetworkParent(this NetworkBehaviour child, GameObject networkedTargetGo)
 	{
-		child.transform.SetParent(target);
+		child.transform.SetParent(networkedTargetGo.transform);
 	}
+}
+
+
+public class SyncListGameObject : SyncList<GameObject>
+{
+	protected override void SerializeItem(NetworkWriter writer, GameObject item)
+	{
+		writer.Write(item);
+	}
+
+	protected override GameObject DeserializeItem(NetworkReader reader)
+	{
+		return reader.ReadGameObject();
+	}
+
 }

@@ -12,8 +12,7 @@ public class EndStageManager : GenericSingleton<EndStageManager>
 	{
 		if (!checkIfOpen || IsOpen)
 		{
-			ArenaManager.Instance.ResetMap(false);
-			Close();
+			Player.LocalPlayer.RpcResetmap(false);
 		}
 	}
 
@@ -21,11 +20,11 @@ public class EndStageManager : GenericSingleton<EndStageManager>
 	{
 		Close();
 
-		for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; ++i)
+		for (int i = 0; i < Player.LocalPlayer.PlayerList.Count; ++i)
 		{
-			if (ServerManager.Instance.RegisteredPlayers[i] != null)
+			if (Player.LocalPlayer.PlayerList[i] != null)
 			{
-				ScoresFields[i].CurrentPlayer = ServerManager.Instance.RegisteredPlayers[i];
+				ScoresFields[i].CurrentPlayer = Player.LocalPlayer.PlayerList[i].GetComponent<Player>();
 			}
 			ScoresFields[i].Init();
 		}

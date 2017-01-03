@@ -217,6 +217,17 @@ public class ArenaManager : MonoBehaviour
 	public void PlaceCharacters()
 	{
 		_players = new GameObject[ServerManager.Instance.RegisteredPlayers.Count];
+
+		//Clean up remaining characters
+		for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; i++)
+		{
+			if(ServerManager.Instance.RegisteredPlayers[i].Controller != null)
+			{
+				Debug.Log("Destroying character "+ ServerManager.Instance.RegisteredPlayers[i].Controller._characterData.IngameName);
+				Destroy(ServerManager.Instance.RegisteredPlayers[i].Controller.gameObject);
+			}
+		}
+
 		for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; ++i)
 		{
 			Player player = ServerManager.Instance.RegisteredPlayers[i];

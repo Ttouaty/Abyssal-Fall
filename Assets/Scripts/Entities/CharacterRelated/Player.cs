@@ -7,10 +7,18 @@ public class Player : NetworkBehaviour
 {
 	public static Player LocalPlayer;
 	private static PlayerController[] _availablePlayerControllers;
+
+	public SyncListGameObject PlayerList = new SyncListGameObject();
+
 	[HideInInspector]
 	public int JoystickNumber = 0;
+
+	[SyncVar]
 	[HideInInspector]
 	public int Score = 0;
+
+	
+
 	public bool isReady
 	{
 		get{ return _ready; }
@@ -203,7 +211,7 @@ public class Player : NetworkBehaviour
 	{
 		if(isLocalPlayer)
 		{
-			Debug.LogError("Player N°=> "+PlayerNumber+" is starting game with config.");
+			Debug.Log("Player N°=> "+PlayerNumber+" is starting game with config.");
 			GameManager.Instance.StartGameWithConfig(newGameConfig);
 		}
 	}
@@ -241,5 +249,21 @@ public class Player : NetworkBehaviour
 	public void RpcInitController(GameObject targetObject)
 	{
 		targetObject.GetComponent<PlayerController>().Init(gameObject);
+	}
+
+	[ClientRpc]
+	public void RpcOnPlayerWin(GameObject winnerPlayerGo)
+	{
+		Player winner = null;
+		if (winnerPlayerGo != null)
+			winner = winnerPlayerGo.GetComponent<Player>();
+		GameManager.Instance.OnPlayerWin.Invoke(winner);
+	}
+
+	[ClientRpc]
+	public void RpcResetmap(bool animate)
+	{
+		ArenaManager.Instance.ResetMap(animate);
+		EndStageManager.Instance.Close();
 	}
 }
