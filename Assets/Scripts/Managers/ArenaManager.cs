@@ -157,6 +157,7 @@ public class ArenaManager : MonoBehaviour
 		StartCoroutine(Initialization(animate));
 	}
 
+	//Don't use this one
 	public void RemoveTile(Tile tile)
 	{
 		Player.LocalPlayer.CmdRemoveTile(Array.IndexOf(_tiles, tile));
@@ -164,7 +165,16 @@ public class ArenaManager : MonoBehaviour
 
 	public void RemoveTile(int index)
 	{
-		_tiles[index] = null;
+		if(_tiles[index] != null)
+		{
+			if (!_tiles[index].IsFalling)
+				_tiles[index].MakeFall();
+			_tiles[index] = null;
+		}
+		else
+		{
+			Debug.Log("Tile n°=> "+index+" was null in Arenamanager");
+		}
 	}
 
 	public void RemoveObstacle(Obstacle obstacle)
@@ -233,7 +243,7 @@ public class ArenaManager : MonoBehaviour
 			Player player = ServerManager.Instance.RegisteredPlayers[i];
 			if (player != null)
 			{
-				_players[i] = Instantiate(player.CharacterUsed.gameObject);
+				_players[i] = Instantiate(player.CharacterUsed.gameObject) as GameObject;
 				PlayerController playerController = _players[i].GetComponent<PlayerController>();
 				_spawns[i].SpawnPlayer(playerController);
 				playerController.UnFreeze();
@@ -302,9 +312,10 @@ public class ArenaManager : MonoBehaviour
 					
 					tileComp.SetTimeLeft(tileComp.TimeLeftSave); // TODO -> Regler dans l'inspecteur
 					_tiles[(int)(y * _currentMapConfig.MapSize.x) + x] = tileComp;
+					tileComp.TileIndex = (int)(y * _currentMapConfig.MapSize.x) + x;
 					tileComp.SpawnComponent = null;
 					tileComp.enabled = true;
-
+					
 
 					if (type == ETileType.SPAWN)
 					{

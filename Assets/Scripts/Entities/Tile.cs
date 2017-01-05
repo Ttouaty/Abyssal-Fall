@@ -22,6 +22,7 @@ public class Tile : MonoBehaviour, IPoolable
 	public bool				IsFalling		{ get { return _isFalling; } }
 	public bool             IsSpawn			{ get { return SpawnComponent == null; } }
 	public Rigidbody		RigidBRef		{ get { return _rigidB; } }
+	public int				TileIndex = 0;
 	
 
 	public float TimeLeftSave { get { return _timeLeftSave; } }
@@ -74,7 +75,9 @@ public class Tile : MonoBehaviour, IPoolable
 	public void SetTimeLeft(float value, bool bSaveResult = true)
 	{
 		_timeLeft = value;
-		if(bSaveResult)
+		if (_timeLeft != 0)
+			_isTouched = false;
+		if (bSaveResult)
 		{
 			_timeLeftSave = _timeLeft;
 		}
@@ -120,12 +123,17 @@ public class Tile : MonoBehaviour, IPoolable
 
 		if (ArenaManager.Instance != null)
 		{
-			ArenaManager.Instance.RemoveTile(this);
+			Player.LocalPlayer.CmdRemoveTile(TileIndex);
 
 			TimeManager.Instance.OnPause.AddListener(OnPause);
 			TimeManager.Instance.OnResume.AddListener(OnResume);
 		}
 
+		MakeFall();
+	}
+
+	public void MakeFall()
+	{
 		_initialPoisition = transform.localPosition;
 		_isTouched = true;
 		StartCoroutine(ActivateFall_Implementation());

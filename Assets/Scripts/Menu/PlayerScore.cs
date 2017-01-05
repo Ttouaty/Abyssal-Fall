@@ -29,7 +29,7 @@ public class PlayerScore : MonoBehaviour
         if(Active)
         {
             Label.gameObject.SetActive(true);
-            Label.GetComponent<Text>().text = "P" + (CurrentPlayer.PlayerNumber + 1);
+            Label.GetComponent<Text>().text = "P" + (CurrentPlayer.PlayerNumber);
         }
         else
         {

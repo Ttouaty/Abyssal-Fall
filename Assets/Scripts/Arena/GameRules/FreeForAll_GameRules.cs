@@ -5,6 +5,8 @@ using System;
 
 public class FreeForAll_GameRules : AGameRules
 {
+	private Coroutine victoryCoroutine;
+
 	public override void InitGameRules ()
 	{
 		base.InitGameRules();
@@ -25,17 +27,27 @@ public class FreeForAll_GameRules : AGameRules
 				{
 					// Increment score (pas en FFA)
 					ServerManager.Instance.AlivePlayers[0].Score += PointsGainPerKill;
-					// Invoke win event
-					Player.LocalPlayer.RpcOnPlayerWin(ServerManager.Instance.AlivePlayers[0].gameObject);
+					// Invoke win event after 1 sec
+					victoryCoroutine = StartCoroutine(DelayVictory());
 				}
 			}
 			else
 			{
 				Debug.LogError("DRAW DETECTED !");
+				StopCoroutine(victoryCoroutine);
 				Player.LocalPlayer.RpcOnPlayerWin(null);
 			}
 		}
 
+	}
+
+	private IEnumerator DelayVictory()
+	{
+		yield return new WaitForSeconds(1);
+		if(ServerManager.Instance.AlivePlayers[0] == null)
+			Player.LocalPlayer.RpcOnPlayerWin(null);
+		else
+			Player.LocalPlayer.RpcOnPlayerWin(ServerManager.Instance.AlivePlayers[0].gameObject);
 	}
 
 	protected override IEnumerator RespawnFalledTiles_Implementation (Tile tile)
@@ -50,7 +62,7 @@ public class FreeForAll_GameRules : AGameRules
 		if (winner == null)
 		{
 			Debug.LogWarning("DRAW !!! Aucun joueur restant, est ce qu'une personne a déco ?");
-
+			MessageManager.Log("Draw! No Point awarded !");
 			EndStageManager.Instance.Open();
 			if (MainManager.Instance.LEVEL_MANAGER.CurrentModeConfig.IsMatchRoundBased)
 			{
@@ -74,7 +86,7 @@ public class FreeForAll_GameRules : AGameRules
 		{
 			EndGameManager.Instance.WinnerId = ServerManager.Instance.AlivePlayers[0].PlayerNumber;
 			EndGameManager.Instance.Open();
-			GUIManager.Instance.StopRoundCount();
+			GUIManager.Instance.SetActiveRoundCount(false);
 		}
 		else
 		{

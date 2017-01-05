@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 
 public class MageController : PlayerController
@@ -40,12 +41,18 @@ public class MageController : PlayerController
 	protected override void SpecialAction()
 	{
 		//cast fireball
+		CmdLaunchProjectile(transform.position + transform.forward, transform.forward);
+	}
+
+	[Command]
+	public void CmdLaunchProjectile(Vector3 pos, Vector3 dir)
+	{
 		GameObject fireBallObj = GameObjectPool.GetAvailableObject("FireBall");
 		_lastFireBallCasted = fireBallObj.GetComponent<FireBall>();
 
 		_lastFireBallCasted.Launch(
-			transform.position + transform.forward,
-			transform.forward,
+			pos,
+			dir,
 			_explosionDelay,
 			_explosionRadius,
 			SO_Character.SpecialEjection.Multiply(Axis.x, _characterData.CharacterStats.strength),
@@ -53,6 +60,7 @@ public class MageController : PlayerController
 			gameObject.GetInstanceID()
 		);
 
+		NetworkServer.Spawn(fireBallObj);
 		if (ArenaManager.Instance != null)
 			fireBallObj.transform.parent = ArenaManager.Instance.SpecialsRoot;
 	}

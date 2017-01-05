@@ -88,8 +88,8 @@ public class ServerManager : NATTraversal.NetworkManager
 			if (tempMapArray[i].Ground == null)
 				continue;
 
-			ClientScene.RegisterPrefab(tempMapArray[i].Ground); //Add grounds
-			ClientScene.RegisterPrefab(tempMapArray[i].Obstacle); //Add obstacle
+			//ClientScene.RegisterPrefab(tempMapArray[i].Ground); //Add grounds
+			//ClientScene.RegisterPrefab(tempMapArray[i].Obstacle); //Add obstacle
 
 			for (int j = 0; j < tempMapArray[i].AdditionalPoolsToLoad.Length; j++)
 			{
@@ -294,11 +294,11 @@ public class ServerManager : NATTraversal.NetworkManager
 		if (HostingClient == null) // if that is the first client
 			HostingClient = player;
 
-		HostingClient.PlayerList.Add(player.gameObject);
 
 		player.PlayerNumber = i;
 		NetworkServer.AddPlayerForConnection(conn, playerGo, playerControllerId);
 
+		//HostingClient.CmdAddPlayerList(player.gameObject);
 		HostingClient.RpcOpenSlot(newSlot.ToString(), playerGo, i);
 		player.RpcOpenExistingSlots(LobbySlotsOpen.ToString());
 		LobbySlotsOpen |= newSlot;
@@ -310,7 +310,7 @@ public class ServerManager : NATTraversal.NetworkManager
 
 	public void ServerRemovePlayer(Player player)
 	{
-		HostingClient.PlayerList.Remove(player.gameObject);
+		//HostingClient.PlayerList.Remove(player.gameObject);
 		RegisteredPlayers.Remove(player);
 		OpenSlots[] tempArray = Enum.GetValues(typeof(OpenSlots)) as OpenSlots[];
 		LobbySlotsOpen &= ~tempArray[player.PlayerNumber];

@@ -321,4 +321,17 @@ public class SyncListGameObject : SyncList<GameObject>
 		return reader.ReadGameObject();
 	}
 
+
+	//protected override void SerializeItem(NetworkWriter writer, GameObject item)
+	//{
+	//	writer.Write(item.GetComponent<NetworkIdentity>().netId);
+	//}
+
+	//protected override GameObject DeserializeItem(NetworkReader reader)
+	//{
+	//	if (NetworkServer.active)
+	//		return NetworkServer.FindLocalObject(reader.ReadNetworkId());
+	//	else
+	//		return ClientScene.FindLocalObject(reader.ReadNetworkId());
+	//}
 }

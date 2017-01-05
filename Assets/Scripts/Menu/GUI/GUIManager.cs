@@ -6,6 +6,7 @@ public class GUIManager : GenericSingleton<GUIManager>
 {
 	public GUITimer			Timer;
 	public GUIRoundCount	RoundCount;
+	public Canvas			CanvasRef;
 
 	public override void Init ()
 	{
@@ -37,8 +38,13 @@ public class GUIManager : GenericSingleton<GUIManager>
 		RoundCount.SetRound(round);
 	}
 
-	public void StopRoundCount ()
+	public void SetActiveRoundCount (bool active)
 	{
-		RoundCount.gameObject.SetActive(false);
+		RoundCount.gameObject.SetActive(active);
+	}
+
+	public void SetActiveAll(bool active)
+	{
+		CanvasRef.gameObject.SetActive(active);
 	}
 }

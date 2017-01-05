@@ -20,7 +20,7 @@ public class EndStageManager : GenericSingleton<EndStageManager>
 	{
 		Close();
 
-		for (int i = 0; i < Player.LocalPlayer.PlayerList.Count; ++i)
+		for (int i = 0; i < Player.LocalPlayer.PlayerList.Length; ++i)
 		{
 			if (Player.LocalPlayer.PlayerList[i] != null)
 			{
@@ -55,6 +55,8 @@ public class EndStageManager : GenericSingleton<EndStageManager>
 		StageText.text = StageText.text.Replace("%NUMBER%", GameManager.Instance.CurrentStage.ToString());
 		transform.GetChild(0).gameObject.SetActive(true);
 		IsOpen = true;
+		if(GUIManager.Instance != null)
+			GUIManager.Instance.SetActiveAll(false);
 	}
 
 	public void Close()
@@ -63,5 +65,7 @@ public class EndStageManager : GenericSingleton<EndStageManager>
 		transform.GetChild(0).gameObject.SetActive(false);
 		IsOpen = false;
 		MenuPauseManager.Instance.CanPause = true;
+		if(GUIManager.Instance != null)
+			GUIManager.Instance.SetActiveAll(true);
 	}
 }

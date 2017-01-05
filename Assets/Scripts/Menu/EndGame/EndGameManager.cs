@@ -44,6 +44,8 @@ public class EndGameManager : GenericSingleton<EndGameManager>
 	public void Open()
 	{
 		MenuPauseManager.Instance.CanPause = false;
+		if(GUIManager.Instance != null)
+			GUIManager.Instance.SetActiveAll(false);
 		InputManager.SetInputLockTime(0.5f);
 		TimeManager.Pause();
 		transform.GetChild(0).gameObject.SetActive(true);
@@ -58,5 +60,7 @@ public class EndGameManager : GenericSingleton<EndGameManager>
 		transform.GetChild(0).gameObject.SetActive(false);
 		TimeManager.Resume();
 		MenuPauseManager.Instance.CanPause = true;
+		if(GUIManager.Instance != null)
+			GUIManager.Instance.SetActiveAll(true);
 	}
 }

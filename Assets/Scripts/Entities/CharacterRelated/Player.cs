@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
-using System.Collections;
+using System.Collections.Generic;
 using System;
 
 public class Player : NetworkBehaviour
@@ -8,7 +8,9 @@ public class Player : NetworkBehaviour
 	public static Player LocalPlayer;
 	private static PlayerController[] _availablePlayerControllers;
 
-	public SyncListGameObject PlayerList = new SyncListGameObject();
+	//[SyncVar]
+	//public SyncListGameObject PlayerList = new SyncListGameObject();
+	public Player[] PlayerList = new Player[0];
 
 	[HideInInspector]
 	public int JoystickNumber = 0;
@@ -16,8 +18,6 @@ public class Player : NetworkBehaviour
 	[SyncVar]
 	[HideInInspector]
 	public int Score = 0;
-
-	
 
 	public bool isReady
 	{
@@ -44,7 +44,10 @@ public class Player : NetworkBehaviour
 		get
 		{
 			if (_characterUsedIndex == -1)
+			{
+				Debug.LogError("Character used index is -1 !");
 				return null;
+			}
 			if (_availablePlayerControllers == null)
 				DynamicConfig.Instance.GetConfigs(ref _availablePlayerControllers);
 
@@ -102,9 +105,9 @@ public class Player : NetworkBehaviour
 
 	void OnDestroy()
 	{
-		if(NetworkServer.active)
+		if (NetworkServer.active)
 		{
-			if (Controller != null)
+			if (Controller != null && isLocalPlayer)
 				Destroy(Controller.gameObject);
 		}
 	}
@@ -123,8 +126,8 @@ public class Player : NetworkBehaviour
 					break;
 				}
 			}
+			RpcCloseTargetSlot(PlayerNumber - 1);
 		}
-		RpcCloseTargetSlot(PlayerNumber - 1);
 		base.OnNetworkDestroy();
 	}
 
@@ -184,6 +187,7 @@ public class Player : NetworkBehaviour
 				PlayerNumber = newPlayerNumber;
 				name += "_" + PlayerNumber;
 			}
+			PlayerList = FindObjectsOfType<Player>();
 			OpenSlots NewSlotToOpen = (OpenSlots)Enum.Parse(typeof(OpenSlots), slotToOpen);
 			MenuManager.Instance.OpenCharacterSlot(NewSlotToOpen, OwnerPlayer.GetComponent<Player>()); //open his own slot
 		}
@@ -241,13 +245,13 @@ public class Player : NetworkBehaviour
 		{
 			ArenaMasterManager.Instance.RpcRemoveTileAtIndex(index);
 		}
-		else
-			Debug.LogError("NOT SERVER FOR TILE REMOVAL !");
 	}
 
 	[ClientRpc]
 	public void RpcInitController(GameObject targetObject)
 	{
+		if(targetObject == null)
+			Debug.LogError("RPC init >targetObject< was null !");
 		targetObject.GetComponent<PlayerController>().Init(gameObject);
 	}
 
@@ -266,4 +270,16 @@ public class Player : NetworkBehaviour
 		ArenaManager.Instance.ResetMap(animate);
 		EndStageManager.Instance.Close();
 	}
+
+	//[Command]
+	//public void CmdAddPlayerList(GameObject obj)
+	//{
+	//	PlayerList.Add(obj);
+	//}
+
+	//[Command]
+	//public void CmdRemovePlayerList(GameObject obj)
+	//{
+	//	PlayerList.Remove(obj);
+	//}
 }

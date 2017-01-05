@@ -10,7 +10,7 @@ public class ArenaMasterManager : NetworkBehaviour
 		Doit gérer:
 		Les tiles
 		Les behaviors
-		Les CallBacks de morts
+		x Les CallBacks de morts
 		
 	*/
 

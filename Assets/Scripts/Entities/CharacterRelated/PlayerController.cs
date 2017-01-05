@@ -594,6 +594,19 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		Debug.LogWarning("No default special Action defined in PlayerController, use a child class to code a special Action: " + gameObject.name);
 	}
 
+	[Command]
+	public virtual void CmdLaunchProjectile(string poolName, Vector3 projPosition, Vector3 projDirection)
+	{
+		GameObject projectile = GameObjectPool.GetAvailableObject(poolName);
+		projectile.GetComponent<ABaseProjectile>().Launch(projPosition, projDirection, _characterData.SpecialDamageData, gameObject.GetInstanceID());
+		//NetworkServer.SpawnWithClientAuthority(projectile, connectionToClient);
+		NetworkServer.Spawn(projectile);
+		_characterData.SoundList["OnSpecialActivate"].Play(projectile);
+
+		if (ArenaManager.Instance != null)
+			projectile.transform.parent = ArenaManager.Instance.SpecialsRoot;
+	}
+
 	public void Kill()
 	{
 		Debug.Log("Player n°"+_playerRef.PlayerNumber+" with character "+_characterData.IngameName+" is DED!");

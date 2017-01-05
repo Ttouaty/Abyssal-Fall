@@ -30,9 +30,6 @@ public class DeathMatch_GameRules : AGameRules
 			}
 			RespawnPlayer(player);
 		}
-
-
-		
 	}
 
 	private void RespawnPlayer (Player player)

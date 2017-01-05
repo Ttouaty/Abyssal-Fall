@@ -49,7 +49,7 @@ public class CameraManager : GenericSingleton<CameraManager>
 	protected override void Awake()
 	{
 		_camera = GetComponent<Camera>();
-		
+
 		ReplaceInstance(this);
 
 		base.Awake();
@@ -92,6 +92,8 @@ public class CameraManager : GenericSingleton<CameraManager>
 	Vector3 previousPosition;
 	void Update()
 	{
+		CleanTargets();
+
 		IsMoving = (transform.position - previousPosition).magnitude > 0.05f;
 		previousPosition = transform.position;
 		if (_targetsTracked.Count != 0)
@@ -106,17 +108,26 @@ public class CameraManager : GenericSingleton<CameraManager>
 			_targetsCentroid = _centerPoint.position;
 		}
 
-		transform.localPosition = - Vector3.forward * _distance;
+		transform.localPosition = -Vector3.forward * _distance;
 		FollowCentroid();
 
 		ProcessScreenShake();
+	}
+
+	private void CleanTargets()
+	{
+		for (int i = _targetsTracked.Count - 1; i >= 0; i--)
+		{
+			if (_targetsTracked[i] == null)
+				_targetsTracked.RemoveAt(i);
+		}
 	}
 
 	private void ProcessScreenShake()
 	{
 		if (_shakeTimeLeft > 0)
 		{
-			Vector3 ShakeVector = Random.insideUnitSphere * (int) _activeShakeStrength;
+			Vector3 ShakeVector = Random.insideUnitSphere * (int)_activeShakeStrength;
 			ShakeVector *= 0.05f;
 			transform.localPosition += ShakeVector;
 
@@ -139,6 +150,9 @@ public class CameraManager : GenericSingleton<CameraManager>
 		{
 			for (int j = i + 1; j < _targetsTracked.Count; j++)
 			{
+				if (_targetsTracked[i] == null || _targetsTracked[j] == null)
+					return;
+
 				++nbRays;
 				tempDirection = _targetsTracked[j].position - _targetsTracked[i].position;
 				//Debug.DrawRay(_targetsTracked[i].position, tempDirection);
@@ -208,13 +222,13 @@ public class CameraManager : GenericSingleton<CameraManager>
 
 	public void AddTargetToTrack(Transform newTarget)
 	{
-		if(!_targetsTracked.Contains(newTarget))
+		if (!_targetsTracked.Contains(newTarget))
 			_targetsTracked.Add(newTarget);
 	}
 
 	public void RemoveTargetToTrack(Transform newTarget)
 	{
-		if(_targetsTracked.Contains(newTarget))
+		if (_targetsTracked.Contains(newTarget))
 			_targetsTracked.Remove(newTarget);
 	}
 
@@ -224,7 +238,7 @@ public class CameraManager : GenericSingleton<CameraManager>
 		if (applyRotation)
 			RotateLerp(_focalPoint, newCenterPoint.rotation, time);
 		if (distance != null)
-			_distance = (float) distance;
+			_distance = (float)distance;
 	}
 
 	public void SetCenterPoint(Transform newCenterPoint)
@@ -276,7 +290,7 @@ public class CameraManager : GenericSingleton<CameraManager>
 
 	public static void Shake(ShakeStrength force)
 	{
-		Shake(force, ((int) force) * 0.01f);
+		Shake(force, ((int)force) * 0.01f);
 	}
 
 	/// <summary>
