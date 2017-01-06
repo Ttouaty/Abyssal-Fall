@@ -319,14 +319,14 @@ public class ServerManager : NATTraversal.NetworkManager
 
 	public override void OnConnectionReplacedClient(NetworkConnection oldConnection, NetworkConnection newConnection)
 	{
-		Debug.Log("Replaced connection");
+		Debug.LogError("Replaced connection");
 		ClientScene.AddPlayer(NetworkClient.allClients[0].connection, 0);
 		base.OnConnectionReplacedClient(oldConnection, newConnection);
 	}
 
 	public override void OnConnectionReplacedServer(NetworkConnection oldConnection, NetworkConnection newConnection)
 	{
-		Debug.Log("Replaced connection");
+		Debug.LogError("Replaced connection");
 		base.OnConnectionReplacedServer(oldConnection, newConnection);
 	}
 

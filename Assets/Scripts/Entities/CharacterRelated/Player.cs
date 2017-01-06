@@ -261,6 +261,8 @@ public class Player : NetworkBehaviour
 		Player winner = null;
 		if (winnerPlayerGo != null)
 			winner = winnerPlayerGo.GetComponent<Player>();
+
+		Debug.Log("RpcOnPlayerWin received on player n°=> "+PlayerNumber+" with localplayer n°=> "+LocalPlayer.PlayerNumber);
 		GameManager.Instance.OnPlayerWin.Invoke(winner);
 	}
 
