@@ -252,6 +252,9 @@ public class CharacterSlot : MonoBehaviour
 		}
 
 		//NetworkServer.SpawnWithClientAuthority(_wheelRef.gameObject, player.connectionToClient);
+		if (_wheelRef.GetComponent<NetworkIdentity>().clientAuthorityOwner != null)
+			_wheelRef.GetComponent<NetworkIdentity>().RemoveClientAuthority(_wheelRef.GetComponent<NetworkIdentity>().clientAuthorityOwner);
+
 		_wheelRef.GetComponent<NetworkIdentity>().AssignClientAuthority(player.connectionToClient);
 		_netSpawned = true;
 		Debug.Log("SLOT: " + name + " Opened, Listening to gamePad n°: " + player.JoystickNumber);

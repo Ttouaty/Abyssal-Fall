@@ -20,7 +20,7 @@ public class EndGameManager : GenericSingleton<EndGameManager>
 			CameraManager.Instance.Reset();
 			MainManager.Instance.LEVEL_MANAGER.OpenMenu();
 			ServerManager.Instance.OnGameEnd();
-			ServerManager.Instance.ResetNetwork(true);
+			ServerManager.Instance.ResetNetwork();
 		}
 	}
 
@@ -51,7 +51,7 @@ public class EndGameManager : GenericSingleton<EndGameManager>
 		transform.GetChild(0).gameObject.SetActive(true);
 		IsOpen = true;
 		WinnerText.GetComponent<Localizator.LocalizedText>().OnChangeLanguage();
-		WinnerText.text = WinnerText.text.Replace("%ID%", (WinnerId + 1).ToString());
+		WinnerText.text = WinnerText.text.Replace("%ID%", (WinnerId).ToString());
 	}
 
 	public void Close()

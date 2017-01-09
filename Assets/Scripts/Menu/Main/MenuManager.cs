@@ -96,7 +96,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	void Update()
 	{
-
+		Debug.Log(ClientScene.prefabs.Count);
 		if (Input.GetKeyDown(KeyCode.Alpha1))
 		{
 			LoadPreview(EArenaConfiguration.Aerial);
@@ -495,7 +495,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	public void DisconnectFromServer()
 	{
-		ServerManager.Instance.ResetNetwork(true);
+		ServerManager.Instance.ResetNetwork();
 	}
 
 	public void LogMessage(string message)

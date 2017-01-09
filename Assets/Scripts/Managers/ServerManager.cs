@@ -68,6 +68,17 @@ public class ServerManager : NATTraversal.NetworkManager
 		//### ADD SPAWN PREFABS ###
 		//#########################
 
+		RegisterPrefabs();
+
+		Instance = FindObjectOfType<ServerManager>();
+		Instance.GameId = Guid.NewGuid().ToString().Split('-')[0].ToLower();
+		_initialised = true;
+		return Instance;
+	}
+
+	public static void RegisterPrefabs()
+	{
+		
 		PlayerController[] tempPlayerArray = new PlayerController[0];
 		DynamicConfig.Instance.GetConfigs(ref tempPlayerArray);
 		for (int i = 0; i < tempPlayerArray.Length; i++)
@@ -96,11 +107,6 @@ public class ServerManager : NATTraversal.NetworkManager
 				ClientScene.RegisterPrefab(tempMapArray[i].AdditionalPoolsToLoad[j].Prefab); //Add Additionnal map prefabs
 			}
 		}
-
-		Instance = FindObjectOfType<ServerManager>();
-		Instance.GameId = Guid.NewGuid().ToString().Split('-')[0].ToLower();
-		_initialised = true;
-		return Instance;
 	}
 
 	// ######## Start ##########
@@ -182,7 +188,7 @@ public class ServerManager : NATTraversal.NetworkManager
 				EndGameManager.Instance.ResetGame(false);
 			}
 
-			ResetNetwork(true);
+			ResetNetwork();
 		}
 
 		base.OnClientDisconnect(conn);
@@ -289,7 +295,7 @@ public class ServerManager : NATTraversal.NetworkManager
 			}
 		}
 
-		Debug.LogWarning("new Player number => "+i);
+		Debug.LogWarning("new Player created, N°=> "+i);
 
 		if (HostingClient == null) // if that is the first client
 			HostingClient = player;
@@ -356,7 +362,7 @@ public class ServerManager : NATTraversal.NetworkManager
 		}
 	}
 
-	public void ResetNetwork(bool disconnect)
+	public void ResetNetwork()
 	{
 		if(MenuManager.Instance != null)
 			MenuManager.Instance.ResetCharacterSelector();
@@ -376,11 +382,8 @@ public class ServerManager : NATTraversal.NetworkManager
 
 		NetworkServer.Reset();
 		NetworkClient.ShutdownAll();
-
-		if (disconnect)
-		{
-			Network.Disconnect();
-		}
+		RegisterPrefabs();
+		//Network.Disconnect();
 
 		if (matchMaker == null)
 			return;

@@ -110,6 +110,14 @@ public class Player : NetworkBehaviour
 			if (Controller != null && isLocalPlayer)
 				Destroy(Controller.gameObject);
 		}
+		enabled = false;
+
+		LocalPlayer.PlayerList = FindObjectsOfType<Player>();
+		if(LocalPlayer.PlayerList.Length == 1)
+		{
+			Debug.Log("Is last player remaining in game");
+		}
+
 	}
 
 	public override void OnNetworkDestroy()
@@ -252,6 +260,8 @@ public class Player : NetworkBehaviour
 	{
 		if(targetObject == null)
 			Debug.LogError("RPC init >targetObject< was null !");
+
+		Debug.Log(targetObject.GetComponent<PlayerController>());
 		targetObject.GetComponent<PlayerController>().Init(gameObject);
 	}
 

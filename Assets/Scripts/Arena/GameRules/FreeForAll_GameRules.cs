@@ -25,8 +25,6 @@ public class FreeForAll_GameRules : AGameRules
 				// Round won
 				if (ServerManager.Instance.AlivePlayers.Count == 1)
 				{
-					// Increment score (pas en FFA)
-					ServerManager.Instance.AlivePlayers[0].Score += PointsGainPerKill;
 					// Invoke win event after 1 sec
 					victoryCoroutine = StartCoroutine(DelayVictory());
 				}
@@ -44,7 +42,7 @@ public class FreeForAll_GameRules : AGameRules
 	private IEnumerator DelayVictory()
 	{
 		yield return new WaitForSeconds(1);
-		if(ServerManager.Instance.AlivePlayers[0] == null)
+		if(ServerManager.Instance.AlivePlayers.Count == 0)
 			Player.LocalPlayer.RpcOnPlayerWin(null);
 		else
 			Player.LocalPlayer.RpcOnPlayerWin(ServerManager.Instance.AlivePlayers[0].gameObject);
@@ -80,11 +78,12 @@ public class FreeForAll_GameRules : AGameRules
 		}
 		//Player winner = ServerManager.Instance.AlivePlayers[0];
 		winner.Controller.Freeze();
+		winner.Score++;
 		InputManager.AddInputLockTime(1);
 
-		if (winner.Score == GameManager.Instance.CurrentGameConfiguration.NumberOfStages)
+		if (winner.Score >= GameManager.Instance.CurrentGameConfiguration.NumberOfStages)
 		{
-			EndGameManager.Instance.WinnerId = ServerManager.Instance.AlivePlayers[0].PlayerNumber;
+			EndGameManager.Instance.WinnerId = winner.PlayerNumber;
 			EndGameManager.Instance.Open();
 			GUIManager.Instance.SetActiveRoundCount(false);
 		}
