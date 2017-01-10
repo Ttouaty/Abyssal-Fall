@@ -355,6 +355,12 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 		CustomStart();
 	}
+
+	public void AddDifferentialAlpha(Material characterAlpha)
+	{
+		Debug.Log("Need to code that faggot");
+	}
+
 	protected void Update()
 	{
 		if (_isDead || TimeManager.IsPaused || _playerRef == null)
@@ -655,47 +661,64 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_rigidB.velocity = _activeSpeed;
 	}
 
+	[ClientRpc]
+	public void RpcDamage(Vector3 direction, float newStunTime)
+	{
+		if(_playerRef.isLocalPlayer)
+		{
+			if (direction.magnitude > 15)
+			{
+				Debug.Log("strong push detected");
+				CameraManager.Shake(ShakeStrength.High);
+			}
+			else
+				CameraManager.Shake(ShakeStrength.Medium);
+
+			Eject(direction);
+
+			if (newStunTime > 0)
+				_stunTimer.Set(newStunTime);
+			_invulTimer.Set(newStunTime * 1.3f);
+
+			_activeDirection = -direction.ZeroY().normalized;
+			transform.LookAt(transform.position + _activeDirection, Vector3.up);
+
+			_characterData.SoundList["OnHit"].Play(gameObject);
+			//_animator.SetTrigger("Hit");
+
+			_networkAnimator.SetTrigger("Hit");
+
+			if (NetworkServer.active)
+				_animator.ResetTrigger("Hit");
+		}
+	}
+
 	public void Damage(Vector3 direction,Vector3 impactPoint, DamageData data)
 	{
 		if (_isInvul)
 			return;
 
-		LastDamageDealer = data.Dealer;
+
+		_FEMref.SetExpression("Pain");
 
 		Debug.Log("Character \"" + _characterData.IngameName + "\" was damaged by: \"" + data.Dealer.InGameName + "\"");
 
 		direction.x += direction.x * ((0.5f - _characterData.CharacterStats.resistance.Percentage(0, Stats.maxValue)) * 0.5f);
 		direction.z += direction.z * ((0.5f - _characterData.CharacterStats.resistance.Percentage(0, Stats.maxValue)) * 0.5f);
 
-		if (direction.magnitude > 15)
-		{
-			Debug.Log("strong push detected");
-			CameraManager.Shake(ShakeStrength.High);
-		}
-		else
-			CameraManager.Shake(ShakeStrength.Medium);
-
-
-		_FEMref.SetExpression("Pain");
-		Eject(direction);
-		if (data.StunInflicted > 0)
-			_stunTimer.Set(data.StunInflicted);
-		_invulTimer.Set(data.StunInflicted * 1.3f);
-
-		_activeDirection = -direction.ZeroY().normalized;
-		transform.LookAt(transform.position + _activeDirection, Vector3.up);
-
-		_characterData.SoundList["OnHit"].Play(gameObject);
-		//_animator.SetTrigger("Hit");
-
-		_networkAnimator.SetTrigger("Hit");
-
 		if (NetworkServer.active)
-			_animator.ResetTrigger("Hit");
+		{
+			LastDamageDealer = data.Dealer;
+			RpcDamage(direction, data.StunInflicted);
+		}
+
 	}
 
 	public void Parry(ABaseProjectile projectileParried)
 	{
+		if (!_playerRef.isLocalPlayer)
+			return;
+
 		CameraManager.Shake(ShakeStrength.Medium);
 		_characterData.SoundList["OnParry"].Play(gameObject);
 		projectileParried.Parry(DmgDealerSelf);

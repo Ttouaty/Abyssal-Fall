@@ -250,8 +250,6 @@ public class ArenaManager : MonoBehaviour
 
 				NetworkServer.SpawnWithClientAuthority(_players[i], player.gameObject);
 
-				Debug.Log("playerController length => "+ _players.Length +" iteration => "+i);
-				Debug.Log("obj => "+_players[i]);
 				player.RpcInitController(_players[i]);
 			}
 		}

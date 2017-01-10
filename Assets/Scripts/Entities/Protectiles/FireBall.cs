@@ -44,7 +44,6 @@ public class FireBall : ABaseProjectile
 		if (_movingParticlesRef != null)
 			_movingParticlesRef.Stop();
 
-		_shooter.PlayerRef.Controller.GetComponent<MageController>().ActiveFireBall = null;
 		base.Stop();
 	}
 

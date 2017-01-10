@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using UnityEngine.Networking;
 
 [RequireComponent(typeof(Rigidbody), typeof(SphereCollider), typeof(Poolable))]
 public abstract class ABaseProjectile : MonoBehaviour, IPoolable
@@ -57,8 +58,11 @@ public abstract class ABaseProjectile : MonoBehaviour, IPoolable
 	protected virtual void Stop()
 	{
 		_rigidB.velocity = Vector3.zero;
-		_ownDamageData = null;
+		//_ownDamageData = null;
 		StopAllCoroutines();
+
+		if (NetworkServer.active)
+			NetworkServer.UnSpawn(gameObject);
 		GameObjectPool.AddObjectIntoPool(gameObject);
 	}
 

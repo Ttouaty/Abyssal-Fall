@@ -96,7 +96,6 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	void Update()
 	{
-		Debug.Log(ClientScene.prefabs.Count);
 		if (Input.GetKeyDown(KeyCode.Alpha1))
 		{
 			LoadPreview(EArenaConfiguration.Aerial);

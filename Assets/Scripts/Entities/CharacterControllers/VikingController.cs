@@ -7,6 +7,6 @@ public class VikingController : PlayerController
 	{
 		_animator.SetTrigger("Special");
 		_characterProp.PropRenderer.enabled = false;
-		CmdLaunchProjectile("hammer", transform.position + transform.forward, transform.forward);
+		CmdLaunchProjectile("Hammer", transform.position + transform.forward, transform.forward);
     }
 }

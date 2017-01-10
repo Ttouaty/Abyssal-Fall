@@ -12,20 +12,15 @@ public class MageController : PlayerController
 	//[SerializeField]
 	//private Vector2 _explosionEjection = new Vector2(5, 5);
 
-	private FireBall _lastFireBallCasted;
-	public FireBall ActiveFireBall
-	{
-		get { return _lastFireBallCasted; }
-		set { _lastFireBallCasted = value; }
-	}
-
+	private GameObject _lastFireBallCasted;
+	
 	protected override bool SpecialActivation()
 	{
 		if (InputManager.GetButtonDown("Special", _playerRef.JoystickNumber))
 		{
 			if (_lastFireBallCasted != null)
 			{
-				_lastFireBallCasted.Activate();
+				_lastFireBallCasted.GetComponent<FireBall>().Activate();
 				_lastFireBallCasted = null;
 				return false;
 			}
@@ -41,16 +36,15 @@ public class MageController : PlayerController
 	protected override void SpecialAction()
 	{
 		//cast fireball
-		CmdLaunchProjectile(transform.position + transform.forward, transform.forward);
+		CmdLaunchFireProjectile(transform.position + transform.forward, transform.forward, gameObject);
 	}
 
 	[Command]
-	public void CmdLaunchProjectile(Vector3 pos, Vector3 dir)
+	public void CmdLaunchFireProjectile(Vector3 pos, Vector3 dir, GameObject ownerMage)
 	{
 		GameObject fireBallObj = GameObjectPool.GetAvailableObject("FireBall");
-		_lastFireBallCasted = fireBallObj.GetComponent<FireBall>();
 
-		_lastFireBallCasted.Launch(
+		fireBallObj.GetComponent<FireBall>().Launch(
 			pos,
 			dir,
 			_explosionDelay,
@@ -60,8 +54,18 @@ public class MageController : PlayerController
 			gameObject.GetInstanceID()
 		);
 
-		NetworkServer.Spawn(fireBallObj);
+		NetworkServer.SpawnWithClientAuthority(fireBallObj, ownerMage);
+
+		TargetLinkFireBall(fireBallObj);
+
 		if (ArenaManager.Instance != null)
 			fireBallObj.transform.parent = ArenaManager.Instance.SpecialsRoot;
 	}
+
+	[TargetRpc]
+	public void TargetLinkFireBall(GameObject targetFireball)
+	{
+		_lastFireBallCasted = targetFireball;
+	}
+
 }

@@ -11,7 +11,7 @@ public class Player : NetworkBehaviour
 	//[SyncVar]
 	//public SyncListGameObject PlayerList = new SyncListGameObject();
 	public Player[] PlayerList = new Player[0];
-
+	public Material CharacterAlpha;
 	[HideInInspector]
 	public int JoystickNumber = 0;
 
@@ -21,8 +21,8 @@ public class Player : NetworkBehaviour
 
 	public bool isReady
 	{
-		get{ return _ready; }
-		private set{ _ready = value; }
+		get { return _ready; }
+		private set { _ready = value; }
 	}
 
 	[SyncVar]
@@ -57,7 +57,7 @@ public class Player : NetworkBehaviour
 
 	public void Init(int newJoystickNumber)
 	{
-		if(isLocalPlayer)
+		if (isLocalPlayer)
 			JoystickNumber = newJoystickNumber;
 	}
 
@@ -113,16 +113,21 @@ public class Player : NetworkBehaviour
 		enabled = false;
 
 		LocalPlayer.PlayerList = FindObjectsOfType<Player>();
-		if(LocalPlayer.PlayerList.Length == 1)
+		if (LocalPlayer.PlayerList.Length == 1)
 		{
-			Debug.Log("Is last player remaining in game");
+			if(NetworkServer.active && ServerManager.Instance._isInGame)
+			{
+				Debug.Log("Is last player remaining in game, going back to main menu");
+				if(EndGameManager.Instance != null)
+					EndGameManager.Instance.ResetGame(false);
+			}
 		}
 
 	}
 
 	public override void OnNetworkDestroy()
 	{
-		if(MenuManager.Instance != null && isLocalPlayer)
+		if (MenuManager.Instance != null && isLocalPlayer)
 		{
 			CharacterSelectWheel[] tempWheels = MenuManager.Instance.GetComponentsInChildren<CharacterSelectWheel>();
 			for (int i = 0; i < tempWheels.Length; i++)
@@ -150,7 +155,7 @@ public class Player : NetworkBehaviour
 				if (MenuManager.Instance.LocalJoystickBuffer.Count != 0)
 				{
 					Init(MenuManager.Instance.LocalJoystickBuffer[MenuManager.Instance.LocalJoystickBuffer.Count - 1]);
-					Debug.Log("player "+name+" created with joystick number: " + JoystickNumber);
+					Debug.Log("player " + name + " created with joystick number: " + JoystickNumber);
 				}
 				else
 				{
@@ -183,7 +188,7 @@ public class Player : NetworkBehaviour
 		}
 	}
 
-	
+
 
 	[ClientRpc]
 	public void RpcOpenSlot(string slotToOpen, GameObject OwnerPlayer, int newPlayerNumber)
@@ -207,13 +212,12 @@ public class Player : NetworkBehaviour
 		MenuManager.Instance.CloseCharacterSlot(slotNumber);
 	}
 
-	
 	[ClientRpc]
 	public void RpcMenuTransition(string newMenuName, bool dir)
 	{
-		if(isLocalPlayer)
+		if (isLocalPlayer)
 		{
-			Debug.Log("Making transition on player with netId => "+netId);
+			Debug.Log("Making transition on player with netId => " + netId);
 			MenuManager.Instance.MakeTransition(newMenuName, dir, false);
 		}
 	}
@@ -221,9 +225,9 @@ public class Player : NetworkBehaviour
 	[ClientRpc]
 	public void RpcStartGame(GameConfiguration newGameConfig)
 	{
-		if(isLocalPlayer)
+		if (isLocalPlayer)
 		{
-			Debug.Log("Player N°=> "+PlayerNumber+" is starting game with config.");
+			Debug.Log("Player N°=> " + PlayerNumber + " is starting game with config.");
 			GameManager.Instance.StartGameWithConfig(newGameConfig);
 		}
 	}
@@ -243,13 +247,13 @@ public class Player : NetworkBehaviour
 	[Command]
 	public void CmdRemoveTile(int index)
 	{
-		if(index == -1)
+		if (index == -1)
 		{
 			Debug.Log("tile index was -1");
 			return;
 		}
 
-		if(NetworkServer.active)
+		if (NetworkServer.active)
 		{
 			ArenaMasterManager.Instance.RpcRemoveTileAtIndex(index);
 		}
@@ -258,11 +262,23 @@ public class Player : NetworkBehaviour
 	[ClientRpc]
 	public void RpcInitController(GameObject targetObject)
 	{
-		if(targetObject == null)
+		if (targetObject == null)
 			Debug.LogError("RPC init >targetObject< was null !");
 
-		Debug.Log(targetObject.GetComponent<PlayerController>());
+
 		targetObject.GetComponent<PlayerController>().Init(gameObject);
+
+		for (int i = 0; i < PlayerList.Length; i++)
+		{
+			if(PlayerList[i].PlayerNumber != PlayerNumber)
+			{
+				if (PlayerList[i].SkinNumber == SkinNumber && PlayerList[i]._characterUsedIndex == _characterUsedIndex)
+				{
+					Debug.Log("Player N°=> "+PlayerNumber+" is adding differentialAlpha to player => "+targetObject.GetComponent<PlayerController>()._characterData.IngameName);
+					targetObject.GetComponent<PlayerController>().AddDifferentialAlpha(CharacterAlpha);
+				}
+			}
+		}
 	}
 
 	[ClientRpc]
@@ -272,7 +288,7 @@ public class Player : NetworkBehaviour
 		if (winnerPlayerGo != null)
 			winner = winnerPlayerGo.GetComponent<Player>();
 
-		Debug.Log("RpcOnPlayerWin received on player n°=> "+PlayerNumber+" with localplayer n°=> "+LocalPlayer.PlayerNumber);
+		Debug.Log("RpcOnPlayerWin received on player n°=> " + PlayerNumber + " with localplayer n°=> " + LocalPlayer.PlayerNumber);
 		GameManager.Instance.OnPlayerWin.Invoke(winner);
 	}
 

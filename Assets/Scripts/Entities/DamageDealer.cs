@@ -20,7 +20,7 @@ public class DamageDealer
 }
 
 [Serializable]
-public class DamageData
+public struct DamageData
 {
 	[HideInInspector]
 	public DamageDealer Dealer;

@@ -19,10 +19,6 @@ public class CharacterSlot : MonoBehaviour
 
 	private float _switchCharacterDelay = 0.15f;
 	private TimeCooldown _switchCharacterCooldown;
-	[HideInInspector]
-	public int _selectedCharacterIndex = 0;
-	[HideInInspector]
-	public int _selectedSkinIndex = 0;
 
 	private int _joyToListen; 
 	private int _playerIndex;
@@ -106,9 +102,9 @@ public class CharacterSlot : MonoBehaviour
 		}
 
 		if (InputManager.GetButtonDown(InputEnum.X, _joyToListen))
-			ChangeSkin(-1);
+			_wheelRef.CmdChangeCharacterSkin((_wheelRef._selectedSkinIndex - 1).LoopAround(0, _availableCharacters[_wheelRef._selectedElementIndex]._characterData.CharacterMaterials.Length - 1));
 		if (InputManager.GetButtonDown(InputEnum.Y, _joyToListen))
-			ChangeSkin(1);
+			_wheelRef.CmdChangeCharacterSkin((_wheelRef._selectedSkinIndex + 1).LoopAround(0, _availableCharacters[_wheelRef._selectedElementIndex]._characterData.CharacterMaterials.Length - 1));
 
 		if (InputManager.GetButtonDown(InputEnum.A, _joyToListen))
 			SelectCharacter();
@@ -117,14 +113,9 @@ public class CharacterSlot : MonoBehaviour
 
 	void SelectCharacter()
 	{
-		if (!CheckIfCharacterIsAvailable())
-		{
-			Debug.Log("Ce personnage et ce skin sont déja selectionné.");
-			return;
-		}
 		//if (_activeCoroutineRef != null)
 		//	StopCoroutine(_activeCoroutineRef);
-		_playerRef.Ready(_selectedCharacterIndex, _selectedSkinIndex);
+		_playerRef.Ready(_wheelRef._selectedElementIndex, _wheelRef._selectedSkinIndex);
 		
 		Vector3 camDirection = (Camera.main.transform.position - transform.position).normalized;
 
@@ -137,20 +128,7 @@ public class CharacterSlot : MonoBehaviour
 		//_activeCoroutineRef = StartCoroutine(SlideCharacterModelIn());
 	}
 
-	bool CheckIfCharacterIsAvailable()
-	{
-		for (int i = 0; i < _selectorRef.SlotsAvailable.Length; i++)
-		{
-			if (_selectorRef.SlotsAvailable[i]._playerIndex != _playerIndex && _selectorRef.SlotsAvailable[i].Open)
-			{
-				if (_selectorRef.SlotsAvailable[i]._selectedCharacterIndex == _selectedCharacterIndex &&
-					_selectorRef.SlotsAvailable[i]._selectedSkinIndex == _selectedSkinIndex)
-					return false;
-			}
-		}
-
-		return true;
-	}
+	
 
 	public void CancelCharacterSelection()
 	{
@@ -239,7 +217,7 @@ public class CharacterSlot : MonoBehaviour
 		{
 			_playerRef = player;
 			_joyToListen = player.JoystickNumber;
-			_playerIndex = playerNumber;
+			_playerIndex = player.PlayerNumber;
 			_wheelRef.transform.localRotation = Quaternion.identity;
 			_wheelRef.ParentPlayer = player;
 		}
@@ -258,6 +236,7 @@ public class CharacterSlot : MonoBehaviour
 		_wheelRef.GetComponent<NetworkIdentity>().AssignClientAuthority(player.connectionToClient);
 		_netSpawned = true;
 		Debug.Log("SLOT: " + name + " Opened, Listening to gamePad n°: " + player.JoystickNumber);
+		ChangeCharacter(0);
 	}
 
 	public void CloseSlot()
@@ -268,50 +247,16 @@ public class CharacterSlot : MonoBehaviour
 		Open = false;
 		_netSpawned = false;
 		frameDelay = 1;
-		_selectedCharacterIndex = 0;
-		_selectedSkinIndex = 0;
+		_wheelRef.CmdChangeCharacterSkin(0);
+		_wheelRef.CmdScrollToIndex(0);
 		Debug.Log("SLOT: " + name + " Closed");
-	}
-
-
-	public void ChangeSkin(int direction)
-	{
-		TrySwitchSkin(direction);
-
-		_wheelRef.ChangeCharacterSkin(_selectedSkinIndex);
-	}
-
-	private int tempSkinSwitchAttempts = 0; // used to prevent infinite loop. (security if the character has less skins than players)
-	private void TrySwitchSkin(int direction)
-	{
-		tempSkinSwitchAttempts++;
-		if (direction == 0)
-			_selectedSkinIndex = 0;
-		else
-			_selectedSkinIndex += direction;
-
-		_selectedSkinIndex = _selectedSkinIndex.LoopAround(0, _availableCharacters[_selectedCharacterIndex]._characterData.CharacterMaterials.Length - 1);
-
-		direction = direction == 0 ? 1 : direction;
-		if (!CheckIfCharacterIsAvailable() && tempSkinSwitchAttempts < 5)
-			TrySwitchSkin(direction);
-		else
-		{
-			if(tempSkinSwitchAttempts == 5)
-				Debug.LogWarning("Too many tries in switching skin, canceling");
-			tempSkinSwitchAttempts = 0;
-		}
 	}
 
 	public void ChangeCharacter(int direction)
 	{
-		_selectedCharacterIndex += direction;
-
-		_selectedCharacterIndex = _selectedCharacterIndex.LoopAround(0, _availableCharacters.Length -1);
-
-		_wheelRef.ScrollToIndex(_selectedCharacterIndex);
+		_wheelRef.CmdChangeCharacterSkin(0);
+		_wheelRef.CmdScrollToIndex((_wheelRef._selectedElementIndex + direction).LoopAround(0, _availableCharacters.Length - 1));
 		_canSwitchCharacter = false;
 		_switchCharacterCooldown.Add(_switchCharacterDelay);
-		ChangeSkin(0);
 	}
 }
