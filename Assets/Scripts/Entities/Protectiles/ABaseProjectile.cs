@@ -4,7 +4,7 @@ using System;
 using UnityEngine.Networking;
 
 [RequireComponent(typeof(Rigidbody), typeof(SphereCollider), typeof(Poolable))]
-public abstract class ABaseProjectile : MonoBehaviour, IPoolable
+public abstract class ABaseProjectile : NetworkBehaviour, IPoolable
 {
 	protected DamageDealer _shooter;
 	protected Rigidbody _rigidB;

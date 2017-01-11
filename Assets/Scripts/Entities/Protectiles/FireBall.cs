@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Networking;
 
 public class FireBall : ABaseProjectile
 {
@@ -36,6 +37,18 @@ public class FireBall : ABaseProjectile
 	public void Activate()
 	{
 		_rigidB.velocity = Vector3.zero;
+		CmdActivate();
+	}
+
+	[Command]
+	public void CmdActivate()
+	{
+		RpcExplode();
+	}
+
+	[ClientRpc]
+	public void RpcExplode()
+	{
 		StartCoroutine(DelayedExplosion());
 	}
 
@@ -49,7 +62,9 @@ public class FireBall : ABaseProjectile
 
 	IEnumerator DelayedExplosion()
 	{
-		_movingParticlesRef.Stop();
+		if(_movingParticlesRef != null)
+			_movingParticlesRef.Stop();
+
 		ParticleSystem preExploParticles = (ParticleSystem)Instantiate(ImplosionParticles, transform.position, ImplosionParticles.transform.rotation);
 		preExploParticles.Play();
 		Destroy(preExploParticles.gameObject, _explosionDelay + preExploParticles.startLifetime);
@@ -62,15 +77,19 @@ public class FireBall : ABaseProjectile
 		exploParticles.Play();
 		Destroy(exploParticles.gameObject, exploParticles.startLifetime + exploParticles.duration);
 
-		Collider[] foundElements = Physics.OverlapSphere(transform.position, _explosionRadius);
 
-		for (int i = 0; i < foundElements.Length; i++)
+		if(NetworkServer.active)
 		{
-			if (foundElements[i].GetComponent<IDamageable>() != null)
-				foundElements[i].GetComponent<IDamageable>().Damage(
-					Quaternion.FromToRotation(Vector3.right, (foundElements[i].transform.position - transform.position).ZeroY().normalized) * _ejection,
-					transform.position,
-					_explosionDamageData.SetProjectile(this));
+			Collider[] foundElements = Physics.OverlapSphere(transform.position, _explosionRadius);
+
+			for (int i = 0; i < foundElements.Length; i++)
+			{
+				if (foundElements[i].GetComponent<IDamageable>() != null)
+					foundElements[i].GetComponent<IDamageable>().Damage(
+						Quaternion.FromToRotation(Vector3.right, (foundElements[i].transform.position - transform.position).ZeroY().normalized) * _ejection,
+						transform.position,
+						_explosionDamageData.SetProjectile(this));
+			}
 		}
 	}
 

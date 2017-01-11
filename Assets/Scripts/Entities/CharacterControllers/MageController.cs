@@ -36,7 +36,7 @@ public class MageController : PlayerController
 	protected override void SpecialAction()
 	{
 		//cast fireball
-		CmdLaunchFireProjectile(transform.position + transform.forward, transform.forward, gameObject);
+		CmdLaunchFireProjectile(transform.position + transform.forward, transform.forward, _playerRef.gameObject);
 	}
 
 	[Command]
@@ -56,7 +56,7 @@ public class MageController : PlayerController
 
 		NetworkServer.SpawnWithClientAuthority(fireBallObj, ownerMage);
 
-		TargetLinkFireBall(connectionToClient, fireBallObj);
+		TargetLinkFireBall(_playerRef.connectionToClient, fireBallObj);
 
 		if (ArenaManager.Instance != null)
 			fireBallObj.transform.parent = ArenaManager.Instance.SpecialsRoot;

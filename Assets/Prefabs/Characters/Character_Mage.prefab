@@ -99,6 +99,7 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _isDead: 0
   IsGrounded: 0
+  _isInDebugMode: 0
   WaitForDashRelease: 0
   _characterData: {fileID: 11400000, guid: 853866ac5103e4944bf840503898067e, type: 2}
   AllowDash: 1
@@ -1010,14 +1011,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TransformSyncMode: 3
-  m_SendInterval: 0.04761905
+  m_SendInterval: 0.03846154
   m_SyncRotationAxis: 7
   m_RotationSyncCompression: 0
   m_SyncSpin: 0
   m_MovementTheshold: 0.001
   m_SnapThreshold: 5
-  m_InterpolateRotation: 0.7
-  m_InterpolateMovement: 0.5
+  m_InterpolateRotation: 1
+  m_InterpolateMovement: 1
 --- !u!114 &114000011074192812
 MonoBehaviour:
   m_ObjectHideFlags: 1

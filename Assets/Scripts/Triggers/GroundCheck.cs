@@ -27,7 +27,7 @@ public class GroundCheck : MonoBehaviour
 	void Update()
 	{
 		if(_playerRef._playerRef != null)
-			if (!_playerRef._playerRef.isLocalPlayer)
+			if (!_playerRef._isLocalPlayer)
 				enabled = false; // Deactivate if character is not local
 
 		if (_rigidBRef.velocity.y > 1f)
@@ -54,7 +54,7 @@ public class GroundCheck : MonoBehaviour
 		if (!enabled)
 			return;
 
-		if (_colliderIds.Count == 0)
+		if (_colliderIds.Count == 0 && _playerRef != null)
 			_playerRef.ContactGround();
 		_colliderIds.Add(colli.GetInstanceID());
 

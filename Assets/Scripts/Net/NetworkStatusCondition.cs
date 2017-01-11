@@ -16,6 +16,7 @@ public class NetworkStatusCondition : MonoBehaviour
 	public NetStatus RequiredNetStatus = NetStatus.Disconnected;
 	public GameObject[] TargetObjects = new GameObject[0];
 	public bool ActiveState = true;
+	public bool ForceOpposite = true;
 
 	private NetStatus _activeNetStatus = NetStatus.Disconnected;
 	private bool _affectedState;
@@ -23,12 +24,22 @@ public class NetworkStatusCondition : MonoBehaviour
 	void Update()
 	{
 		ProcessNetStatus();
-		_affectedState = (_activeNetStatus & RequiredNetStatus) != 0 ? ActiveState : !ActiveState;
-
-		for (int i = 0; i < TargetObjects.Length; i++)
+		if((_activeNetStatus & RequiredNetStatus) != 0)
 		{
-			TargetObjects[i].SetActive(_affectedState);
+			for (int i = 0; i < TargetObjects.Length; i++)
+			{
+				TargetObjects[i].SetActive(ActiveState);
+			}
 		}
+		else if(ForceOpposite)
+		{
+			for (int i = 0; i < TargetObjects.Length; i++)
+			{
+				TargetObjects[i].SetActive(!ActiveState);
+			}
+		}
+
+		
 	}
 
 	void ProcessNetStatus()

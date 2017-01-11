@@ -143,6 +143,8 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	public bool _isDead = false;
 	[HideInInspector]
 	public bool IsGrounded = false;
+	[HideInInspector]
+	public bool _isInDebugMode = false;
 
 
 	protected CharacterProp _characterProp;
@@ -204,6 +206,10 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	public bool AllowInput { get { return _allowInput; } }
 	protected bool _isStunned = false;
 	public bool _isParrying { get { return _parryTimer.TimeLeft != 0; } }
+	/// <summary>
+	/// WARNING, use this instead of isLocalPlayer on PlayerControllers as they are not directly a player object
+	/// </summary>
+	public bool _isLocalPlayer { get { return _playerRef.isLocalPlayer || _isInDebugMode; } }
 	[HideInInspector]
 	public bool AllowDash = true;
 	[HideInInspector]
@@ -275,8 +281,6 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_animator = playerMesh.GetComponentInChildren<Animator>();
 		_characterProp = transform.GetComponentInChildren<CharacterProp>();
 		_networkAnimator = GetComponent<NetworkAnimator>();
-
-		//_networkAnimator.animator = _animator;
 
 		for (int i = 0; i < _animator.parameterCount; i++)
 		{
@@ -366,7 +370,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		if (_isDead || TimeManager.IsPaused || _playerRef == null)
 			return;
 
-		if (!_playerRef.isLocalPlayer)
+		if (!_isLocalPlayer)
 			return;
 
 		if (InputManager.GetButtonDown("f5"))
@@ -530,7 +534,6 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 	private void ProcessActiveSpeed()
 	{
-
 		if (IsGrounded)
 		{
 			bool secureAllowInput = _allowInput; // just security
@@ -621,7 +624,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_characterData.SoundList["OnDeath"].Play(gameObject);
 
 		//_animator.SetTrigger("Death");
-		if(_playerRef.isLocalPlayer)
+		if(_isLocalPlayer)
 			_networkAnimator.SetTrigger("Death");
 
 		if (NetworkServer.active)
@@ -642,7 +645,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_isDead = false;
 		CameraManager.Instance.AddTargetToTrack(transform);
 
-		if (_playerRef.isLocalPlayer)
+		if (_isLocalPlayer)
 		{
 			transform.position = newPos;
 			_networkAnimator.SetTrigger("Reset");
@@ -664,7 +667,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	[ClientRpc]
 	public void RpcDamage(Vector3 direction, float newStunTime)
 	{
-		if(_playerRef.isLocalPlayer)
+		if(_isLocalPlayer)
 		{
 			if (direction.magnitude > 15)
 			{
@@ -714,7 +717,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 	public void Parry(ABaseProjectile projectileParried)
 	{
-		if (!_playerRef.isLocalPlayer)
+		if (!_isLocalPlayer)
 			return;
 
 		CameraManager.Shake(ShakeStrength.Medium);

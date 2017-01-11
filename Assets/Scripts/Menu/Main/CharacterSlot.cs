@@ -73,7 +73,8 @@ public class CharacterSlot : MonoBehaviour
 	int frameDelay = 1; // security for opening a slot. (prevents openning && selecting character in 1 frame)
 	void Update()
 	{
-		
+		if(!NetworkServer.active && NetworkClient.active)
+			transform.FindChild("BG Container").gameObject.SetActive(false);
 
 		if (!Open)
 			return;
