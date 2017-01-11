@@ -1,13 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
-using System.IO;
-using System.Net;
 using System.Collections;
 using System.Collections.Generic;
 using System;
-using System.Net.Sockets;
 using UnityEngine.Networking.Match;
-using UnityEngine.Events;
 
 public class ServerManager : NATTraversal.NetworkManager
 {
@@ -260,7 +256,10 @@ public class ServerManager : NATTraversal.NetworkManager
 		if (!IsInLobby || RegisteredPlayers.Count >= 4)
 		{
 			conn.Disconnect();
-			Debug.Log("Max players registered !");
+			if(RegisteredPlayers.Count >= 4)
+				Debug.Log("Max players registered !");
+			else
+				Debug.Log("ServerManager is not in lobby, not accepting any new connection.");
 			return;
 		}
 

@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44692492, g: 0.4967869, b: 0.57508546, a: 1}
+  m_IndirectSpecularColor: {r: 0.18053588, g: 0.22601774, b: 0.30718702, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -9560,6 +9560,156 @@ Prefab:
 Transform:
   m_PrefabParentObject: {fileID: 497624, guid: 557e46faec90936409aea0b15abb1a8e, type: 2}
   m_PrefabInternal: {fileID: 1150770749}
+--- !u!1 &311909172
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 311909173}
+  - 114: {fileID: 311909176}
+  - 114: {fileID: 311909175}
+  - 114: {fileID: 311909174}
+  m_Layer: 0
+  m_Name: ServerManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &311909173
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 311909172}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 1867674696}
+  m_RootOrder: 4
+--- !u!114 &311909174
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 311909172}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 227461547, guid: 870353891bb340e2b2a9c8707e7419ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  manager: {fileID: 0}
+  showGUI: 0
+  offsetX: 0
+  offsetY: 0
+--- !u!114 &311909175
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 311909172}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6dd3821d6cd540a4dab947c3ad9c63f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_NetworkPort: 1358
+  m_ServerBindToIP: 0
+  m_ServerBindAddress: localhost
+  m_NetworkAddress: localhost
+  m_DontDestroyOnLoad: 0
+  m_RunInBackground: 1
+  m_ScriptCRCCheck: 1
+  m_MaxDelay: 0.01
+  m_LogLevel: 2
+  m_PlayerPrefab: {fileID: 1000010873507134, guid: 5c6bae136c01f7c42afc5c109b2ad5ad,
+    type: 2}
+  m_AutoCreatePlayer: 0
+  m_PlayerSpawnMethod: 0
+  m_OfflineScene: 
+  m_OnlineScene: 
+  m_SpawnPrefabs:
+  - {fileID: 1000013645422232, guid: 14a7caba18a68b849af8def2e2e34e2a, type: 2}
+  - {fileID: 1000014076621008, guid: 15a073d19308eee40b9301bb3f292f65, type: 2}
+  m_CustomConfig: 0
+  m_MaxConnections: 4
+  m_ConnectionConfig:
+    m_PacketSize: 1500
+    m_FragmentSize: 500
+    m_ResendTimeout: 1200
+    m_DisconnectTimeout: 2000
+    m_ConnectTimeout: 2000
+    m_MinUpdateTimeout: 10
+    m_PingTimeout: 500
+    m_ReducedPingTimeout: 100
+    m_AllCostTimeout: 20
+    m_NetworkDropThreshold: 5
+    m_OverflowDropThreshold: 5
+    m_MaxConnectionAttempt: 10
+    m_AckDelay: 33
+    m_MaxCombinedReliableMessageSize: 100
+    m_MaxCombinedReliableMessageCount: 10
+    m_MaxSentMessageQueueSize: 128
+    m_IsAcksLong: 0
+    m_UsePlatformSpecificProtocols: 0
+    m_WebSocketReceiveBufferMaxSize: 0
+    m_Channels: []
+  m_GlobalConfig:
+    m_ThreadAwakeTimeout: 1
+    m_ReactorModel: 0
+    m_ReactorMaximumReceivedMessages: 1024
+    m_ReactorMaximumSentMessages: 1024
+    m_MaxPacketSize: 2000
+  m_Channels: 0500000000000000
+  m_UseWebSockets: 0
+  m_UseSimulator: 0
+  m_SimulatedLatency: 88
+  m_PacketLossPercentage: 1
+  m_MaxBufferedPackets: 16
+  m_AllowFragmentation: 1
+  m_MatchHost: mm.unet.unity3d.com
+  m_MatchPort: 443
+  matchName: Abyssal Fall
+  matchSize: 4
+  isNetworkActive: 0
+  matchMaker: {fileID: 0}
+  connectDirectly: 0
+  connectPunchthrough: 1
+  connectRelay: 1
+  useUnityMatchmaking: 1
+  externalIPSource: http://icanhazip.com
+  externalIPv6Source: http://ipv6.icanhazip.com
+  clientPort: 0
+  delayDirectConnection: 0
+  IsInLobby: 0
+  _isInGame: 0
+  ExternalIp: 
+  GameId: 
+  TargetGameId: 
+  ExternalPlayerNumber: 0
+  LobbySlotsOpen: 0
+  HostingClient: {fileID: 0}
+--- !u!114 &311909176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 311909172}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1989760260, guid: 10e2d4519547ee540bfcbb29e3236ab7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  facilitatorIP: grabblesgame.com
+  facilitatorPort: 61111
+  facilitatorTimeOut: 10
+  portForwardingEnabled: 1
+  portForwardingTimeOut: 10
+  punchthroughTimeout: 15
 --- !u!1001 &313047304
 Prefab:
   m_ObjectHideFlags: 0
@@ -12305,7 +12455,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 1867674696}
-  m_RootOrder: 4
+  m_RootOrder: 3
 --- !u!114 &421038297
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20866,46 +21016,6 @@ Prefab:
 Transform:
   m_PrefabParentObject: {fileID: 497624, guid: 557e46faec90936409aea0b15abb1a8e, type: 2}
   m_PrefabInternal: {fileID: 1274684989}
---- !u!1 &697151038
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 697151039}
-  - 114: {fileID: 697151040}
-  m_Layer: 0
-  m_Name: ShakeManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &697151039
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 697151038}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_Children: []
-  m_Father: {fileID: 1867674696}
-  m_RootOrder: 1
---- !u!114 &697151040
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 697151038}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 694bcf3d846fc464d87c834447dddc8b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &697535793
 Prefab:
   m_ObjectHideFlags: 0
@@ -22807,121 +22917,6 @@ Prefab:
 Transform:
   m_PrefabParentObject: {fileID: 497624, guid: 557e46faec90936409aea0b15abb1a8e, type: 2}
   m_PrefabInternal: {fileID: 1329203980}
---- !u!1 &754670390
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 754670391}
-  - 114: {fileID: 754670392}
-  m_Layer: 0
-  m_Name: ServerManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &754670391
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 754670390}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_Children: []
-  m_Father: {fileID: 1867674696}
-  m_RootOrder: 5
---- !u!114 &754670392
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 754670390}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6dd3821d6cd540a4dab947c3ad9c63f5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_NetworkPort: 7777
-  m_ServerBindToIP: 0
-  m_ServerBindAddress: 
-  m_NetworkAddress: localhost
-  m_DontDestroyOnLoad: 1
-  m_RunInBackground: 1
-  m_ScriptCRCCheck: 1
-  m_MaxDelay: 0.01
-  m_LogLevel: 2
-  m_PlayerPrefab: {fileID: 0}
-  m_AutoCreatePlayer: 1
-  m_PlayerSpawnMethod: 0
-  m_OfflineScene: 
-  m_OnlineScene: 
-  m_SpawnPrefabs: []
-  m_CustomConfig: 0
-  m_MaxConnections: 4
-  m_ConnectionConfig:
-    m_PacketSize: 1500
-    m_FragmentSize: 500
-    m_ResendTimeout: 1200
-    m_DisconnectTimeout: 2000
-    m_ConnectTimeout: 2000
-    m_MinUpdateTimeout: 10
-    m_PingTimeout: 500
-    m_ReducedPingTimeout: 100
-    m_AllCostTimeout: 20
-    m_NetworkDropThreshold: 5
-    m_OverflowDropThreshold: 5
-    m_MaxConnectionAttempt: 10
-    m_AckDelay: 33
-    m_MaxCombinedReliableMessageSize: 100
-    m_MaxCombinedReliableMessageCount: 10
-    m_MaxSentMessageQueueSize: 128
-    m_IsAcksLong: 0
-    m_UsePlatformSpecificProtocols: 0
-    m_WebSocketReceiveBufferMaxSize: 0
-    m_Channels: []
-  m_GlobalConfig:
-    m_ThreadAwakeTimeout: 1
-    m_ReactorModel: 0
-    m_ReactorMaximumReceivedMessages: 1024
-    m_ReactorMaximumSentMessages: 1024
-    m_MaxPacketSize: 2000
-  m_Channels: 
-  m_UseWebSockets: 0
-  m_UseSimulator: 0
-  m_SimulatedLatency: 1
-  m_PacketLossPercentage: 0
-  m_MaxBufferedPackets: 16
-  m_AllowFragmentation: 1
-  m_MatchHost: mm.unet.unity3d.com
-  m_MatchPort: 443
-  matchName: Abyssal Fall
-  matchSize: 4
-  isNetworkActive: 0
-  matchMaker: {fileID: 0}
-  m_ShowLobbyGUI: 1
-  m_MaxPlayers: 4
-  m_MaxPlayersPerConnection: 1
-  m_MinPlayers: 0
-  m_LobbyPlayerPrefab: {fileID: 0}
-  m_GamePlayerPrefab: {fileID: 0}
-  m_LobbyScene: 
-  m_PlayScene: 
-  lobbySlots: []
-  _alivePlayers: []
-  IsOnline: 0
-  IsInLobby: 0
-  ExternalIp: 
-  OnExternalIpRetrieved:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEventString, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
 --- !u!1001 &754755807
 Prefab:
   m_ObjectHideFlags: 0
@@ -33351,7 +33346,7 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
+    m_RotationOrder: 0
   spreadCustomCurve:
     serializedVersion: 2
     m_Curve:
@@ -33373,7 +33368,7 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
+    m_RotationOrder: 0
 --- !u!114 &1100049888
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33393,7 +33388,7 @@ MonoBehaviour:
   OnGo: {fileID: 8300000, guid: da994bf18daa348478aca40b01533d79, type: 3}
   AudioSource: {fileID: 0}
   GameLoop: {fileID: 1100049886}
-  OnPlayerDeath:
+  OnLocalPlayerDeath:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: GameEventDeath, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
@@ -33814,7 +33809,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 1867674696}
-  m_RootOrder: 2
+  m_RootOrder: 1
 --- !u!114 &1105955765
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -55594,11 +55589,11 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 1100049889}
-  - {fileID: 697151039}
   - {fileID: 1105955764}
   - {fileID: 2132165625}
   - {fileID: 421038296}
-  - {fileID: 754670391}
+  - {fileID: 311909173}
+  - {fileID: 2094366051}
   m_Father: {fileID: 0}
   m_RootOrder: 2
 --- !u!4 &1868170795 stripped
@@ -63631,6 +63626,78 @@ Prefab:
     - {fileID: 5487564, guid: 557e46faec90936409aea0b15abb1a8e, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 557e46faec90936409aea0b15abb1a8e, type: 2}
   m_IsPrefabParent: 0
+--- !u!1 &2094366050
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 2094366051}
+  - 114: {fileID: 2094366052}
+  m_Layer: 0
+  m_Name: DynamicConfig
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2094366051
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2094366050}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 1867674696}
+  m_RootOrder: 5
+--- !u!114 &2094366052
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2094366050}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29299843996e0ce45a17f458412eab7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ArenaConfigurations:
+  - Name: Aerial
+    Configuration: {fileID: 11400000, guid: 9607891b4d5eeed4ba887eebc917efe0, type: 2}
+  - Name: Hell
+    Configuration: {fileID: 11400000, guid: 52c2f425a4a35674bab2a563f9c07ad6, type: 2}
+  - Name: Sea
+    Configuration: {fileID: 11400000, guid: 07dddb203e6065b4d808d90ba788c5ce, type: 2}
+  - Name: Voxel
+    Configuration: {fileID: 11400000, guid: c71dc0f42e72c224dbf890861e361986, type: 2}
+  ModeConfigurations:
+  - Name: FreeForAll
+    Configuration: {fileID: 11447392, guid: 5a36af83d1ed17e4e8a223af374cd8ab, type: 2}
+  - Name: DeathMatch
+    Configuration: {fileID: 11400950, guid: cd444bbd3142854479db73929f463a28, type: 2}
+  MapsConfigurations:
+  - Name: TestArena16x16
+    Configuration: {fileID: 11400000, guid: 854a887594ad4344b882d597429bea69, type: 2}
+  - Name: TestArena20x20
+    Configuration: {fileID: 11400000, guid: 85cdedd28d69be24481bc066f26eb0fc, type: 2}
+  - Name: TestArena26x26
+    Configuration: {fileID: 11400000, guid: 5a08234ca185dec40854553cfc65563d, type: 2}
+  - Name: TestArena32x32
+    Configuration: {fileID: 11400000, guid: fd88cf5cde8c66a4597460b7ab25be76, type: 2}
+  CharacterConfigurations:
+  - Name: Viking
+    Configuration: {fileID: 11478206, guid: 3ec6965eb1188ff418e7a841ee9f4263, type: 2}
+  - Name: Ninja
+    Configuration: {fileID: 11474260, guid: 9b85bde0b5dc1d74b8ec37b4561a265f, type: 2}
+  - Name: Tank
+    Configuration: {fileID: 11405882, guid: ba7fed6ca79414f4c93aa9bb12b559b9, type: 2}
+  - Name: Mage
+    Configuration: {fileID: 11443824, guid: e44733f7405603a42b6ee4b52dd53d53, type: 2}
 --- !u!4 &2094829429 stripped
 Transform:
   m_PrefabParentObject: {fileID: 497624, guid: 557e46faec90936409aea0b15abb1a8e, type: 2}
@@ -64795,7 +64862,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 1867674696}
-  m_RootOrder: 3
+  m_RootOrder: 2
 --- !u!1001 &2132460251
 Prefab:
   m_ObjectHideFlags: 0

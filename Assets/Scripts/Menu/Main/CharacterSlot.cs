@@ -21,7 +21,6 @@ public class CharacterSlot : MonoBehaviour
 	private TimeCooldown _switchCharacterCooldown;
 
 	private int _joyToListen; 
-	private int _playerIndex;
 	[HideInInspector]
 	public bool Open = false;
 	[HideInInspector]
@@ -217,7 +216,6 @@ public class CharacterSlot : MonoBehaviour
 		{
 			_playerRef = player;
 			_joyToListen = player.JoystickNumber;
-			_playerIndex = player.PlayerNumber;
 			_wheelRef.transform.localRotation = Quaternion.identity;
 			_wheelRef.ParentPlayer = player;
 		}

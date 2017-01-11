@@ -56,14 +56,14 @@ public class MageController : PlayerController
 
 		NetworkServer.SpawnWithClientAuthority(fireBallObj, ownerMage);
 
-		TargetLinkFireBall(fireBallObj);
+		TargetLinkFireBall(connectionToClient, fireBallObj);
 
 		if (ArenaManager.Instance != null)
 			fireBallObj.transform.parent = ArenaManager.Instance.SpecialsRoot;
 	}
 
 	[TargetRpc]
-	public void TargetLinkFireBall(GameObject targetFireball)
+	public void TargetLinkFireBall(NetworkConnection target, GameObject targetFireball)
 	{
 		_lastFireBallCasted = targetFireball;
 	}

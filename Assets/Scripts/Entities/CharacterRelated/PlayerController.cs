@@ -352,13 +352,13 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 		_activeDirection = transform.rotation * Vector3.forward;
 
-
+		GetComponent<Rigidbody>().velocity = Vector3.zero;
 		CustomStart();
 	}
 
 	public void AddDifferentialAlpha(Material characterAlpha)
 	{
-		Debug.Log("Need to code that faggot");
+		Debug.Log("Need to code that, faggot !");
 	}
 
 	protected void Update()
@@ -698,16 +698,14 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		if (_isInvul)
 			return;
 
-
 		_FEMref.SetExpression("Pain");
-
-		Debug.Log("Character \"" + _characterData.IngameName + "\" was damaged by: \"" + data.Dealer.InGameName + "\"");
 
 		direction.x += direction.x * ((0.5f - _characterData.CharacterStats.resistance.Percentage(0, Stats.maxValue)) * 0.5f);
 		direction.z += direction.z * ((0.5f - _characterData.CharacterStats.resistance.Percentage(0, Stats.maxValue)) * 0.5f);
 
 		if (NetworkServer.active)
 		{
+			Debug.Log("Character \"" + _characterData.IngameName + "\" was damaged by: \"" + data.Dealer.InGameName + "\"");
 			LastDamageDealer = data.Dealer;
 			RpcDamage(direction, data.StunInflicted);
 		}

@@ -21,7 +21,6 @@ public class NinjaController : PlayerController {
 
 	private void ThrowShuriken(Vector3 direction)
 	{
-		GameObject shuriken = GameObjectPool.GetAvailableObject("Shuriken");
 		CmdLaunchProjectile("Shuriken", transform.position + transform.forward, direction);
 	}
 }
