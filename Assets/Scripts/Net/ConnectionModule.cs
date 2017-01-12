@@ -50,7 +50,7 @@ public class ConnectionModule : MonoBehaviour
 
 	void OnSuccessCallBack(string Code)
 	{
-		MenuManager.Instance.GetComponentInChildren<TextIP>().SetText(Code.ToLower());
+		MenuManager.Instance.GetComponentInChildren<TextIP>(true).SetText(Code.ToLower());
 	}
 
 	void OnFailedToConnect(NetworkConnectionError error)

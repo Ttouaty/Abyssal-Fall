@@ -84,12 +84,17 @@ public class LevelManager : GenericSingleton<LevelManager>
 		}
 	}
 
-	public Coroutine OpenMenu (bool showSplashScreens = false)
+	public Coroutine OpenMenu(bool showSplashScreens = false)
 	{
 		return StartCoroutine(OpenMenu_Implementation(showSplashScreens));
 	}
 
-	private IEnumerator OpenMenu_Implementation (bool showSplashScreens)
+	public Coroutine OpenMenu(bool showSplashScreens, string targetMenuName)
+	{
+		return StartCoroutine(OpenMenu_Implementation(showSplashScreens , targetMenuName));
+	}
+
+	private IEnumerator OpenMenu_Implementation(bool showSplashScreens)
 	{
 		if (!_bIsOnMenu)
 		{
@@ -99,6 +104,29 @@ public class LevelManager : GenericSingleton<LevelManager>
 			_bIsOnMenu = true;
 
 			MenuManager.Instance.FadeSplashscreens(showSplashScreens);
+		}
+	}
+
+	private IEnumerator OpenMenu_Implementation(bool showSplashScreens, string targetMenu)
+	{
+		if (!_bIsOnMenu)
+		{
+			UnloadAllScenes();
+			yield return StartCoroutine(LoadScene(SceneMenu));
+
+			_bIsOnMenu = true;
+
+			MenuManager.Instance.FadeSplashscreens(showSplashScreens);
+			MenuManager.Instance.MakeTransition(targetMenu);
+
+			if (targetMenu == "Lobby") //Spaghetti mais osef
+			{
+				InputManager.SetInputLockTime(2);
+				for (int i = 0; i < Player.LocalPlayer.PlayerList.Length; i++)
+				{
+					//MenuManager.Instance._characterSlotsContainerRef.OpenTargetSlot(Player.LocalPlayer.PlayerList[i].PlayerNumber -1, Player.LocalPlayer.PlayerList[i], Player.LocalPlayer.PlayerList[i].CharacterUsedIndex, Player.LocalPlayer.PlayerList[i].SkinNumber);
+				}
+			}
 		}
 	}
 

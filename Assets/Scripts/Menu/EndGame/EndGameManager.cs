@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using UnityEngine.Networking;
 
 public class EndGameManager : GenericSingleton<EndGameManager>
 {
@@ -13,7 +14,6 @@ public class EndGameManager : GenericSingleton<EndGameManager>
 	{
 		if (!checkIfOpen || IsOpen)
 		{
-			Debug.LogError("Donner la possibilité de reset la partie !");
 			Destroy(GameManager.Instance.GameRules.gameObject);
 			MainManager.Instance.LEVEL_MANAGER.UnloadScene(LevelManager.Instance.CurrentArenaConfig.BackgroundLevel);
 			MainManager.Instance.LEVEL_MANAGER.CurrentArenaConfig = null;
@@ -22,6 +22,18 @@ public class EndGameManager : GenericSingleton<EndGameManager>
 			ServerManager.Instance.OnGameEnd();
 			ServerManager.Instance.ResetNetwork();
 		}
+	}
+
+	public void BackToCharacterSelect()
+	{
+		Destroy(GameManager.Instance.GameRules.gameObject);
+		MainManager.Instance.LEVEL_MANAGER.UnloadScene(LevelManager.Instance.CurrentArenaConfig.BackgroundLevel);
+		CameraManager.Instance.Reset();
+		ServerManager.Instance.OnGameEnd();
+		if(NetworkServer.active)
+			Player.LocalPlayer.CmdBroadCastOpenMenu(false, "Lobby");
+		else
+			Player.LocalPlayer.RpcOpenMenu(false, "Lobby");
 	}
 
 	public override void Init()

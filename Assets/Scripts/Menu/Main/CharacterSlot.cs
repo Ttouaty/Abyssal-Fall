@@ -30,12 +30,10 @@ public class CharacterSlot : MonoBehaviour
 	public UnityEvent OnSlotClose;
 
 	private bool _canSwitchCharacter = true;
+	[HideInInspector]
 	public Player _playerRef;
-	public CharacterSelectWheel _wheelRef;
-	private bool _netSpawned = false;
-	//private GameObject _selectedCharacterModel;
-
-	//private Coroutine _activeCoroutineRef;
+	private CharacterSelectWheel _wheelRef;
+	public Transform WheelSlot;
 
 	public PlayerController GetSelectedCharacter
 	{
@@ -132,110 +130,49 @@ public class CharacterSlot : MonoBehaviour
 
 	public void CancelCharacterSelection()
 	{
-		//if (_activeCoroutineRef != null)
-		//	StopCoroutine(_activeCoroutineRef);
-
 		Selected = false;
 		if(_playerRef != null)
 			_playerRef.UnReady();
-
-		//_activeCoroutineRef = StartCoroutine(SlideCharacterModelOut());
-
 	}
 
-	//IEnumerator SlideCharacterModelIn()
-	//{
-	//	float timeTaken = 0.3f;
-	//	float eT = 0;
-	//	Vector3 targetPosition = (Camera.main.transform.position - transform.position).normalized;
-	//	Vector3 startPos;
-	//	if (_playerIndex < 2)
-	//		startPos = Vector3.up * MenuManager.Instance._canvas.pixelRect.height * (1 / transform.localScale.y) * 0.5f;
-	//	else
-	//		startPos = - Vector3.up * MenuManager.Instance._canvas.pixelRect.height * (1 / transform.localScale.y) * 0.5f;
-
-	//	_selectedCharacterModel.transform.localPosition = startPos;
-	//	while (eT < timeTaken)
-	//	{
-	//		_selectedCharacterModel.transform.localPosition = Vector3.Lerp(startPos, targetPosition, Curves.EaseInOutCurve.Evaluate(eT / timeTaken));
-	//		eT += Time.deltaTime;
-	//		yield return null;
-	//	}
-	//	_selectedCharacterModel.transform.localPosition = targetPosition;
-	//}
-
-	//IEnumerator SlideCharacterModelOut()
-	//{
-	//	float timeTaken = 0.3f;
-	//	float eT = 0;
-	//	Vector3 startPos = _selectedCharacterModel.transform.localPosition;
-	//	Vector3 targetPosition;
-	//	if (_playerIndex < 2)
-	//		targetPosition = Vector3.up * MenuManager.Instance._canvas.pixelRect.height * (1 / transform.localScale.y) * 0.5f;
-	//	else
-	//		targetPosition = - Vector3.up * MenuManager.Instance._canvas.pixelRect.height * (1 / transform.localScale.y) * 0.5f;
-
-	//	while (eT < timeTaken)
-	//	{
-	//		_selectedCharacterModel.transform.localPosition = Vector3.Lerp(startPos, targetPosition, Curves.EaseInOutCurve.Evaluate(eT / timeTaken));
-	//		eT += Time.deltaTime;
-	//		yield return null;
-	//	}
-
-	//	_selectedCharacterModel.transform.localPosition = targetPosition;
-	//}
 
 	void AllowSwitchCharacter()
 	{
 		_canSwitchCharacter = true;
 	}
 
-	
-	public void OpenSlot(int playerNumber, Player player)
+	public void OpenSlot(CharacterSelectWheel newWheel)
 	{
-		_wheelRef.gameObject.SetActive(true);
+		_wheelRef = newWheel;
+
 		if (!Open)
 		{
 			Open = true;
 			OnSlotOpen.Invoke();
 		}
 
-		Debug.Log("Generate wheel "+name+" with netID => "+_wheelRef.GetComponent<NetworkIdentity>().netId);
-		if (!_wheelRef.isGenerated)
-		{
-			PlayerController[] tempArray = new PlayerController[_availableCharacters.Length];
+		//Debug.Log("Generate wheel "+name+" with netID => "+_wheelRef.GetComponent<NetworkIdentity>().netId);
+		_playerRef = _wheelRef._playerRef.GetComponent<Player>();
+		_joyToListen = _playerRef.JoystickNumber;
+		_wheelRef.transform.localRotation = Quaternion.identity;
 
-			for (int i = 0; i < _availableCharacters.Length; i++)
-			{
-				tempArray[i] = _availableCharacters[i];
-			}
-
-			_wheelRef.Generate(tempArray, null);
-		}
-
-		if (player != null)
-		{
-			_playerRef = player;
-			_joyToListen = player.JoystickNumber;
-			_wheelRef.transform.localRotation = Quaternion.identity;
-			_wheelRef.ParentPlayer = player;
-		}
-		else
-			return;
-
-		if (!NetworkServer.active || _netSpawned)
-		{
-			return;
-		}
+		//if (!NetworkServer.active || _netSpawned)
+		//{
+		//	return;
+		//}
 
 		//NetworkServer.SpawnWithClientAuthority(_wheelRef.gameObject, player.connectionToClient);
-		if (_wheelRef.GetComponent<NetworkIdentity>().clientAuthorityOwner != null)
-			_wheelRef.GetComponent<NetworkIdentity>().RemoveClientAuthority(_wheelRef.GetComponent<NetworkIdentity>().clientAuthorityOwner);
-
-		_wheelRef.GetComponent<NetworkIdentity>().AssignClientAuthority(player.connectionToClient);
-		_netSpawned = true;
-		Debug.Log("SLOT: " + name + " Opened, Listening to gamePad n°: " + player.JoystickNumber);
-		ChangeCharacter(0);
+		//if (_wheelRef.GetComponent<NetworkIdentity>().clientAuthorityOwner != null)
+		//	_wheelRef.GetComponent<NetworkIdentity>().RemoveClientAuthority(_wheelRef.GetComponent<NetworkIdentity>().clientAuthorityOwner);
+		
+		//if (_wheelRef.netId.Value == 0)
+		//	NetworkServer.SpawnWithClientAuthority(_wheelRef.gameObject, player.connectionToClient);
+		//else
+		//	_wheelRef.GetComponent<NetworkIdentity>().AssignClientAuthority(player.connectionToClient);
+		//_netSpawned = true;
+		//Debug.Log("SLOT: " + name + " Opened, Listening to gamePad n°: " + player.JoystickNumber);
+		//ChangeCharacter(characterNumber);
+		//_wheelRef.CmdChangeCharacterSkin(skinNumber);
 	}
 
 	public void CloseSlot()
@@ -244,7 +181,6 @@ public class CharacterSlot : MonoBehaviour
 		OnSlotClose.Invoke();
 		_wheelRef.gameObject.SetActive(false);
 		Open = false;
-		_netSpawned = false;
 		frameDelay = 1;
 		_wheelRef.CmdChangeCharacterSkin(0);
 		_wheelRef.CmdScrollToIndex(0);

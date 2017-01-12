@@ -30,35 +30,24 @@ public class Player : NetworkBehaviour
 	[HideInInspector]
 	[SyncVar]
 	public int SkinNumber = 0; //the index of the material used by the playerMesh
-	[SyncVar]
 	[HideInInspector]
+	[SyncVar]
 	public int PlayerNumber;
 	[HideInInspector]
 	public PlayerController Controller;// PlayerController Instantiated
 
 	// PlayerController Prefab Model index
 	[SyncVar]
-	private int _characterUsedIndex = -1;
+	public int CharacterUsedIndex = 0;
 	public PlayerController CharacterUsed
 	{
 		get
 		{
-			if (_characterUsedIndex == -1)
-			{
-				Debug.LogError("Character used index is -1 !");
-				return null;
-			}
 			if (_availablePlayerControllers == null)
 				DynamicConfig.Instance.GetConfigs(ref _availablePlayerControllers);
 
-			return _availablePlayerControllers[_characterUsedIndex].GetComponent<PlayerController>();
+			return _availablePlayerControllers[CharacterUsedIndex].GetComponent<PlayerController>();
 		}
-	}
-
-	public void Init(int newJoystickNumber)
-	{
-		if (isLocalPlayer)
-			JoystickNumber = newJoystickNumber;
 	}
 
 	public void SelectCharacter(ref PlayerController newCharacter)
@@ -82,15 +71,22 @@ public class Player : NetworkBehaviour
 	public void CmdReadyPlayer(int characterIndex, int indexSkinUsed)
 	{
 		_ready = true;
-		_characterUsedIndex = characterIndex;
+		CharacterUsedIndex = characterIndex;
 		SkinNumber = indexSkinUsed;
 		Debug.Log("PLayer N°" + PlayerNumber + " has selected (name)=> " + CharacterUsed._characterData.IngameName);
 
 	}
 
+	[Command]
+	public void CmdSetPlayerCharacter(int characterIndex, int indexSkinUsed)
+	{
+		CharacterUsedIndex = characterIndex;
+		SkinNumber = indexSkinUsed;
+	}
+
 	public void UnReady()
 	{
-		_characterUsedIndex = -1;
+		CharacterUsedIndex = 0;
 		_ready = false;
 		CmdUnReadyPlayer();
 	}
@@ -99,7 +95,7 @@ public class Player : NetworkBehaviour
 	public void CmdUnReadyPlayer()
 	{
 		_ready = false;
-		_characterUsedIndex = -1;
+		CharacterUsedIndex = 0;
 		SkinNumber = 0;
 	}
 
@@ -122,7 +118,6 @@ public class Player : NetworkBehaviour
 					EndGameManager.Instance.ResetGame(false);
 			}
 		}
-
 	}
 
 	public override void OnNetworkDestroy()
@@ -154,56 +149,24 @@ public class Player : NetworkBehaviour
 			{
 				if (MenuManager.Instance.LocalJoystickBuffer.Count != 0)
 				{
-					Init(MenuManager.Instance.LocalJoystickBuffer[MenuManager.Instance.LocalJoystickBuffer.Count - 1]);
+					JoystickNumber = MenuManager.Instance.LocalJoystickBuffer[MenuManager.Instance.LocalJoystickBuffer.Count - 1];
 					Debug.Log("player " + name + " created with joystick number: " + JoystickNumber);
 				}
 				else
 				{
 					Debug.Log("No joystickBuffer found in menu manager: closing connection.");
-					ServerManager.singleton.StopClient();
 					Network.Disconnect();
-					Destroy(gameObject);
+					MenuManager.Instance.MakeTransition("Main");
 				}
 			}
 
 		}
 	}
 
-	[ClientRpc]
-	public void RpcOpenExistingSlots(string slotsToOpen)
+	public override void OnStartClient()
 	{
-		if (isLocalPlayer)
-		{
-			OpenSlots NewSlotToOpen = (OpenSlots)Enum.Parse(typeof(OpenSlots), slotsToOpen);
-			int i = 0;
-			foreach (OpenSlots slot in Enum.GetValues(typeof(OpenSlots)))
-			{
-				if ((NewSlotToOpen & slot) != 0 && i != 0)
-				{
-					Debug.Log("openning slots: " + slot + " with player null");
-					MenuManager.Instance.OpenCharacterSlot(slot, null); //open his own slot
-				}
-				i++;
-			}
-		}
-	}
-
-
-
-	[ClientRpc]
-	public void RpcOpenSlot(string slotToOpen, GameObject OwnerPlayer, int newPlayerNumber)
-	{
-		if (isLocalPlayer)
-		{
-			if (PlayerNumber == 0)
-			{
-				PlayerNumber = newPlayerNumber;
-				name += "_" + PlayerNumber;
-			}
-			PlayerList = FindObjectsOfType<Player>();
-			OpenSlots NewSlotToOpen = (OpenSlots)Enum.Parse(typeof(OpenSlots), slotToOpen);
-			MenuManager.Instance.OpenCharacterSlot(NewSlotToOpen, OwnerPlayer.GetComponent<Player>()); //open his own slot
-		}
+		base.OnStartClient();
+		PlayerList = FindObjectsOfType<Player>();
 	}
 
 	[ClientRpc]
@@ -272,7 +235,7 @@ public class Player : NetworkBehaviour
 		{
 			if(PlayerList[i].PlayerNumber != PlayerNumber)
 			{
-				if (PlayerList[i].SkinNumber == SkinNumber && PlayerList[i]._characterUsedIndex == _characterUsedIndex)
+				if (PlayerList[i].SkinNumber == SkinNumber && PlayerList[i].CharacterUsedIndex == CharacterUsedIndex)
 				{
 					Debug.Log("Player N°=> "+PlayerNumber+" is adding differentialAlpha to player => "+targetObject.GetComponent<PlayerController>()._characterData.IngameName);
 					targetObject.GetComponent<PlayerController>().AddDifferentialAlpha(CharacterAlpha);
@@ -298,16 +261,16 @@ public class Player : NetworkBehaviour
 		ArenaManager.Instance.ResetMap(animate);
 		EndStageManager.Instance.Close();
 	}
+	
+	[Command]
+	public void CmdBroadCastOpenMenu(bool showSplashScreens, string targetMenuName)
+	{
+		RpcOpenMenu(showSplashScreens, targetMenuName);
+	}
 
-	//[Command]
-	//public void CmdAddPlayerList(GameObject obj)
-	//{
-	//	PlayerList.Add(obj);
-	//}
-
-	//[Command]
-	//public void CmdRemovePlayerList(GameObject obj)
-	//{
-	//	PlayerList.Remove(obj);
-	//}
+	[ClientRpc]
+	public void RpcOpenMenu(bool showSplashScreens, string targetMenuName)
+	{
+		MainManager.Instance.LEVEL_MANAGER.OpenMenu(showSplashScreens, targetMenuName);
+	}
 }

@@ -42,6 +42,22 @@ public class MenuPanel : MonoBehaviour {
 		}
 	}
 
+	void OnEnable()
+	{
+		if (LastElementSelected == null)
+		{
+			if (PreSelectedButton != null)
+			{
+				PreSelectedButton.Select();
+				LastElementSelected = PreSelectedButton.GetComponent<LastSelectedComponent>();
+			}
+		}
+		else
+		{
+			SelectLastButton();
+		}
+	}
+
 	LastSelectedComponent FindSelected()
 	{
 		for (int i = 0; i < _selectables.Length; i++)

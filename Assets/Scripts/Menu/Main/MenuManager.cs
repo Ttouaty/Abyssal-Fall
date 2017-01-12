@@ -141,21 +141,6 @@ public class MenuManager : GenericSingleton<MenuManager>
 		}
 	}
 
-	public void OpenCharacterSlot(OpenSlots slotNumbers, Player player)
-	{
-		int i = -1;
-		foreach (OpenSlots slot in Enum.GetValues(typeof(OpenSlots)))
-		{
-			if ((slotNumbers & slot) != 0 && i != -1)
-			{
-				_characterSlotsContainerRef.OpenTargetSlot(i, player);
-			}
-			i++;
-		}
-	}
-
-	
-
 	public void CloseCharacterSlot(int slotNumber)
 	{
 		_characterSlotsContainerRef.CloseTargetSlot(slotNumber);
@@ -289,19 +274,6 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 		_activeMenu = newMenu;
 
-		if (_activeMenu.LastElementSelected == null)
-		{
-			if (_activeMenu.PreSelectedButton != null)
-			{
-				_activeMenu.PreSelectedButton.Select();
-				_activeMenu.LastElementSelected = _activeMenu.PreSelectedButton.GetComponent<LastSelectedComponent>();
-			}
-		}
-		else
-		{
-			_activeMenu.SelectLastButton();
-		}
-
 		InputManager.SetInputLockTime(InputDelayBetweenTransition);
 
 		yield return new WaitForSeconds(InputDelayBetweenTransition);
@@ -389,7 +361,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 		SplashScreens.transform.Find("Background_black").GetComponent<Image>().CrossFadeAlpha(0, 1, false);
 		Destroy(SplashScreens, 1);
 
-		yield return StartCoroutine(WaitForFixedCamera());
+		yield return new WaitUntil(() => !CameraManager.Instance.IsMoving);
 
 		//SetActiveButtons(_activeMenu, true);
 		if (_activeMenu.PreSelectedButton != null)
@@ -460,14 +432,6 @@ public class MenuManager : GenericSingleton<MenuManager>
 		MakeTransition((MenuPanel)null);
 		yield return new WaitForSeconds(1);
 		gameObject.SetActive(false);
-	}
-
-	private IEnumerator WaitForFixedCamera()
-	{
-		while (CameraManager.Instance.IsMoving)
-		{
-			yield return null;
-		}
 	}
 
 	public void SetMode(string modeName)

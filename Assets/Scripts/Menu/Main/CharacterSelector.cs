@@ -21,6 +21,7 @@ public class CharacterSelector : MonoBehaviour
 	[Space]
 	[HideInInspector]
 	public CharacterSlot[] SlotsAvailable;
+	[HideInInspector]
 	public PlayerController[] _availableCharacters;
 
 	void Awake()
@@ -32,12 +33,6 @@ public class CharacterSelector : MonoBehaviour
 	{
 		SlotsAvailable = GetComponentsInChildren<CharacterSlot>();
 	}
-
-	public void OpenTargetSlot(int slotNumber, Player player)
-	{
-		SlotsAvailable[slotNumber].OpenSlot(slotNumber, player);
-	}
-
 
 	public void CloseTargetSlot(int slotNumber)
 	{

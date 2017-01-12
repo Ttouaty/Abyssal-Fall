@@ -190,37 +190,12 @@ public class ServerManager : NATTraversal.NetworkManager
 		base.OnClientDisconnect(conn);
 	}
 
-	public override void OnServerDisconnect(NetworkConnection conn)
-	{
-		Debug.Log("client disconnected with adress => "+conn.address);
-		if(IsInLobby && NetworkServer.active) //Remove client authority of disconnected player to avoid wheel destruction
-		{
-			Debug.Log("Trying to remove wheel authority");
+	//public override void OnServerDisconnect(NetworkConnection conn)
+	//{
+	//	Debug.Log("client disconnected with adress => "+conn.address);
 
-			CharacterSelectWheel[] tempWheels = MenuManager.Instance._characterSlotsContainerRef.GetComponentsInChildren<CharacterSelectWheel>(true);
-			for (int i = 0; i < tempWheels.Length; i++)
-			{
-				if(tempWheels[i].GetComponent<NetworkIdentity>().clientAuthorityOwner == conn)
-				{
-					Debug.Log("removed authority for => "+tempWheels[i].name);
-					tempWheels[i].GetComponent<NetworkIdentity>().RemoveClientAuthority(conn);
-					tempWheels[i].GetComponent<NetworkIdentity>().RebuildObservers(true);
-					HostingClient.RpcCloseTargetSlot(i);
-
-					if(conn.address != "localServer")
-					{
-						//external Player decreasing external player count
-						ExternalPlayerNumber--;
-					}
-
-					ServerRemovePlayer(RegisteredPlayers[i]);
-					//NetworkServer.UnSpawn(tempWheels[i].gameObject);
-				}
-			}
-		}
-
-		NetworkServer.DestroyPlayersForConnection(conn);
-	}
+	//	NetworkServer.DestroyPlayersForConnection(conn);
+	//}
 
 	public override void OnServerConnect(NetworkConnection conn)
 	{
@@ -303,43 +278,65 @@ public class ServerManager : NATTraversal.NetworkManager
 		player.PlayerNumber = i;
 		NetworkServer.AddPlayerForConnection(conn, playerGo, playerControllerId);
 
-		//HostingClient.CmdAddPlayerList(player.gameObject);
-		HostingClient.RpcOpenSlot(newSlot.ToString(), playerGo, i);
-		player.RpcOpenExistingSlots(LobbySlotsOpen.ToString());
-		LobbySlotsOpen |= newSlot;
-		for (int j = 1; j < RegisteredPlayers.Count; j++)
+		
+		for (int j = 0; j < spawnPrefabs.Count; j++)
 		{
-			RegisteredPlayers[j].RpcOpenSlot(newSlot.ToString(), playerGo, i);
+			if(spawnPrefabs[j].GetComponent<CharacterSelectWheel>() != null)
+			{
+				GameObject newWheel = Instantiate(spawnPrefabs[j]);
+				newWheel.GetComponent<CharacterSelectWheel>()._playerRef = player.gameObject;
+				NetworkServer.SpawnWithClientAuthority(newWheel, player.gameObject);
+				break;
+			}
+			else if(j == spawnPrefabs.Count -1)
+			{
+				Debug.LogError("No character wheel found in spawnPrefabs");
+				return;
+			}
 		}
-	}
 
-	public void ServerRemovePlayer(Player player)
+		//HostingClient.CmdAddPlayerList(player.gameObject);
+		//HostingClient.RpcOpenSlot(newSlot.ToString(), playerGo);
+		//player.RpcOpenExistingSlots(LobbySlotsOpen.ToString());
+		LobbySlotsOpen |= newSlot;
+		//for (int j = 1; j < RegisteredPlayers.Count; j++)
+		//{
+		//	RegisteredPlayers[j].RpcOpenSlot(newSlot.ToString(), playerGo);
+		//}
+	}
+	public override void OnServerDisconnect(NetworkConnection conn)
 	{
-		//HostingClient.PlayerList.Remove(player.gameObject);
-		RegisteredPlayers.Remove(player);
+		if(conn.playerControllers.Count == 0)
+		{
+			Debug.Log("empty player");
+			return;
+		}
+		if (IsInLobby)
+			HostingClient.RpcCloseTargetSlot(conn.playerControllers[0].gameObject.GetComponent<Player>().PlayerNumber - 1);
+
+		RegisteredPlayers.Remove(conn.playerControllers[0].gameObject.GetComponent<Player>());
 		OpenSlots[] tempArray = Enum.GetValues(typeof(OpenSlots)) as OpenSlots[];
-		LobbySlotsOpen &= ~tempArray[player.PlayerNumber];
-		Debug.Log("Removed player " + player.PlayerNumber + " - Open slots are now => " + LobbySlotsOpen.ToString());
+		LobbySlotsOpen &= ~tempArray[conn.playerControllers[0].gameObject.GetComponent<Player>().PlayerNumber];
+		Debug.Log("Removed player " + conn.playerControllers[0].gameObject.GetComponent<Player>().PlayerNumber + " - Open slots are now => " + LobbySlotsOpen.ToString());
+
+		if (conn.address != "localServer")//external Player decreasing external player count
+			ExternalPlayerNumber--;
+
+		NetworkServer.DestroyPlayersForConnection(conn);
+		base.OnServerDisconnect(conn);
 	}
 
 	public override void OnConnectionReplacedClient(NetworkConnection oldConnection, NetworkConnection newConnection)
 	{
-		Debug.LogError("Replaced connection");
-		ClientScene.AddPlayer(NetworkClient.allClients[0].connection, 0);
+		if(newConnection.isConnected)
+			ClientScene.AddPlayer(newConnection, 0);
 		base.OnConnectionReplacedClient(oldConnection, newConnection);
-	}
-
-	public override void OnConnectionReplacedServer(NetworkConnection oldConnection, NetworkConnection newConnection)
-	{
-		Debug.LogError("Replaced connection");
-		base.OnConnectionReplacedServer(oldConnection, newConnection);
 	}
 
 	public void OnGameEnd()
 	{
 		_isInGame = false;
 		_playersReadyForMapSpawn = 0;
-		NetworkServer.SetAllClientsNotReady();
 	}
 
 	private int _playersReadyForMapSpawn = 0;

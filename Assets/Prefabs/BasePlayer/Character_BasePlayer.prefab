@@ -57,8 +57,9 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 129290}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 17.9578438, y: 2.61999989, z: -16.7397175}
+  m_LocalPosition: {x: 17.957844, y: 2.62, z: -16.739717}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 449248}
   - {fileID: 434290}
@@ -71,8 +72,9 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 175014}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.04999995, z: 0}
+  m_LocalPosition: {x: 0, y: -1.05, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 403170}
   m_RootOrder: 1
@@ -85,6 +87,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 403170}
   m_RootOrder: 0
@@ -97,7 +100,7 @@ Rigidbody:
   serializedVersion: 2
   m_Mass: 1
   m_Drag: 0
-  m_AngularDrag: .0500000007
+  m_AngularDrag: 0.05
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
@@ -143,6 +146,7 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
+    m_RotationOrder: 4
   panLevelCustomCurve:
     serializedVersion: 2
     m_Curve:
@@ -153,6 +157,7 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
+    m_RotationOrder: 0
   spreadCustomCurve:
     serializedVersion: 2
     m_Curve:
@@ -163,6 +168,7 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
+    m_RotationOrder: 4
   reverbZoneMixCustomCurve:
     serializedVersion: 2
     m_Curve:
@@ -173,6 +179,7 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
+    m_RotationOrder: 0
 --- !u!114 &11472210
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -195,16 +202,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9621501d4aebbea4c84104f616f0da3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerNumber: 2
-  JoystickNumber: 2
-  SkinNumber: 0
+  _playerRef: {fileID: 0}
   _isInvul: 0
   Spawn: {fileID: 0}
   _animator: {fileID: 0}
   _isDead: 0
   IsGrounded: 0
-  _playerProp: {fileID: 0}
-  _playerData: {fileID: 11400000, guid: 24a0a06ce55a2b54794e14afa7bd9465, type: 2}
+  _isInDebugMode: 0
+  WaitForDashRelease: 0
+  _characterData: {fileID: 0}
+  AllowDash: 1
+  AllowSpecial: 1
 --- !u!136 &13612682
 CapsuleCollider:
   m_ObjectHideFlags: 1
@@ -214,10 +222,10 @@ CapsuleCollider:
   m_Material: {fileID: 13400000, guid: 18353c955f39cab4b9e998a4f5515050, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: .74000001
+  m_Radius: 0.74
   m_Height: 3
   m_Direction: 1
-  m_Center: {x: 0, y: .5, z: 0}
+  m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

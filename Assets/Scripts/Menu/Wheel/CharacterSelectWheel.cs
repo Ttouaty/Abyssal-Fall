@@ -25,10 +25,13 @@ public class CharacterSelectWheel : NetworkBehaviour
 
 	protected Color _tempColor;
 	protected float _tempElementAngle;
-	public Player ParentPlayer;
 
 	[HideInInspector]
 	public bool isGenerated = false;
+
+	[HideInInspector]
+	[SyncVar]
+	public GameObject _playerRef;
 
 	#region baseClass
 	private void Internal_Generate(GameObject[] elementsToDisplay, PlayerController[] elementsToReturn)
@@ -43,7 +46,6 @@ public class CharacterSelectWheel : NetworkBehaviour
 		_returnArray = elementsToReturn;
 		_displayArray = elementsToDisplay;
 
-		_selectedElementIndex = 0;
 		_rotationBetweenElements = 360 / elementsToDisplay.Length;
 
 		if (_displayArray.Length != _returnArray.Length)
@@ -56,7 +58,6 @@ public class CharacterSelectWheel : NetworkBehaviour
 			//elementsToDisplay[i].transform.RotateAround(transform.position, transform.up, -_rotationBetweenElements * i);
 		}
 
-		ScrollToIndex(_selectedElementIndex);
 		isGenerated = true;
 		Update();
 	}
@@ -145,22 +146,26 @@ public class CharacterSelectWheel : NetworkBehaviour
 	}
 	#endregion
 
-	public void Generate(PlayerController[] elementsToAdd, Player parentPlayer)
+	public void Generate()
 	{
-		ParentPlayer = parentPlayer;
-		GameObject[] tempGenerationSelectableCharacters = new GameObject[elementsToAdd.Length];
+		PlayerController[] AvailablePlayers = new PlayerController[0];
+		DynamicConfig.Instance.GetConfigs(ref AvailablePlayers);
+		GameObject[] tempGenerationSelectableCharacters = new GameObject[AvailablePlayers.Length];
 
 		for (int i = 0; i < tempGenerationSelectableCharacters.Length; i++)
 		{
-			tempGenerationSelectableCharacters[i] = Instantiate(elementsToAdd[i]._characterData.CharacterModel.gameObject) as GameObject;
-			tempGenerationSelectableCharacters[i].transform.localScale = transform.parent.localScale * 1.8f;
+			tempGenerationSelectableCharacters[i] = Instantiate(AvailablePlayers[i]._characterData.CharacterModel.gameObject) as GameObject;
+			tempGenerationSelectableCharacters[i].transform.localScale = transform.parent.parent.localScale * 1.8f;
 			//tempGenerationSelectableCharacters[i].AddComponent<NetworkIdentity>();
 			//NetworkServer.Spawn(tempGenerationSelectableCharacters[i]);
 		}
 
-		_wheelRadius = Mathf.Abs(transform.localPosition.z);
-
-		Internal_Generate(tempGenerationSelectableCharacters, elementsToAdd);
+		_wheelRadius = Mathf.Abs(transform.parent.localPosition.z);
+		Internal_Generate(tempGenerationSelectableCharacters, AvailablePlayers);
+		_selectedElementIndex = _playerRef.GetComponent<Player>().CharacterUsedIndex;
+		_selectedSkinIndex = _playerRef.GetComponent<Player>().SkinNumber;
+		//ScrollToIndex(_selectedElementIndex);
+		//ChangeCharacterSkin(_selectedSkinIndex);
 	}
 
 	public Material GetSelectedSkin()
@@ -188,11 +193,24 @@ public class CharacterSelectWheel : NetworkBehaviour
 	public void CmdScrollToIndex(int newIndex)
 	{
 		_selectedElementIndex = newIndex;
+		if(_playerRef != null)
+			_playerRef.GetComponent<Player>().CmdSetPlayerCharacter(_selectedElementIndex, _selectedSkinIndex);
 	}
 
 	[Command]
 	public void CmdChangeCharacterSkin(int newIndex)
 	{
 		_selectedSkinIndex = newIndex;
+		if(_playerRef != null)
+			_playerRef.GetComponent<Player>().CmdSetPlayerCharacter(_selectedElementIndex, _selectedSkinIndex);
+	}
+
+	public override void OnStartClient()
+	{
+		base.OnStartClient();
+		transform.SetParent(MenuManager.Instance._characterSlotsContainerRef.SlotsAvailable[_playerRef.GetComponent<Player>().PlayerNumber - 1].WheelSlot, false);
+
+		Generate();
+		MenuManager.Instance._characterSlotsContainerRef.SlotsAvailable[_playerRef.GetComponent<Player>().PlayerNumber - 1].OpenSlot(this);
 	}
 }
