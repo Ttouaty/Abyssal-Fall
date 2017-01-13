@@ -276,11 +276,13 @@ public class ServerManager : NATTraversal.NetworkManager
 		if (HostingClient == null) // if that is the first client
 			HostingClient = player;
 
-
+		if (MenuManager.Instance == null)
+			player.JoystickNumber = 0;
 		player.PlayerNumber = i;
 		NetworkServer.AddPlayerForConnection(conn, playerGo, playerControllerId);
 
-		SpawnCharacterWheel(player.gameObject);
+		if(MenuManager.Instance != null)
+			SpawnCharacterWheel(player.gameObject);
 		
 
 		LobbySlotsOpen |= newSlot;
@@ -392,6 +394,7 @@ public class ServerManager : NATTraversal.NetworkManager
 		_isInGame = false;
 		ExternalPlayerNumber = 0;
 		HostingClient = null;
+		ResetRegisteredPlayers();
 
 		if (NetworkServer.active)
 		{

@@ -4,10 +4,12 @@ using System.Collections;
 public class OptionSelector : MonoBehaviour
 {
 	private AGameRules[] _rulesArray;
+	public OptionField OptionPrefab;
 	private int _targetRulesetIndex = 0;
 
 	void Start()
 	{
+		OptionPrefab.TargetRule = new BoolRule() ;
 		DynamicConfig.Instance.GetConfigs(ref _rulesArray);
 	}
 

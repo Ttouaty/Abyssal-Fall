@@ -3494,7 +3494,20 @@ Prefab:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 736cbab86922f464abdf5515baa7875a, type: 2}
-    m_RemovedComponents: []
+    - target: {fileID: 9500000, guid: 7a6a3eae05b9f164792cabc6c3d546ff, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 09d595558b4194145a47301afd7a5699, type: 2}
+    - target: {fileID: 9500000, guid: 7a6a3eae05b9f164792cabc6c3d546ff, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 7a6a3eae05b9f164792cabc6c3d546ff, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 228
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 9500000, guid: 7a6a3eae05b9f164792cabc6c3d546ff, type: 3}
   m_ParentPrefab: {fileID: 100100000, guid: 7a6a3eae05b9f164792cabc6c3d546ff, type: 3}
   m_IsPrefabParent: 0
 --- !u!1 &932453664
@@ -3676,39 +3689,43 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 7a6a3eae05b9f164792cabc6c3d546ff, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 7a6a3eae05b9f164792cabc6c3d546ff, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.7290126
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 7a6a3eae05b9f164792cabc6c3d546ff, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 7a6a3eae05b9f164792cabc6c3d546ff, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.6845003
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 7a6a3eae05b9f164792cabc6c3d546ff, type: 3}
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9500000, guid: 7a6a3eae05b9f164792cabc6c3d546ff, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 59451422585d3074fb17060ed35af2aa, type: 2}
+    - target: {fileID: 100000, guid: 7a6a3eae05b9f164792cabc6c3d546ff, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 7a6a3eae05b9f164792cabc6c3d546ff, type: 3}
       propertyPath: m_LocalScale.x
-      value: 351.55414
+      value: 353.65555
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 7a6a3eae05b9f164792cabc6c3d546ff, type: 3}
       propertyPath: m_LocalScale.y
-      value: 239.19632
+      value: 240.62625
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 7a6a3eae05b9f164792cabc6c3d546ff, type: 3}
       propertyPath: m_LocalScale.z
-      value: 351.5538
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 7a6a3eae05b9f164792cabc6c3d546ff, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 266.497
+      value: 353.65543
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7a6a3eae05b9f164792cabc6c3d546ff, type: 3}
@@ -7504,6 +7521,27 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1511735178}
   m_Mesh: {fileID: 4300000, guid: ce2dbe2d80db3504bbfcac0b6e6bc7d2, type: 3}
+--- !u!1 &1520432774 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 100000, guid: 7a6a3eae05b9f164792cabc6c3d546ff, type: 3}
+  m_PrefabInternal: {fileID: 918986914}
+--- !u!95 &1520432775
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1520432774}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 603ef8d371af30e45b48b3624dc5869b, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!1 &1525671574
 GameObject:
   m_ObjectHideFlags: 0

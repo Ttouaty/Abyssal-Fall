@@ -112,7 +112,7 @@ public class DialogBox : MonoBehaviour
 			{
 				//Closing
 
-				Debug.Log("detected closing");
+				//Debug.Log("detected closing");
 				_messageProgressionIndex += tagIndexToAdd[tagIndexToAdd.Count - 1];
 				tagIndexToAdd.RemoveAt(tagIndexToAdd.Count - 1);
 				_displayedTagIndex++;

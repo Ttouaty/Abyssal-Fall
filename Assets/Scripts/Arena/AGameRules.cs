@@ -10,7 +10,7 @@ public abstract class AGameRules : MonoBehaviour
 	 * Il faut remplacer tout les ints & bool  par des IntRule & BoolRule
 	 * & il faut faire suivre les custom editors
 	 */
-	public bool IsMatchRoundBased;
+	public BoolRule IsMatchRoundBased;
 	public IntRule NumberOfRounds;
 	public IntRule MatchDuration;
 
@@ -21,7 +21,7 @@ public abstract class AGameRules : MonoBehaviour
 	public IntRule PointsLoosePerSuicide;
 	public IntRule TimeBeforeSuicide;
 
-	public bool CanPlayerRespawn;
+	public BoolRule CanPlayerRespawn;
 	public List<Tile> RespawnZones = new List<Tile>();
 
 	public BehaviourConfiguration[] Behaviours;

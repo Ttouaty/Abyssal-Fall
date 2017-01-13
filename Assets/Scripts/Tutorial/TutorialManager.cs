@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using UnityEngine.Networking;
 
 [Serializable]
 public class TutorialSequence
@@ -16,11 +17,10 @@ public class TutorialManager : GenericSingleton<TutorialManager>
 	public Transform _respawnPoint;
 	public DialogBox DialogBoxObject;
 	private int _lastRespawnPointIndex = -1;
-	public PlayerController TutorialCharacter;
+	public GameObject TutorialCharacter;
 	private PlayerController TutorialCharacterInstance;
 	public TutorialSequence[] _tutorialSequences;
 
-	private Player TempPlayer;
 	void Start()
 	{
 		Init();
@@ -29,6 +29,9 @@ public class TutorialManager : GenericSingleton<TutorialManager>
 	public override void Init()
 	{
 		Debug.Log("Le tutoriel est initialisé ici.");
+		ServerManager.ResetRegisteredPlayers();
+		ServerManager.Instance.IsInLobby = true;
+		ServerManager.Instance.StartHostAll("AbyssalFall-Tutorial", 1);
 		CameraManager.Instance.Reset();
 		CameraManager.Instance.SetCenterPoint(_respawnPoint);
 		CameraManager.Instance.SetCamAngle(30, Vector3.right);
@@ -36,7 +39,7 @@ public class TutorialManager : GenericSingleton<TutorialManager>
 
 	public void SpawnPlayer(JoystickNumber joyStick)
 	{
-		PoolConfiguration[] assets = TutorialCharacter._characterData.OtherAssetsToLoad;
+		PoolConfiguration[] assets = TutorialCharacter.GetComponent<PlayerController>()._characterData.OtherAssetsToLoad;
 		MainManager.Instance.GAME_OBJECT_POOL.DropAll();
 		for (int j = 0; j < assets.Length; ++j)
 		{
@@ -45,22 +48,21 @@ public class TutorialManager : GenericSingleton<TutorialManager>
 		MainManager.Instance.GAME_OBJECT_POOL.Load();
 		MainManager.Instance.GAME_OBJECT_POOL.LoadEnd.AddListener(PopPlayer);
 
-		TempPlayer = new Player();
-		TempPlayer.PlayerNumber = 1;
-		TempPlayer.JoystickNumber = joyStick;
+		Player.LocalPlayer.JoystickNumber = joyStick;
 	}
 
 	private void PopPlayer(float unused)
 	{
-		TutorialCharacterInstance = (PlayerController)Instantiate(TutorialCharacter, _respawnPoint.position, Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized) * Quaternion.AngleAxis(180, Vector3.up), transform);
-		TempPlayer.Controller = TutorialCharacterInstance;
-		TutorialCharacterInstance.Init(TempPlayer.gameObject);
+		TutorialCharacterInstance = (Instantiate(TutorialCharacter, _respawnPoint.position, Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized) * Quaternion.AngleAxis(180, Vector3.up), transform) as GameObject).GetComponent<PlayerController>();
+
+		NetworkServer.SpawnWithClientAuthority(TutorialCharacterInstance.gameObject, Player.LocalPlayer.gameObject);
+		//TempPlayer.Controller = TutorialCharacterInstance;
+		TutorialCharacterInstance.Init(Player.LocalPlayer.gameObject);
 		TutorialCharacterInstance.AddStun(1f);
 	}
 
 	public void SetNewRespawnPoint(RespawnPoint newRespawn)
 	{
-
 		if (newRespawn.RespawnIndex > _lastRespawnPointIndex)
 		{
 			_respawnPoint = newRespawn.targetRespawnPoint;
@@ -108,7 +110,7 @@ public class TutorialManager : GenericSingleton<TutorialManager>
 	{
 		PlayerPrefs.SetInt("FTUEDone", 1);
 		PlayerPrefs.Save();
-
+		ServerManager.Instance.ResetNetwork();
 		StartCoroutine(ReopenMenu());
 	}
 
