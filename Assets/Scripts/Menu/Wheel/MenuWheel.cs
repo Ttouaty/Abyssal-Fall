@@ -77,18 +77,16 @@ public class MenuWheel<ReturnType> : MonoBehaviour
 
 	protected virtual void Update()
 	{
-		//if (ParentPlayer != null)
-		//{
-		//	if (ParentPlayer.isLocalPlayer)
-		//	{
-				transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(0, _selectedElementIndex * _rotationBetweenElements, 0), _rotateSpeed);
-			//}
-		//}
-
+		if(Player.LocalPlayer.isServer)
+			transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(0, _selectedElementIndex * _rotationBetweenElements, 0), _rotateSpeed);
 
 		//######## apply alpha to Image elements #########
-		RotateElementsFacingCam();
 		ApplyAlpha();
+	}
+
+	void LateUpdate()
+	{
+		RotateElementsFacingCam();
 	}
 
 	protected virtual void ApplyAlpha()

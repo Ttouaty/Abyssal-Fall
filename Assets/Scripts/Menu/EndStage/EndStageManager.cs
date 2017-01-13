@@ -44,13 +44,16 @@ public class EndStageManager : GenericSingleton<EndStageManager>
 
 	public void Open()
 	{
+		MenuPauseManager.Instance.Close();
 		MenuPauseManager.Instance.CanPause = false;
 		InputManager.SetInputLockTime(0.7f);
 		TimeManager.Pause();
+
 		for (int i = 0; i < ScoresFields.Length; ++i)
 		{
 			ScoresFields[i].DisplayScore();
 		}
+
 		StageText.GetComponent<Localizator.LocalizedText>().OnChangeLanguage();
 		StageText.text = StageText.text.Replace("%NUMBER%", GameManager.Instance.CurrentStage.ToString());
 		transform.GetChild(0).gameObject.SetActive(true);

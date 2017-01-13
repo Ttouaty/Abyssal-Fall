@@ -9,6 +9,7 @@ public class MapSelectWheel : MenuWheel<EArenaConfiguration>
 	protected override void Start()
 	{
 		base.Start();
+		transform.SetParent(MenuManager.Instance.GetComponentInChildren<MapSelector>(true).MapWheelTarget, false); //Moche mais j'ai la flemme nigga ! osef des perfs dans le menu
 		DynamicConfig.Instance.GetConfigs(ref _configRefs);
 		Generate();
 	}
@@ -19,7 +20,7 @@ public class MapSelectWheel : MenuWheel<EArenaConfiguration>
 		EArenaConfiguration[] returnArray = new EArenaConfiguration[_configRefs.Length];
 
 		Image tempImageRef;
-		_wheelRadius = Mathf.Abs(transform.localPosition.z);
+		_wheelRadius = Mathf.Abs(transform.parent.localPosition.z);
 		for (int i = 0; i < _configRefs.Length; i++)
 		{
 			elementsToProcess[i] = new GameObject("Arena_" + _configRefs[i].TargetMapEnum.ToString(), typeof(Image));
@@ -58,5 +59,11 @@ public class MapSelectWheel : MenuWheel<EArenaConfiguration>
 			return;
 		}
 		GameManager.Instance.CurrentGameConfiguration.ArenaConfiguration = GetSelectedElement();
+	}
+
+	public override void ScrollToIndex(int newIndex)
+	{
+		if(Player.LocalPlayer.isServer)
+			base.ScrollToIndex(newIndex);
 	}
 }

@@ -55,13 +55,13 @@ public class MenuPauseManager : GenericSingleton<MenuPauseManager>
 		if (IsOpen)
 			return;
 
-		InputManager.SetInputLockTime(0.3f);
 
 		for (int i = 0; i < ScoresFields.Length; ++i)
 		{
 			ScoresFields[i].DisplayScore();
 		}
 		transform.GetChild(0).gameObject.SetActive(true);
+		InputManager.SetInputLockTime(0.5f);
 
 		if (ServerManager.Instance.ExternalPlayerNumber == 0 && Player.LocalPlayer.isServer)
 		{
@@ -85,6 +85,11 @@ public class MenuPauseManager : GenericSingleton<MenuPauseManager>
 	public void BackToMainMenu()
 	{
 		EndGameManager.Instance.ResetGame(false);
+	}
+
+	public void BackToCharacterSelect()
+	{
+		EndGameManager.Instance.BackToCharacterSelect();
 	}
 
 	public void Close ()

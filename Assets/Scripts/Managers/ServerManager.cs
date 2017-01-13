@@ -239,15 +239,17 @@ public class ServerManager : NATTraversal.NetworkManager
 		}
 
 		if(conn.address != "localClient")
-		{
 			ExternalPlayerNumber++;
-		}
 
+		Debug.Log("Connections are => ");
+		for (int j = 0; j < Network.connections.Length; j++)
+		{
+			Debug.Log("i => "+Network.connections[j]);
+		}
 		GameObject playerGo = (GameObject)Instantiate(playerPrefab);
 
 		Player player = playerGo.GetComponent<Player>();
 		RegisteredPlayers.Add(player);
-
 
 		OpenSlots newSlot = OpenSlots.None;
 		int i = 0;
@@ -278,32 +280,50 @@ public class ServerManager : NATTraversal.NetworkManager
 		player.PlayerNumber = i;
 		NetworkServer.AddPlayerForConnection(conn, playerGo, playerControllerId);
 
+		SpawnCharacterWheel(player.gameObject);
 		
+
+		LobbySlotsOpen |= newSlot;
+	}
+
+	public void SpawnCharacterWheel(GameObject playerObj)
+	{
 		for (int j = 0; j < spawnPrefabs.Count; j++)
 		{
-			if(spawnPrefabs[j].GetComponent<CharacterSelectWheel>() != null)
+			if (spawnPrefabs[j].GetComponent<CharacterSelectWheel>() != null)
 			{
 				GameObject newWheel = Instantiate(spawnPrefabs[j]);
-				newWheel.GetComponent<CharacterSelectWheel>()._playerRef = player.gameObject;
-				NetworkServer.SpawnWithClientAuthority(newWheel, player.gameObject);
+				newWheel.GetComponent<CharacterSelectWheel>()._playerRef = playerObj;
+				NetworkServer.SpawnWithClientAuthority(newWheel, playerObj);
 				break;
 			}
-			else if(j == spawnPrefabs.Count -1)
+			else if (j == spawnPrefabs.Count - 1)
 			{
 				Debug.LogError("No character wheel found in spawnPrefabs");
 				return;
 			}
 		}
-
-		//HostingClient.CmdAddPlayerList(player.gameObject);
-		//HostingClient.RpcOpenSlot(newSlot.ToString(), playerGo);
-		//player.RpcOpenExistingSlots(LobbySlotsOpen.ToString());
-		LobbySlotsOpen |= newSlot;
-		//for (int j = 1; j < RegisteredPlayers.Count; j++)
-		//{
-		//	RegisteredPlayers[j].RpcOpenSlot(newSlot.ToString(), playerGo);
-		//}
 	}
+
+	public void SpawnMapWheel(GameObject playerObj)
+	{
+		for (int j = 0; j < spawnPrefabs.Count; j++)
+		{
+			if (spawnPrefabs[j].GetComponent<MapSelectWheel>() != null)
+			{
+				GameObject newWheel = Instantiate(spawnPrefabs[j]);
+				NetworkServer.SpawnWithClientAuthority(newWheel, playerObj);
+				break;
+			}
+			else if (j == spawnPrefabs.Count - 1)
+			{
+				Debug.LogError("No Map wheel found in spawnPrefabs");
+				return;
+			}
+		}
+	}
+
+
 	public override void OnServerDisconnect(NetworkConnection conn)
 	{
 		if(conn.playerControllers.Count == 0)
@@ -312,7 +332,12 @@ public class ServerManager : NATTraversal.NetworkManager
 			return;
 		}
 		if (IsInLobby)
-			HostingClient.RpcCloseTargetSlot(conn.playerControllers[0].gameObject.GetComponent<Player>().PlayerNumber - 1);
+		{
+			for (int i = 0; i < RegisteredPlayers.Count; i++)
+			{
+				RegisteredPlayers[i].RpcCloseTargetSlot(conn.playerControllers[0].gameObject.GetComponent<Player>().PlayerNumber - 1);
+			}
+		}
 
 		RegisteredPlayers.Remove(conn.playerControllers[0].gameObject.GetComponent<Player>());
 		OpenSlots[] tempArray = Enum.GetValues(typeof(OpenSlots)) as OpenSlots[];

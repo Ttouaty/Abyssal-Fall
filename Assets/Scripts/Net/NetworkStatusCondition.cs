@@ -6,9 +6,9 @@ using System;
 [Flags]
 public enum NetStatus
 {
-	Disconnected,
-	IsServer,
-	IsClient
+	Disconnected = 1,
+	IsServer = 2,
+	IsClient = 4
 }
 
 public class NetworkStatusCondition : MonoBehaviour

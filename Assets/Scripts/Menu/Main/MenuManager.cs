@@ -58,15 +58,20 @@ public class MenuManager : GenericSingleton<MenuManager>
 	{
 		_canvas.worldCamera = Camera.main;
 		MiniLoading.SetActive(false);
-		ServerManager.ResetRegisteredPlayers();
 		_menuArray = GetComponentsInChildren<MenuPanel>();
 
-		_activeMenu = _menuArray[0];
-		_activeMenu.PreSelectedButton.Select();
+
+		if(_activeMenu == null)
+		{
+			//Debug.Log("Reset players");
+			//ServerManager.ResetRegisteredPlayers();
+			_activeMenu = _menuArray[0];
+			_activeMenu.PreSelectedButton.Select();
+		}
 
 		for (int i = 0; i < _menuArray.Length; ++i)
 		{
-			if (i == 0)
+			if (_menuArray[i] == _activeMenu)
 			{
 				_menuArray[i].transform.position = _centerMenuAnchor.position;
 				_menuArray[i].gameObject.SetActive(true);

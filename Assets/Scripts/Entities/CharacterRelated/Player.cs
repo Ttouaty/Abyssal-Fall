@@ -86,17 +86,15 @@ public class Player : NetworkBehaviour
 
 	public void UnReady()
 	{
-		CharacterUsedIndex = 0;
 		_ready = false;
-		CmdUnReadyPlayer();
+		if(!NetworkServer.active)
+			CmdUnReadyPlayer();
 	}
 
 	[Command]
 	public void CmdUnReadyPlayer()
 	{
 		_ready = false;
-		CharacterUsedIndex = 0;
-		SkinNumber = 0;
 	}
 
 	void OnDestroy()
@@ -107,7 +105,6 @@ public class Player : NetworkBehaviour
 				Destroy(Controller.gameObject);
 		}
 		enabled = false;
-
 		LocalPlayer.PlayerList = FindObjectsOfType<Player>();
 		if (LocalPlayer.PlayerList.Length == 1)
 		{
@@ -135,6 +132,7 @@ public class Player : NetworkBehaviour
 				}
 			}
 			RpcCloseTargetSlot(PlayerNumber - 1);
+			CmdUpdatePlayerList();
 		}
 		base.OnNetworkDestroy();
 	}
@@ -166,8 +164,13 @@ public class Player : NetworkBehaviour
 	public override void OnStartClient()
 	{
 		base.OnStartClient();
-		PlayerList = FindObjectsOfType<Player>();
+		CmdUpdatePlayerList();
 	}
+
+	[Command]
+	private void CmdUpdatePlayerList(){ RpcUpdatePlayerList(); }
+	[ClientRpc]
+	private void RpcUpdatePlayerList() { PlayerList = FindObjectsOfType<Player>(); }
 
 	[ClientRpc]
 	public void RpcCloseTargetSlot(int slotNumber)

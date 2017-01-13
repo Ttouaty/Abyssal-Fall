@@ -587,11 +587,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75009ccc1a593614683f01e37e96f93e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RequiredNetStatus: 1
+  RequiredNetStatus: 2
   TargetObjects:
   - {fileID: 1786495093}
   - {fileID: 1840886694}
   ActiveState: 1
+  ForceOpposite: 1
 --- !u!114 &957316700
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -603,10 +604,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75009ccc1a593614683f01e37e96f93e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RequiredNetStatus: 1
+  RequiredNetStatus: 2
   TargetObjects:
   - {fileID: 985574834}
   ActiveState: 0
+  ForceOpposite: 1
 --- !u!1 &985574834
 GameObject:
   m_ObjectHideFlags: 0

@@ -3,6 +3,7 @@ using UnityEngine.SceneManagement;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Networking;
 
 [System.Serializable]
 public struct LevelConfiguration
@@ -117,14 +118,28 @@ public class LevelManager : GenericSingleton<LevelManager>
 			_bIsOnMenu = true;
 
 			MenuManager.Instance.FadeSplashscreens(showSplashScreens);
-			MenuManager.Instance.MakeTransition(targetMenu);
+			MenuManager.Instance.MakeTransition(targetMenu, true, false);
 
+			Debug.Log("openning targetMenu => "+targetMenu);
 			if (targetMenu == "Lobby") //Spaghetti mais osef
 			{
-				InputManager.SetInputLockTime(2);
-				for (int i = 0; i < Player.LocalPlayer.PlayerList.Length; i++)
+				InputManager.SetInputLockTime(2.5f);
+				for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; i++)
 				{
-					//MenuManager.Instance._characterSlotsContainerRef.OpenTargetSlot(Player.LocalPlayer.PlayerList[i].PlayerNumber -1, Player.LocalPlayer.PlayerList[i], Player.LocalPlayer.PlayerList[i].CharacterUsedIndex, Player.LocalPlayer.PlayerList[i].SkinNumber);
+					ServerManager.Instance.RegisteredPlayers[i].UnReady();
+				}
+
+				yield return new WaitForSeconds(2);
+				yield return new WaitUntil(() => !AutoFade.Fading);
+
+				if(NetworkServer.active)
+				{
+					Debug.Log("Trying to spawn wheels");
+					for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; i++)
+					{
+						Debug.Log("Spawning wheel for player => "+ ServerManager.Instance.RegisteredPlayers[i].name);
+						ServerManager.Instance.SpawnCharacterWheel(ServerManager.Instance.RegisteredPlayers[i].gameObject);
+					}
 				}
 			}
 		}

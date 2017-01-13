@@ -210,6 +210,7 @@ MonoBehaviour:
   PreSelectedButton: {fileID: 57559502}
   ParentMenu: {fileID: 0}
   LastElementSelected: {fileID: 0}
+  LastButtonReset: 0
 --- !u!1 &41238879
 GameObject:
   m_ObjectHideFlags: 0
@@ -704,7 +705,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &599789153
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1157,7 +1158,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75009ccc1a593614683f01e37e96f93e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RequiredNetStatus: 1
+  RequiredNetStatus: 2
   TargetObjects:
   - {fileID: 776592561}
   - {fileID: 599789152}
@@ -1174,7 +1175,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75009ccc1a593614683f01e37e96f93e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RequiredNetStatus: 1
+  RequiredNetStatus: 2
   TargetObjects:
   - {fileID: 1189253793}
   ActiveState: 0

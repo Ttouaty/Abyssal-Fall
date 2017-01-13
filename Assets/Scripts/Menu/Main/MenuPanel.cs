@@ -10,13 +10,14 @@ public class MenuPanel : MonoBehaviour {
 	public MenuPanel ParentMenu;
 	[HideInInspector]
 	public LastSelectedComponent LastElementSelected;
-
+	[SerializeField]
+	private bool LastButtonReset = false;
 	private LastSelectedComponent[] _selectables;
 	private EventSystem _eventSystemRef;
 	void Start()
 	{
 		_eventSystemRef = FindObjectOfType<EventSystem>();
-		Selectable[] Tempselectables = GetComponentsInChildren<Selectable>();
+		Selectable[] Tempselectables = GetComponentsInChildren<Selectable>(true);
 		_selectables = new LastSelectedComponent[Tempselectables.Length];
 		for (int i = 0; i < Tempselectables.Length; i++)
 		{
@@ -42,9 +43,9 @@ public class MenuPanel : MonoBehaviour {
 		}
 	}
 
-	void OnEnable()
+	protected virtual void OnEnable()
 	{
-		if (LastElementSelected == null)
+		if (LastElementSelected == null || LastButtonReset)
 		{
 			if (PreSelectedButton != null)
 			{

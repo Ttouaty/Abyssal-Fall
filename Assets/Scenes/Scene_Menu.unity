@@ -268,8 +268,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MenuName: GameConfig
   PreSelectedButton: {fileID: 1671115281}
-  ParentMenu: {fileID: 2106610416}
+  ParentMenu: {fileID: 0}
   LastElementSelected: {fileID: 0}
+  LastButtonReset: 0
 --- !u!1 &36619364
 GameObject:
   m_ObjectHideFlags: 0
@@ -543,6 +544,7 @@ RectTransform:
   - {fileID: 593678929}
   - {fileID: 1413602992}
   - {fileID: 2145670844}
+  - {fileID: 221633536}
   m_Father: {fileID: 1289286216}
   m_RootOrder: 2
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -1556,6 +1558,56 @@ RectTransform:
   m_AnchoredPosition: {x: -1000, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &221633535
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 221633536}
+  - 114: {fileID: 221633537}
+  m_Layer: 5
+  m_Name: NetCondition 2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &221633536
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 221633535}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 93041477}
+  m_RootOrder: 5
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -0.00024414062, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &221633537
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 221633535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75009ccc1a593614683f01e37e96f93e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RequiredNetStatus: 2
+  TargetObjects:
+  - {fileID: 1077590762}
+  ActiveState: 0
+  ForceOpposite: 1
 --- !u!1 &236316270
 GameObject:
   m_ObjectHideFlags: 0
@@ -5812,7 +5864,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75009ccc1a593614683f01e37e96f93e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RequiredNetStatus: 1
+  RequiredNetStatus: 2
   TargetObjects:
   - {fileID: 1517613778}
   ActiveState: 1
@@ -5983,6 +6035,39 @@ CanvasRenderer:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 765272657}
+--- !u!1 &769181624
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 769181625}
+  m_Layer: 5
+  m_Name: mapWheelContainer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &769181625
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 769181624}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 150}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 2141120770}
+  m_RootOrder: 0
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 640, y: 360}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &770608438
 GameObject:
   m_ObjectHideFlags: 0
@@ -6109,6 +6194,7 @@ MonoBehaviour:
   PreSelectedButton: {fileID: 0}
   ParentMenu: {fileID: 1190475859}
   LastElementSelected: {fileID: 0}
+  LastButtonReset: 0
 --- !u!1 &786744434
 GameObject:
   m_ObjectHideFlags: 0
@@ -8219,17 +8305,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1852019642}
-        m_MethodName: SendSelectionToGameManager
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 2058223405}
         m_MethodName: StartGame
         m_Mode: 1
@@ -8327,17 +8402,6 @@ MonoBehaviour:
   Callback:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1852019642}
-        m_MethodName: SendSelectionToGameManager
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 2058223405}
         m_MethodName: StartGame
         m_Mode: 1
@@ -8531,7 +8595,6 @@ GameObject:
   m_Component:
   - 224: {fileID: 1077590766}
   - 114: {fileID: 1077590763}
-  - 114: {fileID: 1077590765}
   - 222: {fileID: 1077590764}
   m_Layer: 5
   m_Name: ClientWait
@@ -8573,31 +8636,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1077590762}
---- !u!114 &1077590765
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1077590762}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9f539befe85b5ce4c896a9b7bbc28b24, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UseAxis: 0
-  directionToListen: {x: 1, y: 0}
-  AxisPrecision: 0.4
-  InputToListen: 7
-  InputStringToListen: 
-  InputMethodUsed: 0
-  TimeToHold: 0.5
-  CanLoop: 0
-  Callback:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEventInt, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  UseKeyboard: 0
 --- !u!224 &1077590766
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9326,6 +9364,7 @@ MonoBehaviour:
   PreSelectedButton: {fileID: 281516472}
   ParentMenu: {fileID: 0}
   LastElementSelected: {fileID: 0}
+  LastButtonReset: 0
 --- !u!224 &1190475860
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10044,6 +10083,7 @@ MonoBehaviour:
   PreSelectedButton: {fileID: 0}
   ParentMenu: {fileID: 1190475859}
   LastElementSelected: {fileID: 0}
+  LastButtonReset: 0
 --- !u!222 &1289286215
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -10194,7 +10234,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75009ccc1a593614683f01e37e96f93e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RequiredNetStatus: 1
+  RequiredNetStatus: 2
   TargetObjects:
   - {fileID: 1010458320}
   ActiveState: 1
@@ -10434,29 +10474,7 @@ MonoBehaviour:
   Callback:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1852019642}
-        m_MethodName: ScrollLeft
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 1111860708}
-        m_MethodName: Activate
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1852019647}
         m_MethodName: Activate
         m_Mode: 1
         m_Arguments:
@@ -10492,29 +10510,7 @@ MonoBehaviour:
   Callback:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1852019642}
-        m_MethodName: ScrollRight
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 765272659}
-        m_MethodName: Activate
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1852019647}
         m_MethodName: Activate
         m_Mode: 1
         m_Arguments:
@@ -12283,6 +12279,7 @@ MonoBehaviour:
   PreSelectedButton: {fileID: 179405414}
   ParentMenu: {fileID: 1190475859}
   LastElementSelected: {fileID: 0}
+  LastButtonReset: 0
 --- !u!1 &1645069355
 GameObject:
   m_ObjectHideFlags: 0
@@ -14707,135 +14704,6 @@ CanvasRenderer:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1844765076}
---- !u!1 &1852019641
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 181946, guid: 04f18436bfd4b10419f1b6628433c808, type: 2}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 224: {fileID: 1852019646}
-  - 222: {fileID: 1852019645}
-  - 114: {fileID: 1852019642}
-  - 114: {fileID: 1852019647}
-  - 114: {fileID: 1852019643}
-  - 114: {fileID: 1852019644}
-  m_Layer: 5
-  m_Name: MAP WHEEL
-  m_TagString: Untagged
-  m_Icon: {fileID: -3545028842045912814, guid: 0000000000000000d000000000000000, type: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1852019642
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 11426802, guid: 04f18436bfd4b10419f1b6628433c808,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1852019641}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 941d6def22ea10c40bd2ef2a27300ec6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _wheelRadius: 2
-  _rotateSpeed: 0.3
-  ParentPlayer: {fileID: 0}
-  isGenerated: 0
---- !u!114 &1852019643
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1852019641}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 372142912, guid: 870353891bb340e2b2a9c8707e7419ba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SceneId:
-    m_Value: 0
-  m_AssetId:
-    i0: 0
-    i1: 0
-    i2: 0
-    i3: 0
-    i4: 0
-    i5: 0
-    i6: 0
-    i7: 0
-    i8: 0
-    i9: 0
-    i10: 0
-    i11: 0
-    i12: 0
-    i13: 0
-    i14: 0
-    i15: 0
-  m_ServerOnly: 0
-  m_LocalPlayerAuthority: 1
---- !u!114 &1852019644
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1852019641}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1768714887, guid: 870353891bb340e2b2a9c8707e7419ba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_TransformSyncMode: 1
-  m_SendInterval: 0.09090909
-  m_SyncRotationAxis: 7
-  m_RotationSyncCompression: 0
-  m_SyncSpin: 0
-  m_MovementTheshold: 0.001
-  m_SnapThreshold: 5
-  m_InterpolateRotation: 0.5
-  m_InterpolateMovement: 1
---- !u!222 &1852019645
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 22248582, guid: 04f18436bfd4b10419f1b6628433c808,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1852019641}
---- !u!224 &1852019646
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 22417162, guid: 04f18436bfd4b10419f1b6628433c808,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1852019641}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 150}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_Children: []
-  m_Father: {fileID: 2141120770}
-  m_RootOrder: 0
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 640, y: 360}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1852019647
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1852019641}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae415d7d51945e84bbf69c4f9b0bf9f6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SoundEvent:
-    FmodEvent: event:/Sfx/Menu/Menu Small Validate
-  AutoActivate: 0
-  Spatialized: 0
 --- !u!1 &1852050018
 GameObject:
   m_ObjectHideFlags: 0
@@ -15042,6 +14910,7 @@ MonoBehaviour:
   PreSelectedButton: {fileID: 1474529891}
   ParentMenu: {fileID: 1190475859}
   LastElementSelected: {fileID: 0}
+  LastButtonReset: 0
 --- !u!1 &1883429792
 GameObject:
   m_ObjectHideFlags: 0
@@ -15411,7 +15280,6 @@ GameObject:
   m_Component:
   - 224: {fileID: 1902570330}
   - 114: {fileID: 1902570331}
-  - 114: {fileID: 1902570332}
   m_Layer: 5
   m_Name: NetCondition
   m_TagString: Untagged
@@ -15448,25 +15316,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75009ccc1a593614683f01e37e96f93e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RequiredNetStatus: 1
+  RequiredNetStatus: 2
   TargetObjects:
   - {fileID: 765272657}
   - {fileID: 1111860707}
   - {fileID: 1410291338}
   ActiveState: 1
   ForceOpposite: 1
---- !u!114 &1902570332
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1902570329}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6cc23f503f41a1440b264ee7fb1ac103, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Target: {fileID: 1852019642}
 --- !u!1 &1903508734
 GameObject:
   m_ObjectHideFlags: 0
@@ -17538,19 +17394,20 @@ GameObject:
 --- !u!114 &2106610416
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 11435870, guid: 04f18436bfd4b10419f1b6628433c808,
-    type: 2}
+  m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2106610415}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc1b35124a69d6a49bd24e60339f40df, type: 3}
+  m_Script: {fileID: 11500000, guid: 2dc2dc5835bcd164bb3a7837588cd1a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   MenuName: MapSelect
   PreSelectedButton: {fileID: 1010458321}
   ParentMenu: {fileID: 1289286214}
   LastElementSelected: {fileID: 0}
+  LastButtonReset: 0
+  MapWheelTarget: {fileID: 769181625}
 --- !u!224 &2106610417
 RectTransform:
   m_ObjectHideFlags: 0
@@ -18177,7 +18034,7 @@ RectTransform:
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
-  - {fileID: 1852019646}
+  - {fileID: 769181625}
   - {fileID: 1003871105}
   - {fileID: 1414530645}
   - {fileID: 765272658}
@@ -18248,6 +18105,7 @@ MonoBehaviour:
   PreSelectedButton: {fileID: 0}
   ParentMenu: {fileID: 1634625128}
   LastElementSelected: {fileID: 0}
+  LastButtonReset: 0
 --- !u!1 &2145670843
 GameObject:
   m_ObjectHideFlags: 0
@@ -18294,7 +18152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75009ccc1a593614683f01e37e96f93e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RequiredNetStatus: 1
+  RequiredNetStatus: 2
   TargetObjects:
   - {fileID: 1903508734}
   ActiveState: 1
@@ -18312,6 +18170,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RequiredNetStatus: 1
   TargetObjects:
-  - {fileID: 1077590762}
+  - {fileID: 221633535}
   ActiveState: 0
   ForceOpposite: 1

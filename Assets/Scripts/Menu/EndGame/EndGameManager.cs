@@ -28,10 +28,22 @@ public class EndGameManager : GenericSingleton<EndGameManager>
 	{
 		Destroy(GameManager.Instance.GameRules.gameObject);
 		MainManager.Instance.LEVEL_MANAGER.UnloadScene(LevelManager.Instance.CurrentArenaConfig.BackgroundLevel);
+
 		CameraManager.Instance.Reset();
 		ServerManager.Instance.OnGameEnd();
 		if(NetworkServer.active)
+		{
+			for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; i++)
+			{
+				if (ServerManager.Instance.RegisteredPlayers[i].Controller != null)
+				{
+					Debug.Log("Destroying character " + ServerManager.Instance.RegisteredPlayers[i].Controller._characterData.IngameName);
+					Destroy(ServerManager.Instance.RegisteredPlayers[i].Controller.gameObject);
+				}
+			}
+
 			Player.LocalPlayer.CmdBroadCastOpenMenu(false, "Lobby");
+		}
 		else
 			Player.LocalPlayer.RpcOpenMenu(false, "Lobby");
 	}
@@ -56,6 +68,7 @@ public class EndGameManager : GenericSingleton<EndGameManager>
 	public void Open()
 	{
 		MenuPauseManager.Instance.CanPause = false;
+		MenuPauseManager.Instance.Close();
 		if(GUIManager.Instance != null)
 			GUIManager.Instance.SetActiveAll(false);
 		InputManager.SetInputLockTime(0.5f);

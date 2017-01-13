@@ -4,7 +4,6 @@ using System.Collections;
 
 public class CharacterSelectButton : InputListener
 {
-
 	void Awake()
 	{
 		SetVisibility(false);
