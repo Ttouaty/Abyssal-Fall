@@ -129,6 +129,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 	{
 		if (_controllerAlreadyInUse[joystickNumber] || LocalJoystickBuffer.Count >= 4)
 		{
+			Debug.Log("controller blocked");
 			return;
 		}
 

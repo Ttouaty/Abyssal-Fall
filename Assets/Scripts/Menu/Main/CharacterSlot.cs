@@ -5,12 +5,6 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Collections.Generic;
 
-struct SelectedCharacters
-{
-	public int characterIndex;
-	public int skinIndex;
-}
-
 public class CharacterSlot : MonoBehaviour
 {
 	private static PlayerController[] _availableCharacters;

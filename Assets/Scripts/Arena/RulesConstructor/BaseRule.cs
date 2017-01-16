@@ -1,24 +1,25 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
-public class BaseRule<T> : ScriptableObject
+public class BaseRule : ScriptableObject
 {
 	[SerializeField]
-	protected T[] Values;
+	protected string[] Values;
 	[Space]
 	public int _valueIndex = 0;
 	public string Label; // will be used with key translation
 
-	public virtual T Value
+	public virtual object Value
 	{
 		get{ return Values[_valueIndex]; }
 	}
 
-	public static implicit operator T(BaseRule<T> self)
+	public static implicit operator bool(BaseRule self)
 	{
-		return self.Value;
+		return Convert.ToBoolean(self.Value);
 	}
-	
+
 	public void SetToNextValue()
 	{
 		_valueIndex = (++_valueIndex).LoopAround(0, Values.Length - 1);
@@ -36,7 +37,6 @@ public class BaseRule<T> : ScriptableObject
 			Debug.LogWarning("ValueIndex set is outside of values array:\nindex: "+newValue+" / ValuesLength: "+Values.Length);
 			return;
 		}
-
 		_valueIndex = newValue;
 	}
 }

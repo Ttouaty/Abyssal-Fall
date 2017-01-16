@@ -2,8 +2,8 @@
 using System.Collections;
 
 [CreateAssetMenu(fileName = "NewEnumRule", menuName = "Abyssal Fall/Rules/EnumRule")]
-public class EnumRule : BaseRule<string>
-{
+public class EnumRule : BaseRule
+{ 
 	public static implicit operator int(EnumRule self)
 	{
 		return self._valueIndex;
@@ -11,6 +11,6 @@ public class EnumRule : BaseRule<string>
 
 	public override string ToString()
 	{
-		return Value;
+		return (string)Value;
 	}
 }

@@ -237,6 +237,15 @@ public static class MonoBehaviourExtensions
 {
 	private static AnimationCurve _easeOutCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
 
+	public static Transform DestroyAllChildren(this Transform transform)
+	{
+		foreach (Transform child in transform)
+		{
+			GameObject.Destroy(child.gameObject);
+		}
+		return transform;
+	}
+
 	public static void MoveTo(this MonoBehaviour objectMoved, Vector3 target, float time, bool local = false)
 	{
 		objectMoved.StartCoroutine(MoveCoroutine(objectMoved, target, time, local));

@@ -1,0 +1,116 @@
+﻿using UnityEngine;
+using System.Collections.Generic;
+using System;
+using System.Reflection;
+using UnityEngine.UI;
+using UnityEngine.Networking;
+
+public class OptionSelector : MonoBehaviour
+{
+	public Sprite NormalSprite;
+	public Sprite HighlightSprite;
+	[Space]
+	public OptionFieldInt	IntOptionPrefab;
+	public OptionFieldBool	BoolOptionPrefab;
+	public OptionFieldEnum	EnumOptionPrefab;
+
+	[Space]
+	private int NumberOfOptionsPerPage = 8;
+
+	private int				_activePage = 0;
+	private float			_nextButtonY = 0;
+	private AGameRules		_targetRuleSet;
+
+	private BaseOptionField _selectedField;
+	private List<BaseOptionField> _allFields = new List<BaseOptionField>();
+
+	void Start()
+	{
+	
+	}
+
+	public void Generate()
+	{
+		DynamicConfig.Instance.GetConfig(GameManager.Instance.CurrentGameConfiguration.ModeConfiguration, out _targetRuleSet);
+		BaseOptionField.TargetRuleSet = _targetRuleSet;
+		GenerateOptionFields();
+	}
+
+	void GenerateOptionFields()
+	{
+		transform.DestroyAllChildren();
+
+		foreach (var prop in _targetRuleSet.GetType().GetFields())
+		{
+			if (prop.FieldType == typeof(BoolRule))
+			{
+				if(prop.GetValue(_targetRuleSet) != null)
+					CreateOptionBoolField(prop.Name);
+			}
+			else if (prop.FieldType == typeof(IntRule))
+			{
+				if(prop.GetValue(_targetRuleSet) != null)
+					CreateOptionIntField(prop.Name);
+			}
+			else if(prop.FieldType == typeof(EnumRule))
+			{
+				if(prop.GetValue(_targetRuleSet) != null)
+					CreateOptionEnumField(prop.Name);
+			}
+		}
+
+		SelectField(_allFields[0]);
+	}
+
+	public void CreateOptionIntField(string ruleName)
+	{
+		GameObject newField = CreateOptionField(IntOptionPrefab.gameObject);
+		newField.GetComponent<OptionFieldInt>().SetTargetRule(ruleName);
+	}
+
+	public void CreateOptionBoolField(string ruleName)
+	{
+		GameObject newField = CreateOptionField(BoolOptionPrefab.gameObject);
+		newField.GetComponent<OptionFieldBool>().SetTargetRule(ruleName);
+	}
+
+	public void CreateOptionEnumField(string ruleName)
+	{
+		GameObject newField = CreateOptionField(EnumOptionPrefab.gameObject);
+		newField.GetComponent<OptionFieldEnum>().SetTargetRule(ruleName);
+	}
+
+	private GameObject CreateOptionField(GameObject newField)
+	{
+		GameObject newFieldGO = (GameObject)Instantiate(newField, transform, false);
+		_allFields.Add(newFieldGO.GetComponent<BaseOptionField>());
+
+		newFieldGO.transform.localPosition = new Vector3(0, _nextButtonY, 0);
+
+		_nextButtonY -= newFieldGO.GetComponent<RectTransform>().sizeDelta.y;
+		return newFieldGO;
+	}
+
+	public void SelectNext() { SelectField(_allFields[(_allFields.IndexOf(_selectedField) + 1).LoopAround(0, _allFields.Count - 1)]); }
+	public void SelectPrevious() { SelectField(_allFields[(_allFields.IndexOf(_selectedField) - 1).LoopAround(0, _allFields.Count - 1)]); }
+
+	public void IncreaseRule()
+	{
+		_selectedField.GetTargetRule().SetToNextValue();
+		_selectedField.OnIncrease();
+	}
+
+	public void DecreaseRule()
+	{
+		_selectedField.GetTargetRule().SetToPreviousValue();
+		_selectedField.OnDecrease();
+	}
+
+	private void SelectField(BaseOptionField targetField)
+	{
+		if (_selectedField != null)
+			_selectedField.gameObject.GetComponent<Image>().sprite = NormalSprite;
+		targetField.gameObject.GetComponent<Image>().sprite = HighlightSprite;
+		_selectedField = targetField;
+	}
+}
