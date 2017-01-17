@@ -9,13 +9,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 254f158f9cbcb3a4188036378265ee3c, type: 3}
-  m_Name: MatchDurationRule
+  m_Name: PointsLostForSuicideRule_FFA
   m_EditorClassIdentifier: 
   Values:
-  - 30
-  - 60
-  - 90
-  - 120
-  - 240
-  _valueIndex: 2
-  Label: How long does a match takes?
+  - -2
+  - -1
+  - 0
+  _valueIndex: 1
+  _defaultValue: 1
+  Label: Penalty for Suiciding
+  UserCanModify: 0

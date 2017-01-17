@@ -154,7 +154,7 @@ public class LevelManager : GenericSingleton<LevelManager>
 		}
 	}
 
-	public IEnumerator StartLevel(GameConfiguration config)
+	public IEnumerator StartLevel(GameConfiguration config, ParsedGameRules customRules)
 	{
 		if (!_bIsLoading)
 		{
@@ -169,6 +169,7 @@ public class LevelManager : GenericSingleton<LevelManager>
 			AGameRules rules				= Instantiate(CurrentModeConfig);
 			rules.transform.parent			= GameManager.Instance.transform;
 			rules.name						= "Game Rules";
+			rules.Parse(customRules);
 			GameManager.Instance.GameRules	= rules;
 
 			MainManager.Instance.GAME_OBJECT_POOL.DropAll();

@@ -14,7 +14,7 @@ public enum InputMethod
 // most fields a public because of custom editor, I need to check how to fix this :p
 public class InputListener : MonoBehaviour
 {
-	private float stickActivateThreshold = 0.7f;
+	private float stickActivateThreshold = 0.85f;
 
 	public bool UseAxis = false;
 	public Vector2 directionToListen = new Vector2(1, 0);
@@ -175,7 +175,7 @@ public class InputListener : MonoBehaviour
 			_waitForRelease[joy] = true;
 		_timeHeld = 0;
 		_JoystickRequestCallback = -1;
-		Callback.Invoke(new JoystickNumber(joy));
+		Callback.Invoke(joy);
 	}
 
 	void OnEnable()
@@ -200,17 +200,4 @@ public class InputListener : MonoBehaviour
 }
 
 [Serializable]
-public class UnityEventInt : UnityEvent<JoystickNumber> { }
-public class JoystickNumber
-{
-	private int value;
-	public JoystickNumber(int a)
-	{
-		value = a;
-	}
-
-	public static implicit operator int(JoystickNumber self)
-	{
-		return self.value;
-	}
-}
+public class UnityEventInt : UnityEvent<int> { }

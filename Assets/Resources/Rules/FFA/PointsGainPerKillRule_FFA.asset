@@ -9,13 +9,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 254f158f9cbcb3a4188036378265ee3c, type: 3}
-  m_Name: NumberOfRoundRule
+  m_Name: PointsGainPerKillRule_FFA
   m_EditorClassIdentifier: 
   Values:
   - 1
+  - 2
   - 3
-  - 5
-  - 7
-  - 10
-  _valueIndex: 2
-  Label: How Many wins are needed?
+  _valueIndex: 0
+  _defaultValue: 0
+  Label: Points Per Kill
+  UserCanModify: 0

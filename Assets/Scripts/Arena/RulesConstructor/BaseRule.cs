@@ -6,14 +6,22 @@ public class BaseRule : ScriptableObject
 {
 	[SerializeField]
 	protected string[] Values;
-	[Space]
+	[HideInInspector]
 	public int _valueIndex = 0;
+	[SerializeField]
+	private int _defaultValue = 0;
+	public int DefaultValue { get { return _defaultValue; } }
+	[Space]
 	public string Label; // will be used with key translation
+	public bool UserCanModify = true; // is the rule displayed in optionSelector
 
+
+	protected void OnEnable() { _valueIndex = _defaultValue; }
 	public virtual object Value
 	{
 		get{ return Values[_valueIndex]; }
 	}
+
 
 	public static implicit operator bool(BaseRule self)
 	{

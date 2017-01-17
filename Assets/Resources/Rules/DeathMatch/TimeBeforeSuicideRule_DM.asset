@@ -8,11 +8,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5db81f9c3fc6387479700c450b32bdd6, type: 3}
-  m_Name: CanTilesRespawn
+  m_Script: {fileID: 11500000, guid: 254f158f9cbcb3a4188036378265ee3c, type: 3}
+  m_Name: TimeBeforeSuicideRule_DM
   m_EditorClassIdentifier: 
   Values:
-  - false
-  - true
-  _valueIndex: 0
-  Label: Can Tiles Respawn ?
+  - 3
+  - 5
+  - 10
+  _valueIndex: 2
+  _defaultValue: 2
+  Label: Delay after being hit to register as a suicide
+  UserCanModify: 1

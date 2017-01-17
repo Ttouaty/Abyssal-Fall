@@ -125,11 +125,10 @@ public class MenuManager : GenericSingleton<MenuManager>
 		_characterSlotsContainerRef.CancelAllSelections(true);
 	}
 
-	public void RegisterNewPlayer(JoystickNumber joystickNumber)
+	public void RegisterNewPlayer(int joystickNumber)
 	{
-		if (_controllerAlreadyInUse[joystickNumber] || LocalJoystickBuffer.Count >= 4)
+		if (_controllerAlreadyInUse[joystickNumber])
 		{
-			Debug.Log("controller blocked");
 			return;
 		}
 
@@ -141,10 +140,8 @@ public class MenuManager : GenericSingleton<MenuManager>
 			Debug.Log("trying to start host");
 			StartLocalHost(); //Server side or starting server
 		}
-		else if(Player.LocalPlayer == null)
-		{
+		else if(NetworkServer.active)
 			ServerManager.Instance.TryToAddPlayer();
-		}
 	}
 
 	public void CloseCharacterSlot(int slotNumber)
@@ -195,10 +192,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 	{
 		if (NetworkServer.active && broadCast)
 		{
-			for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; i++)
-			{
-				ServerManager.Instance.RegisteredPlayers[i].RpcMenuTransition(newMenu.MenuName, forward);
-			}
+			Player.LocalPlayer.RpcMenuTransition(newMenu.MenuName, forward);
 		}
 		else 
 			StartCoroutine(Transition(newMenu, forward));
@@ -260,13 +254,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 			yield break;
 		}
 
-		if (newMenu.MenuName == "GameConfig")
-			MessageManager.Log("! WIP ! ya rien qui marche ici, laisse tomber.");
-		else if (newMenu.MenuName == "Main")
-		{
-			ResetCharacterSelector();
-		}
-		else if(newMenu.MenuName == "Lobby")
+		if(newMenu.MenuName == "Lobby")
 		{
 			ServerManager.Instance.IsInLobby = true;
 			//if(!NetworkClient.active)
@@ -274,9 +262,6 @@ public class MenuManager : GenericSingleton<MenuManager>
 			//	RegisterNewPlayer(new JoystickNumber(InputManager.AnyButtonDown(true) == -1 ? 0 : InputManager.AnyButtonDown(true)));
 			//}
 		}
-
-		//SetActiveButtons(newMenu, true); 
-
 
 		_activeMenu = newMenu;
 

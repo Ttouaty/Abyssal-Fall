@@ -9,11 +9,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 254f158f9cbcb3a4188036378265ee3c, type: 3}
-  m_Name: PointsLostForSuicideRule
+  m_Name: TileRegerationTimeRule_DM
   m_EditorClassIdentifier: 
   Values:
-  - -2
-  - -1
-  - 0
+  - 3
+  - 5
+  - 10
   _valueIndex: 1
-  Label: Penalty for Suiciding
+  _defaultValue: 1
+  Label: Time for a block to come back
+  UserCanModify: 1

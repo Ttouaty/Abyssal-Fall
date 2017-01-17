@@ -39,11 +39,6 @@ public class ConnectionModule : MonoBehaviour
 		}
 
 		Debug.Log("looking for games with gameType: "+ "AbyssalFall-" + Code.ToLower());
-		Debug.Log("Setting MenuManager joystick buffer");
-
-		MenuManager.Instance.LocalJoystickBuffer.Add(0);
-		if (InputManager.AnyButtonDown(true) != -1)
-			MenuManager.Instance.LocalJoystickBuffer.Add(InputManager.AnyButtonDown(true));
 
 		ServerManager.Instance.ConnectToMatch(Code.ToLower());
 	}

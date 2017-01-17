@@ -83,24 +83,25 @@ public class GameManager : GenericSingleton<GameManager>
 			MenuManager.Instance.GetComponentInChildren<MapSelectWheel>(true).SendSelectionToGameManager();
 			for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; i++)
 			{
-				ServerManager.Instance.RegisteredPlayers[i].RpcStartGame(CurrentGameConfiguration);
+				AGameRules tempRules;
+				MainManager.Instance.DYNAMIC_CONFIG.GetConfig(CurrentGameConfiguration.ModeConfiguration, out tempRules);
+				ServerManager.Instance.RegisteredPlayers[i].RpcStartGame(CurrentGameConfiguration, tempRules.Serialize());
 			}
 		}
 		else
 			Debug.LogError("StartGame(); called from client! This should not be allowed! Aborting");
-
 	}
 
 
-	public void StartGameWithConfig(GameConfiguration newConfig)
+	public void StartGameWithConfig(GameConfiguration newConfig, ParsedGameRules customConfig)
 	{
 		CurrentGameConfiguration = newConfig;
 		CurrentStage = 1;
-		StartCoroutine(StartLevelCoroutine());
+		StartCoroutine(StartLevelCoroutine(customConfig));
 	}
-	private IEnumerator StartLevelCoroutine()
+	private IEnumerator StartLevelCoroutine(ParsedGameRules customConfig)
 	{
-		yield return StartCoroutine(AutoFade.StartFade(1, LevelManager.Instance.StartLevel(CurrentGameConfiguration), AutoFade.EndFade(0.5f, 1, Color.black), Color.black));
+		yield return StartCoroutine(AutoFade.StartFade(1, LevelManager.Instance.StartLevel(CurrentGameConfiguration, customConfig), AutoFade.EndFade(0.5f, 1, Color.black), Color.black));
 		InProgress = true;
 	}
 

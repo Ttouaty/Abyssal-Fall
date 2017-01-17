@@ -9,11 +9,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 254f158f9cbcb3a4188036378265ee3c, type: 3}
-  m_Name: PointsGainPerKillRule
+  m_Name: TimeBeforeSuicideRule_FFA
   m_EditorClassIdentifier: 
   Values:
-  - 1
-  - 2
   - 3
-  _valueIndex: 0
-  Label: Points Per Kill
+  - 5
+  - 10
+  _valueIndex: 2
+  _defaultValue: 2
+  Label: Delay after being hit to register as a suicide
+  UserCanModify: 0

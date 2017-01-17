@@ -3,6 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Networking;
 
+public struct ParsedGameRules
+{
+	public int IsMatchRoundBased;
+	public int CanPlayerRespawn;
+	public int CanFalledTilesRespawn;
+	public int NumberOfRounds;
+	public int MatchDuration;
+	public int TileRegerationTime;
+	public int PointsGainPerKill;
+	public int PointsLoosePerSuicide;
+	public int TimeBeforeSuicide;
+}
+
 public abstract class AGameRules : MonoBehaviour 
 {
 
@@ -66,5 +79,33 @@ public abstract class AGameRules : MonoBehaviour
 		}
 		ArenaManager.Instance.DisableBehaviours();
 		CameraManager.Instance.ClearTrackedTargets();
+	}
+
+	public virtual ParsedGameRules Serialize()
+	{
+		ParsedGameRules newParsedRules = new ParsedGameRules();
+		newParsedRules.IsMatchRoundBased = IsMatchRoundBased._valueIndex;
+		newParsedRules.CanPlayerRespawn = CanPlayerRespawn._valueIndex;
+		newParsedRules.CanFalledTilesRespawn = CanFalledTilesRespawn._valueIndex;
+		newParsedRules.NumberOfRounds = NumberOfRounds._valueIndex;
+		newParsedRules.MatchDuration = MatchDuration._valueIndex;
+		newParsedRules.TileRegerationTime = TileRegerationTime._valueIndex;
+		newParsedRules.PointsGainPerKill = PointsGainPerKill._valueIndex;
+		newParsedRules.PointsLoosePerSuicide = PointsLoosePerSuicide._valueIndex;
+		newParsedRules.TimeBeforeSuicide = TimeBeforeSuicide._valueIndex;
+		return newParsedRules;
+	}
+
+	public virtual void Parse(ParsedGameRules newRule)
+	{
+		IsMatchRoundBased._valueIndex = newRule.IsMatchRoundBased;
+		CanPlayerRespawn._valueIndex = newRule.CanPlayerRespawn;
+		CanFalledTilesRespawn._valueIndex = newRule.CanFalledTilesRespawn;
+		NumberOfRounds._valueIndex = newRule.NumberOfRounds;
+		MatchDuration._valueIndex = newRule.MatchDuration;
+		TileRegerationTime._valueIndex = newRule.TileRegerationTime;
+		PointsGainPerKill._valueIndex = newRule.PointsGainPerKill;
+		PointsLoosePerSuicide._valueIndex = newRule.PointsLoosePerSuicide;
+		TimeBeforeSuicide._valueIndex = newRule.TimeBeforeSuicide;
 	}
 }

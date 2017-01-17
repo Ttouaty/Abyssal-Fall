@@ -75,7 +75,7 @@ public class InputManager : GenericSingleton<InputManager>
 
 	public static string AnyKeyDown()
 	{
-		return (string)Input.inputString;
+		return Input.inputString;
 	}
 
 	/// <summary>

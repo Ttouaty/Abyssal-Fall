@@ -143,6 +143,12 @@ public class ServerManager : NATTraversal.NetworkManager
 			return;
 		}
 
+		if(RegisteredPlayers.Count >= 4)
+		{
+			Debug.LogError("Too much players abording creation");
+			return;
+		}
+
 		if (NetworkClient.allClients.Count != 0)
 		{
 			Debug.Log("add player");

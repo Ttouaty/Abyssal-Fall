@@ -37,7 +37,7 @@ public class TutorialManager : GenericSingleton<TutorialManager>
 		CameraManager.Instance.SetCamAngle(30, Vector3.right);
 	}
 
-	public void SpawnPlayer(JoystickNumber joyStick)
+	public void SpawnPlayer(int joyStick)
 	{
 		PoolConfiguration[] assets = TutorialCharacter.GetComponent<PlayerController>()._characterData.OtherAssetsToLoad;
 		MainManager.Instance.GAME_OBJECT_POOL.DropAll();

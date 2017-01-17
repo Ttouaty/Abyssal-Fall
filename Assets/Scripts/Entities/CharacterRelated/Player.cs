@@ -150,14 +150,7 @@ public class Player : NetworkBehaviour
 					JoystickNumber = MenuManager.Instance.LocalJoystickBuffer[MenuManager.Instance.LocalJoystickBuffer.Count - 1];
 					Debug.Log("player " + name + " created with joystick number: " + JoystickNumber);
 				}
-				else
-				{
-					Debug.Log("No joystickBuffer found in menu manager: closing connection.");
-					Network.Disconnect();
-					MenuManager.Instance.MakeTransition("Main");
-				}
 			}
-
 		}
 	}
 
@@ -165,6 +158,22 @@ public class Player : NetworkBehaviour
 	{
 		base.OnStartClient();
 		CmdUpdatePlayerList();
+	}
+
+	void Update()
+	{
+		if(isLocalPlayer)
+		{
+			if(!NetworkServer.active && JoystickNumber == 0)
+			{
+				int newJoystick = InputManager.AnyButtonDown(true);
+				if (newJoystick != -1)
+				{
+					MessageManager.Log("Joystick Detected.\nOverriding keyboard controls.");
+					JoystickNumber = newJoystick;
+				}
+			}
+		}
 	}
 
 	[Command]
@@ -181,20 +190,17 @@ public class Player : NetworkBehaviour
 	[ClientRpc]
 	public void RpcMenuTransition(string newMenuName, bool dir)
 	{
-		if (isLocalPlayer)
-		{
-			Debug.Log("Making transition on player with netId => " + netId);
-			MenuManager.Instance.MakeTransition(newMenuName, dir, false);
-		}
+		Debug.Log("Making transition on player with netId => " + netId);
+		MenuManager.Instance.MakeTransition(newMenuName, dir, false);
 	}
 
 	[ClientRpc]
-	public void RpcStartGame(GameConfiguration newGameConfig)
+	public void RpcStartGame(GameConfiguration newGameConfig, ParsedGameRules customRules)
 	{
 		if (isLocalPlayer)
 		{
 			Debug.Log("Player N°=> " + PlayerNumber + " is starting game with config.");
-			GameManager.Instance.StartGameWithConfig(newGameConfig);
+			GameManager.Instance.StartGameWithConfig(newGameConfig, customRules);
 		}
 	}
 

@@ -15,18 +15,21 @@ public class OptionSelector : MonoBehaviour
 	public OptionFieldEnum	EnumOptionPrefab;
 
 	[Space]
-	private int NumberOfOptionsPerPage = 8;
+	public Transform ButtonContainer;
+	public int ButtonScrollMargin = 3;
 
-	private int				_activePage = 0;
-	private float			_nextButtonY = 0;
+	private Vector3			_nextButtonPosition = Vector3.zero;
 	private AGameRules		_targetRuleSet;
 
+	private int _selectedFieldIndex;
 	private BaseOptionField _selectedField;
 	private List<BaseOptionField> _allFields = new List<BaseOptionField>();
 
-	void Start()
+	void Update()
 	{
-	
+		ButtonContainer.transform.localPosition = Vector3.Lerp(ButtonContainer.transform.localPosition, 
+																new Vector3(0,Mathf.Clamp(_selectedFieldIndex - ButtonScrollMargin, 0, _allFields.Count - 1 - (ButtonScrollMargin * 2)) * BoolOptionPrefab.GetComponent<RectTransform>().sizeDelta.y), 
+																Time.deltaTime * 10);
 	}
 
 	public void Generate()
@@ -38,24 +41,27 @@ public class OptionSelector : MonoBehaviour
 
 	void GenerateOptionFields()
 	{
-		transform.DestroyAllChildren();
+		ButtonContainer.DestroyAllChildren();
 
 		foreach (var prop in _targetRuleSet.GetType().GetFields())
 		{
 			if (prop.FieldType == typeof(BoolRule))
 			{
 				if(prop.GetValue(_targetRuleSet) != null)
-					CreateOptionBoolField(prop.Name);
+					if(((BoolRule)prop.GetValue(_targetRuleSet)).UserCanModify)
+						CreateOptionBoolField(prop.Name);
 			}
 			else if (prop.FieldType == typeof(IntRule))
 			{
 				if(prop.GetValue(_targetRuleSet) != null)
-					CreateOptionIntField(prop.Name);
+					if(((IntRule)prop.GetValue(_targetRuleSet)).UserCanModify)
+						CreateOptionIntField(prop.Name);
 			}
 			else if(prop.FieldType == typeof(EnumRule))
 			{
 				if(prop.GetValue(_targetRuleSet) != null)
-					CreateOptionEnumField(prop.Name);
+					if(((EnumRule)prop.GetValue(_targetRuleSet)).UserCanModify)
+						CreateOptionEnumField(prop.Name);
 			}
 		}
 
@@ -82,12 +88,12 @@ public class OptionSelector : MonoBehaviour
 
 	private GameObject CreateOptionField(GameObject newField)
 	{
-		GameObject newFieldGO = (GameObject)Instantiate(newField, transform, false);
+		GameObject newFieldGO = (GameObject)Instantiate(newField, ButtonContainer, false);
 		_allFields.Add(newFieldGO.GetComponent<BaseOptionField>());
+		newFieldGO.transform.localPosition = _nextButtonPosition;
 
-		newFieldGO.transform.localPosition = new Vector3(0, _nextButtonY, 0);
+		_nextButtonPosition.y -= newFieldGO.GetComponent<RectTransform>().sizeDelta.y;
 
-		_nextButtonY -= newFieldGO.GetComponent<RectTransform>().sizeDelta.y;
 		return newFieldGO;
 	}
 
@@ -112,5 +118,6 @@ public class OptionSelector : MonoBehaviour
 			_selectedField.gameObject.GetComponent<Image>().sprite = NormalSprite;
 		targetField.gameObject.GetComponent<Image>().sprite = HighlightSprite;
 		_selectedField = targetField;
+		_selectedFieldIndex = _allFields.IndexOf(_selectedField);
 	}
 }
