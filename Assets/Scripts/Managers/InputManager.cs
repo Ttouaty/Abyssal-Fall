@@ -54,7 +54,7 @@ public class InputManager : GenericSingleton<InputManager>
 		if (Input.anyKeyDown)
 			return true;
 
-		_tempJoyNames = Input.GetJoystickNames();
+		_tempJoyNames = GetJoystickNames();
 		for (int i = 0; i < _tempJoyNames.Length; i++)
 		{
 			for (int j = 0; j < 7; j++)
@@ -73,6 +73,19 @@ public class InputManager : GenericSingleton<InputManager>
 		return false;
 	}
 
+	public static string[] GetJoystickNames()
+	{
+		string[] joystickNames = Input.GetJoystickNames();
+		string[] returnArray = new string[joystickNames.Length + 1];
+		for (int i = 1; i < joystickNames.Length + 1; i++)
+		{
+			returnArray[i] = joystickNames[i - 1];
+		}
+		returnArray[0] = "Keyboard";
+
+		return returnArray;
+	}
+
 	public static string AnyKeyDown()
 	{
 		return Input.inputString;
@@ -85,7 +98,7 @@ public class InputManager : GenericSingleton<InputManager>
 	/// <returns> -1 if nothing is pressed</returns>
 	public static int AnyButtonDown(bool gamepadNumber = true)
 	{
-		_tempJoyNames = Input.GetJoystickNames();
+		_tempJoyNames = GetJoystickNames();
 		for (int i = 0; i < _tempJoyNames.Length; i++)
 		{
 			for (int j = 0; j < 7; j++)

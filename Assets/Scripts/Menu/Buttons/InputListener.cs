@@ -49,7 +49,7 @@ public class InputListener : MonoBehaviour
 
 	protected virtual void Update()
 	{
-		string[] tempStringArray = Input.GetJoystickNames();
+		string[] tempStringArray = InputManager.GetJoystickNames();
 		for (int i = -1; i < tempStringArray.Length; ++i)
 		{
 			if (i != -1)
