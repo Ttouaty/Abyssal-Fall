@@ -6,8 +6,9 @@ using System.Collections;
 public class SO_Character :  ScriptableObject{
 	public static  Vector3 SpecialEjection = new Vector3(2.25f,4.905f); // base ejection is 1.5f,4.905f (* 1.5f because tile scale) (Vector3 used for extensions) this vector is equal to 1m ejection with x2 gravity
 	public string IngameName;
-	public Image Icon;
-	public CharacterModel CharacterModel;
+	public Sprite Icon;
+	public Sprite DarkIcon;
+	public CharacterModel CharacterSelectModel;
 	public Material[] CharacterMaterials;
 	
 	[Header("Stats")]
@@ -26,5 +27,4 @@ public class SO_Character :  ScriptableObject{
 	[Space]
 	[Header("Pool")]
 	public PoolConfiguration[] OtherAssetsToLoad;
-	//public string[] sounds = { "Not Used for now" };
 }

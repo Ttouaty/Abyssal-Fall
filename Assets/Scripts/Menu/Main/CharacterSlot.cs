@@ -4,13 +4,14 @@ using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Collections.Generic;
+using System;
 
 public class CharacterSlot : MonoBehaviour
 {
 	private static PlayerController[] _availableCharacters;
 	public static ParticleSystem OnCharacterSelectedParticles;
-	
-
+	public CharacterSelectPedestal TargetPedestal;
+	public Transform WheelSlot;
 	private float _switchCharacterDelay = 0.15f;
 	private TimeCooldown _switchCharacterCooldown;
 
@@ -20,6 +21,7 @@ public class CharacterSlot : MonoBehaviour
 	[HideInInspector]
 	public bool Selected = false;
 
+	[Space]
 	public UnityEvent OnSlotOpen;
 	public UnityEvent OnSlotClose;
 
@@ -27,7 +29,6 @@ public class CharacterSlot : MonoBehaviour
 	[HideInInspector]
 	public Player _playerRef;
 	private CharacterSelectWheel _wheelRef;
-	public Transform WheelSlot;
 
 	public PlayerController GetSelectedCharacter
 	{
@@ -103,6 +104,11 @@ public class CharacterSlot : MonoBehaviour
 
 	}
 
+	public void SelectPedestal(bool ready)
+	{
+		TargetPedestal.SetSelect(ready);
+	}
+
 	void SelectCharacter()
 	{
 		//if (_activeCoroutineRef != null)
@@ -117,7 +123,6 @@ public class CharacterSlot : MonoBehaviour
 		spawnParticles.GetComponent<FlashAndRotate>()._rotationAxis = transform.forward;
 
 		Selected = true;
-		//_activeCoroutineRef = StartCoroutine(SlideCharacterModelIn());
 	}
 
 	

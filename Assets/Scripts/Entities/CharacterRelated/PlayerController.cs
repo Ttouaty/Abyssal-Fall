@@ -270,12 +270,6 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		CharacterModel playerMesh = _transf.GetComponentInChildren<CharacterModel>();
 		_characterData.SoundList.Generate();
 
-			//Instantiates player mesh and retrieves its props and particles
-			//playerMesh = Instantiate(_characterData.CharacterModel.gameObject) as GameObject;
-			//playerMesh.transform.SetParent(_transf.FindChild("CharacterModel"));
-			//playerMesh.transform.localPosition = Vector3.zero;
-			//playerMesh.transform.localRotation = Quaternion.identity;
-
 		playerMesh.Reskin(_characterData.CharacterMaterials[_playerRef.SkinNumber]);
 
 		_animator = playerMesh.GetComponentInChildren<Animator>();

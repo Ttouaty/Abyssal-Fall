@@ -147,8 +147,8 @@ public class CharacterSelectWheel : NetworkBehaviour
 
 		for (int i = 0; i < tempGenerationSelectableCharacters.Length; i++)
 		{
-			tempGenerationSelectableCharacters[i] = Instantiate(AvailablePlayers[i]._characterData.CharacterModel.gameObject) as GameObject;
-			tempGenerationSelectableCharacters[i].transform.localScale = transform.parent.parent.localScale * 1.8f;
+			tempGenerationSelectableCharacters[i] = Instantiate(AvailablePlayers[i]._characterData.CharacterSelectModel.gameObject) as GameObject;
+			tempGenerationSelectableCharacters[i].transform.localScale = transform.parent.localScale * 1.8f;
 			//tempGenerationSelectableCharacters[i].AddComponent<NetworkIdentity>();
 			//NetworkServer.Spawn(tempGenerationSelectableCharacters[i]);
 		}
@@ -157,8 +157,6 @@ public class CharacterSelectWheel : NetworkBehaviour
 		Internal_Generate(tempGenerationSelectableCharacters, AvailablePlayers);
 		_selectedElementIndex = _playerRef.GetComponent<Player>().CharacterUsedIndex;
 		_selectedSkinIndex = _playerRef.GetComponent<Player>().SkinNumber;
-		//ScrollToIndex(_selectedElementIndex);
-		//ChangeCharacterSkin(_selectedSkinIndex);
 	}
 
 	public Material GetSelectedSkin()

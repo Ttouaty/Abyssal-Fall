@@ -25,7 +25,7 @@ public class Player : NetworkBehaviour
 		private set { _ready = value; }
 	}
 
-	[SyncVar]
+	[SyncVar(hook = "SetWheelReady")]
 	private bool _ready;
 	[HideInInspector]
 	[SyncVar]
@@ -65,6 +65,12 @@ public class Player : NetworkBehaviour
 	{
 		_ready = true;
 		CmdReadyPlayer(characterIndex, indexSkinUsed);
+	}
+
+	public void SetWheelReady(bool ready)
+	{
+		_ready = ready;
+		MenuManager.Instance._characterSlotsContainerRef.SlotsAvailable[PlayerNumber - 1].SelectPedestal(ready);
 	}
 
 	[Command]
