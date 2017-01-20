@@ -9,8 +9,8 @@ public class CharacterSelectWheel : NetworkBehaviour
 	public float _wheelRadius = 3;
 	public float _rotateSpeed = 0.2f;
 
-	protected float _alphaThresholdAngleMin = 20;
-	protected float _alphaThresholdAngleMax = 150;
+	protected float _alphaThresholdAngleMin = 45;
+	protected float _alphaThresholdAngleMax = 170;
 
 
 	protected GameObject[] _displayArray = new GameObject[0];
@@ -144,7 +144,7 @@ public class CharacterSelectWheel : NetworkBehaviour
 			//NetworkServer.Spawn(tempGenerationSelectableCharacters[i]);
 		}
 
-		_wheelRadius = Mathf.Abs(transform.parent.localPosition.z * 2);
+		_wheelRadius = Mathf.Abs(transform.parent.localPosition.z * 2.5f);
 		Internal_Generate(tempGenerationSelectableCharacters, AvailablePlayers);
 		_selectedElementIndex = _playerRef.GetComponent<Player>().CharacterUsedIndex;
 		_selectedSkinIndex = _playerRef.GetComponent<Player>().SkinNumber;

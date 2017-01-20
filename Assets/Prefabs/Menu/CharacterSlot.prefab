@@ -521,7 +521,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72f5b0eb1ab196c4080a12953ba7fcd6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TargetPedestal: {fileID: 0}
+  TargetPedestal: {fileID: 114000011334901928}
   WheelSlot: {fileID: 224000013302360248}
   Open: 0
   Selected: 0
@@ -717,7 +717,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   RotatePerSec: 90
-  TimeToScaleUp: 0.3
+  TimeToScaleUp: 0.15
 --- !u!114 &114000011790885642
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -730,7 +730,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.20864944, g: 0.791, b: 0.13130601, a: 1}
+  m_Color: {r: 0.791, g: 0.13130601, b: 0.13130601, a: 1}
   m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -750,7 +750,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 0
-  m_Text: P3
+  m_Text: P1
 --- !u!114 &114000013088392482
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -860,7 +860,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000013783767452}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -57}
+  m_LocalPosition: {x: 0, y: 0, z: -67.8}
   m_LocalScale: {x: 1, y: 1, z: 2}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
@@ -1032,8 +1032,8 @@ RectTransform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000013322876698}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 75}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_LocalPosition: {x: 0, y: 0, z: 60}
+  m_LocalScale: {x: 0.45, y: 0.45, z: 0.45}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 224000011102711984}

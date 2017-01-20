@@ -15,7 +15,6 @@ public class CharacterSlot : MonoBehaviour
 	private float _switchCharacterDelay = 0.15f;
 	private TimeCooldown _switchCharacterCooldown;
 
-	private int _joyToListen; 
 	[HideInInspector]
 	public bool Open = false;
 	[HideInInspector]
@@ -78,28 +77,30 @@ public class CharacterSlot : MonoBehaviour
 			return;
 		if (!_playerRef.isLocalPlayer)
 			return;
-		if (InputManager.GetButtonDown(InputEnum.B, _joyToListen) && Selected)
+
+
+		if (InputManager.GetButtonDown(InputEnum.B, _playerRef.JoystickNumber) && Selected)
 			CancelCharacterSelection();
 		if (Selected)
 			return;
 
-		if (Mathf.Abs(InputManager.GetAxis("x", _joyToListen)) < 0.5f)
+		if (Mathf.Abs(InputManager.GetAxis("x", _playerRef.JoystickNumber)) < 0.5f)
 		{
 			_switchCharacterCooldown.Set(0);
 			_canSwitchCharacter = true;
 		}
 
-		if (_canSwitchCharacter && Mathf.Abs(InputManager.GetAxis("x", _joyToListen)) > 0.7f)
+		if (_canSwitchCharacter && Mathf.Abs(InputManager.GetAxis("x", _playerRef.JoystickNumber)) > 0.7f)
 		{
-			ChangeCharacter((int)Mathf.Sign(InputManager.GetAxis("x", _joyToListen)));
+			ChangeCharacter((int)Mathf.Sign(InputManager.GetAxis("x", _playerRef.JoystickNumber)));
 		}
 
-		if (InputManager.GetButtonDown(InputEnum.X, _joyToListen))
+		if (InputManager.GetButtonDown(InputEnum.X, _playerRef.JoystickNumber))
 			_wheelRef.CmdChangeCharacterSkin((_wheelRef._selectedSkinIndex - 1).LoopAround(0, _availableCharacters[_wheelRef._selectedElementIndex]._characterData.CharacterMaterials.Length - 1));
-		if (InputManager.GetButtonDown(InputEnum.Y, _joyToListen))
+		if (InputManager.GetButtonDown(InputEnum.Y, _playerRef.JoystickNumber))
 			_wheelRef.CmdChangeCharacterSkin((_wheelRef._selectedSkinIndex + 1).LoopAround(0, _availableCharacters[_wheelRef._selectedElementIndex]._characterData.CharacterMaterials.Length - 1));
 
-		if (InputManager.GetButtonDown(InputEnum.A, _joyToListen))
+		if (InputManager.GetButtonDown(InputEnum.A, _playerRef.JoystickNumber))
 			SelectCharacter();
 
 	}
@@ -115,12 +116,12 @@ public class CharacterSlot : MonoBehaviour
 		//	StopCoroutine(_activeCoroutineRef);
 		_playerRef.Ready(_wheelRef._selectedElementIndex, _wheelRef._selectedSkinIndex);
 		
-		Vector3 camDirection = (Camera.main.transform.position - transform.position).normalized;
-
-		ParticleSystem spawnParticles = (ParticleSystem) Instantiate(OnCharacterSelectedParticles, transform.position + camDirection * 1.5f, Quaternion.identity);
-		spawnParticles.transform.parent = MenuManager.Instance.transform;
-		spawnParticles.transform.rotation = Quaternion.LookRotation(transform.forward, transform.up);
-		spawnParticles.GetComponent<FlashAndRotate>()._rotationAxis = transform.forward;
+		//Vector3 camDirection = (Camera.main.transform.position - transform.position).normalized;
+		//SelectCharacter();
+		//ParticleSystem spawnParticles = (ParticleSystem) Instantiate(OnCharacterSelectedParticles, transform.position + camDirection * 1.5f, Quaternion.identity);
+		//spawnParticles.transform.parent = MenuManager.Instance.transform;
+		//spawnParticles.transform.rotation = Quaternion.LookRotation(transform.forward, transform.up);
+		//spawnParticles.GetComponent<FlashAndRotate>()._rotationAxis = transform.forward;
 
 		Selected = true;
 	}
@@ -152,7 +153,6 @@ public class CharacterSlot : MonoBehaviour
 
 		//Debug.Log("Generate wheel "+name+" with netID => "+_wheelRef.GetComponent<NetworkIdentity>().netId);
 		_playerRef = _wheelRef._playerRef.GetComponent<Player>();
-		_joyToListen = _playerRef.JoystickNumber;
 		_wheelRef.transform.localRotation = Quaternion.identity;
 
 		//if (!NetworkServer.active || _netSpawned)
