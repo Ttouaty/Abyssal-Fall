@@ -270,7 +270,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		CharacterModel playerMesh = _transf.GetComponentInChildren<CharacterModel>();
 		_characterData.SoundList.Generate();
 
-		playerMesh.Reskin(_characterData.CharacterMaterials[_playerRef.SkinNumber]);
+		playerMesh.Reskin(_playerRef.SkinNumber);
 
 		_animator = playerMesh.GetComponentInChildren<Animator>();
 		_characterProp = transform.GetComponentInChildren<CharacterProp>();

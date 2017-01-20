@@ -150,24 +150,19 @@ public class CharacterSelectWheel : NetworkBehaviour
 		_selectedSkinIndex = _playerRef.GetComponent<Player>().SkinNumber;
 	}
 
-	public Material GetSelectedSkin()
-	{
-		return GetSelectedElement()._characterData.CharacterMaterials[_selectedSkinIndex];
-	}
-
 	public void ChangeCharacterSkinPrecise(int skinIndex, int characterIndex)
 	{
 		if(characterIndex == -1)
-			_displayArray[_selectedElementIndex].GetComponent<CharacterModel>().Reskin(_returnArray[_selectedElementIndex]._characterData.CharacterMaterials[skinIndex]);
+			_displayArray[_selectedElementIndex].GetComponent<CharacterModel>().Reskin(skinIndex);
 		else
-			_displayArray[characterIndex].GetComponent<CharacterModel>().Reskin(_returnArray[characterIndex]._characterData.CharacterMaterials[skinIndex]);
+			_displayArray[characterIndex].GetComponent<CharacterModel>().Reskin(skinIndex);
 
 		_selectedSkinIndex = skinIndex;
 	}
 
 	public void ChangeCharacterSkin(int skinIndex)
 	{
-		_displayArray[_selectedElementIndex].GetComponent<CharacterModel>().Reskin(_returnArray[_selectedElementIndex]._characterData.CharacterMaterials[skinIndex]);
+		_displayArray[_selectedElementIndex].GetComponent<CharacterModel>().Reskin(skinIndex);
 		_selectedSkinIndex = skinIndex;
 	}
 

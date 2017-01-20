@@ -9,7 +9,7 @@ public class SO_Character :  ScriptableObject{
 	public Sprite Icon;
 	public Sprite DarkIcon;
 	public CharacterModel CharacterSelectModel;
-	public Material[] CharacterMaterials;
+	public int NumberOfSkins = 4;
 	
 	[Header("Stats")]
 	public Stats CharacterStats;

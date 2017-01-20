@@ -29,22 +29,6 @@ public class CharacterSlot : MonoBehaviour
 	public Player _playerRef;
 	private CharacterSelectWheel _wheelRef;
 
-	public PlayerController GetSelectedCharacter
-	{
-		get
-		{
-			return GetComponentInChildren<CharacterSelectWheel>().GetSelectedElement();
-		}
-	}
-	
-	public Material GetSelectedSkin
-	{
-		get
-		{
-			return GetComponentInChildren<CharacterSelectWheel>().GetSelectedSkin();
-		}
-	}
-
 	private CharacterSelector _selectorRef;
 	void Start()
 	{
@@ -96,9 +80,9 @@ public class CharacterSlot : MonoBehaviour
 		}
 
 		if (InputManager.GetButtonDown(InputEnum.X, _playerRef.JoystickNumber))
-			_wheelRef.CmdChangeCharacterSkin((_wheelRef._selectedSkinIndex - 1).LoopAround(0, _availableCharacters[_wheelRef._selectedElementIndex]._characterData.CharacterMaterials.Length - 1));
+			_wheelRef.CmdChangeCharacterSkin((_wheelRef._selectedSkinIndex - 1).LoopAround(0, _availableCharacters[_wheelRef._selectedElementIndex]._characterData.NumberOfSkins -1));
 		if (InputManager.GetButtonDown(InputEnum.Y, _playerRef.JoystickNumber))
-			_wheelRef.CmdChangeCharacterSkin((_wheelRef._selectedSkinIndex + 1).LoopAround(0, _availableCharacters[_wheelRef._selectedElementIndex]._characterData.CharacterMaterials.Length - 1));
+			_wheelRef.CmdChangeCharacterSkin((_wheelRef._selectedSkinIndex + 1).LoopAround(0, _availableCharacters[_wheelRef._selectedElementIndex]._characterData.NumberOfSkins -1));
 
 		if (InputManager.GetButtonDown(InputEnum.A, _playerRef.JoystickNumber))
 			SelectCharacter();

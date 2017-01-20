@@ -163,7 +163,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 158464}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -14.017565, y: 3.8267767, z: -156.20355}
+  m_LocalPosition: {x: 16.43, y: 0.75, z: -164.91}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
@@ -387,8 +387,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 733331f5023aa04418e28b2c77fc42a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _elementsToReskin:
-  - {fileID: 2336398}
+  _SkinArray:
+  - TargetMeshes:
+    - {fileID: 2336398}
+    - {fileID: 23000013675162076}
+    - {fileID: 23000011551762304}
+    TargetMaterials:
+    - {fileID: 2100000, guid: a6e8202b05519ec4e9488f6f40a8cd2b, type: 2}
+    - {fileID: 2100000, guid: a6e8202b05519ec4e9488f6f40a8cd2b, type: 2}
+    - {fileID: 2100000, guid: a6e8202b05519ec4e9488f6f40a8cd2b, type: 2}
+  - TargetMeshes:
+    - {fileID: 2336398}
+    - {fileID: 23000013675162076}
+    - {fileID: 23000011551762304}
+    TargetMaterials:
+    - {fileID: 2100000, guid: 42c419f8648a5f8498d342a565a0c213, type: 2}
+    - {fileID: 2100000, guid: 42c419f8648a5f8498d342a565a0c213, type: 2}
+    - {fileID: 2100000, guid: 42c419f8648a5f8498d342a565a0c213, type: 2}
+  - TargetMeshes:
+    - {fileID: 2336398}
+    - {fileID: 23000013675162076}
+    - {fileID: 23000011551762304}
+    TargetMaterials:
+    - {fileID: 2100000, guid: 0347f43d680c4ec41aa2e15fb5d71a74, type: 2}
+    - {fileID: 2100000, guid: 0347f43d680c4ec41aa2e15fb5d71a74, type: 2}
+    - {fileID: 2100000, guid: 0347f43d680c4ec41aa2e15fb5d71a74, type: 2}
+  - TargetMeshes:
+    - {fileID: 2336398}
+    - {fileID: 23000013675162076}
+    - {fileID: 23000011551762304}
+    TargetMaterials:
+    - {fileID: 2100000, guid: 2085d6d318e9139479838deb44ecb229, type: 2}
+    - {fileID: 2100000, guid: 2085d6d318e9139479838deb44ecb229, type: 2}
+    - {fileID: 2100000, guid: 2085d6d318e9139479838deb44ecb229, type: 2}
 --- !u!198 &19852218
 ParticleSystem:
   m_ObjectHideFlags: 1
@@ -602,7 +633,7 @@ ParticleSystem:
         m_NumColorKeys: 2
         m_NumAlphaKeys: 2
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 0.69803923, g: 0.27450982, b: 0, a: 1}
+      maxColor: {r: 0.84705883, g: 0.72156864, b: 0.019607844, a: 1}
       minMaxState: 0
     startSize:
       scalar: 1
@@ -2461,11 +2492,11 @@ MeshRenderer:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000011962019054}
   m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_MotionVectors: 0
+  m_LightProbeUsage: 0
+  m_ReflectionProbeUsage: 0
   m_Materials:
   - {fileID: 2100000, guid: 0d79d9e0cef77b0409e178e6ebb0bfa4, type: 2}
   m_SubsetIndices: 
