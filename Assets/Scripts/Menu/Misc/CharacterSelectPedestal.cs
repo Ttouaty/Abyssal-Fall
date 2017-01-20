@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class CharacterSelectPedestal : MonoBehaviour
 {
@@ -7,21 +8,21 @@ public class CharacterSelectPedestal : MonoBehaviour
 	public float TimeToScaleUp	= 0.2f;
 
 	private bool _previousState = false;
-	private Transform[] _lights;
+	private List<Transform> _lights = new List<Transform>();
 
 
 	void Start()
 	{
-		_lights = new Transform[transform.childCount];
 		for (int i = 0; i < transform.childCount; i++)
 		{
-			_lights[i] = transform.GetChild(i);
+			if(transform.GetChild(i).tag != "3DMask")
+				_lights.Add(transform.GetChild(i));
 		}
 	}
 
 	void Update()
 	{
-		for (int i = 0; i < _lights.Length; i++)
+		for (int i = 0; i < _lights.Count; i++)
 		{
 			//Every light alternate rotation (+180° / -180°) /s
 			_lights[i].rotation = Quaternion.AngleAxis(RotatePerSec * Time.deltaTime * Mathf.Cos(i%2 * Mathf.PI), transform.up) * _lights[i].rotation; 
@@ -32,7 +33,7 @@ public class CharacterSelectPedestal : MonoBehaviour
 	{
 		StopAllCoroutines();
 
-		for (int i = 0; i < _lights.Length; i++)
+		for (int i = 0; i < _lights.Count; i++)
 		{
 			_lights[i].gameObject.SetActive(active);
 			if (_previousState != false)

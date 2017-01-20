@@ -9,26 +9,78 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[AddComponentMenu("Rendering/SetRenderQueue")]
-
 public class SetRenderQueue : MonoBehaviour
 {
-	protected void Awake()
+	private Material targetMat;
+	private Renderer[] targetRenderers = new Renderer[0];
+	void Awake()
 	{
-		List<Material> materials = new List<Material>();
-		MeshRenderer[] tempMeshArray = GetComponentsInChildren<MeshRenderer>();
-
-		for (int i = 0; i < tempMeshArray.Length; i++)
+		targetMat = GetComponent<Renderer>().material;
+		targetMat.renderQueue = 3020;
+		targetRenderers = transform.parent.GetComponentsInChildren<Renderer>();
+		for (int i = 0; i < targetRenderers.Length; i++)
 		{
-			for (int j = 0; j < tempMeshArray[i].materials.Length; j++)
+			for (int j = 0; j < targetRenderers[i].materials.Length; j++)
 			{
-				materials.Add(tempMeshArray[i].materials[j]);
+				if(targetRenderers[i].materials[j] != targetMat)
+					targetRenderers[i].materials[j].renderQueue = targetMat.renderQueue + 20;
 			}
 		}
+		SetCutOff(0);
+	}
 
-		for (int i = 0; i < materials.Count; ++i)
+	void Update()
+	{
+		for (int i = 0; i < targetRenderers.Length; i++)
 		{
-			materials[i].renderQueue = 3020 + i;
+			for (int j = 0; j < targetRenderers[i].materials.Length; j++)
+			{
+				if (targetRenderers[i].materials[j] != targetMat)
+					targetRenderers[i].materials[j].renderQueue = targetMat.renderQueue + 20;
+			}
 		}
 	}
+
+	public void SetCutOff(float newCutOff)
+	{
+		if(targetMat != null)
+			targetMat.SetFloat("_Cutoff", newCutOff);
+	}
+
+	//private List<Material> _materials = new List<Material>();
+	//protected void Awake()
+	//{
+	//	Renderer[] tempMeshArray = GetComponentsInChildren<Renderer>();
+
+	//	for (int i = 0; i < tempMeshArray.Length; i++)
+	//	{
+	//		for (int j = 0; j < tempMeshArray[i].materials.Length; j++)
+	//		{
+	//			_materials.Add(tempMeshArray[i].materials[j]);
+	//		}
+	//	}
+
+	//	for (int i = 0; i < _materials.Count; ++i)
+	//	{
+	//		_materials[i].renderQueue = 3020;
+	//	}
+	//}
+
+	//void Update()
+	//{
+	//	Renderer[] tempMeshArray = GetComponentsInChildren<Renderer>();
+	//	for (int i = 0; i < tempMeshArray.Length; i++)
+	//	{
+	//		for (int j = 0; j < tempMeshArray[i].materials.Length; j++)
+	//		{
+	//			if (_materials.IndexOf(tempMeshArray[i].materials[j]) == -1)
+	//			_materials.Add(tempMeshArray[i].materials[j]);
+	//		}
+	//	}
+
+	//	for (int i = 0; i < _materials.Count; ++i)
+	//	{
+	//		_materials[i].renderQueue = 3020;
+	//	}
+	//}
 }

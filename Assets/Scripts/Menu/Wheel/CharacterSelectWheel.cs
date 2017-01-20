@@ -23,7 +23,6 @@ public class CharacterSelectWheel : NetworkBehaviour
 	public int _selectedSkinIndex = 0;
 	protected float _rotationBetweenElements;
 
-	protected Color _tempColor;
 	protected float _tempElementAngle;
 
 	[HideInInspector]
@@ -85,24 +84,16 @@ public class CharacterSelectWheel : NetworkBehaviour
 
 	protected void ApplyAlpha()
 	{
-		Image tempImageRef;
-		for (int i = 0; i < _displayArray.Length; ++i)
+		for (int i = 0; i < _displayArray.Length; i++)
 		{
-			tempImageRef = _displayArray[i].GetComponentInChildren<Image>();
-			if (tempImageRef == null)
-				return;
-
-			_tempColor = tempImageRef.color;
 			_tempElementAngle = Vector3.Angle(-Camera.main.transform.forward, (_displayArray[i].transform.position - transform.position));
 
 			Debug.DrawLine(transform.position, _displayArray[i].transform.position, Color.green);
 
 			if (_tempElementAngle < _alphaThresholdAngleMin)
-				_tempColor.a = 1;
+				_displayArray[i].GetComponentInChildren<SetRenderQueue>().SetCutOff(1);
 			else
-				_tempColor.a = (_alphaThresholdAngleMax - _tempElementAngle) / _alphaThresholdAngleMax;
-
-			tempImageRef.color = Color.Lerp(tempImageRef.color, _tempColor, _rotateSpeed);
+				_displayArray[i].GetComponentInChildren<SetRenderQueue>().SetCutOff((_alphaThresholdAngleMax - _tempElementAngle) / _alphaThresholdAngleMax);
 		}
 	}
 
@@ -118,7 +109,7 @@ public class CharacterSelectWheel : NetworkBehaviour
 	{
 		_selectedElementIndex = newIndex;
 		_selectedElementIndex = _selectedElementIndex.LoopAround(0, _displayArray.Length - 1);
-		_displayArray[_selectedElementIndex].transform.SetAsLastSibling();
+		//_displayArray[_selectedElementIndex].transform.SetAsLastSibling();
 	}
 
 	public void ScrollLeft()
@@ -153,7 +144,7 @@ public class CharacterSelectWheel : NetworkBehaviour
 			//NetworkServer.Spawn(tempGenerationSelectableCharacters[i]);
 		}
 
-		_wheelRadius = Mathf.Abs(transform.parent.localPosition.z);
+		_wheelRadius = Mathf.Abs(transform.parent.localPosition.z * 2);
 		Internal_Generate(tempGenerationSelectableCharacters, AvailablePlayers);
 		_selectedElementIndex = _playerRef.GetComponent<Player>().CharacterUsedIndex;
 		_selectedSkinIndex = _playerRef.GetComponent<Player>().SkinNumber;
