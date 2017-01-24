@@ -9,7 +9,6 @@ using System;
 public class CharacterSlot : MonoBehaviour
 {
 	private static PlayerController[] _availableCharacters;
-	public static ParticleSystem OnCharacterSelectedParticles;
 	public CharacterSelectPedestal TargetPedestal;
 	public Transform WheelSlot;
 	private float _switchCharacterDelay = 0.15f;
@@ -35,7 +34,6 @@ public class CharacterSlot : MonoBehaviour
 		_selectorRef = GetComponentInParent<CharacterSelector>();
 		if (_availableCharacters == null) //setup static vars (messy)
 		{
-			OnCharacterSelectedParticles = _selectorRef.OnCharacterSelectedParticles;
 			_availableCharacters = _selectorRef._availableCharacters;
 		}
 

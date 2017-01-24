@@ -5,8 +5,8 @@ using System.Collections.Generic;
 public class MenuPauseManager : GenericSingleton<MenuPauseManager>
 {
 	public bool IsOpen                  = false;
-	public PlayerScore[] ScoresFields   = new PlayerScore[4];
 	public bool CanPause                = true;
+	private PlayerScore[] ScoresFields;
 
 	void Update ()
 	{
@@ -28,12 +28,15 @@ public class MenuPauseManager : GenericSingleton<MenuPauseManager>
 		IsOpen = true;
 		Close();
 
-		for (int i = 0; i < Player.LocalPlayer.PlayerList.Length; ++i)
+		ScoresFields = GetComponentsInChildren<PlayerScore>(true);
+		for (int i = 0; i < Player.PlayerList.Length; ++i)
 		{
-			if(Player.LocalPlayer.PlayerList[i] != null)
+			if (Player.PlayerList[i] != null)
 			{
-				ScoresFields[i].CurrentPlayer = Player.LocalPlayer.PlayerList[i].GetComponent<Player>();
+				ScoresFields[i].CurrentPlayer = Player.PlayerList[i].GetComponent<Player>();
 			}
+
+			Debug.Log("INIT Scorfield n° => "+i);
 			ScoresFields[i].Init();
 		}
 	}

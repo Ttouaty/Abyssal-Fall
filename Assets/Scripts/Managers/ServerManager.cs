@@ -247,10 +247,9 @@ public class ServerManager : NATTraversal.NetworkManager
 		if(conn.address != "localClient")
 			ExternalPlayerNumber++;
 
-		Debug.Log("Connections are => ");
 		for (int j = 0; j < Network.connections.Length; j++)
 		{
-			Debug.Log("i => "+Network.connections[j]);
+			Debug.Log(j+" => " +Network.connections[j]);
 		}
 		GameObject playerGo = (GameObject)Instantiate(playerPrefab);
 

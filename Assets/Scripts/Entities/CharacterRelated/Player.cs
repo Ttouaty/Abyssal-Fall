@@ -10,7 +10,7 @@ public class Player : NetworkBehaviour
 
 	//[SyncVar]
 	//public SyncListGameObject PlayerList = new SyncListGameObject();
-	public Player[] PlayerList = new Player[0];
+	public static Player[] PlayerList = new Player[0];
 	public Material CharacterAlpha;
 	[HideInInspector]
 	public int JoystickNumber = 0;
@@ -79,7 +79,7 @@ public class Player : NetworkBehaviour
 		_ready = true;
 		CharacterUsedIndex = characterIndex;
 		SkinNumber = indexSkinUsed;
-		Debug.Log("PLayer N°" + PlayerNumber + " has selected (name)=> " + CharacterUsed._characterData.IngameName);
+		Debug.Log("Player N°" + PlayerNumber + " has selected (name)=> " + CharacterUsed._characterData.IngameName);
 
 	}
 
@@ -111,8 +111,8 @@ public class Player : NetworkBehaviour
 				Destroy(Controller.gameObject);
 		}
 		enabled = false;
-		LocalPlayer.PlayerList = FindObjectsOfType<Player>();
-		if (LocalPlayer.PlayerList.Length == 1)
+		PlayerList = FindObjectsOfType<Player>();
+		if (PlayerList.Length == 1)
 		{
 			if(NetworkServer.active && ServerManager.Instance._isInGame)
 			{
@@ -203,11 +203,10 @@ public class Player : NetworkBehaviour
 	[ClientRpc]
 	public void RpcStartGame(GameConfiguration newGameConfig, ParsedGameRules customRules)
 	{
-		if (isLocalPlayer)
-		{
-			Debug.Log("Player N°=> " + PlayerNumber + " is starting game with config.");
-			GameManager.Instance.StartGameWithConfig(newGameConfig, customRules);
-		}
+		Debug.Log("Player N°=> " + PlayerNumber + " is starting game with config.");
+		PlayerList = FindObjectsOfType<Player>();
+		Array.Sort(PlayerList, (Player x, Player y) => { return x.PlayerNumber.CompareTo(y.PlayerNumber); });
+		GameManager.Instance.StartGameWithConfig(newGameConfig, customRules);
 	}
 
 	[Command]

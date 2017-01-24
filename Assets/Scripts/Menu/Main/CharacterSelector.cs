@@ -17,9 +17,7 @@ public enum OpenSlots
 
 public class CharacterSelector : MonoBehaviour
 {
-	public ParticleSystem OnCharacterSelectedParticles;
-	[Space]
-	[HideInInspector]
+	[Tooltip("It is necessary to link the Slots > IN ORDER < !")]
 	public CharacterSlot[] SlotsAvailable;
 	[HideInInspector]
 	public PlayerController[] _availableCharacters;
@@ -31,7 +29,8 @@ public class CharacterSelector : MonoBehaviour
 
 	void Start()
 	{
-		SlotsAvailable = GetComponentsInChildren<CharacterSlot>();
+		if(SlotsAvailable == null)
+			SlotsAvailable = GetComponentsInChildren<CharacterSlot>();
 	}
 
 	public void CloseTargetSlot(int slotNumber)

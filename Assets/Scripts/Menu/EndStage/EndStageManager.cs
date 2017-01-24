@@ -5,7 +5,7 @@ using System.Collections;
 public class EndStageManager : GenericSingleton<EndStageManager>
 {
 	public bool IsOpen = false;
-	public PlayerScore[] ScoresFields = new PlayerScore[4];
+	private PlayerScore[] ScoresFields;
 	public Text StageText;
 
 	public void ResetMap(bool checkIfOpen = true)
@@ -20,11 +20,13 @@ public class EndStageManager : GenericSingleton<EndStageManager>
 	{
 		Close();
 
-		for (int i = 0; i < Player.LocalPlayer.PlayerList.Length; ++i)
+		ScoresFields = GetComponentsInChildren<PlayerScore>(true);
+
+		for (int i = 0; i < Player.PlayerList.Length; ++i)
 		{
-			if (Player.LocalPlayer.PlayerList[i] != null)
+			if (Player.PlayerList[i] != null)
 			{
-				ScoresFields[i].CurrentPlayer = Player.LocalPlayer.PlayerList[i].GetComponent<Player>();
+				ScoresFields[i].CurrentPlayer = Player.PlayerList[i].GetComponent<Player>();
 			}
 			ScoresFields[i].Init();
 		}

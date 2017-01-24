@@ -207,10 +207,12 @@ public class DialogBox : MonoBehaviour
 	public void ActivateControls()
 	{
 		ControlDiv.GetComponent<CanvasGroup>().alpha = 1;
+		ControlDiv.GetComponent<InputListener>().enabled = true;
 	}
 
 	public void DeactivateControls()
 	{
-		ControlDiv.GetComponent<CanvasGroup>().alpha = 0.3f;
+		ControlDiv.GetComponent<CanvasGroup>().alpha = 0.1f;
+		ControlDiv.GetComponent<InputListener>().enabled = false;
 	}
 }

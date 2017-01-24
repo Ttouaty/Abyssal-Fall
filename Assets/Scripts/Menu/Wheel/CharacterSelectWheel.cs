@@ -101,7 +101,7 @@ public class CharacterSelectWheel : NetworkBehaviour
 	{
 		for (int i = 0; i < _displayArray.Length; ++i)
 		{
-			_displayArray[i].transform.rotation = Quaternion.LookRotation(-Camera.main.transform.forward, Camera.main.transform.up);
+			_displayArray[i].transform.localRotation = Quaternion.Euler(0,180,0) * Quaternion.Inverse(transform.localRotation);
 		}
 	}
 

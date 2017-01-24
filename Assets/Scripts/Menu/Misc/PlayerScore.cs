@@ -4,14 +4,14 @@ using System.Collections;
 
 public class PlayerScore : MonoBehaviour
 {
+	[HideInInspector]
     public Player CurrentPlayer;
-    public GameObject PrefabPoint;
-    public Sprite ImageActive;
-    public Sprite ImageInactive;
+    private Sprite SpriteActive;
+    private Sprite SpriteInactive;
 
     public RectTransform Root;
-    public RectTransform Label;
 
+	[HideInInspector]
     public Image[] Points;
 
     public bool Active
@@ -26,29 +26,28 @@ public class PlayerScore : MonoBehaviour
 
     public void Init ()
     {
-        if(Active)
-        {
-            Label.gameObject.SetActive(true);
-            Label.GetComponent<Text>().text = "P" + (CurrentPlayer.PlayerNumber);
-        }
-        else
-        {
-            Label.gameObject.SetActive(false);
-        }
+		gameObject.SetActive(Active);
 
-        float width     = Root.sizeDelta.x;
-        float ratio     = width / GameManager.Instance.CurrentGameConfiguration.NumberOfStages;
+		if (!Active)
+			return;
+
+		SpriteActive	= CurrentPlayer.CharacterUsed._characterData.Icon;
+		SpriteInactive	= CurrentPlayer.CharacterUsed._characterData.DarkIcon;
+
+		float ratio     = Root.sizeDelta.x / GameManager.Instance.CurrentGameConfiguration.NumberOfStages;
         Points          = new Image[GameManager.Instance.CurrentGameConfiguration.NumberOfStages];
 
         for (int i = 0; i < Points.Length; ++i)
         {
-            GameObject scoreGo                  = Instantiate(PrefabPoint);
-            scoreGo.transform.position          = Root.position + new Vector3(ratio * (i + 0.5f), 0, 0);
+            GameObject scoreGo = new GameObject(name+ " point "+i, typeof(Image));
+			scoreGo.GetComponent<RectTransform>().pivot = new Vector2(0,0.5f);
+            scoreGo.transform.SetParent(Root.transform, false);
+			scoreGo.GetComponent<RectTransform>().sizeDelta	= new Vector2(ratio, GetComponent<RectTransform>().sizeDelta.y);
+			scoreGo.transform.localPosition		= new Vector3(ratio * i, 0, 0);
             Image image                         = scoreGo.GetComponent<Image>();
-            image.sprite                        = (Active) ? ImageActive : ImageInactive;
+            image.sprite                        = SpriteInactive;
             Points[i]                           = image;
 
-            scoreGo.transform.SetParent(Root.transform);
         }
     }
 
@@ -56,12 +55,11 @@ public class PlayerScore : MonoBehaviour
     {
         if(Active)
         {
-            // END DEBUG
             for (int i = 0; i < Points.Length; ++i)
             {
                 if(Points[i] != null)
                 {
-                    Points[i].color = i < Score ? Color.yellow : Color.white;
+                    Points[i].sprite = i < Score ? SpriteActive : SpriteInactive;
                 }
             }
         }

@@ -27,14 +27,12 @@ public class CharacterSelectButton : InputListener
 			base.LaunchCallback(joy);
 	}
 
-	Color tempColor;
 	public void SetVisibility(bool isVisible)
 	{
-		tempColor = GetComponent<Image>().color;
-		tempColor.a = isVisible ? 1 : 0.3f;
-		GetComponent<Image>().color = tempColor;
-
-		transform.GetChild(0).gameObject.SetActive(isVisible);
+		foreach (Transform child in transform)
+		{
+			child.gameObject.SetActive(isVisible);
+		}
 		
 	}
 }

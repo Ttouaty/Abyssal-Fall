@@ -81,12 +81,9 @@ public class GameManager : GenericSingleton<GameManager>
 		if (NetworkServer.active)
 		{
 			MenuManager.Instance.GetComponentInChildren<MapSelectWheel>(true).SendSelectionToGameManager();
-			for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; i++)
-			{
-				AGameRules tempRules;
-				MainManager.Instance.DYNAMIC_CONFIG.GetConfig(CurrentGameConfiguration.ModeConfiguration, out tempRules);
-				ServerManager.Instance.RegisteredPlayers[i].RpcStartGame(CurrentGameConfiguration, tempRules.Serialize());
-			}
+			AGameRules tempRules;
+			MainManager.Instance.DYNAMIC_CONFIG.GetConfig(CurrentGameConfiguration.ModeConfiguration, out tempRules);
+			Player.LocalPlayer.RpcStartGame(CurrentGameConfiguration, tempRules.Serialize());
 		}
 		else
 			Debug.LogError("StartGame(); called from client! This should not be allowed! Aborting");
