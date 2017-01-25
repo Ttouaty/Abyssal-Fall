@@ -9,9 +9,8 @@ public class CharacterSelectWheel : NetworkBehaviour
 	public float _wheelRadius = 3;
 	public float _rotateSpeed = 0.2f;
 
-	protected float _alphaThresholdAngleMin = 45;
-	protected float _alphaThresholdAngleMax = 170;
-
+	protected float _alphaThresholdAngleMin = 10;
+	protected float _alphaThresholdAngleMax = 90;
 
 	protected GameObject[] _displayArray = new GameObject[0];
 	protected PlayerController[] _returnArray = new PlayerController[0];
@@ -48,7 +47,7 @@ public class CharacterSelectWheel : NetworkBehaviour
 		_rotationBetweenElements = 360 / elementsToDisplay.Length;
 
 		if (_displayArray.Length != _returnArray.Length)
-			Debug.LogError("Display and return arrays lengths do not match!\nThis may/will cause crashes on selection.");
+			Debug.LogError("Display and return arrays lengths do not match!\nThis may/will cause errors on selection.");
 
 		for (int i = 0; i < elementsToDisplay.Length; i++)
 		{
@@ -63,7 +62,6 @@ public class CharacterSelectWheel : NetworkBehaviour
 
 	protected void ElementGenerate(GameObject element, Vector3 localPos)
 	{
-		//element.transform.localScale = Vector3.one;
 		element.transform.localRotation = Quaternion.identity;
 		element.transform.localPosition = localPos;
 	}
@@ -86,7 +84,7 @@ public class CharacterSelectWheel : NetworkBehaviour
 	{
 		for (int i = 0; i < _displayArray.Length; i++)
 		{
-			_tempElementAngle = Vector3.Angle(-Camera.main.transform.forward, (_displayArray[i].transform.position - transform.position));
+			_tempElementAngle = Vector3.Angle(-transform.parent.forward.normalized, (_displayArray[i].transform.position - transform.position).normalized);
 
 			Debug.DrawLine(transform.position, _displayArray[i].transform.position, Color.green);
 

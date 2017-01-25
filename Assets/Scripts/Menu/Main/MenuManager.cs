@@ -127,10 +127,10 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	public void RegisterNewPlayer(int joystickNumber)
 	{
-		if (_controllerAlreadyInUse[joystickNumber])
-		{
-			return;
-		}
+		//if (_controllerAlreadyInUse[joystickNumber])
+		//{
+		//	return;
+		//}
 
 		LocalJoystickBuffer.Add(joystickNumber);
 		_controllerAlreadyInUse[joystickNumber] = true;
