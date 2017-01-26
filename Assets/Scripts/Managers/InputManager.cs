@@ -286,7 +286,22 @@ public class InputManager : GenericSingleton<InputManager>
 		return Input.GetAxisRaw(axisName + "_" + JoystickNumber);
 	}
 
-	public static Vector2 GetStickDirection(int JoystickNumber = 0)
+	public static Vector2 GetAllStickDirection()
+	{
+		Vector2 returnVector = Vector2.zero;
+		Vector2 tempVector;
+
+		for (int i = 0; i < GetJoystickNames().Length; i++)
+		{
+			tempVector = GetStickDirection(i);
+			if (tempVector.magnitude != 0)
+				returnVector += tempVector; 
+		}
+
+		return returnVector;
+	}
+
+	public static Vector2 GetStickDirection(int JoystickNumber)
 	{
 		if (StickIsNeutral(JoystickNumber) || InputLocked)
 			return Vector2.zero;

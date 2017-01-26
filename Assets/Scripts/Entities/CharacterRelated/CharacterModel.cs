@@ -15,7 +15,6 @@ public class CharacterModel : MonoBehaviour
 	[SerializeField]
 	private ReskinPair[] _skinArray;
 
-	private bool _hasFEM = false;
 	[HideInInspector]
 	public FacialExpresionModule FEMref
 	{
@@ -26,7 +25,6 @@ public class CharacterModel : MonoBehaviour
 				_FEMref = GetComponent<FacialExpresionModule>();
 				if(_FEMref == null) //double checking because fuck off
 				{
-					_hasFEM = false;
 					_FEMref = gameObject.AddComponent<FacialExpresionModule>();
 				}
 			}
