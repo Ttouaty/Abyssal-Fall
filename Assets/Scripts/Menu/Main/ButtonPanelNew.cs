@@ -12,7 +12,7 @@ public enum UIDirection
 [RequireComponent(typeof(Animator), typeof(CanvasGroup))]
 public class ButtonPanelNew : MonoBehaviour
 {
-	public ButtonPanelNew ParentPanel;
+	public ButtonPanelNew ParentButtonPanel;
 	public Button FirstElementSelected;
 
 	private Button _lastSelectedElement;
@@ -43,8 +43,8 @@ public class ButtonPanelNew : MonoBehaviour
 
 	public void Open()
 	{
-		if (ParentPanel != null)
-			ParentPanel.FadeParent();
+		if (ParentButtonPanel != null)
+			ParentButtonPanel.FadeParent();
 		if (FirstElementSelected != null)
 			ActiveElement = FirstElementSelected;
 
@@ -55,8 +55,8 @@ public class ButtonPanelNew : MonoBehaviour
 
 	private void FadeParent()
 	{
-		if (ParentPanel != null)
-			ParentPanel.FadeParent();
+		if (ParentButtonPanel != null)
+			ParentButtonPanel.FadeParent();
 
 		Fade();
 	}
@@ -86,10 +86,10 @@ public class ButtonPanelNew : MonoBehaviour
 
 	public void Return()
 	{
-		if (ParentPanel == null)
+		if (ParentButtonPanel == null)
 			return;
 
-		ParentPanel.FadeIn();
+		ParentButtonPanel.FadeIn();
 		Close();
 	}
 

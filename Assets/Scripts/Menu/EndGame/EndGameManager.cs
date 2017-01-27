@@ -42,10 +42,10 @@ public class EndGameManager : GenericSingleton<EndGameManager>
 				}
 			}
 
-			Player.LocalPlayer.CmdBroadCastOpenMenu(false, "Lobby");
+			Player.LocalPlayer.RpcOpenMenu(false, "CharacterSelectPanel");
 		}
 		else
-			Player.LocalPlayer.RpcOpenMenu(false, "Lobby");
+			Player.LocalPlayer.RpcOpenMenu(false, "CharacterSelectPanel");
 	}
 
 	public override void Init()

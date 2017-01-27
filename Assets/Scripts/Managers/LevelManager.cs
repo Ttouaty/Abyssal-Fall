@@ -118,23 +118,21 @@ public class LevelManager : GenericSingleton<LevelManager>
 			_bIsOnMenu = true;
 
 			MenuManager.Instance.FadeSplashscreens(showSplashScreens);
-			MenuManager.Instance.MakeTransition(targetMenu, true, false);
+			MenuPanelNew.PanelRefs[targetMenu].Open();
 
 			Debug.Log("openning targetMenu => "+targetMenu);
-			if (targetMenu == "Lobby") //Spaghetti mais osef
+			if (targetMenu == "CharacterSelectPanel") //Spaghetti mais osef
 			{
-				InputManager.SetInputLockTime(2.5f);
 				for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; i++)
 				{
 					ServerManager.Instance.RegisteredPlayers[i].UnReady();
 				}
 
 				yield return new WaitForSeconds(2);
-				yield return new WaitUntil(() => !AutoFade.Fading);
+				yield return new WaitUntil(() => !AutoFade.Fading );
 
 				if(NetworkServer.active)
 				{
-					Debug.Log("Trying to spawn wheels");
 					for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; i++)
 					{
 						Debug.Log("Spawning wheel for player => "+ ServerManager.Instance.RegisteredPlayers[i].name);

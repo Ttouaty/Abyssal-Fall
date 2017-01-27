@@ -1,27 +1,35 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.Networking;
 
 [RequireComponent(typeof(Animator), typeof(CanvasGroup))]
 public class MenuPanelNew : MonoBehaviour
 {
-	private static MenuPanelNew ActiveMenupanel;
+	public static Dictionary<string, MenuPanelNew> PanelRefs = new Dictionary<string, MenuPanelNew>();
+	public static MenuPanelNew ActiveMenupanel;
 	public static bool InputEnabled = true;
 
 	[Space]
-	public MenuPanel DefaultParentMenu;
-	private MenuPanel _parentMenu;
+	public MenuPanelNew DefaultParentMenu;
+
 
 	[HideInInspector]
 	public ButtonPanelNew ActiveButtonPanel;
-
+	public ButtonPanelNew PreselectedButtonPanel;
 	private Animator _animator;
 	private Vector2 _previousStickDirection;
 	private Vector2 stickDirection;
 
 	private float _defaultInputDelay = 0.2f;
 	private float _activeInputDelay = 0;
+
+	void Awake()
+	{
+		PanelRefs.Add(name, this);
+	}
 
 	void Start()
 	{
@@ -45,14 +53,30 @@ public class MenuPanelNew : MonoBehaviour
 			ProcessInput();
 	}
 
-	public void Open()
+	public virtual void Open()
 	{
+		if (!InputEnabled)
+			return;
+
 		if (ActiveMenupanel != null)
 			ActiveMenupanel.Close();
+
+		if (PreselectedButtonPanel != null)
+		{
+			ActiveButtonPanel = PreselectedButtonPanel;
+			ActiveButtonPanel.Open();
+		}
 
 		ActiveMenupanel = this;
 		InputEnabled = false;
 		_animator.SetTrigger("SendIn");
+		SendOpen();
+	}
+
+	public void SendOpen()
+	{
+		if (NetworkServer.active)
+			Player.LocalPlayer.RpcMenuTransition(name, true);
 	}
 
 	public void FinishedEntering()
@@ -60,9 +84,22 @@ public class MenuPanelNew : MonoBehaviour
 		InputEnabled = true;
 	}
 
-	public void Close()
+	public virtual void Close()
 	{
 		_animator.SetTrigger("SendOut");
+	}
+
+	public void Return()
+	{
+		Close();
+		ActiveMenupanel = DefaultParentMenu;
+		if(ActiveButtonPanel != null)
+			ActiveButtonPanel.Open();
+
+		InputEnabled = false;
+		_animator.SetTrigger("Return");
+		if (NetworkServer.active)
+			Player.LocalPlayer.RpcMenuTransition(DefaultParentMenu.name, false);
 	}
 
 

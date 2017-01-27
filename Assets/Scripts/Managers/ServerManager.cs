@@ -183,7 +183,7 @@ public class ServerManager : NATTraversal.NetworkManager
 			MessageManager.Log("Connection with the host was lost!");
 			if (MenuManager.Instance != null)
 			{
-				MenuManager.Instance.MakeTransition("Main");
+				MenuPanelNew.PanelRefs["MainMenuPanel"].Open();
 			}
 			else if (EndGameManager.Instance != null)
 			{

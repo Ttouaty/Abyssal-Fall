@@ -196,8 +196,13 @@ public class Player : NetworkBehaviour
 	[ClientRpc]
 	public void RpcMenuTransition(string newMenuName, bool dir)
 	{
-		Debug.Log("Making transition on player with netId => " + netId);
-		MenuManager.Instance.MakeTransition(newMenuName, dir, false);
+		if (isLocalPlayer)
+			return; // activate only if not caller
+
+		if(dir)
+			MenuPanelNew.PanelRefs[newMenuName].Open();
+		else
+			MenuPanelNew.ActiveMenupanel.Return();
 	}
 
 	[ClientRpc]
@@ -276,12 +281,6 @@ public class Player : NetworkBehaviour
 		EndStageManager.Instance.Close();
 	}
 	
-	[Command]
-	public void CmdBroadCastOpenMenu(bool showSplashScreens, string targetMenuName)
-	{
-		RpcOpenMenu(showSplashScreens, targetMenuName);
-	}
-
 	[ClientRpc]
 	public void RpcOpenMenu(bool showSplashScreens, string targetMenuName)
 	{
