@@ -206,6 +206,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa8b38df12baea5429f73fc853ca0704, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PanelName: GameConfig
   DefaultParentMenu: {fileID: 2106610416}
   ActiveButtonPanel: {fileID: 0}
   PreselectedButtonPanel: {fileID: 0}
@@ -616,10 +617,10 @@ MonoBehaviour:
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
-    m_HighlightedSprite: {fileID: 21300000, guid: 5db8e6d5bb9301840872303e3938b4d7,
+    m_HighlightedSprite: {fileID: 21300000, guid: f247671d6b289dd4eb812680ae7d2799,
       type: 3}
-    m_PressedSprite: {fileID: 21300000, guid: 39cebb066444aff44a1654cb62b64676, type: 3}
-    m_DisabledSprite: {fileID: 21300000, guid: bf48d9bc2c9e49b4a95ae4e61a977386, type: 3}
+    m_PressedSprite: {fileID: 21300000, guid: 97332b4598735d649bce7998a5d0e4c3, type: 3}
+    m_DisabledSprite: {fileID: 21300000, guid: 8f7a9d33467a1dd4bbf1c546afa1abd8, type: 3}
   m_AnimationTriggers:
     m_NormalTrigger: Normal
     m_HighlightedTrigger: Highlighted
@@ -1281,9 +1282,9 @@ RectTransform:
   - {fileID: 756833529}
   m_Father: {fileID: 1183644694}
   m_RootOrder: 1
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -50}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: -75, y: -50}
   m_SizeDelta: {x: 150, y: 45}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &255830747
@@ -2007,7 +2008,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1190475859}
+      - m_Target: {fileID: 1634625130}
         m_MethodName: Return
         m_Mode: 1
         m_Arguments:
@@ -3176,7 +3177,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1190475859}
+      - m_Target: {fileID: 1289286214}
         m_MethodName: Return
         m_Mode: 1
         m_Arguments:
@@ -3285,9 +3286,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 2058223405}
-        m_MethodName: MakeTransition
-        m_Mode: 5
+      - m_Target: {fileID: 8739886}
+        m_MethodName: Open
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -3502,20 +3503,9 @@ MonoBehaviour:
   OnFailedConnection:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 482968214}
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 624037023}
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 624037027}
+        m_MethodName: Open
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -3535,14 +3525,25 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+      - m_Target: {fileID: 482968214}
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEventString, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   OnSuccess:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2058223405}
-        m_MethodName: MakeTransition
-        m_Mode: 5
+      - m_Target: {fileID: 1289286214}
+        m_MethodName: Open
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -3561,17 +3562,6 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 624037023}
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
         m_CallState: 2
     m_TypeName: UnityEventString, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
@@ -3823,7 +3813,7 @@ Prefab:
     - target: {fileID: 224000011102711984, guid: e4b5ca1db0274914fb613d3e8440a2ef,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -150.18518
+      value: -150
       objectReference: {fileID: 0}
     - target: {fileID: 224000011102711984, guid: e4b5ca1db0274914fb613d3e8440a2ef,
         type: 2}
@@ -4099,7 +4089,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1289286214}
+      - m_Target: {fileID: 2106610416}
         m_MethodName: Return
         m_Mode: 1
         m_Arguments:
@@ -4151,18 +4141,18 @@ RectTransform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 571261951}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 408828354}
-  m_Father: {fileID: 1190475860}
-  m_RootOrder: 2
+  m_Father: {fileID: 1179932533}
+  m_RootOrder: 0
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 65, y: 36}
-  m_SizeDelta: {x: 250, y: 200}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
 --- !u!1 &624037023
 GameObject:
@@ -4250,7 +4240,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ParentButtonPanel: {fileID: 0}
-  FirstElementSelected: {fileID: 1474529891}
+  FirstElementSelected: {fileID: 1918095880}
 --- !u!95 &624037028
 Animator:
   serializedVersion: 3
@@ -5291,10 +5281,10 @@ RectTransform:
   - {fileID: 787038249}
   m_Father: {fileID: 1830703954}
   m_RootOrder: 8
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: -542}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 800, y: 450}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &773164045
 CanvasGroup:
@@ -5335,6 +5325,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa8b38df12baea5429f73fc853ca0704, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PanelName: FTUE
   DefaultParentMenu: {fileID: 1190475859}
   ActiveButtonPanel: {fileID: 0}
   PreselectedButtonPanel: {fileID: 0}
@@ -5561,7 +5552,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1634625130}
+      - m_Target: {fileID: 2143078979}
         m_MethodName: Return
         m_Mode: 1
         m_Arguments:
@@ -5738,7 +5729,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 2106610416}
+      - m_Target: {fileID: 8739886}
         m_MethodName: Return
         m_Mode: 1
         m_Arguments:
@@ -6117,12 +6108,12 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 1744822084}
-  m_Father: {fileID: 1190475860}
+  m_Father: {fileID: 1179932533}
   m_RootOrder: 1
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 265, y: 36.000015}
-  m_SizeDelta: {x: 250, y: 200}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
 --- !u!1 &898079810
 GameObject:
@@ -6330,7 +6321,7 @@ Prefab:
     - target: {fileID: 224000011102711984, guid: e4b5ca1db0274914fb613d3e8440a2ef,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -150.18518
+      value: -150
       objectReference: {fileID: 0}
     - target: {fileID: 224000011102711984, guid: e4b5ca1db0274914fb613d3e8440a2ef,
         type: 2}
@@ -6581,14 +6572,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 965576183}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 1077351063, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Script: {fileID: 11500000, guid: e76059e352e1f41449aba31ffd7c45d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_HorizontalAxis: Menu_Hori
-  m_VerticalAxis: Menu_Verti
-  m_SubmitButton: Submit
+  m_HorizontalAxis: none
+  m_VerticalAxis: none
+  m_SubmitButton: none
   m_CancelButton: none
-  m_InputActionsPerSecond: 10
+  m_InputActionsPerSecond: 0
   m_RepeatDelay: 0.5
   m_ForceModuleActive: 0
 --- !u!114 &965576186
@@ -6604,7 +6595,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_FirstSelected: {fileID: 0}
-  m_sendNavigationEvents: 1
+  m_sendNavigationEvents: 0
   m_DragThreshold: 5
 --- !u!1 &972516241
 GameObject:
@@ -7267,9 +7258,9 @@ RectTransform:
   - {fileID: 992270134}
   m_Father: {fileID: 1183644694}
   m_RootOrder: 0
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: -75, y: 0}
   m_SizeDelta: {x: 150, y: 45}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &1000815236
@@ -8024,12 +8015,12 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 1183644694}
-  m_Father: {fileID: 1190475860}
-  m_RootOrder: 0
+  m_Father: {fileID: 1179932533}
+  m_RootOrder: 2
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 467, y: 36.000015}
-  m_SizeDelta: {x: 250, y: 200}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
 --- !u!1 &1111860707
 GameObject:
@@ -8372,6 +8363,63 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1165018260}
+--- !u!1 &1179932532
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 1179932533}
+  - 114: {fileID: 1179932534}
+  m_Layer: 5
+  m_Name: ButtonsContainers
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1179932533
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1179932532}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children:
+  - {fileID: 571261952}
+  - {fileID: 891237394}
+  - {fileID: 1086176206}
+  m_Father: {fileID: 1190475860}
+  m_RootOrder: 0
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: -77}
+  m_SizeDelta: {x: 0, y: 171.91}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1179932534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1179932532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -405508275, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 70
+    m_Right: 40
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 7
+  m_Spacing: 0
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 0
 --- !u!1 &1183644692
 GameObject:
   m_ObjectHideFlags: 0
@@ -8483,6 +8531,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa8b38df12baea5429f73fc853ca0704, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PanelName: Main
   DefaultParentMenu: {fileID: 0}
   ActiveButtonPanel: {fileID: 0}
   PreselectedButtonPanel: {fileID: 408828352}
@@ -8498,9 +8547,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
-  - {fileID: 1086176206}
-  - {fileID: 891237394}
-  - {fileID: 571261952}
+  - {fileID: 1179932533}
   - {fileID: 2039287475}
   m_Father: {fileID: 1830703954}
   m_RootOrder: 2
@@ -8713,9 +8760,9 @@ RectTransform:
   - {fileID: 1702588620}
   m_Father: {fileID: 1744822084}
   m_RootOrder: 0
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: -75, y: 0}
   m_SizeDelta: {x: 150, y: 45}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1255087110
@@ -8939,9 +8986,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1289286213}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fa8b38df12baea5429f73fc853ca0704, type: 3}
+  m_Script: {fileID: 11500000, guid: 1e26f9c8b92860c42b6b448c2632fb5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PanelName: 
   DefaultParentMenu: {fileID: 1190475859}
   ActiveButtonPanel: {fileID: 0}
   PreselectedButtonPanel: {fileID: 0}
@@ -8975,10 +9023,10 @@ RectTransform:
   - {fileID: 1479889004}
   m_Father: {fileID: 1830703954}
   m_RootOrder: 3
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 2092, y: -0.000015258789}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 800, y: 450}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!95 &1289286217
 Animator:
@@ -9755,7 +9803,6 @@ GameObject:
   - 222: {fileID: 1474529893}
   - 114: {fileID: 1474529892}
   - 114: {fileID: 1474529891}
-  - 114: {fileID: 1474529894}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -9795,9 +9842,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
+    m_Mode: 4
+    m_SelectOnUp: {fileID: 1918095880}
+    m_SelectOnDown: {fileID: 1918095880}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 2
@@ -9809,10 +9856,10 @@ MonoBehaviour:
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
-    m_HighlightedSprite: {fileID: 21300000, guid: e67f7d346e576e94d903459cb941beb5,
+    m_HighlightedSprite: {fileID: 21300000, guid: b5c8192f351df6541a0d697992e705ee,
       type: 3}
-    m_PressedSprite: {fileID: 21300000, guid: 39cebb066444aff44a1654cb62b64676, type: 3}
-    m_DisabledSprite: {fileID: 21300000, guid: bf48d9bc2c9e49b4a95ae4e61a977386, type: 3}
+    m_PressedSprite: {fileID: 21300000, guid: 97332b4598735d649bce7998a5d0e4c3, type: 3}
+    m_DisabledSprite: {fileID: 21300000, guid: 8f7a9d33467a1dd4bbf1c546afa1abd8, type: 3}
   m_AnimationTriggers:
     m_NormalTrigger: Normal
     m_HighlightedTrigger: Highlighted
@@ -9845,9 +9892,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-      - m_Target: {fileID: 624037023}
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 624037027}
+        m_MethodName: Close
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -9891,42 +9938,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1474529889}
---- !u!114 &1474529894
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1474529889}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a78359f65bc067341a55ce067027940d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UseAxis: 0
-  directionToListen: {x: 1, y: 0}
-  AxisPrecision: 0.5
-  InputToListen: 0
-  InputStringToListen: 
-  InputMethodUsed: 0
-  TimeToHold: 0.5
-  CanLoop: 0
-  Callback:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1474529894}
-        m_MethodName: ClickSelfButton
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_TypeName: UnityEventInt, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  UseKeyboard: 0
 --- !u!1 &1479889003
 GameObject:
   m_ObjectHideFlags: 0
@@ -10179,9 +10190,9 @@ RectTransform:
   - {fileID: 347834548}
   m_Father: {fileID: 1744822084}
   m_RootOrder: 1
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -50}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: -75, y: -50}
   m_SizeDelta: {x: 150, y: 45}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &1505497500
@@ -10207,7 +10218,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1517613779
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10732,10 +10743,10 @@ RectTransform:
   - {fileID: 702799198}
   m_Father: {fileID: 1830703954}
   m_RootOrder: 5
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 964, y: 608}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 800, y: 450}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &1634625128
 CanvasGroup:
@@ -10776,6 +10787,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa8b38df12baea5429f73fc853ca0704, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PanelName: Options
   DefaultParentMenu: {fileID: 1190475859}
   ActiveButtonPanel: {fileID: 0}
   PreselectedButtonPanel: {fileID: 1937936656}
@@ -11762,7 +11774,7 @@ MonoBehaviour:
     m_MinSize: 0
     m_MaxSize: 30
     m_Alignment: 4
-    m_AlignByGeometry: 0
+    m_AlignByGeometry: 1
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
@@ -11919,7 +11931,7 @@ Prefab:
     - target: {fileID: 224000011102711984, guid: e4b5ca1db0274914fb613d3e8440a2ef,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -150.18518
+      value: -150
       objectReference: {fileID: 0}
     - target: {fileID: 224000011102711984, guid: e4b5ca1db0274914fb613d3e8440a2ef,
         type: 2}
@@ -12582,7 +12594,7 @@ Prefab:
     - target: {fileID: 224000011102711984, guid: e4b5ca1db0274914fb613d3e8440a2ef,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -150.18518
+      value: -150
       objectReference: {fileID: 0}
     - target: {fileID: 224000011102711984, guid: e4b5ca1db0274914fb613d3e8440a2ef,
         type: 2}
@@ -13277,6 +13289,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa8b38df12baea5429f73fc853ca0704, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PanelName: OnlineJoin
   DefaultParentMenu: {fileID: 1190475859}
   ActiveButtonPanel: {fileID: 0}
   PreselectedButtonPanel: {fileID: 624037027}
@@ -13649,15 +13662,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
+    m_Mode: 4
+    m_SelectOnUp: {fileID: 1474529891}
+    m_SelectOnDown: {fileID: 1474529891}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_NormalColor: {r: 0.9338235, g: 0.88141847, b: 0.10986158, a: 1}
+    m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
@@ -13675,14 +13688,14 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1918095881}
   m_TextComponent: {fileID: 1313746447}
   m_Placeholder: {fileID: 1855182352}
-  m_ContentType: 0
+  m_ContentType: 4
   m_InputType: 0
   m_AsteriskChar: 42
-  m_KeyboardType: 0
+  m_KeyboardType: 1
   m_LineType: 0
   m_HideMobileInput: 0
-  m_CharacterValidation: 0
-  m_CharacterLimit: 0
+  m_CharacterValidation: 3
+  m_CharacterLimit: 8
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls: []
@@ -14227,7 +14240,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1190475859}
+      - m_Target: {fileID: 1872523861}
         m_MethodName: Return
         m_Mode: 1
         m_Arguments:
@@ -14514,7 +14527,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 1190475860}
-  m_RootOrder: 3
+  m_RootOrder: 1
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0.00018310547, y: -43.300056}
@@ -14590,7 +14603,7 @@ MonoBehaviour:
   SplashScreens: {fileID: 692153299}
   ReturnSound:
     FmodEvent: event:/Sfx/Menu/Menu Cancel
-  FirstMenuPanel: {fileID: 0}
+  FirstMenuPanel: {fileID: 1190475859}
   _characterSlotsContainerRef: {fileID: 0}
   LocalJoystickBuffer: 
 --- !u!4 &2058223406
@@ -14633,16 +14646,16 @@ RectTransform:
   m_GameObject: {fileID: 2085169069}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 1010458325}
   m_RootOrder: 1
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -120, y: 0}
-  m_SizeDelta: {x: 30, y: 30}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 1, y: 0.5}
+  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchoredPosition: {x: -12, y: 0}
+  m_SizeDelta: {x: 60, y: 34}
+  m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &2085169071
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14662,7 +14675,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300006, guid: 08fed90fd91e3a449af1c73373c19d89, type: 3}
+  m_Sprite: {fileID: 21300028, guid: 08fed90fd91e3a449af1c73373c19d89, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -14853,7 +14866,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2dc2dc5835bcd164bb3a7837588cd1a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DefaultParentMenu: {fileID: 1289286214}
+  PanelName: MapSelect
+  DefaultParentMenu: {fileID: 0}
   ActiveButtonPanel: {fileID: 0}
   PreselectedButtonPanel: {fileID: 1879194563}
   MapWheelTarget: {fileID: 769181625}
@@ -15202,10 +15216,10 @@ RectTransform:
   - {fileID: 815935764}
   m_Father: {fileID: 1830703954}
   m_RootOrder: 4
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 617.7}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 800, y: 450}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &2143078977
 CanvasGroup:
@@ -15246,6 +15260,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa8b38df12baea5429f73fc853ca0704, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PanelName: Credits
   DefaultParentMenu: {fileID: 1634625130}
   ActiveButtonPanel: {fileID: 0}
   PreselectedButtonPanel: {fileID: 0}

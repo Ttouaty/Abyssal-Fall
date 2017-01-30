@@ -11,7 +11,9 @@ public class MenuPanelNew : MonoBehaviour
 	public static Dictionary<string, MenuPanelNew> PanelRefs = new Dictionary<string, MenuPanelNew>();
 	public static MenuPanelNew ActiveMenupanel;
 	public static bool InputEnabled = true;
+	public static float GlobalInputDelay = 0;
 
+	public string PanelName;
 	[Space]
 	public MenuPanelNew DefaultParentMenu;
 
@@ -28,11 +30,8 @@ public class MenuPanelNew : MonoBehaviour
 
 	void Awake()
 	{
-		PanelRefs.Add(name, this);
-	}
-
-	void Start()
-	{
+		PanelRefs.Add(PanelName, this);
+		gameObject.SetActive(false);
 		_animator = GetComponent<Animator>();
 	}
 
@@ -44,12 +43,15 @@ public class MenuPanelNew : MonoBehaviour
 			return;
 
 		_activeInputDelay = _activeInputDelay.Reduce(Time.deltaTime);
+		GlobalInputDelay = GlobalInputDelay.Reduce(Time.deltaTime);
 
 		stickDirection = InputManager.GetAllStickDirection();
-		if (stickDirection.magnitude < _previousStickDirection.magnitude - 0.5f)
+		if (stickDirection.magnitude < _previousStickDirection.magnitude - 0.3f)
+		{
 			_activeInputDelay = 0;
+		}
 
-		if (InputEnabled)
+		if (InputEnabled && GlobalInputDelay == 0)
 			ProcessInput();
 	}
 
@@ -57,6 +59,8 @@ public class MenuPanelNew : MonoBehaviour
 	{
 		if (!InputEnabled)
 			return;
+
+		gameObject.SetActive(true);
 
 		if (ActiveMenupanel != null)
 			ActiveMenupanel.Close();
@@ -69,8 +73,19 @@ public class MenuPanelNew : MonoBehaviour
 
 		ActiveMenupanel = this;
 		InputEnabled = false;
-		_animator.SetTrigger("SendIn");
+		StartCoroutine(AnimCoroutine("SendIn"));
 		SendOpen();
+	}
+
+	public IEnumerator AnimCoroutine(string triggerName)
+	{
+		yield return new WaitUntil(() => { return _animator.isInitialized; });
+		_animator.SetTrigger(triggerName);
+	}
+
+	public void LaunchAnimation(string triggerName)
+	{
+		StartCoroutine(AnimCoroutine(triggerName));
 	}
 
 	public void SendOpen()
@@ -84,24 +99,30 @@ public class MenuPanelNew : MonoBehaviour
 		InputEnabled = true;
 	}
 
+	public void FinishedGoingOut()
+	{
+		gameObject.SetActive(false);
+	}
+
 	public virtual void Close()
 	{
-		_animator.SetTrigger("SendOut");
+		LaunchAnimation("SendOut");
 	}
 
 	public void Return()
 	{
-		Close();
-		ActiveMenupanel = DefaultParentMenu;
-		if(ActiveButtonPanel != null)
-			ActiveButtonPanel.Open();
+		LaunchAnimation("SendOutRight");
 
+		ActiveMenupanel = DefaultParentMenu;
+		ActiveMenupanel.gameObject.SetActive(true);
+		if(ActiveMenupanel.ActiveButtonPanel != null)
+			ActiveMenupanel.ActiveButtonPanel.Open();
+
+		ActiveMenupanel.LaunchAnimation("Return");
 		InputEnabled = false;
-		_animator.SetTrigger("Return");
 		if (NetworkServer.active)
 			Player.LocalPlayer.RpcMenuTransition(DefaultParentMenu.name, false);
 	}
-
 
 	void ProcessInput()
 	{

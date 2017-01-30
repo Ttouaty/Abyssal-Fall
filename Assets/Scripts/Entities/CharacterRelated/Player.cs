@@ -282,8 +282,8 @@ public class Player : NetworkBehaviour
 	}
 	
 	[ClientRpc]
-	public void RpcOpenMenu(bool showSplashScreens, string targetMenuName)
+	public void RpcOpenMenu(bool showSplashScreens, string targetMenuName, bool openCharacterSelect)
 	{
-		MainManager.Instance.LEVEL_MANAGER.OpenMenu(showSplashScreens, targetMenuName);
+		MainManager.Instance.LEVEL_MANAGER.OpenMenu(showSplashScreens, targetMenuName, openCharacterSelect);
 	}
 }

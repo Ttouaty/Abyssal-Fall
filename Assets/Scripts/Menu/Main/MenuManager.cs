@@ -36,7 +36,9 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 		_canvas = GetComponentInChildren<Canvas>();
 		_splashscreens = SplashScreens.GetComponentsInChildren<RawImage>();
-		_characterSlotsContainerRef = GetComponentInChildren<CharacterSelector>();
+		_characterSlotsContainerRef = GetComponentInChildren<CharacterSelector>(true);
+		//Add 2 seconds of inputDelay on any menu start
+		MenuPanelNew.GlobalInputDelay = 2;
 
 		_needFTUE = !PlayerPrefs.HasKey("FTUEDone");
 	}
@@ -47,7 +49,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 		MiniLoading.SetActive(false);
 
 		if (_needFTUE)
-			MenuPanelNew.PanelRefs["FTUEPanel"].Open();
+			MenuPanelNew.PanelRefs["FTUE"].Open();
 
 		CameraManager.OnCameraChange.AddListener(OnCameraChange);
 	}
@@ -85,10 +87,10 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	public void RegisterNewPlayer(int joystickNumber)
 	{
-		//if (_controllerAlreadyInUse[joystickNumber])
-		//{
-		//	return;
-		//}
+		if (_controllerAlreadyInUse[joystickNumber]) // _controllerAlreadyInUse can create bugs on reloads (not set to true for already active players)
+		{
+			return;
+		}
 
 		LocalJoystickBuffer.Add(joystickNumber);
 		_controllerAlreadyInUse[joystickNumber] = true;
@@ -106,6 +108,20 @@ public class MenuManager : GenericSingleton<MenuManager>
 	{
 		_characterSlotsContainerRef.CloseTargetSlot(slotNumber);
 	}
+
+	public void OpenSlotsForPreselectedPlayers()
+	{
+		if (!NetworkServer.active)
+			return;
+
+		for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; i++)
+		{
+			ServerManager.Instance.RegisteredPlayers[i].UnReady();
+			Debug.Log("Spawning wheel for player => " + ServerManager.Instance.RegisteredPlayers[i].name);
+			ServerManager.Instance.SpawnCharacterWheel(ServerManager.Instance.RegisteredPlayers[i].gameObject);
+		}
+	}
+
 
 	public void StartGame()
 	{
@@ -167,10 +183,6 @@ public class MenuManager : GenericSingleton<MenuManager>
 		yield return StartCoroutine(LoadPreview_Implementation(EArenaConfiguration.Aerial));
 		SplashScreens.transform.Find("Background_black").GetComponent<Image>().CrossFadeAlpha(0, 1, false);
 		Destroy(SplashScreens, 1);
-
-		yield return new WaitUntil(() => !CameraManager.Instance.IsMoving);
-
-		//SetActiveButtons(_activeMenu, true);
 	}
 
 	public void LoadPreview(EArenaConfiguration levelName)

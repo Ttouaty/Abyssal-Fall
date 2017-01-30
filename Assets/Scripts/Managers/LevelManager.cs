@@ -90,9 +90,14 @@ public class LevelManager : GenericSingleton<LevelManager>
 		return StartCoroutine(OpenMenu_Implementation(showSplashScreens));
 	}
 
-	public Coroutine OpenMenu(bool showSplashScreens, string targetMenuName)
+	public Coroutine OpenMenu(bool showSplashScreens, string targetMenuName, bool openCharacterSlots = false)
 	{
-		return StartCoroutine(OpenMenu_Implementation(showSplashScreens , targetMenuName));
+		return StartCoroutine(OpenMenu_Implementation(showSplashScreens, targetMenuName, openCharacterSlots));
+	}
+
+	public Coroutine OpenMenu(bool showSplashScreens, MenuPanelNew targetMenu, bool openCharacterSlots = false)
+	{
+		return StartCoroutine(OpenMenu_Implementation(showSplashScreens, targetMenu.PanelName, openCharacterSlots));
 	}
 
 	private IEnumerator OpenMenu_Implementation(bool showSplashScreens)
@@ -108,7 +113,7 @@ public class LevelManager : GenericSingleton<LevelManager>
 		}
 	}
 
-	private IEnumerator OpenMenu_Implementation(bool showSplashScreens, string targetMenu)
+	private IEnumerator OpenMenu_Implementation(bool showSplashScreens, string targetMenu, bool openCharacterSlots = false)
 	{
 		if (!_bIsOnMenu)
 		{
@@ -120,25 +125,10 @@ public class LevelManager : GenericSingleton<LevelManager>
 			MenuManager.Instance.FadeSplashscreens(showSplashScreens);
 			MenuPanelNew.PanelRefs[targetMenu].Open();
 
-			Debug.Log("openning targetMenu => "+targetMenu);
-			if (targetMenu == "CharacterSelectPanel") //Spaghetti mais osef
+			if (openCharacterSlots)
 			{
-				for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; i++)
-				{
-					ServerManager.Instance.RegisteredPlayers[i].UnReady();
-				}
-
-				yield return new WaitForSeconds(2);
-				yield return new WaitUntil(() => !AutoFade.Fading );
-
-				if(NetworkServer.active)
-				{
-					for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; i++)
-					{
-						Debug.Log("Spawning wheel for player => "+ ServerManager.Instance.RegisteredPlayers[i].name);
-						ServerManager.Instance.SpawnCharacterWheel(ServerManager.Instance.RegisteredPlayers[i].gameObject);
-					}
-				}
+				yield return new WaitForSeconds(1);
+				MenuManager.Instance.OpenSlotsForPreselectedPlayers();
 			}
 		}
 	}

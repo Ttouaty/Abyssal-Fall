@@ -20,7 +20,7 @@ public class InputManager : GenericSingleton<InputManager>
 {
 	//  Buttons							0		1		  2		  3		4	  5		  6			7
 	private string[] InputNames = { "Dash", "Cancel", "Special", null, null, null, "Select", "Start" };
-	private KeyCode[][] KeyboardControls = { new KeyCode[] { KeyCode.H }, new KeyCode[] { KeyCode.J, KeyCode.Mouse1 }, new KeyCode[] { KeyCode.K, KeyCode.Mouse1 }, new KeyCode[] { KeyCode.L }, new KeyCode[] { KeyCode.None }, new KeyCode[] { KeyCode.None }, new KeyCode[] { KeyCode.Return }, new KeyCode[] { KeyCode.Space } };
+	private KeyCode[][] KeyboardControls = { new KeyCode[] { KeyCode.R }, new KeyCode[] { KeyCode.E, KeyCode.Mouse1 }, new KeyCode[] { KeyCode.Z, KeyCode.W, KeyCode.Mouse1 }, new KeyCode[] { KeyCode.A, KeyCode.Q }, new KeyCode[] { KeyCode.None }, new KeyCode[] { KeyCode.None }, new KeyCode[] { KeyCode.Return }, new KeyCode[] { KeyCode.Space } };
 	private static float _inputLockTime = 0;
 
 	public static bool InputLocked { get { return _inputLockTime != 0; } }
@@ -34,8 +34,6 @@ public class InputManager : GenericSingleton<InputManager>
 
 	void Update()
 	{
-		_inputLockTime = _inputLockTime.Reduce(Time.deltaTime);
-
 		if (_eventSystemGO == null)
 		{
 			if(FindObjectOfType<EventSystem>() != null)
@@ -43,6 +41,11 @@ public class InputManager : GenericSingleton<InputManager>
 		}
 		else if (_eventSystemGO.activeInHierarchy != !InputLocked)
 			_eventSystemGO.SetActive(!InputLocked);
+	}
+
+	void LateUpdate()
+	{
+		_inputLockTime = _inputLockTime.Reduce(Time.deltaTime);
 	}
 
 	static string[] _tempJoyNames;

@@ -13,11 +13,11 @@ public enum UIDirection
 public class ButtonPanelNew : MonoBehaviour
 {
 	public ButtonPanelNew ParentButtonPanel;
-	public Button FirstElementSelected;
+	public Selectable FirstElementSelected;
 
-	private Button _lastSelectedElement;
-	private Button _internalActiveButton;
-	private Button ActiveElement
+	private Selectable _lastSelectedElement;
+	private Selectable _internalActiveButton;
+	private Selectable ActiveElement
 	{
 		get { return _internalActiveButton; }
 		set
@@ -27,30 +27,37 @@ public class ButtonPanelNew : MonoBehaviour
 			else
 				_internalActiveButton = value;
 			_lastSelectedElement = _internalActiveButton;
-			_internalActiveButton.Select();
+			EventSystem.current.SetSelectedGameObject(null);
+			EventSystem.current.SetSelectedGameObject(_internalActiveButton.gameObject);
 		}
 	}
 
 	private MenuPanelNew _parentMenu;
 	private Animator _animator;
 
-	void Start()
+	void Awake()
 	{
-		_animator = GetComponent<Animator>();
 		_parentMenu = GetComponentInParent<MenuPanelNew>();
-
+		_animator = GetComponent<Animator>();
 	}
 
 	public void Open()
 	{
 		if (ParentButtonPanel != null)
 			ParentButtonPanel.FadeParent();
-		if (FirstElementSelected != null)
-			ActiveElement = FirstElementSelected;
+		if (ActiveElement == null)
+		{
+			if (FirstElementSelected != null)
+				ActiveElement = FirstElementSelected;
+		}
+		else
+		{
+			ActiveElement = ActiveElement;
+		}
 
 		_parentMenu.ActiveButtonPanel = this;
 		MenuPanelNew.InputEnabled = false;
-		_animator.SetTrigger("SendIn");
+		LaunchAnimation("SendIn");
 	}
 
 	private void FadeParent()
@@ -68,12 +75,12 @@ public class ButtonPanelNew : MonoBehaviour
 
 	public void Close()
 	{
-		_animator.SetTrigger("SendOut");
+		LaunchAnimation("SendOut");
 	}
 
 	public void Fade()
 	{
-		_animator.SetTrigger("FadeOut");
+		LaunchAnimation("FadeOut");
 	}
 
 	public void FadeIn()
@@ -81,7 +88,8 @@ public class ButtonPanelNew : MonoBehaviour
 		ActiveElement = _lastSelectedElement;
 		_parentMenu.ActiveButtonPanel = this;
 		MenuPanelNew.InputEnabled = false;
-		_animator.SetTrigger("FadeIn");
+		_animator.ResetTrigger("FadeOut");
+		LaunchAnimation("FadeIn");
 	}
 
 	public void Return()
@@ -113,12 +121,24 @@ public class ButtonPanelNew : MonoBehaviour
 		if (newButton == null)
 			return;
 		
-		ActiveElement = (Button)newButton;
+		ActiveElement = newButton;
 		_parentMenu.AddInputDelay();
 	}
 
 	public void Activate()
 	{
-		ActiveElement.onClick.Invoke();
+		if(ActiveElement.GetComponent<Button>() != null)
+			ActiveElement.GetComponent<Button>().onClick.Invoke();
+	}
+
+	public IEnumerator AnimCoroutine(string triggerName)
+	{
+		yield return new WaitUntil(() => { return _animator.isInitialized; });
+		_animator.SetTrigger(triggerName);
+	}
+
+	public void LaunchAnimation(string triggerName)
+	{
+		StartCoroutine(AnimCoroutine(triggerName));
 	}
 }

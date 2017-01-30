@@ -5,14 +5,14 @@ public class CharacterSelectPanel : MenuPanelNew {
 
 	public override void Open()
 	{
-		base.Open();
 		ServerManager.Instance.IsInLobby = true;
+		base.Open();
 	}
 
 	public override void Close()
 	{
-		base.Close();
 		ServerManager.Instance.IsInLobby = false;
+		base.Close();
 	}
 
 }

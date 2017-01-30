@@ -5,7 +5,7 @@ AnimationClip:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: SendInButtonPanel
+  m_Name: SendOutRight
   serializedVersion: 6
   m_Legacy: 0
   m_Compressed: 0
@@ -21,33 +21,13 @@ AnimationClip:
       m_Curve:
       - time: 0
         value: 0
-        inSlope: 0.79762685
-        outSlope: 0.79762685
+        inSlope: 311.89914
+        outSlope: 311.89914
         tangentMode: 0
       - time: 0.16666667
-        value: 1
-        inSlope: 20.321136
-        outSlope: 20.321136
-        tangentMode: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    attribute: m_Alpha
-    path: 
-    classID: 225
-    script: {fileID: 0}
-  - curve:
-      serializedVersion: 2
-      m_Curve:
-      - time: 0
-        value: -200
-        inSlope: 3681.5615
-        outSlope: 3681.5615
-        tangentMode: 0
-      - time: 0.16666667
-        value: 0
-        inSlope: 0
-        outSlope: 0
+        value: 800
+        inSlope: 15860.684
+        outSlope: 15860.684
         tangentMode: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
@@ -64,12 +44,6 @@ AnimationClip:
     m_Extent: {x: 0, y: 0, z: 0}
   m_ClipBindingConstant:
     genericBindings:
-    - path: 0
-      attribute: 1574349066
-      script: {fileID: 0}
-      classID: 225
-      customType: 0
-      isPPtrCurve: 0
     - path: 0
       attribute: 1460864421
       script: {fileID: 0}
@@ -103,33 +77,13 @@ AnimationClip:
       m_Curve:
       - time: 0
         value: 0
-        inSlope: 0.79762685
-        outSlope: 0.79762685
+        inSlope: 311.89914
+        outSlope: 311.89914
         tangentMode: 0
       - time: 0.16666667
-        value: 1
-        inSlope: 20.321136
-        outSlope: 20.321136
-        tangentMode: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    attribute: m_Alpha
-    path: 
-    classID: 225
-    script: {fileID: 0}
-  - curve:
-      serializedVersion: 2
-      m_Curve:
-      - time: 0
-        value: -200
-        inSlope: 3681.5615
-        outSlope: 3681.5615
-        tangentMode: 0
-      - time: 0.16666667
-        value: 0
-        inSlope: 0
-        outSlope: 0
+        value: 800
+        inSlope: 15860.684
+        outSlope: 15860.684
         tangentMode: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
@@ -144,7 +98,7 @@ AnimationClip:
   m_GenerateMotionCurves: 0
   m_Events:
   - time: 0.16666667
-    functionName: FinishedEntering
+    functionName: FinishedGoingOut
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
