@@ -27,13 +27,17 @@ public class ButtonPanelNew : MonoBehaviour
 			else
 				_internalActiveButton = value;
 			_lastSelectedElement = _internalActiveButton;
-			EventSystem.current.SetSelectedGameObject(null);
-			EventSystem.current.SetSelectedGameObject(_internalActiveButton.gameObject);
+			if(EventSystem.current != null)
+			{
+				EventSystem.current.SetSelectedGameObject(null);
+				EventSystem.current.SetSelectedGameObject(_internalActiveButton.gameObject);
+			}
 		}
 	}
 
 	private MenuPanelNew _parentMenu;
 	private Animator _animator;
+	private string _lastTrigger = "";
 
 	void Awake()
 	{
@@ -106,14 +110,40 @@ public class ButtonPanelNew : MonoBehaviour
 		if (ActiveElement == null)
 			return;
 
+		SelectNewButton(GetNextButton(newDirection, ActiveElement));
+	}
+
+	public Selectable GetNextButton(UIDirection newDirection, Selectable targetSelectable, Selectable firstSelected = null)
+	{
+		if (targetSelectable.navigation.mode == Navigation.Mode.None)
+			return null;
+
+		if (firstSelected == targetSelectable)
+		{
+			Debug.Log("Full loop, cancelling !");
+			return null;
+		}
+
+		if (firstSelected == null)
+			firstSelected = targetSelectable;
+
+		Selectable newTargetSelectable;
+
 		if (newDirection == UIDirection.Up)
-			SelectNewButton(ActiveElement.navigation.selectOnUp);
+			newTargetSelectable = targetSelectable.navigation.selectOnUp;
 		else if (newDirection == UIDirection.Down)
-			SelectNewButton(ActiveElement.navigation.selectOnDown);
+			newTargetSelectable = targetSelectable.navigation.selectOnDown;
 		else if (newDirection == UIDirection.Left)
-			SelectNewButton(ActiveElement.navigation.selectOnLeft);
+			newTargetSelectable = targetSelectable.navigation.selectOnLeft;
 		else
-			SelectNewButton(ActiveElement.navigation.selectOnRight);
+			newTargetSelectable = targetSelectable.navigation.selectOnRight;
+
+		if (newTargetSelectable == null)
+			return null;
+
+		if (newTargetSelectable.interactable && newTargetSelectable.isActiveAndEnabled)
+			return newTargetSelectable;
+		return GetNextButton(newDirection, newTargetSelectable, firstSelected);
 	}
 
 	public void SelectNewButton(Selectable newButton)
@@ -139,6 +169,11 @@ public class ButtonPanelNew : MonoBehaviour
 
 	public void LaunchAnimation(string triggerName)
 	{
+		if (_lastTrigger.Length != 0)
+			_animator.ResetTrigger(_lastTrigger);
+
+		_lastTrigger = triggerName;
+
 		StartCoroutine(AnimCoroutine(triggerName));
 	}
 }

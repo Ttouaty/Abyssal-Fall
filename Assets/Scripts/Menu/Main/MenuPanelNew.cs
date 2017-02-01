@@ -25,12 +25,16 @@ public class MenuPanelNew : MonoBehaviour
 	private Vector2 _previousStickDirection;
 	private Vector2 stickDirection;
 
-	private float _defaultInputDelay = 0.2f;
+	private float _defaultInputDelay = 0.1f;
+	private float _repeatDelay = 0.5f;
 	private float _activeInputDelay = 0;
+	private string _lastTrigger = "";
 
+	private bool _firstInput = true;
 	void Awake()
 	{
-		PanelRefs.Add(PanelName, this);
+		if(!PanelRefs.ContainsKey(PanelName))
+			PanelRefs.Add(PanelName, this);
 		gameObject.SetActive(false);
 		_animator = GetComponent<Animator>();
 	}
@@ -48,7 +52,9 @@ public class MenuPanelNew : MonoBehaviour
 		stickDirection = InputManager.GetAllStickDirection();
 		if (stickDirection.magnitude < _previousStickDirection.magnitude - 0.3f)
 		{
+			_previousStickDirection = Vector3.zero;
 			_activeInputDelay = 0;
+			_firstInput = true;
 		}
 
 		if (InputEnabled && GlobalInputDelay == 0)
@@ -63,7 +69,8 @@ public class MenuPanelNew : MonoBehaviour
 		gameObject.SetActive(true);
 
 		if (ActiveMenupanel != null)
-			ActiveMenupanel.Close();
+			if (ActiveMenupanel != this)
+				ActiveMenupanel.Close();
 
 		if (PreselectedButtonPanel != null)
 		{
@@ -73,25 +80,32 @@ public class MenuPanelNew : MonoBehaviour
 
 		ActiveMenupanel = this;
 		InputEnabled = false;
-		StartCoroutine(AnimCoroutine("SendIn"));
+		LaunchAnimation("SendIn");
 		SendOpen();
 	}
 
 	public IEnumerator AnimCoroutine(string triggerName)
 	{
 		yield return new WaitUntil(() => { return _animator.isInitialized; });
+		if (_lastTrigger.Length != 0)
+			_animator.ResetTrigger(_lastTrigger);
+
+		_lastTrigger = triggerName;
+
 		_animator.SetTrigger(triggerName);
 	}
 
 	public void LaunchAnimation(string triggerName)
 	{
-		StartCoroutine(AnimCoroutine(triggerName));
+		
+		if (isActiveAndEnabled)
+			StartCoroutine(AnimCoroutine(triggerName));
 	}
 
 	public void SendOpen()
 	{
 		if (NetworkServer.active)
-			Player.LocalPlayer.RpcMenuTransition(name, true);
+			Player.LocalPlayer.RpcMenuTransition(PanelName, true);
 	}
 
 	public void FinishedEntering()
@@ -121,7 +135,7 @@ public class MenuPanelNew : MonoBehaviour
 		ActiveMenupanel.LaunchAnimation("Return");
 		InputEnabled = false;
 		if (NetworkServer.active)
-			Player.LocalPlayer.RpcMenuTransition(DefaultParentMenu.name, false);
+			Player.LocalPlayer.RpcMenuTransition(PanelName, false);
 	}
 
 	void ProcessInput()
@@ -130,11 +144,13 @@ public class MenuPanelNew : MonoBehaviour
 		{
 			if (InputManager.GetButtonDown(InputEnum.A))
 			{
+				_previousStickDirection = stickDirection;
 				ActiveButtonPanel.Activate();
 			}
-			
+
 			if (InputManager.GetButtonDown(InputEnum.B))
 			{
+				_previousStickDirection = stickDirection;
 				ActiveButtonPanel.Return();
 			}
 
@@ -143,7 +159,7 @@ public class MenuPanelNew : MonoBehaviour
 
 			if(stickDirection.magnitude > 0.9f)
 			{
-				if (stickDirection.AnglePercent(Vector2.up) > 0.5f)
+					if (stickDirection.AnglePercent(Vector2.up) > 0.5f)
 					ActiveButtonPanel.SelectNewButton(UIDirection.Up);
 				else if (stickDirection.AnglePercent(Vector2.down) > 0.5f)
 					ActiveButtonPanel.SelectNewButton(UIDirection.Down);
@@ -151,6 +167,14 @@ public class MenuPanelNew : MonoBehaviour
 					ActiveButtonPanel.SelectNewButton(UIDirection.Left);
 				else if (stickDirection.AnglePercent(Vector2.right) > 0.5f)
 					ActiveButtonPanel.SelectNewButton(UIDirection.Right);
+
+				if(_firstInput)
+				{
+					_activeInputDelay = _repeatDelay;
+					_firstInput = false;
+				}
+
+				_previousStickDirection = stickDirection;
 			}
 		}
 	}

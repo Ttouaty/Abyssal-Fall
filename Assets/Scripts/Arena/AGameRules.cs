@@ -5,6 +5,7 @@ using UnityEngine.Networking;
 
 public struct ParsedGameRules
 {
+	public int NumberOfCharactersRequired;
 	public int IsMatchRoundBased;
 	public int CanPlayerRespawn;
 	public int CanFalledTilesRespawn;
@@ -24,6 +25,7 @@ public abstract class AGameRules : MonoBehaviour
 	 * & il faut faire suivre les custom editors
 	 */
 	public BoolRule IsMatchRoundBased;
+	public IntRule NumberOfCharactersRequired;
 	public IntRule NumberOfRounds;
 	public IntRule MatchDuration;
 
@@ -84,6 +86,7 @@ public abstract class AGameRules : MonoBehaviour
 	public virtual ParsedGameRules Serialize()
 	{
 		ParsedGameRules newParsedRules = new ParsedGameRules();
+		newParsedRules.NumberOfCharactersRequired = NumberOfCharactersRequired._valueIndex;
 		newParsedRules.IsMatchRoundBased = IsMatchRoundBased._valueIndex;
 		newParsedRules.CanPlayerRespawn = CanPlayerRespawn._valueIndex;
 		newParsedRules.CanFalledTilesRespawn = CanFalledTilesRespawn._valueIndex;
@@ -98,6 +101,7 @@ public abstract class AGameRules : MonoBehaviour
 
 	public virtual void Parse(ParsedGameRules newRule)
 	{
+		NumberOfCharactersRequired._valueIndex = newRule.NumberOfCharactersRequired;
 		IsMatchRoundBased._valueIndex = newRule.IsMatchRoundBased;
 		CanPlayerRespawn._valueIndex = newRule.CanPlayerRespawn;
 		CanFalledTilesRespawn._valueIndex = newRule.CanFalledTilesRespawn;

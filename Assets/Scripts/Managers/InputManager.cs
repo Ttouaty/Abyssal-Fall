@@ -79,18 +79,11 @@ public class InputManager : GenericSingleton<InputManager>
 	public static string[] GetJoystickNames()
 	{
 		string[] joystickNames = Input.GetJoystickNames();
-		if(joystickNames.Length != 0)
-		{
-			if(joystickNames[0].Length == 0)
-			{
-				joystickNames[0] = "Keyboard";
-				return joystickNames;
-			}
-		}
 
 		string[] returnArray = new string[joystickNames.Length + 1];
 		for (int i = 1; i < joystickNames.Length + 1; i++)
 		{
+			joystickNames[0] = "Keyboard";
 			returnArray[i] = joystickNames[i - 1];
 		}
 

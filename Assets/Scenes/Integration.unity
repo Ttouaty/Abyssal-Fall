@@ -121,7 +121,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 897e42739809b494b820b693c2280997, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ParentPanel: {fileID: 328845632}
+  ParentButtonPanel: {fileID: 0}
   FirstElementSelected: {fileID: 515677788}
 --- !u!224 &3699600
 RectTransform:
@@ -224,7 +224,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &120357309
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -482,7 +482,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 897e42739809b494b820b693c2280997, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ParentPanel: {fileID: 0}
+  ParentButtonPanel: {fileID: 0}
   FirstElementSelected: {fileID: 1250726826}
 --- !u!95 &328845633
 Animator:
@@ -794,8 +794,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa8b38df12baea5429f73fc853ca0704, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PanelName: 
   DefaultParentMenu: {fileID: 0}
   ActiveButtonPanel: {fileID: 0}
+  PreselectedButtonPanel: {fileID: 0}
 --- !u!225 &562596761
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -1043,7 +1045,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 848987960}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.66, z: -6}
+  m_LocalPosition: {x: -5.42, y: 0.66, z: -5.02}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []

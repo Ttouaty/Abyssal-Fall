@@ -9,26 +9,28 @@ using System;
 public class CharacterSlot : MonoBehaviour
 {
 	private static PlayerController[] _availableCharacters;
+
 	public CharacterSelectPedestal TargetPedestal;
 	public Transform WheelSlot;
-	private float _switchCharacterDelay = 0.15f;
-	private TimeCooldown _switchCharacterCooldown;
-
+	public GameObject PressAContainer;
 	[HideInInspector]
 	public bool Open = false;
 	[HideInInspector]
 	public bool Selected = false;
+	[HideInInspector]
+	public Player _playerRef;
 
 	[Space]
 	public UnityEvent OnSlotOpen;
 	public UnityEvent OnSlotClose;
 
 	private bool _canSwitchCharacter = true;
-	[HideInInspector]
-	public Player _playerRef;
+	private float _switchCharacterDelay = 0.15f;
+	private TimeCooldown _switchCharacterCooldown;
+	
 	private CharacterSelectWheel _wheelRef;
-
 	private CharacterSelector _selectorRef;
+
 	void Start()
 	{
 		_selectorRef = GetComponentInParent<CharacterSelector>();
@@ -44,11 +46,11 @@ public class CharacterSlot : MonoBehaviour
 
 	
 
-	int frameDelay = 1; // security for opening a slot. (prevents openning && selecting character in 1 frame)
+	int frameDelay = 1; // security for opening a slot. (prevents openning && selecting character in 1 frame) dirty As Fuck
 	void Update()
 	{
-		if(!NetworkServer.active && NetworkClient.active)
-			transform.FindChild("BG Container").gameObject.SetActive(false);
+		if (!NetworkServer.active && NetworkClient.active)
+			PressAContainer.SetActive(false);
 
 		if (!Open)
 			return;
@@ -158,13 +160,13 @@ public class CharacterSlot : MonoBehaviour
 
 	public void CloseSlot()
 	{
-		_wheelRef.Reset();
+		//_wheelRef.Reset();
 		OnSlotClose.Invoke();
-		_wheelRef.gameObject.SetActive(false);
+		//_wheelRef.gameObject.SetActive(false);
 		Open = false;
 		frameDelay = 1;
-		_wheelRef.CmdChangeCharacterSkin(0);
-		_wheelRef.CmdScrollToIndex(0);
+		//_wheelRef.CmdChangeCharacterSkin(0);
+		//_wheelRef.CmdScrollToIndex(0);
 		Debug.Log("SLOT: " + name + " Closed");
 	}
 

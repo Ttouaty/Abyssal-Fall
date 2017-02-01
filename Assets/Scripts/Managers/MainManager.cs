@@ -66,6 +66,7 @@ public class MainManager : GenericSingleton<MainManager>
 		}
 
 		StartCoroutine(ServerManager.Instance.GetExternalIP());
-		LEVEL_MANAGER.OpenMenu(true,"Main");
+		LEVEL_MANAGER.OpenMenu(true,"Title");
+		MenuPanelNew.GlobalInputDelay = 4;
 	}
 }

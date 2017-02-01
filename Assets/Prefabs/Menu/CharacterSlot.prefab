@@ -523,8 +523,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TargetPedestal: {fileID: 114000011334901928}
   WheelSlot: {fileID: 224000013302360248}
+  PressAContainer: {fileID: 1000012899978918}
   Open: 0
   Selected: 0
+  _playerRef: {fileID: 0}
   OnSlotOpen:
     m_PersistentCalls:
       m_Calls:
@@ -590,7 +592,6 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-  _playerRef: {fileID: 0}
 --- !u!114 &114000010426619488
 MonoBehaviour:
   m_ObjectHideFlags: 1

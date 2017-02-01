@@ -208,7 +208,6 @@ public class ArenaManager : MonoBehaviour
 
 		for(int i = 0; i < list.Count; ++i)
 		{
-			Debug.LogWarning("behaviors needs to be managed by server !");
 			ABaseBehaviour behaviour    = Instantiate(list[i].Behaviour);
 			behaviour.transform.parent  = BehavioursRoot;
 			_behaviours.Add(behaviour);

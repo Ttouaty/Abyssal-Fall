@@ -37,9 +37,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 		_canvas = GetComponentInChildren<Canvas>();
 		_splashscreens = SplashScreens.GetComponentsInChildren<RawImage>();
 		_characterSlotsContainerRef = GetComponentInChildren<CharacterSelector>(true);
-		//Add 2 seconds of inputDelay on any menu start
-		MenuPanelNew.GlobalInputDelay = 2;
-
+	
 		_needFTUE = !PlayerPrefs.HasKey("FTUEDone");
 	}
 
@@ -127,6 +125,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 	{
 		Debug.Log("game started");
 		GameManager.Instance.StartGame();
+		InputManager.SetInputLockTime(2);
 		// SpawnFallingGround.instance.Init();
 		//DeactivateMenu();
 	}

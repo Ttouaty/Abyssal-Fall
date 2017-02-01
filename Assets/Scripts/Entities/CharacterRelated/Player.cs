@@ -202,7 +202,7 @@ public class Player : NetworkBehaviour
 		if(dir)
 			MenuPanelNew.PanelRefs[newMenuName].Open();
 		else
-			MenuPanelNew.ActiveMenupanel.Return();
+			MenuPanelNew.PanelRefs[newMenuName].Return();
 	}
 
 	[ClientRpc]
