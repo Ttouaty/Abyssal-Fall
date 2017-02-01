@@ -52,7 +52,6 @@ public class Player : NetworkBehaviour
 
 	public void SelectCharacter(ref PlayerController newCharacter)
 	{
-		//_characterUsed = newCharacter; //unused for now (to avoid cyclic ref)
 		newCharacter._playerRef = this;
 	}
 
@@ -70,6 +69,11 @@ public class Player : NetworkBehaviour
 	public void SetWheelReady(bool ready)
 	{
 		_ready = ready;
+		if(_ready)
+			MenuManager.Instance._characterSlotsContainerRef.SlotsAvailable[PlayerNumber - 1].GetComponentInChildren<CharacterSelectWheel>().SetAnimTrigger("ToSelected");
+		else
+			MenuManager.Instance._characterSlotsContainerRef.SlotsAvailable[PlayerNumber - 1].GetComponentInChildren<CharacterSelectWheel>().SetAnimTrigger("ToIdle");
+
 		MenuManager.Instance._characterSlotsContainerRef.SlotsAvailable[PlayerNumber - 1].SelectPedestal(ready);
 	}
 

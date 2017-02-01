@@ -99,7 +99,6 @@ public class CharacterSlot : MonoBehaviour
 		//if (_activeCoroutineRef != null)
 		//	StopCoroutine(_activeCoroutineRef);
 		_playerRef.Ready(_wheelRef._selectedElementIndex, _wheelRef._selectedSkinIndex);
-		
 		//Vector3 camDirection = (Camera.main.transform.position - transform.position).normalized;
 		//SelectCharacter();
 		//ParticleSystem spawnParticles = (ParticleSystem) Instantiate(OnCharacterSelectedParticles, transform.position + camDirection * 1.5f, Quaternion.identity);

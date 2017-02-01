@@ -138,6 +138,7 @@ public class CharacterSelectWheel : NetworkBehaviour
 		{
 			tempGenerationSelectableCharacters[i] = Instantiate(AvailablePlayers[i]._characterData.CharacterSelectModel.gameObject) as GameObject;
 			tempGenerationSelectableCharacters[i].transform.localScale = transform.parent.localScale * 1.8f;
+			tempGenerationSelectableCharacters[i].GetComponentInChildren<Animator>().SetTrigger("Selection");
 			//tempGenerationSelectableCharacters[i].AddComponent<NetworkIdentity>();
 			//NetworkServer.Spawn(tempGenerationSelectableCharacters[i]);
 		}
@@ -187,5 +188,10 @@ public class CharacterSelectWheel : NetworkBehaviour
 
 		Generate();
 		MenuManager.Instance._characterSlotsContainerRef.SlotsAvailable[_playerRef.GetComponent<Player>().PlayerNumber - 1].OpenSlot(this);
+	}
+
+	public void SetAnimTrigger(string triggerName)
+	{
+		_displayArray[_selectedElementIndex].GetComponentInChildren<Animator>().SetTrigger(triggerName);
 	}
 }
