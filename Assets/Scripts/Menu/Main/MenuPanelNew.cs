@@ -31,6 +31,7 @@ public class MenuPanelNew : MonoBehaviour
 	private string _lastTrigger = "";
 
 	private bool _firstInput = true;
+
 	void Awake()
 	{
 		if(!PanelRefs.ContainsKey(PanelName))

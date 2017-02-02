@@ -121,8 +121,9 @@ public class LevelManager : GenericSingleton<LevelManager>
 			yield return StartCoroutine(LoadScene(SceneMenu));
 
 			_bIsOnMenu = true;
-
 			MenuManager.Instance.FadeSplashscreens(showSplashScreens);
+
+			yield return new WaitForSeconds(0.2f); // security & wait for panel awake
 			MenuPanelNew.PanelRefs[targetMenu].Open();
 
 			if (openCharacterSlots)

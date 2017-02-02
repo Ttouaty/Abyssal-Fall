@@ -13,6 +13,9 @@ public class CharacterSlot : MonoBehaviour
 	public CharacterSelectPedestal TargetPedestal;
 	public Transform WheelSlot;
 	public GameObject PressAContainer;
+	public Text SpecialText;
+	public Text SpeedText;
+
 	[HideInInspector]
 	public bool Open = false;
 	[HideInInspector]
@@ -41,7 +44,7 @@ public class CharacterSlot : MonoBehaviour
 
 		_switchCharacterCooldown = new TimeCooldown(this);
 		_switchCharacterCooldown.onFinish = AllowSwitchCharacter;
-
+		SetTextAlpha(0);
 	}
 
 	
@@ -92,19 +95,12 @@ public class CharacterSlot : MonoBehaviour
 	public void SelectPedestal(bool ready)
 	{
 		TargetPedestal.SetSelect(ready);
+		SetTextAlpha(Convert.ToInt32(!ready));
 	}
 
 	void SelectCharacter()
 	{
-		//if (_activeCoroutineRef != null)
-		//	StopCoroutine(_activeCoroutineRef);
 		_playerRef.Ready(_wheelRef._selectedElementIndex, _wheelRef._selectedSkinIndex);
-		//Vector3 camDirection = (Camera.main.transform.position - transform.position).normalized;
-		//SelectCharacter();
-		//ParticleSystem spawnParticles = (ParticleSystem) Instantiate(OnCharacterSelectedParticles, transform.position + camDirection * 1.5f, Quaternion.identity);
-		//spawnParticles.transform.parent = MenuManager.Instance.transform;
-		//spawnParticles.transform.rotation = Quaternion.LookRotation(transform.forward, transform.up);
-		//spawnParticles.GetComponent<FlashAndRotate>()._rotationAxis = transform.forward;
 
 		Selected = true;
 	}
@@ -134,38 +130,19 @@ public class CharacterSlot : MonoBehaviour
 			OnSlotOpen.Invoke();
 		}
 
-		//Debug.Log("Generate wheel "+name+" with netID => "+_wheelRef.GetComponent<NetworkIdentity>().netId);
 		_playerRef = _wheelRef._playerRef.GetComponent<Player>();
 		_wheelRef.transform.localRotation = Quaternion.identity;
 
-		//if (!NetworkServer.active || _netSpawned)
-		//{
-		//	return;
-		//}
-
-		//NetworkServer.SpawnWithClientAuthority(_wheelRef.gameObject, player.connectionToClient);
-		//if (_wheelRef.GetComponent<NetworkIdentity>().clientAuthorityOwner != null)
-		//	_wheelRef.GetComponent<NetworkIdentity>().RemoveClientAuthority(_wheelRef.GetComponent<NetworkIdentity>().clientAuthorityOwner);
-		
-		//if (_wheelRef.netId.Value == 0)
-		//	NetworkServer.SpawnWithClientAuthority(_wheelRef.gameObject, player.connectionToClient);
-		//else
-		//	_wheelRef.GetComponent<NetworkIdentity>().AssignClientAuthority(player.connectionToClient);
-		//_netSpawned = true;
-		//Debug.Log("SLOT: " + name + " Opened, Listening to gamePad n°: " + player.JoystickNumber);
-		//ChangeCharacter(characterNumber);
-		//_wheelRef.CmdChangeCharacterSkin(skinNumber);
+		if (_playerRef.isLocalPlayer)
+			SetTextAlpha(1);
 	}
 
 	public void CloseSlot()
 	{
-		//_wheelRef.Reset();
 		OnSlotClose.Invoke();
-		//_wheelRef.gameObject.SetActive(false);
 		Open = false;
 		frameDelay = 1;
-		//_wheelRef.CmdChangeCharacterSkin(0);
-		//_wheelRef.CmdScrollToIndex(0);
+		SetTextAlpha(0);
 		Debug.Log("SLOT: " + name + " Closed");
 	}
 
@@ -175,5 +152,26 @@ public class CharacterSlot : MonoBehaviour
 		_wheelRef.CmdScrollToIndex((_wheelRef._selectedElementIndex + direction).LoopAround(0, _availableCharacters.Length - 1));
 		_canSwitchCharacter = false;
 		_switchCharacterCooldown.Add(_switchCharacterDelay);
+	}
+
+	public void SetCharacterInfoText(string special, string speed)
+	{
+		SpecialText.text = special;
+		SpeedText.text = speed;
+	}
+
+	public void SetTextAlpha(float alpha)
+	{
+		if(_playerRef != null)
+		{
+			if(_playerRef.isLocalPlayer)
+			{
+				SpecialText.GetComponentInParent<CanvasGroup>().alpha = alpha;
+				return;
+			}
+		}
+
+		Debug.Log("Preventing alpha (player is not local player)");
+		SpecialText.GetComponentInParent<CanvasGroup>().alpha = 0;
 	}
 }

@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class CharacterSelectWheel : NetworkBehaviour
 {
+	public static Dictionary<int, CharacterSelectWheel> WheelsRef = new Dictionary<int, CharacterSelectWheel>(4);
+
 	public float _wheelRadius = 3;
 	public float _rotateSpeed = 0.2f;
 
@@ -107,6 +109,7 @@ public class CharacterSelectWheel : NetworkBehaviour
 	{
 		_selectedElementIndex = newIndex;
 		_selectedElementIndex = _selectedElementIndex.LoopAround(0, _displayArray.Length - 1);
+		GetComponentInParent<CharacterSlot>().SetCharacterInfoText(_returnArray[_selectedElementIndex]._characterData.SpecialInfoKey, _returnArray[_selectedElementIndex]._characterData.SpeedInfoKey);
 		//_displayArray[_selectedElementIndex].transform.SetAsLastSibling();
 	}
 
@@ -147,6 +150,11 @@ public class CharacterSelectWheel : NetworkBehaviour
 		Internal_Generate(tempGenerationSelectableCharacters, AvailablePlayers);
 		_selectedElementIndex = _playerRef.GetComponent<Player>().CharacterUsedIndex;
 		_selectedSkinIndex = _playerRef.GetComponent<Player>().SkinNumber;
+
+		if (WheelsRef.ContainsKey(_playerRef.GetComponent<Player>().PlayerNumber))
+			WheelsRef.Remove(_playerRef.GetComponent<Player>().PlayerNumber);
+
+		WheelsRef.Add(_playerRef.GetComponent<Player>().PlayerNumber, this);
 	}
 
 	public void ChangeCharacterSkinPrecise(int skinIndex, int characterIndex)
@@ -193,5 +201,11 @@ public class CharacterSelectWheel : NetworkBehaviour
 	public void SetAnimTrigger(string triggerName)
 	{
 		_displayArray[_selectedElementIndex].GetComponentInChildren<Animator>().SetTrigger(triggerName);
+	}
+
+	public override void OnNetworkDestroy()
+	{
+		Destroy(gameObject);
+		base.OnNetworkDestroy();
 	}
 }

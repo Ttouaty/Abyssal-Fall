@@ -70,11 +70,11 @@ public class Player : NetworkBehaviour
 	{
 		_ready = ready;
 		if(_ready)
-			MenuManager.Instance._characterSlotsContainerRef.SlotsAvailable[PlayerNumber - 1].GetComponentInChildren<CharacterSelectWheel>().SetAnimTrigger("ToSelected");
+			CharacterSelectWheel.WheelsRef[PlayerNumber].SetAnimTrigger("ToSelected");
 		else
-			MenuManager.Instance._characterSlotsContainerRef.SlotsAvailable[PlayerNumber - 1].GetComponentInChildren<CharacterSelectWheel>().SetAnimTrigger("ToIdle");
+			CharacterSelectWheel.WheelsRef[PlayerNumber].SetAnimTrigger("ToIdle");
 
-		MenuManager.Instance._characterSlotsContainerRef.SlotsAvailable[PlayerNumber - 1].SelectPedestal(ready);
+		CharacterSelectWheel.WheelsRef[PlayerNumber].GetComponentInParent<CharacterSlot>().SelectPedestal(ready);
 	}
 
 	[Command]

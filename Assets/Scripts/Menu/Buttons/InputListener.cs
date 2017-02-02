@@ -50,14 +50,11 @@ public class InputListener : MonoBehaviour
 	protected virtual void Update()
 	{
 		string[] tempStringArray = InputManager.GetJoystickNames();
-		for (int i = -1; i < tempStringArray.Length; ++i)
+		for (int i = 0; i < tempStringArray.Length; ++i)
 		{
-			if (i != -1)
-			{
-				if (tempStringArray[i] == "")
-					continue;
-			}
-			TestInput(i + 1);
+			if (tempStringArray[i] == "")
+				continue;
+			TestInput(i);
 		}
 
 		if ((InputMethodUsed == InputMethod.Held && !UseAxis) || (UseAxis && CanLoop))

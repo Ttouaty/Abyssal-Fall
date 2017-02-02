@@ -10,7 +10,10 @@ public class SO_Character :  ScriptableObject{
 	public Sprite DarkIcon;
 	public CharacterModel CharacterSelectModel;
 	public int NumberOfSkins = 4;
-	
+	[Header("Info")]
+	public string SpecialInfoKey;
+	public string SpeedInfoKey;
+
 	[Header("Stats")]
 	public Stats CharacterStats;
 	[Header("Dash")]

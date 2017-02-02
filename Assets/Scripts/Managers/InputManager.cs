@@ -20,7 +20,7 @@ public class InputManager : GenericSingleton<InputManager>
 {
 	//  Buttons							0		1		  2		  3		4	  5		  6			7
 	private string[] InputNames = { "Dash", "Cancel", "Special", null, null, null, "Select", "Start" };
-	private KeyCode[][] KeyboardControls = { new KeyCode[] { KeyCode.R }, new KeyCode[] { KeyCode.E, KeyCode.Mouse1 }, new KeyCode[] { KeyCode.Z, KeyCode.W, KeyCode.Mouse1 }, new KeyCode[] { KeyCode.A, KeyCode.Q }, new KeyCode[] { KeyCode.None }, new KeyCode[] { KeyCode.None }, new KeyCode[] { KeyCode.Return }, new KeyCode[] { KeyCode.Space } };
+	private KeyCode[][] KeyboardControls = { new KeyCode[] { KeyCode.R, KeyCode.Return }, new KeyCode[] { KeyCode.E, KeyCode.Backspace }, new KeyCode[] { KeyCode.Z, KeyCode.W }, new KeyCode[] { KeyCode.A, KeyCode.Q }, new KeyCode[] { KeyCode.None }, new KeyCode[] { KeyCode.None }, new KeyCode[] { KeyCode.LeftShift, KeyCode.RightShift }, new KeyCode[] { KeyCode.Space } };
 	private static float _inputLockTime = 0;
 
 	public static bool InputLocked { get { return _inputLockTime != 0; } }
@@ -83,9 +83,9 @@ public class InputManager : GenericSingleton<InputManager>
 		string[] returnArray = new string[joystickNames.Length + 1];
 		for (int i = 1; i < joystickNames.Length + 1; i++)
 		{
-			joystickNames[0] = "Keyboard";
 			returnArray[i] = joystickNames[i - 1];
 		}
+		returnArray[0] = "Keyboard";
 
 		return returnArray;
 	}

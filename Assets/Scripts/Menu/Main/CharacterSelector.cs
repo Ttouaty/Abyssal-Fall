@@ -49,7 +49,6 @@ public class CharacterSelector : MonoBehaviour
 				SlotsAvailable[i].CancelCharacterSelection();
 			if (SlotsAvailable[i].Open && needClose)
 				SlotsAvailable[i].CloseSlot();
-
 		}
 	}
 }
