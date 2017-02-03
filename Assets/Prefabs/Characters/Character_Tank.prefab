@@ -75,7 +75,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 185860}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: -0.00000016292068}
-  m_LocalPosition: {x: 0, y: 0, z: 2.6}
+  m_LocalPosition: {x: 0, y: 0, z: 2.53}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
@@ -88,7 +88,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 144624}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3, y: 1.49, z: -3}
+  m_LocalPosition: {x: 2046.0621, y: 627.3541, z: -310.9378}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
@@ -135,9 +135,8 @@ MonoBehaviour:
   _characterData: {fileID: 11400000, guid: 44d72ab9770ca1245ad41b4663de953f, type: 2}
   AllowDash: 1
   AllowSpecial: 1
-  _specialStartSpeed: 70
+  _specialStartSpeed: 50
   _specialTime: 0.3
-  _specialSpeedDecreaseFactor: 0.2
   _specialParticles: {fileID: 19877340}
 --- !u!136 &13681318
 CapsuleCollider:
@@ -202,7 +201,7 @@ ParticleSystem:
   moveWithTransform: 0
   autoRandomSeed: 1
   scalingMode: 2
-  randomSeed: -543477182
+  randomSeed: -1758182345
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -607,7 +606,7 @@ ParticleSystem:
     serializedVersion: 2
     m_Type: 0
     rate:
-      scalar: 150
+      scalar: 100
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -641,11 +640,11 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
       minMaxState: 0
-    cnt0: 100
+    cnt0: 50
     cnt1: 30
     cnt2: 30
     cnt3: 30
-    cntmax0: 100
+    cntmax0: 50
     cntmax1: 30
     cntmax2: 30
     cntmax3: 30

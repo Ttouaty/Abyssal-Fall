@@ -203,6 +203,11 @@ public class CharacterSelectWheel : NetworkBehaviour
 		_displayArray[_selectedElementIndex].GetComponentInChildren<Animator>().SetTrigger(triggerName);
 	}
 
+	public void SetAnimBool(string targetName, bool active)
+	{
+		_displayArray[_selectedElementIndex].GetComponentInChildren<Animator>().SetBool(targetName, active);
+	}
+
 	public override void OnNetworkDestroy()
 	{
 		Destroy(gameObject);

@@ -69,11 +69,8 @@ public class Player : NetworkBehaviour
 	public void SetWheelReady(bool ready)
 	{
 		_ready = ready;
-		if(_ready)
-			CharacterSelectWheel.WheelsRef[PlayerNumber].SetAnimTrigger("ToSelected");
-		else
-			CharacterSelectWheel.WheelsRef[PlayerNumber].SetAnimTrigger("ToIdle");
 
+		CharacterSelectWheel.WheelsRef[PlayerNumber].SetAnimBool("IsSelected", _ready);
 		CharacterSelectWheel.WheelsRef[PlayerNumber].GetComponentInParent<CharacterSlot>().SelectPedestal(ready);
 	}
 
