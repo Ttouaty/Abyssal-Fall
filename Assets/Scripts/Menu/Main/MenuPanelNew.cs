@@ -12,6 +12,8 @@ public class MenuPanelNew : MonoBehaviour
 	public static MenuPanelNew ActiveMenupanel;
 	public static bool InputEnabled = true;
 	public static float GlobalInputDelay = 0;
+	public static bool InputIsActive { get { return InputEnabled && !InputManager.InputLocked; } }
+	public bool IsActive { get { return ActiveMenupanel == this; } }
 
 	public string PanelName;
 	[Space]
@@ -34,8 +36,9 @@ public class MenuPanelNew : MonoBehaviour
 
 	void Awake()
 	{
-		if(!PanelRefs.ContainsKey(PanelName))
-			PanelRefs.Add(PanelName, this);
+		if (PanelRefs.ContainsKey(PanelName))
+			PanelRefs.Remove(PanelName);
+		PanelRefs.Add(PanelName, this);
 		gameObject.SetActive(false);
 		_animator = GetComponent<Animator>();
 	}
@@ -50,7 +53,7 @@ public class MenuPanelNew : MonoBehaviour
 		_activeInputDelay = _activeInputDelay.Reduce(Time.deltaTime);
 		GlobalInputDelay = GlobalInputDelay.Reduce(Time.deltaTime);
 
-		stickDirection = InputManager.GetAllStickDirection();
+		stickDirection = InputManager.GetAllStickDirection(false);
 		if (stickDirection.magnitude < _previousStickDirection.magnitude - 0.3f)
 		{
 			_previousStickDirection = Vector3.zero;
@@ -70,7 +73,7 @@ public class MenuPanelNew : MonoBehaviour
 		gameObject.SetActive(true);
 
 		if (ActiveMenupanel != null)
-			if (ActiveMenupanel != this)
+			if (!IsActive)
 				ActiveMenupanel.Close();
 
 		if (PreselectedButtonPanel != null)
@@ -131,7 +134,12 @@ public class MenuPanelNew : MonoBehaviour
 		ActiveMenupanel = DefaultParentMenu;
 		ActiveMenupanel.gameObject.SetActive(true);
 		if(ActiveMenupanel.ActiveButtonPanel != null)
+			ActiveMenupanel.ActiveButtonPanel.FadeIn();
+		else
+		{
+			ActiveMenupanel.ActiveButtonPanel = ActiveMenupanel.PreselectedButtonPanel;
 			ActiveMenupanel.ActiveButtonPanel.Open();
+		}
 
 		ActiveMenupanel.LaunchAnimation("Return");
 		InputEnabled = false;

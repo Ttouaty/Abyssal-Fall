@@ -63,11 +63,13 @@ public class MenuPauseManager : GenericSingleton<MenuPauseManager>
 		{
 			ScoresFields[i].DisplayScore();
 		}
+
 		transform.GetChild(0).gameObject.SetActive(true);
 		InputManager.SetInputLockTime(0.7f);
 
-		if(MenuPanelNew.ActiveMenupanel != MenuPanelNew.PanelRefs["Pause"])
-			MenuPanelNew.PanelRefs["Pause"].Open();
+		MenuPanelNew.ActiveMenupanel = null;
+		MenuPanelNew.InputEnabled = true;
+		MenuPanelNew.PanelRefs["Pause"].Open();
 
 		if (ServerManager.Instance.ExternalPlayerNumber == 0 && Player.LocalPlayer.isServer)
 		{

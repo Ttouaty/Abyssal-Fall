@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class TankController : PlayerController {
+public class TankController : PlayerController
+{
 
 	[Space()]
 	[SerializeField]
@@ -10,7 +11,7 @@ public class TankController : PlayerController {
 	private float _specialTime = 0.3f;
 	[SerializeField]
 	private ParticleSystem _specialParticles;
-	
+
 	private bool _charging = false;
 	protected override void SpecialAction()
 	{
@@ -28,15 +29,21 @@ public class TankController : PlayerController {
 		_allowInput = false;
 		_activeSpeed = _activeDirection.normalized * _specialStartSpeed;
 		_charging = true;
-		GetComponentInChildren<GroundCheck>().enabled = false;
+		GetComponentInChildren<GroundCheck>().Deactivate();
 
-		yield return new WaitForSeconds(_specialTime);
 
-		GetComponentInChildren<GroundCheck>().enabled = true;
+		while (eT < _specialTime)
+		{
+			_activeSpeed = _activeDirection.normalized * _specialStartSpeed;
+			eT += Time.deltaTime;
+			yield return null;
+		}
+
+		GetComponentInChildren<GroundCheck>().Activate();
 
 		yield return null;
 
-		if(IsGrounded)
+		if (IsGrounded)
 			_activeSpeed = Vector3.zero;
 
 		_specialParticles.Stop();

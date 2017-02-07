@@ -57,7 +57,11 @@ public class DialogBox : MonoBehaviour
 	private IEnumerator DisplayTextOverTime(Message message)
 	{
 		//ControlDiv.gameObject.SetActive(false);
-		DeactivateControls();
+		if(message.IsSkippable)
+			ActivateControls();
+		else
+			DeactivateControls();
+
 		TextDiv.text = "";
 		string textToAdd = "";
 		int nextIndexToWrite = 0;

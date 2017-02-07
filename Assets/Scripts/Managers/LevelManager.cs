@@ -123,7 +123,11 @@ public class LevelManager : GenericSingleton<LevelManager>
 			_bIsOnMenu = true;
 			MenuManager.Instance.FadeSplashscreens(showSplashScreens);
 
-			yield return new WaitForSeconds(0.2f); // security & wait for panel awake
+			yield return new WaitForSeconds(0.5f); // wait for panel awake & transition
+
+			if(!showSplashScreens)
+				yield return new WaitForSeconds(1f); // wait for panel awake & transition
+
 			MenuPanelNew.PanelRefs[targetMenu].Open();
 
 			if (openCharacterSlots)

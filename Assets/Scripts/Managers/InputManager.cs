@@ -25,22 +25,9 @@ public class InputManager : GenericSingleton<InputManager>
 
 	public static bool InputLocked { get { return _inputLockTime != 0; } }
 
-	private static GameObject _eventSystemGO;
-
 	private static int GetButtonNumber(string buttonName)
 	{
 		return Array.IndexOf(Instance.InputNames, buttonName);
-	}
-
-	void Update()
-	{
-		if (_eventSystemGO == null)
-		{
-			if(FindObjectOfType<EventSystem>() != null)
-				_eventSystemGO = FindObjectOfType<EventSystem>().gameObject;
-		}
-		else if (_eventSystemGO.activeInHierarchy != !InputLocked)
-			_eventSystemGO.SetActive(!InputLocked);
 	}
 
 	void LateUpdate()
@@ -284,14 +271,19 @@ public class InputManager : GenericSingleton<InputManager>
 
 	public static Vector2 GetAllStickDirection()
 	{
+		return GetAllStickDirection(true);
+	}
+
+	public static Vector2 GetAllStickDirection(bool normalized)
+	{
 		Vector2 returnVector = Vector2.zero;
 		Vector2 tempVector;
 
 		for (int i = 0; i < GetJoystickNames().Length; i++)
 		{
-			tempVector = GetStickDirection(i);
+			tempVector = GetStickDirection(i, normalized);
 			if (tempVector.magnitude != 0)
-				returnVector += tempVector; 
+				returnVector += tempVector;
 		}
 
 		return returnVector;
@@ -299,12 +291,20 @@ public class InputManager : GenericSingleton<InputManager>
 
 	public static Vector2 GetStickDirection(int JoystickNumber)
 	{
-		if (StickIsNeutral(JoystickNumber) || InputLocked)
-			return Vector2.zero;
-		return new Vector2(GetAxis("x", JoystickNumber), GetAxis("y", JoystickNumber)).normalized;
+		return GetStickDirection(JoystickNumber, true);
 	}
 
-	public static bool StickIsNeutral(int JoystickNumber = 0, float deadZone= 0f)
+	public static Vector2 GetStickDirection(int JoystickNumber, bool normalized)
+	{
+		if (StickIsNeutral(JoystickNumber) || InputLocked)
+			return Vector2.zero;
+		if(normalized)
+			return new Vector2(GetAxis("x", JoystickNumber), GetAxis("y", JoystickNumber)).normalized;
+		return new Vector2(GetAxis("x", JoystickNumber), GetAxis("y", JoystickNumber));
+
+	}
+
+	public static bool StickIsNeutral(int JoystickNumber = 0, float deadZone = 0f)
 	{
 		if(deadZone == 0)
 			return Input.GetAxisRaw("x_" + JoystickNumber) == 0 && Input.GetAxisRaw("y_" + JoystickNumber) == 0;

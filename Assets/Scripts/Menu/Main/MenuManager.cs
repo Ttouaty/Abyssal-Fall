@@ -59,14 +59,14 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	void Update()
 	{
-		if (Input.GetKeyDown(KeyCode.Alpha1))
-		{
-			LoadPreview(EArenaConfiguration.Aerial);
-		}
-		else if (Input.GetKeyDown(KeyCode.Alpha2))
-		{
-			LoadPreview(EArenaConfiguration.Hell);
-		}
+		//if (Input.GetKeyDown(KeyCode.Alpha1))
+		//{
+		//	LoadPreview(EArenaConfiguration.Aerial);
+		//}
+		//else if (Input.GetKeyDown(KeyCode.Alpha2))
+		//{
+		//	LoadPreview(EArenaConfiguration.Hell);
+		//}
 	}
 	
 	private void ResetPlayers()
@@ -85,10 +85,8 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	public void RegisterNewPlayer(int joystickNumber)
 	{
-		if (_controllerAlreadyInUse[joystickNumber]) // _controllerAlreadyInUse can create bugs on reloads (not set to true for already active players)
-		{
+		if (_controllerAlreadyInUse[joystickNumber])
 			return;
-		}
 
 		LocalJoystickBuffer.Add(joystickNumber);
 		_controllerAlreadyInUse[joystickNumber] = true;
@@ -114,10 +112,16 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 		for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; i++)
 		{
-			ServerManager.Instance.RegisteredPlayers[i].UnReady();
 			Debug.Log("Spawning wheel for player => " + ServerManager.Instance.RegisteredPlayers[i].name);
 			ServerManager.Instance.SpawnCharacterWheel(ServerManager.Instance.RegisteredPlayers[i].gameObject);
+			ServerManager.Instance.RegisteredPlayers[i].UnReady();
+
+			if (ServerManager.Instance.RegisteredPlayers[i].isLocalPlayer)
+				_controllerAlreadyInUse[ServerManager.Instance.RegisteredPlayers[i].JoystickNumber] = true;
+
+			GetComponentInChildren<TextIP>().ReGenerate();
 		}
+		ServerManager.Instance.ForceUnready = false;
 	}
 
 

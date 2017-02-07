@@ -49,20 +49,22 @@ public class InputListener : MonoBehaviour
 
 	protected virtual void Update()
 	{
+		if (!MenuPanelNew.InputIsActive)
+			return;
+
 		string[] tempStringArray = InputManager.GetJoystickNames();
 		for (int i = 0; i < tempStringArray.Length; ++i)
 		{
 			if (tempStringArray[i] == "")
 				continue;
+
 			TestInput(i);
 		}
 
 		if ((InputMethodUsed == InputMethod.Held && !UseAxis) || (UseAxis && CanLoop))
 		{
 			if (_JoystickHeld != -1)
-			{
 				_timeHeld += Time.deltaTime;
-			}
 			else
 				_timeHeld = _timeHeld.Reduce(Time.deltaTime);
 
@@ -93,6 +95,7 @@ public class InputListener : MonoBehaviour
 	void TestAxis(int joystickNumber)
 	{
 		_tempStickPosition = InputManager.GetStickDirection(joystickNumber);
+
 		if (!_firstHeldFrame[joystickNumber])
 		{
 			if (_tempStickPosition.magnitude < stickActivateThreshold - 0.2)

@@ -20,8 +20,6 @@ public class GroundCheck : MonoBehaviour
 		_playerRef = GetComponentInParent<PlayerController>();
 		_colliderRef = GetComponent<Collider>();
 		_rigidBRef = _playerRef.GetComponent<Rigidbody>();
-
-		
 	}
 
 	void Update()
@@ -67,5 +65,16 @@ public class GroundCheck : MonoBehaviour
 		if (!enabled)
 			return;
 		_colliderIds.Remove(colli.GetInstanceID());
+	}
+
+	public void Activate()
+	{
+		enabled = true;
+	}
+
+	public void Deactivate()
+	{
+		enabled = false;
+		_colliderIds.Clear();
 	}
 }

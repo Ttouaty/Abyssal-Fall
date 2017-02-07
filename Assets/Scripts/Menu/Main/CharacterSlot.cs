@@ -171,7 +171,6 @@ public class CharacterSlot : MonoBehaviour
 			}
 		}
 
-		Debug.Log("Preventing alpha (player is not local player)");
 		SpecialText.GetComponentInParent<CanvasGroup>().alpha = 0;
 	}
 }

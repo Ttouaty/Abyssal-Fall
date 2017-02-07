@@ -41,7 +41,7 @@ public class EndGameManager : GenericSingleton<EndGameManager>
 					Destroy(ServerManager.Instance.RegisteredPlayers[i].Controller.gameObject);
 				}
 			}
-
+			ServerManager.Instance.ForceUnready = true;
 			Player.LocalPlayer.RpcOpenMenu(false, "CharacterSelect", true);
 		}
 		else

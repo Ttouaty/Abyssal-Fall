@@ -31,14 +31,35 @@ public class ConnectionModule : MonoBehaviour
 
 	public void Connect(string Code)
 	{
-		if(ServerManager.Instance.ExternalIp.Length == 0)
+		if(Application.internetReachability == NetworkReachability.NotReachable)
 		{
 			Debug.LogWarning("No internet connection found");
-			OnFailedConnection.Invoke("Could not connect to Host: No Internet found.");
+			OnFailedConnection.Invoke("Could not connect to Host: No Internet connection found.");
 			return;
 		}
 
-		Debug.Log("looking for games with gameType: "+ "AbyssalFall-" + Code.ToLower());
+		if(Code == ServerManager.Instance.GameId)
+		{
+			Debug.LogWarning("Detected Auto connect, aborting");
+			OnFailedConnection.Invoke("Could not connect to Host: Can't connect to your own game :/");
+			return;
+		}
+
+		if (Code.Length != 8)
+		{
+			if (Code.Length == 0)
+			{
+				Debug.LogWarning("Game Id string is empty");
+				OnFailedConnection.Invoke("Could not connect to Host: No Game Id found.");
+			}
+			else
+			{
+				Debug.LogWarning("Game Id string is not 8 characters");
+				OnFailedConnection.Invoke("Could not connect to Host: Game Id should be 8 characters long.");
+			}
+			return;
+		}
+		Debug.Log("looking for games with gameType: AbyssalFall-" + Code.ToLower());
 
 		ServerManager.Instance.ConnectToMatch(Code.ToLower());
 	}

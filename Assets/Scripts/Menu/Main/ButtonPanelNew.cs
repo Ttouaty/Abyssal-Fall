@@ -12,6 +12,7 @@ public enum UIDirection
 [RequireComponent(typeof(Animator), typeof(CanvasGroup))]
 public class ButtonPanelNew : MonoBehaviour
 {
+	private static EventSystem _TargetEventSystem;
 	public ButtonPanelNew ParentButtonPanel;
 	public Selectable FirstElementSelected;
 
@@ -26,11 +27,16 @@ public class ButtonPanelNew : MonoBehaviour
 				_internalActiveButton = FirstElementSelected;
 			else
 				_internalActiveButton = value;
+
 			_lastSelectedElement = _internalActiveButton;
-			if(EventSystem.current != null)
+
+			if (_TargetEventSystem == null)
+				_TargetEventSystem = EventSystem.current;
+
+			if (_TargetEventSystem != null)
 			{
-				EventSystem.current.SetSelectedGameObject(null);
-				EventSystem.current.SetSelectedGameObject(_internalActiveButton.gameObject);
+				_TargetEventSystem.SetSelectedGameObject(null);
+				_TargetEventSystem.SetSelectedGameObject(_internalActiveButton.gameObject);
 			}
 		}
 	}
@@ -49,15 +55,7 @@ public class ButtonPanelNew : MonoBehaviour
 	{
 		if (ParentButtonPanel != null)
 			ParentButtonPanel.FadeParent();
-		if (ActiveElement == null)
-		{
-			if (FirstElementSelected != null)
-				ActiveElement = FirstElementSelected;
-		}
-		else
-		{
-			ActiveElement = ActiveElement;
-		}
+		ActiveElement = FirstElementSelected;
 
 		_parentMenu.ActiveButtonPanel = this;
 		MenuPanelNew.InputEnabled = false;
@@ -87,8 +85,10 @@ public class ButtonPanelNew : MonoBehaviour
 		LaunchAnimation("FadeOut");
 	}
 
-	public void FadeIn()
+	public void FadeIn() // duplicate but fuck it :p
 	{
+		if (ParentButtonPanel != null)
+			ParentButtonPanel.FadeParent();
 		ActiveElement = _lastSelectedElement;
 		_parentMenu.ActiveButtonPanel = this;
 		MenuPanelNew.InputEnabled = false;

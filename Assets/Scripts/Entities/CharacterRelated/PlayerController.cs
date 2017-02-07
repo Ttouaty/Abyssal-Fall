@@ -516,6 +516,11 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		if (SpecialActivation() && _allowInput)
 		{
 			_specialCooldown.Set(_characterData.SpecialCoolDown);
+
+			_networkAnimator.SetTrigger("Special");
+			if (NetworkServer.active)
+				_animator.ResetTrigger("Special");
+
 			SpecialAction();
 			_stunTimer.Add(_characterData.SpecialLag);
 		}
@@ -586,7 +591,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	private void ApplyCharacterFinalVelocity()
 	{
 		_rigidB.velocity = _activeSpeed;
-		_animator.SetFloat("Speed", _activeSpeed.ZeroY().magnitude);
+		_animator.SetFloat("SpeedCoef", _activeSpeed.ZeroY().magnitude / ((Vector3)_maxSpeed).ZeroY().magnitude);
 	}
 
 

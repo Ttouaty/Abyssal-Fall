@@ -34,14 +34,18 @@ public class ServerManager : NATTraversal.NetworkManager
 	[HideInInspector]
 	public int ExternalPlayerNumber = 0;
 
+	[HideInInspector]
 	public OpenSlots LobbySlotsOpen = OpenSlots.None;
-
+	[HideInInspector]
 	public Player HostingClient;
 
+	public bool ForceUnready = false;
 	public bool AreAllPlayerReady
 	{
 		get
 		{
+			if (ForceUnready)
+				return false;
 			if (_activePlayers.Count < 2)
 				return false;
 
@@ -67,6 +71,7 @@ public class ServerManager : NATTraversal.NetworkManager
 		RegisterPrefabs();
 
 		Instance = FindObjectOfType<ServerManager>();
+
 		Instance.GameId = Guid.NewGuid().ToString().Split('-')[0].ToLower();
 		_initialised = true;
 		return Instance;
@@ -457,15 +462,5 @@ public class ServerManager : NATTraversal.NetworkManager
 		{
 			FindObjectOfType<ConnectionModule>().OnFailedConnection.Invoke("Failed to find target game. (Connection error)");
 		}
-	}
-
-	public IEnumerator GetExternalIP()
-	{
-		while(!isDoneFetchingExternalIP)
-		{
-			yield return null;
-		}
-		
-		ExternalIp = externalIP;
 	}
 }
