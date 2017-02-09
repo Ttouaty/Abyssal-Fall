@@ -55,11 +55,6 @@ public class Player : NetworkBehaviour
 		newCharacter._playerRef = this;
 	}
 
-	public void ResetScore()
-	{
-		Score = 0;
-	}
-
 	public void Ready(int characterIndex, int indexSkinUsed)
 	{
 		_ready = true;
@@ -70,7 +65,12 @@ public class Player : NetworkBehaviour
 	{
 		_ready = ready;
 
-		CharacterSelectWheel.WheelsRef[PlayerNumber].SetAnimBool("IsSelected", _ready);
+		ChangeWheelState(ready);
+	}
+
+	public void ChangeWheelState(bool ready)
+	{
+		CharacterSelectWheel.WheelsRef[PlayerNumber].SetAnimBool("IsSelected", ready);
 		CharacterSelectWheel.WheelsRef[PlayerNumber].GetComponentInParent<CharacterSlot>().SelectPedestal(ready);
 	}
 
@@ -165,6 +165,7 @@ public class Player : NetworkBehaviour
 	{
 		base.OnStartClient();
 		CmdUpdatePlayerList();
+		ChangeWheelState(_ready);
 	}
 
 	void Update()
@@ -174,7 +175,7 @@ public class Player : NetworkBehaviour
 			if(!NetworkServer.active && JoystickNumber == 0)
 			{
 				int newJoystick = InputManager.AnyButtonDown(true);
-				if (newJoystick != -1)
+				if (newJoystick != 0)
 				{
 					MessageManager.Log("Joystick Detected.\nOverriding keyboard controls.");
 					JoystickNumber = newJoystick;

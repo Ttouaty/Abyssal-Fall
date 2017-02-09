@@ -31,7 +31,6 @@ public class TankController : PlayerController
 		_charging = true;
 		GetComponentInChildren<GroundCheck>().Deactivate();
 
-
 		while (eT < _specialTime)
 		{
 			_activeSpeed = _activeDirection.normalized * _specialStartSpeed;

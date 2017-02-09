@@ -19,7 +19,7 @@ public class Spawn : MonoBehaviour
 	public void SpawnPlayer (PlayerController player)
 	{
 		_player = player.gameObject;
-		_player.transform.position = transform.position + Vector3.up;
+		_player.transform.position = transform.position + Vector3.up * 2.25f;
 		_player.transform.LookAt(transform.parent.position.SetAxis(Axis.y, _player.transform.position.y));
 	}
 }

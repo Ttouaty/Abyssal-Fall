@@ -221,6 +221,11 @@ public class ArenaManager : MonoBehaviour
 		yield return StartCoroutine(CountdownManager.Instance.Countdown());
 		GameManager.Instance.GameRules.InitGameRules();
 		EnableBehaviours();
+
+		for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; i++)
+		{
+			ServerManager.Instance.RegisteredPlayers[i].Controller.RpcUnFreeze();
+		}
 	}
 
 	public void PlaceCharacters()
@@ -245,7 +250,7 @@ public class ArenaManager : MonoBehaviour
 				_players[i] = Instantiate(player.CharacterUsed.gameObject) as GameObject;
 				PlayerController playerController = _players[i].GetComponent<PlayerController>();
 				_spawns[i].SpawnPlayer(playerController);
-				playerController.UnFreeze();
+				playerController.Freeze();
 
 				NetworkServer.SpawnWithClientAuthority(_players[i], player.gameObject);
 

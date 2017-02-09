@@ -166,7 +166,7 @@ public class MenuPanelNew : MonoBehaviour
 			if (_activeInputDelay != 0)
 				return;
 
-			if(stickDirection.magnitude > 0.9f)
+			if(stickDirection.magnitude > 0.8f)
 			{
 					if (stickDirection.AnglePercent(Vector2.up) > 0.5f)
 					ActiveButtonPanel.SelectNewButton(UIDirection.Up);

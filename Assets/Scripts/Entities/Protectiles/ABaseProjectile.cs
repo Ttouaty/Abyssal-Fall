@@ -42,6 +42,9 @@ public abstract class ABaseProjectile : NetworkBehaviour, IPoolable
 		_ownDamageData = data.SetProjectile(this).Copy();
 		LauncherId = newLauncherId;
 
+		//Only activate collision is launcher is local
+		GetComponentInChildren<Collider>().enabled = _ownDamageData.Dealer.PlayerRef.isLocalPlayer;
+
 		transform.position = Position;
 		transform.rotation = Quaternion.LookRotation(Direction, Vector3.up);
 
