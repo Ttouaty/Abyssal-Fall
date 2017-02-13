@@ -69,7 +69,7 @@ public class MenuPauseManager : GenericSingleton<MenuPauseManager>
 
 		MenuPanelNew.ActiveMenupanel = null;
 		MenuPanelNew.InputEnabled = true;
-		MenuPanelNew.PanelRefs["Pause"].Open();
+		MenuPanelNew.PanelRefs["Pause"].Open(false);
 
 		if (ServerManager.Instance.ExternalPlayerNumber == 0 && Player.LocalPlayer.isServer)
 		{

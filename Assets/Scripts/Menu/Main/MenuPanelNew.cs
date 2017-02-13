@@ -65,7 +65,9 @@ public class MenuPanelNew : MonoBehaviour
 			ProcessInput();
 	}
 
-	public virtual void Open()
+
+	public virtual void Open() { Open(true); }
+	public virtual void Open(bool send)
 	{
 		if (!InputEnabled)
 			return;
@@ -85,7 +87,8 @@ public class MenuPanelNew : MonoBehaviour
 		ActiveMenupanel = this;
 		InputEnabled = false;
 		LaunchAnimation("SendIn");
-		SendOpen();
+		if(send)
+			SendOpen();
 	}
 
 	public IEnumerator AnimCoroutine(string triggerName)

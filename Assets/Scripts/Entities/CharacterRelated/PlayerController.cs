@@ -139,7 +139,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		get { return _isInvulInternal; }
 		set
 		{
-			
+
 		}
 	}
 
@@ -258,10 +258,9 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	}
 
 	[ClientRpc]
-	public void RpcUnFreeze()
-	{
-		UnFreeze();
-	}
+	public void RpcUnFreeze() { UnFreeze(); }
+	[ClientRpc]
+	public void RpcFreeze() { Freeze(); }
 
 	#region Unity Functions
 	protected void Awake()
@@ -529,8 +528,8 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 			_specialCooldown.Set(_characterData.SpecialCoolDown);
 
 			_networkAnimator.SetTrigger("Special");
-			if (NetworkServer.active)
-				_animator.ResetTrigger("Special");
+			//if (NetworkServer.active)
+			//	_animator.ResetTrigger("Special");
 
 			SpecialAction();
 			_stunTimer.Add(_characterData.SpecialLag);
@@ -646,7 +645,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		if (NetworkServer.active)
 		{
 			Debug.Log("Kill detected from server for character " + _characterData.IngameName + " / Player n°=> " + _playerRef.PlayerNumber);
-			_animator.ResetTrigger("Death");
+			//_animator.ResetTrigger("Death");
 		}
 
 		_isDead = true;
@@ -667,8 +666,8 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 			_networkAnimator.SetTrigger("Reset");
 		}
 
-		if (NetworkServer.active)
-			_animator.ResetTrigger("Reset");
+		//if (NetworkServer.active)
+		//	_animator.ResetTrigger("Reset");
 	}
 
 	public void Eject(Vector3 direction)
@@ -707,8 +706,8 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 			_networkAnimator.SetTrigger("Hit");
 
-			if (NetworkServer.active)
-				_animator.ResetTrigger("Hit");
+			//if (NetworkServer.active)
+			//	_animator.ResetTrigger("Hit");
 		}
 	}
 
@@ -757,8 +756,8 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		//_animator.SetTrigger("Dash_Start");
 		_networkAnimator.SetTrigger("Dash_Start");
 
-		if (NetworkServer.active)
-			_animator.ResetTrigger("Dash_Start");
+		//if (NetworkServer.active)
+		//	_animator.ResetTrigger("Dash_Start");
 		_characterData.SoundList["OnDashStart"].Play(gameObject);
 		gameObject.layer = LayerMask.NameToLayer("PlayerInvul");
 
@@ -777,8 +776,8 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		//_animator.SetTrigger("Dash_End");
 		_networkAnimator.SetTrigger("Dash_End");
 
-		if (NetworkServer.active)
-			_animator.ResetTrigger("Dash_End");
+		//if (NetworkServer.active)
+		//	_animator.ResetTrigger("Dash_End");
 		_characterData.SoundList["OnDashEnd"].Play(gameObject);
 
 		yield return new WaitForSeconds(_characterData.Dash.endingLag);
@@ -814,13 +813,13 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 	protected void OnCollisionEnter(Collision colli)
 	{
-		if(_playerRef.isLocalPlayer)
+		if (_playerRef.isLocalPlayer)
 			PlayerCollisionHandler(colli);
 	}
 
 	protected void OnCollisionStay(Collision colli)
 	{
-		if(_playerRef.isLocalPlayer)
+		if (_playerRef.isLocalPlayer)
 			PlayerCollisionHandler(colli);
 	}
 

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Networking;
+using System.Linq;
 
 public struct ParsedGameRules
 {
@@ -26,7 +27,7 @@ public abstract class AGameRules : MonoBehaviour
 	 */
 	public BoolRule IsMatchRoundBased;
 	public IntRule NumberOfCharactersRequired;
-	public IntRule NumberOfRounds;
+	public IntRule ScoreToWin;
 	public IntRule MatchDuration;
 
 	public BoolRule CanFalledTilesRespawn;
@@ -54,33 +55,105 @@ public abstract class AGameRules : MonoBehaviour
 		yield return null;
 	}
 
-	public virtual void RespawnFalledTiles (Tile tile)
+	public virtual void RespawnFallenTiles (Tile tile)
 	{
 		tile.PrepareRespawn();
-		StartCoroutine(RespawnFalledTiles_Implementation(tile));
+		StartCoroutine(RespawnFallenTiles_Implementation(tile));
 	}
 
-	protected virtual IEnumerator RespawnFalledTiles_Implementation (Tile tile)
+	protected virtual IEnumerator RespawnFallenTiles_Implementation (Tile tile)
 	{
+		if (!CanFalledTilesRespawn)
+			yield break;
 		yield return new WaitForSeconds(TileRegerationTime);
 		tile.ActivateRespawn();
 	}
 
 	public virtual void OnPlayerDeath_Listener (Player player, Player killer)
 	{
-		// On player death common stuff
 		CameraManager.Instance.RemoveTargetToTrack(player.Controller.transform);
+
+		if (NetworkServer.active)
+		{
+			if (killer != null)
+			{
+				killer.Score += PointsGainPerKill;
+				--player.Score;
+			}
+			else
+			{
+				player.Score -= PointsLoosePerSuicide;
+			}
+
+			if(CanPlayerRespawn)
+				RespawnPlayer(player);
+		}
+	}
+
+	private void RespawnPlayer(Player player)
+	{
+		IEnumerable<Tile> tilesEnumerator = ArenaManager.Instance.Tiles.Where((Tile t) => t != null).Where((Tile t) => t.Obstacle == null && t.CanFall/* && !t.IsSpawn*/);
+		List<Tile> tiles = new List<Tile>(tilesEnumerator);
+		if (tiles.Count == 0)
+		{
+			// Cas où aucune tile n'est dispo pour faire spawn un player
+			// Normalement ne devrait jamais passer ici, mais au cas où
+			Debug.LogError("No respawn tile found !");
+			StartCoroutine(RespawnPlayer_Retry(player, 1.0f));
+		}
+		else
+		{
+			Tile tile = tiles.RandomElement();
+			tile.SetTimeLeft(tile.TimeLeftSave);
+
+			player.Controller.RpcRespawn(tile.transform.position + Vector3.up * 2.25f);
+		}
+	}
+
+	private IEnumerator RespawnPlayer_Retry(Player player, float delay)
+	{
+		yield return new WaitForSeconds(delay);
+		RespawnPlayer(player);
+	}
+
+	public virtual void OnRoundEnd_Listener(Player winner)
+	{
+		ArenaManager.Instance.DisableBehaviours();
+		CameraManager.Instance.ClearTrackedTargets();
+
+		if (NetworkServer.active)
+		{
+			ServerManager.Instance.ResetAlivePlayers();
+
+			if (winner != null)
+			{
+				if (winner.Score >= ScoreToWin)
+				{
+					Player.LocalPlayer.RpcOnPlayerWin(winner.gameObject);
+				}
+			}
+		}
+
+		/*
+		Avoir une fonction server only & celle la
+		*/
+
+		if(winner.Score < ScoreToWin)
+			EndStageManager.Instance.Open();
+		if (IsMatchRoundBased)
+		{
+			++GameManager.Instance.CurrentStage;
+			GUIManager.Instance.UpdateRoundCount(GameManager.Instance.CurrentStage);
+		}
+		else
+		{
+			GUIManager.Instance.StopTimer();
+		}
 	}
 
 	public virtual void OnPlayerWin_Listener (Player winner)
 	{
-		// On player win common stuff
-		if (NetworkServer.active)
-		{
-			ServerManager.Instance.ResetAlivePlayers();
-		}
-		ArenaManager.Instance.DisableBehaviours();
-		CameraManager.Instance.ClearTrackedTargets();
+		
 	}
 
 	public virtual ParsedGameRules Serialize()
@@ -90,7 +163,7 @@ public abstract class AGameRules : MonoBehaviour
 		newParsedRules.IsMatchRoundBased = IsMatchRoundBased._valueIndex;
 		newParsedRules.CanPlayerRespawn = CanPlayerRespawn._valueIndex;
 		newParsedRules.CanFalledTilesRespawn = CanFalledTilesRespawn._valueIndex;
-		newParsedRules.NumberOfRounds = NumberOfRounds._valueIndex;
+		newParsedRules.NumberOfRounds = ScoreToWin._valueIndex;
 		newParsedRules.MatchDuration = MatchDuration._valueIndex;
 		newParsedRules.TileRegerationTime = TileRegerationTime._valueIndex;
 		newParsedRules.PointsGainPerKill = PointsGainPerKill._valueIndex;
@@ -105,7 +178,7 @@ public abstract class AGameRules : MonoBehaviour
 		IsMatchRoundBased._valueIndex = newRule.IsMatchRoundBased;
 		CanPlayerRespawn._valueIndex = newRule.CanPlayerRespawn;
 		CanFalledTilesRespawn._valueIndex = newRule.CanFalledTilesRespawn;
-		NumberOfRounds._valueIndex = newRule.NumberOfRounds;
+		ScoreToWin._valueIndex = newRule.NumberOfRounds;
 		MatchDuration._valueIndex = newRule.MatchDuration;
 		TileRegerationTime._valueIndex = newRule.TileRegerationTime;
 		PointsGainPerKill._valueIndex = newRule.PointsGainPerKill;

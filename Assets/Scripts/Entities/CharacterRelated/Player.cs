@@ -277,6 +277,17 @@ public class Player : NetworkBehaviour
 	}
 
 	[ClientRpc]
+	public void RpcOnRoundEnd(GameObject winnerPlayerGo)
+	{
+		Player winner = null;
+		if (winnerPlayerGo != null)
+			winner = winnerPlayerGo.GetComponent<Player>();
+
+		Debug.Log("RpcOnRoundEnd received on player n°=> " + PlayerNumber + " with localplayer n°=> " + LocalPlayer.PlayerNumber);
+		GameManager.Instance.OnPlayerWin.Invoke(winner);
+	}
+
+	[ClientRpc]
 	public void RpcResetmap(bool animate)
 	{
 		ArenaManager.Instance.ResetMap(animate);

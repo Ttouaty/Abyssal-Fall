@@ -5,7 +5,7 @@ using System;
 
 public class FreeForAll_GameRules : AGameRules
 {
-	private Coroutine victoryCoroutine;
+	private Coroutine roundEndCoroutine;
 
 	public override void InitGameRules ()
 	{
@@ -17,6 +17,7 @@ public class FreeForAll_GameRules : AGameRules
 	{
 		base.OnPlayerDeath_Listener(player, killer);
 
+		// + 1 Point to last alive
 		if(NetworkServer.active)
 		{
 			if (ServerManager.Instance.AlivePlayers.IndexOf(player) >= 0)
@@ -26,51 +27,34 @@ public class FreeForAll_GameRules : AGameRules
 				if (ServerManager.Instance.AlivePlayers.Count == 1)
 				{
 					// Invoke win event after 1 sec
-					victoryCoroutine = StartCoroutine(DelayVictory());
+					roundEndCoroutine = StartCoroutine(DelayRoundEnd());
 				}
 			}
 			else
 			{
 				Debug.LogError("DRAW DETECTED !");
-				StopCoroutine(victoryCoroutine);
-				Player.LocalPlayer.RpcOnPlayerWin(null);
+				StopCoroutine(roundEndCoroutine);
+				Player.LocalPlayer.RpcOnRoundEnd(null);
 			}
 		}
-
 	}
 
-	private IEnumerator DelayVictory()
+	private IEnumerator DelayRoundEnd()
 	{
 		yield return new WaitForSeconds(1);
 		if(ServerManager.Instance.AlivePlayers.Count == 0)
-			Player.LocalPlayer.RpcOnPlayerWin(null);
+			Player.LocalPlayer.RpcOnRoundEnd(null);
 		else
-			Player.LocalPlayer.RpcOnPlayerWin(ServerManager.Instance.AlivePlayers[0].gameObject);
-	}
-
-	protected override IEnumerator RespawnFalledTiles_Implementation (Tile tile)
-	{
-		//yield return new WaitForSeconds(5f);
-		//GameObjectPool.AddObjectIntoPool(tile.gameObject);
-		yield return null;
+			Player.LocalPlayer.RpcOnRoundEnd(ServerManager.Instance.AlivePlayers[0].gameObject);
 	}
 
 	public override void OnPlayerWin_Listener (Player winner)
 	{
 		if (winner == null)
 		{
-			Debug.LogWarning("DRAW !!! Aucun joueur restant, est ce qu'une personne a déco ?");
+			Debug.LogWarning("DRAW !!!");
 			MessageManager.Log("Draw! No Point awarded !");
-			EndStageManager.Instance.Open();
-			if (MainManager.Instance.LEVEL_MANAGER.CurrentModeConfig.IsMatchRoundBased)
-			{
-				++GameManager.Instance.CurrentStage;
-				GUIManager.Instance.UpdateRoundCount(GameManager.Instance.CurrentStage);
-			}
-			else
-			{
-				GUIManager.Instance.StopTimer();
-			}
+			
 
 			base.OnPlayerWin_Listener(winner);
 

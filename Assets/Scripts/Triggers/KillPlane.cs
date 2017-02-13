@@ -14,7 +14,7 @@ public class KillPlane : MonoBehaviour
 			Tile tileComp = col.transform.GetComponent<Tile>();
 			if(tileComp != null && tileComp.CanFall)
 			{
-				GameManager.Instance.GameRules.RespawnFalledTiles(tileComp);
+				GameManager.Instance.GameRules.RespawnFallenTiles(tileComp);
 			}
 		}
 	}

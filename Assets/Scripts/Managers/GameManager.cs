@@ -36,12 +36,14 @@ public class GameManager : GenericSingleton<GameManager>
 			{
 				OnLocalPlayerDeath.RemoveListener(_gameRules.OnPlayerDeath_Listener);
 				OnPlayerWin.RemoveListener(_gameRules.OnPlayerWin_Listener);
+				OnRoundEnd.RemoveListener(_gameRules.OnRoundEnd_Listener);
 			}
 
 			_gameRules = value;
 
 			OnLocalPlayerDeath.AddListener(_gameRules.OnPlayerDeath_Listener);
 			OnPlayerWin.AddListener(_gameRules.OnPlayerWin_Listener);
+			OnRoundEnd.AddListener(_gameRules.OnRoundEnd_Listener);
 		}
 	}
 
@@ -60,6 +62,7 @@ public class GameManager : GenericSingleton<GameManager>
 	//public int nbPlayers = -1;
 
 	public GameEventDeath OnLocalPlayerDeath;
+	public GameEventWin OnRoundEnd;
 	public GameEventWin OnPlayerWin;
 
 	[Space()]
