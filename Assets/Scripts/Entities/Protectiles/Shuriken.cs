@@ -4,7 +4,6 @@ using System.Collections;
 public class Shuriken : ABaseProjectile
 {
 	public ParticleSystem _smokeTrail;
-	private ParticleSystem _smokeTrailInstance;
 
 	protected override void Awake()
 	{
@@ -14,15 +13,16 @@ public class Shuriken : ABaseProjectile
 
 	public override void Launch(Vector3 Position, Vector3 Direction, DamageData data, int newLauncherId)
 	{
-		_smokeTrailInstance = Instantiate(_smokeTrail, transform.position, Quaternion.identity, transform) as ParticleSystem;
+		_smokeTrail.Play();
 		base.Launch(Position, Direction, data, newLauncherId);
 	}
 
 	protected override void Stop()
 	{
-		_smokeTrailInstance.Stop();
-		Destroy(_smokeTrailInstance.gameObject, _smokeTrailInstance.startLifetime);
-		_smokeTrailInstance.transform.parent = null;
+		ParticleSystem OldSmokeTrail = _smokeTrail;
+		_smokeTrail = Instantiate(_smokeTrail) as ParticleSystem;
+		Destroy(OldSmokeTrail.gameObject, OldSmokeTrail.startLifetime);
+		OldSmokeTrail.transform.parent = null;
 		base.Stop();
 	}
 }

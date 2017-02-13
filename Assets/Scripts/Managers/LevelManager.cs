@@ -90,9 +90,14 @@ public class LevelManager : GenericSingleton<LevelManager>
 		return StartCoroutine(OpenMenu_Implementation(showSplashScreens));
 	}
 
-	public Coroutine OpenMenu(bool showSplashScreens, string targetMenuName)
+	public Coroutine OpenMenu(bool showSplashScreens, string targetMenuName, bool openCharacterSlots = false)
 	{
-		return StartCoroutine(OpenMenu_Implementation(showSplashScreens , targetMenuName));
+		return StartCoroutine(OpenMenu_Implementation(showSplashScreens, targetMenuName, openCharacterSlots));
+	}
+
+	public Coroutine OpenMenu(bool showSplashScreens, MenuPanelNew targetMenu, bool openCharacterSlots = false)
+	{
+		return StartCoroutine(OpenMenu_Implementation(showSplashScreens, targetMenu.PanelName, openCharacterSlots));
 	}
 
 	private IEnumerator OpenMenu_Implementation(bool showSplashScreens)
@@ -108,7 +113,7 @@ public class LevelManager : GenericSingleton<LevelManager>
 		}
 	}
 
-	private IEnumerator OpenMenu_Implementation(bool showSplashScreens, string targetMenu)
+	private IEnumerator OpenMenu_Implementation(bool showSplashScreens, string targetMenu, bool openCharacterSlots = false)
 	{
 		if (!_bIsOnMenu)
 		{
@@ -116,31 +121,19 @@ public class LevelManager : GenericSingleton<LevelManager>
 			yield return StartCoroutine(LoadScene(SceneMenu));
 
 			_bIsOnMenu = true;
-
 			MenuManager.Instance.FadeSplashscreens(showSplashScreens);
-			MenuManager.Instance.MakeTransition(targetMenu, true, false);
 
-			Debug.Log("openning targetMenu => "+targetMenu);
-			if (targetMenu == "Lobby") //Spaghetti mais osef
+			yield return new WaitForSeconds(0.5f); // wait for panel awake & transition
+
+			if(!showSplashScreens)
+				yield return new WaitForSeconds(1f); // wait for panel awake & transition
+
+			MenuPanelNew.PanelRefs[targetMenu].Open();
+
+			if (openCharacterSlots)
 			{
-				InputManager.SetInputLockTime(2.5f);
-				for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; i++)
-				{
-					ServerManager.Instance.RegisteredPlayers[i].UnReady();
-				}
-
-				yield return new WaitForSeconds(2);
-				yield return new WaitUntil(() => !AutoFade.Fading);
-
-				if(NetworkServer.active)
-				{
-					Debug.Log("Trying to spawn wheels");
-					for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; i++)
-					{
-						Debug.Log("Spawning wheel for player => "+ ServerManager.Instance.RegisteredPlayers[i].name);
-						ServerManager.Instance.SpawnCharacterWheel(ServerManager.Instance.RegisteredPlayers[i].gameObject);
-					}
-				}
+				yield return new WaitForSeconds(1);
+				MenuManager.Instance.OpenSlotsForPreselectedPlayers();
 			}
 		}
 	}

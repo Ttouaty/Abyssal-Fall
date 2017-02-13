@@ -16,7 +16,7 @@ public class DamageDealer
 	}
 	public DamageData DamageData;
 	public string InGameName;
-	public Image Icon;
+	public Sprite Icon;
 }
 
 [Serializable]

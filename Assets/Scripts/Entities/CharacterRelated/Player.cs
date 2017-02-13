@@ -10,7 +10,7 @@ public class Player : NetworkBehaviour
 
 	//[SyncVar]
 	//public SyncListGameObject PlayerList = new SyncListGameObject();
-	public Player[] PlayerList = new Player[0];
+	public static Player[] PlayerList = new Player[0];
 	public Material CharacterAlpha;
 	[HideInInspector]
 	public int JoystickNumber = 0;
@@ -25,7 +25,7 @@ public class Player : NetworkBehaviour
 		private set { _ready = value; }
 	}
 
-	[SyncVar]
+	[SyncVar(hook = "SetWheelReady")]
 	private bool _ready;
 	[HideInInspector]
 	[SyncVar]
@@ -52,13 +52,7 @@ public class Player : NetworkBehaviour
 
 	public void SelectCharacter(ref PlayerController newCharacter)
 	{
-		//_characterUsed = newCharacter; //unused for now (to avoid cyclic ref)
 		newCharacter._playerRef = this;
-	}
-
-	public void ResetScore()
-	{
-		Score = 0;
 	}
 
 	public void Ready(int characterIndex, int indexSkinUsed)
@@ -67,13 +61,26 @@ public class Player : NetworkBehaviour
 		CmdReadyPlayer(characterIndex, indexSkinUsed);
 	}
 
+	public void SetWheelReady(bool ready)
+	{
+		_ready = ready;
+
+		ChangeWheelState(ready);
+	}
+
+	public void ChangeWheelState(bool ready)
+	{
+		CharacterSelectWheel.WheelsRef[PlayerNumber].SetAnimBool("IsSelected", ready);
+		CharacterSelectWheel.WheelsRef[PlayerNumber].GetComponentInParent<CharacterSlot>().SelectPedestal(ready);
+	}
+
 	[Command]
 	public void CmdReadyPlayer(int characterIndex, int indexSkinUsed)
 	{
 		_ready = true;
 		CharacterUsedIndex = characterIndex;
 		SkinNumber = indexSkinUsed;
-		Debug.Log("PLayer N°" + PlayerNumber + " has selected (name)=> " + CharacterUsed._characterData.IngameName);
+		Debug.Log("Player N°" + PlayerNumber + " has selected (name)=> " + CharacterUsed._characterData.IngameName);
 
 	}
 
@@ -105,8 +112,8 @@ public class Player : NetworkBehaviour
 				Destroy(Controller.gameObject);
 		}
 		enabled = false;
-		LocalPlayer.PlayerList = FindObjectsOfType<Player>();
-		if (LocalPlayer.PlayerList.Length == 1)
+		PlayerList = FindObjectsOfType<Player>();
+		if (PlayerList.Length == 1)
 		{
 			if(NetworkServer.active && ServerManager.Instance._isInGame)
 			{
@@ -158,6 +165,7 @@ public class Player : NetworkBehaviour
 	{
 		base.OnStartClient();
 		CmdUpdatePlayerList();
+		ChangeWheelState(_ready);
 	}
 
 	void Update()
@@ -167,7 +175,7 @@ public class Player : NetworkBehaviour
 			if(!NetworkServer.active && JoystickNumber == 0)
 			{
 				int newJoystick = InputManager.AnyButtonDown(true);
-				if (newJoystick != -1)
+				if (newJoystick != 0)
 				{
 					MessageManager.Log("Joystick Detected.\nOverriding keyboard controls.");
 					JoystickNumber = newJoystick;
@@ -190,18 +198,22 @@ public class Player : NetworkBehaviour
 	[ClientRpc]
 	public void RpcMenuTransition(string newMenuName, bool dir)
 	{
-		Debug.Log("Making transition on player with netId => " + netId);
-		MenuManager.Instance.MakeTransition(newMenuName, dir, false);
+		if (isLocalPlayer)
+			return; // activate only if not caller
+
+		if(dir)
+			MenuPanelNew.PanelRefs[newMenuName].Open();
+		else
+			MenuPanelNew.PanelRefs[newMenuName].Return();
 	}
 
 	[ClientRpc]
 	public void RpcStartGame(GameConfiguration newGameConfig, ParsedGameRules customRules)
 	{
-		if (isLocalPlayer)
-		{
-			Debug.Log("Player N°=> " + PlayerNumber + " is starting game with config.");
-			GameManager.Instance.StartGameWithConfig(newGameConfig, customRules);
-		}
+		Debug.Log("Player N°=> " + PlayerNumber + " is starting game with config.");
+		PlayerList = FindObjectsOfType<Player>();
+		Array.Sort(PlayerList, (Player x, Player y) => { return x.PlayerNumber.CompareTo(y.PlayerNumber); });
+		GameManager.Instance.StartGameWithConfig(newGameConfig, customRules);
 	}
 
 	[Command]
@@ -271,15 +283,9 @@ public class Player : NetworkBehaviour
 		EndStageManager.Instance.Close();
 	}
 	
-	[Command]
-	public void CmdBroadCastOpenMenu(bool showSplashScreens, string targetMenuName)
-	{
-		RpcOpenMenu(showSplashScreens, targetMenuName);
-	}
-
 	[ClientRpc]
-	public void RpcOpenMenu(bool showSplashScreens, string targetMenuName)
+	public void RpcOpenMenu(bool showSplashScreens, string targetMenuName, bool openCharacterSelect)
 	{
-		MainManager.Instance.LEVEL_MANAGER.OpenMenu(showSplashScreens, targetMenuName);
+		MainManager.Instance.LEVEL_MANAGER.OpenMenu(showSplashScreens, targetMenuName, openCharacterSelect);
 	}
 }

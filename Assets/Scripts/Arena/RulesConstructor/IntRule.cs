@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System;
 
 [CreateAssetMenu(fileName = "NewIntRule", menuName = "Abyssal Fall/Rules/IntRule")]
 public class IntRule : BaseRule 
 {
 	public static implicit operator int(IntRule self)
 	{
-		return (int)self.Value;
+		return Int32.Parse(self.Value);
 	}
 }

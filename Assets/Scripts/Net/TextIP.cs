@@ -13,4 +13,9 @@ public class TextIP : MonoBehaviour {
 	{
 		GetComponent<InputField>().text = newText;
 	}
+
+	public void CopyToClipBoard()
+	{
+		GUIUtility.systemCopyBuffer = GetComponent<InputField>().text;
+	}
 }

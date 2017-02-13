@@ -12,12 +12,13 @@ MonoBehaviour:
   m_Name: SO_Tank
   m_EditorClassIdentifier: 
   IngameName: Bellus The Tank
-  Icon: {fileID: 0}
-  CharacterModel: {fileID: 11455340, guid: adc2308776991c0429825986e99b0c32, type: 2}
-  CharacterMaterials:
-  - {fileID: 2100000, guid: a2e8f34096c7c8e4284bab3cfbb278a7, type: 2}
-  - {fileID: 2100000, guid: 2085d6d318e9139479838deb44ecb229, type: 2}
-  - {fileID: 2100000, guid: 0347f43d680c4ec41aa2e15fb5d71a74, type: 2}
+  Icon: {fileID: 21300000, guid: e843af757874f4c4f841a7ec7baeb1fd, type: 3}
+  DarkIcon: {fileID: 21300000, guid: 4627a9ef176df67428206bd805c6c7a2, type: 3}
+  CharacterSelectModel: {fileID: 11455340, guid: adc2308776991c0429825986e99b0c32,
+    type: 2}
+  NumberOfSkins: 4
+  SpecialInfoKey: Charge through opponents
+  SpeedInfoKey: Slow
   CharacterStats:
     strength: 7
     speed: 2
@@ -25,10 +26,10 @@ MonoBehaviour:
   Dash:
     endingLag: 0.3
     Forces:
+    - {x: 6, y: 4.905}
     - {x: 9, y: 4.905}
-    - {x: 12, y: 4.905}
     Impact: 4
-    inProgress: 0
+    inProgress: 1
   DashDamageData:
     AttackTypeUsed: 0
     StunInflicted: 0.3

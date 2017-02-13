@@ -7,6 +7,7 @@ public class ModeConfiguration_SO : ScriptableObject
 {
 	public bool IsMatchRoundBased;
 	public IntRule NumberOfRound;
+	public IntRule NumberOfCharactersRequired;
 	public IntRule MatchDuration;
 
 	public BoolRule CanFalledTilesRespawn;

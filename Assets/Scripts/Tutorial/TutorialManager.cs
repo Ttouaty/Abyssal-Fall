@@ -125,7 +125,7 @@ public class TutorialManager : GenericSingleton<TutorialManager>
 
 	IEnumerator DoigtDansLeCul()
 	{
-		yield return LevelManager.Instance.OpenMenu();
+		yield return LevelManager.Instance.OpenMenu(false, "Main");
 	}
 
 	public void SetPlayerDash(bool value) { TutorialCharacterInstance.AllowDash = value; }

@@ -2,16 +2,15 @@
 using System.Collections;
 using UnityEngine.Networking;
 
-public class MapSelector : MenuPanel
+public class MapSelector : MenuPanelNew
 {
 	private MapSelectWheel wheelRef;
 	public Transform MapWheelTarget;
-	protected override void OnEnable()
+	protected void OnEnable()
 	{
 		if(NetworkServer.active)
 		{
 			ServerManager.Instance.SpawnMapWheel(Player.LocalPlayer.gameObject);
 		}
-		base.OnEnable();
 	}
 }

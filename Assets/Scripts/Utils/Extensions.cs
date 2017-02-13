@@ -3,6 +3,8 @@ using UnityEngine.Networking;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
+
 public enum Axis { x, y, z }
 
 public static class Vector3Extensions
@@ -317,30 +319,3 @@ public static class NetworkBehaviourExtensions
 	}
 }
 
-
-public class SyncListGameObject : SyncList<GameObject>
-{
-	protected override void SerializeItem(NetworkWriter writer, GameObject item)
-	{
-		writer.Write(item);
-	}
-
-	protected override GameObject DeserializeItem(NetworkReader reader)
-	{
-		return reader.ReadGameObject();
-	}
-
-
-	//protected override void SerializeItem(NetworkWriter writer, GameObject item)
-	//{
-	//	writer.Write(item.GetComponent<NetworkIdentity>().netId);
-	//}
-
-	//protected override GameObject DeserializeItem(NetworkReader reader)
-	//{
-	//	if (NetworkServer.active)
-	//		return NetworkServer.FindLocalObject(reader.ReadNetworkId());
-	//	else
-	//		return ClientScene.FindLocalObject(reader.ReadNetworkId());
-	//}
-}

@@ -1,18 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class TankController : PlayerController {
+public class TankController : PlayerController
+{
 
 	[Space()]
 	[SerializeField]
-	private float _specialStartSpeed = 30;
+	private float _specialStartSpeed = 50;
 	[SerializeField]
-	private float _specialTime = 0.2f;
-	[SerializeField]
-	private float _specialSpeedDecreaseFactor = 0.2f;
+	private float _specialTime = 0.3f;
 	[SerializeField]
 	private ParticleSystem _specialParticles;
-	
+
 	private bool _charging = false;
 	protected override void SpecialAction()
 	{
@@ -30,21 +29,30 @@ public class TankController : PlayerController {
 		_allowInput = false;
 		_activeSpeed = _activeDirection.normalized * _specialStartSpeed;
 		_charging = true;
+		GetComponentInChildren<GroundCheck>().Deactivate();
 
-		yield return null;
 		while (eT < _specialTime)
 		{
+			_activeSpeed = _activeDirection.normalized * _specialStartSpeed;
 			eT += Time.deltaTime;
-			_activeSpeed = Vector3.Lerp(_activeSpeed, Vector3.zero, _specialSpeedDecreaseFactor).ZeroY();
 			yield return null;
 		}
 
+		GetComponentInChildren<GroundCheck>().Activate();
+
+		yield return null;
+
+		if (IsGrounded)
+			_activeSpeed = Vector3.zero;
+
 		_specialParticles.Stop();
-		_isInvul = false;
-		_allowInput = true;
 		_charging = false;
 		_isAffectedByFriction = true;
 
+		yield return new WaitForSeconds(_characterData.SpecialCoolDown);
+
+		_isInvul = false;
+		_allowInput = true;
 	}
 
 	protected override void PlayerCollisionHandler(Collision colli)

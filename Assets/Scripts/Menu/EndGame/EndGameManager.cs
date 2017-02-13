@@ -18,9 +18,9 @@ public class EndGameManager : GenericSingleton<EndGameManager>
 			MainManager.Instance.LEVEL_MANAGER.UnloadScene(LevelManager.Instance.CurrentArenaConfig.BackgroundLevel);
 			MainManager.Instance.LEVEL_MANAGER.CurrentArenaConfig = null;
 			CameraManager.Instance.Reset();
-			MainManager.Instance.LEVEL_MANAGER.OpenMenu();
 			ServerManager.Instance.OnGameEnd();
 			ServerManager.Instance.ResetNetwork();
+			MainManager.Instance.LEVEL_MANAGER.OpenMenu(false, "Main");
 		}
 	}
 
@@ -41,11 +41,13 @@ public class EndGameManager : GenericSingleton<EndGameManager>
 					Destroy(ServerManager.Instance.RegisteredPlayers[i].Controller.gameObject);
 				}
 			}
-
-			Player.LocalPlayer.CmdBroadCastOpenMenu(false, "Lobby");
+			ServerManager.Instance.ForceUnready = true;
+			Player.LocalPlayer.RpcOpenMenu(false, "CharacterSelect", true);
 		}
 		else
-			Player.LocalPlayer.RpcOpenMenu(false, "Lobby");
+			Player.LocalPlayer.RpcOpenMenu(false, "CharacterSelect", false);
+
+		MenuPanelNew.GlobalInputDelay = 4;
 	}
 
 	public override void Init()
@@ -71,7 +73,7 @@ public class EndGameManager : GenericSingleton<EndGameManager>
 		MenuPauseManager.Instance.Close();
 		if(GUIManager.Instance != null)
 			GUIManager.Instance.SetActiveAll(false);
-		InputManager.SetInputLockTime(0.5f);
+		InputManager.SetInputLockTime(1f);
 		TimeManager.Pause();
 		transform.GetChild(0).gameObject.SetActive(true);
 		IsOpen = true;

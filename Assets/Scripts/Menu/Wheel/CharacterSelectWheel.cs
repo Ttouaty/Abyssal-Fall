@@ -6,12 +6,13 @@ using UnityEngine.UI;
 
 public class CharacterSelectWheel : NetworkBehaviour
 {
+	public static Dictionary<int, CharacterSelectWheel> WheelsRef = new Dictionary<int, CharacterSelectWheel>(4);
+
 	public float _wheelRadius = 3;
 	public float _rotateSpeed = 0.2f;
 
-	protected float _alphaThresholdAngleMin = 20;
-	protected float _alphaThresholdAngleMax = 150;
-
+	protected float _alphaThresholdAngleMin = 10;
+	protected float _alphaThresholdAngleMax = 90;
 
 	protected GameObject[] _displayArray = new GameObject[0];
 	protected PlayerController[] _returnArray = new PlayerController[0];
@@ -23,7 +24,6 @@ public class CharacterSelectWheel : NetworkBehaviour
 	public int _selectedSkinIndex = 0;
 	protected float _rotationBetweenElements;
 
-	protected Color _tempColor;
 	protected float _tempElementAngle;
 
 	[HideInInspector]
@@ -49,7 +49,7 @@ public class CharacterSelectWheel : NetworkBehaviour
 		_rotationBetweenElements = 360 / elementsToDisplay.Length;
 
 		if (_displayArray.Length != _returnArray.Length)
-			Debug.LogError("Display and return arrays lengths do not match!\nThis may/will cause crashes on selection.");
+			Debug.LogError("Display and return arrays lengths do not match!\nThis may/will cause errors on selection.");
 
 		for (int i = 0; i < elementsToDisplay.Length; i++)
 		{
@@ -64,7 +64,6 @@ public class CharacterSelectWheel : NetworkBehaviour
 
 	protected void ElementGenerate(GameObject element, Vector3 localPos)
 	{
-		//element.transform.localScale = Vector3.one;
 		element.transform.localRotation = Quaternion.identity;
 		element.transform.localPosition = localPos;
 	}
@@ -85,24 +84,16 @@ public class CharacterSelectWheel : NetworkBehaviour
 
 	protected void ApplyAlpha()
 	{
-		Image tempImageRef;
-		for (int i = 0; i < _displayArray.Length; ++i)
+		for (int i = 0; i < _displayArray.Length; i++)
 		{
-			tempImageRef = _displayArray[i].GetComponentInChildren<Image>();
-			if (tempImageRef == null)
-				return;
-
-			_tempColor = tempImageRef.color;
-			_tempElementAngle = Vector3.Angle(-Camera.main.transform.forward, (_displayArray[i].transform.position - transform.position));
+			_tempElementAngle = Vector3.Angle(-transform.parent.forward.normalized, (_displayArray[i].transform.position - transform.position).normalized);
 
 			Debug.DrawLine(transform.position, _displayArray[i].transform.position, Color.green);
 
 			if (_tempElementAngle < _alphaThresholdAngleMin)
-				_tempColor.a = 1;
+				_displayArray[i].GetComponentInChildren<SetRenderQueue>().SetCutOff(1);
 			else
-				_tempColor.a = (_alphaThresholdAngleMax - _tempElementAngle) / _alphaThresholdAngleMax;
-
-			tempImageRef.color = Color.Lerp(tempImageRef.color, _tempColor, _rotateSpeed);
+				_displayArray[i].GetComponentInChildren<SetRenderQueue>().SetCutOff((_alphaThresholdAngleMax - _tempElementAngle) / _alphaThresholdAngleMax);
 		}
 	}
 
@@ -110,7 +101,7 @@ public class CharacterSelectWheel : NetworkBehaviour
 	{
 		for (int i = 0; i < _displayArray.Length; ++i)
 		{
-			_displayArray[i].transform.rotation = Quaternion.LookRotation(-Camera.main.transform.forward, Camera.main.transform.up);
+			_displayArray[i].transform.localRotation = Quaternion.Euler(0,180,0) * Quaternion.Inverse(transform.localRotation);
 		}
 	}
 
@@ -118,7 +109,8 @@ public class CharacterSelectWheel : NetworkBehaviour
 	{
 		_selectedElementIndex = newIndex;
 		_selectedElementIndex = _selectedElementIndex.LoopAround(0, _displayArray.Length - 1);
-		_displayArray[_selectedElementIndex].transform.SetAsLastSibling();
+		GetComponentInParent<CharacterSlot>().SetCharacterInfoText(_returnArray[_selectedElementIndex]._characterData.SpecialInfoKey, _returnArray[_selectedElementIndex]._characterData.SpeedInfoKey);
+		//_displayArray[_selectedElementIndex].transform.SetAsLastSibling();
 	}
 
 	public void ScrollLeft()
@@ -147,38 +139,37 @@ public class CharacterSelectWheel : NetworkBehaviour
 
 		for (int i = 0; i < tempGenerationSelectableCharacters.Length; i++)
 		{
-			tempGenerationSelectableCharacters[i] = Instantiate(AvailablePlayers[i]._characterData.CharacterModel.gameObject) as GameObject;
-			tempGenerationSelectableCharacters[i].transform.localScale = transform.parent.parent.localScale * 1.8f;
+			tempGenerationSelectableCharacters[i] = Instantiate(AvailablePlayers[i]._characterData.CharacterSelectModel.gameObject) as GameObject;
+			tempGenerationSelectableCharacters[i].transform.localScale = transform.parent.localScale * 1.8f;
+			tempGenerationSelectableCharacters[i].GetComponentInChildren<Animator>().SetTrigger("Selection");
 			//tempGenerationSelectableCharacters[i].AddComponent<NetworkIdentity>();
 			//NetworkServer.Spawn(tempGenerationSelectableCharacters[i]);
 		}
 
-		_wheelRadius = Mathf.Abs(transform.parent.localPosition.z);
+		_wheelRadius = Mathf.Abs(transform.parent.localPosition.z * 2.5f);
 		Internal_Generate(tempGenerationSelectableCharacters, AvailablePlayers);
 		_selectedElementIndex = _playerRef.GetComponent<Player>().CharacterUsedIndex;
 		_selectedSkinIndex = _playerRef.GetComponent<Player>().SkinNumber;
-		//ScrollToIndex(_selectedElementIndex);
-		//ChangeCharacterSkin(_selectedSkinIndex);
-	}
 
-	public Material GetSelectedSkin()
-	{
-		return GetSelectedElement()._characterData.CharacterMaterials[_selectedSkinIndex];
+		if (WheelsRef.ContainsKey(_playerRef.GetComponent<Player>().PlayerNumber))
+			WheelsRef.Remove(_playerRef.GetComponent<Player>().PlayerNumber);
+
+		WheelsRef.Add(_playerRef.GetComponent<Player>().PlayerNumber, this);
 	}
 
 	public void ChangeCharacterSkinPrecise(int skinIndex, int characterIndex)
 	{
 		if(characterIndex == -1)
-			_displayArray[_selectedElementIndex].GetComponent<CharacterModel>().Reskin(_returnArray[_selectedElementIndex]._characterData.CharacterMaterials[skinIndex]);
+			_displayArray[_selectedElementIndex].GetComponent<CharacterModel>().Reskin(skinIndex);
 		else
-			_displayArray[characterIndex].GetComponent<CharacterModel>().Reskin(_returnArray[characterIndex]._characterData.CharacterMaterials[skinIndex]);
+			_displayArray[characterIndex].GetComponent<CharacterModel>().Reskin(skinIndex);
 
 		_selectedSkinIndex = skinIndex;
 	}
 
 	public void ChangeCharacterSkin(int skinIndex)
 	{
-		_displayArray[_selectedElementIndex].GetComponent<CharacterModel>().Reskin(_returnArray[_selectedElementIndex]._characterData.CharacterMaterials[skinIndex]);
+		_displayArray[_selectedElementIndex].GetComponent<CharacterModel>().Reskin(skinIndex);
 		_selectedSkinIndex = skinIndex;
 	}
 
@@ -205,5 +196,21 @@ public class CharacterSelectWheel : NetworkBehaviour
 
 		Generate();
 		MenuManager.Instance._characterSlotsContainerRef.SlotsAvailable[_playerRef.GetComponent<Player>().PlayerNumber - 1].OpenSlot(this);
+	}
+
+	public void SetAnimTrigger(string triggerName)
+	{
+		_displayArray[_selectedElementIndex].GetComponentInChildren<Animator>().SetTrigger(triggerName);
+	}
+
+	public void SetAnimBool(string targetName, bool active)
+	{
+		_displayArray[_selectedElementIndex].GetComponentInChildren<Animator>().SetBool(targetName, active);
+	}
+
+	public override void OnNetworkDestroy()
+	{
+		Destroy(gameObject);
+		base.OnNetworkDestroy();
 	}
 }

@@ -29,14 +29,14 @@ public class PlayerSoundList
 		new FmodSoundEvent("OnParry")
 	};
 	private Dictionary<string, FmodSoundEvent> _soundDico = new Dictionary<string, FmodSoundEvent>();
-	
+
 	public FmodSoundEvent this[string Key]
 	{
 		get
 		{
 			if (!_soundDico.ContainsKey(Key))
 			{
-				Debug.LogWarning(Key+ " was not found in PlayerAudioList");
+				Debug.LogWarning(Key + " was not found in PlayerAudioList");
 				return new FmodSoundEvent(Key);
 			}
 
@@ -47,7 +47,7 @@ public class PlayerSoundList
 	public void Generate()
 	{
 		FmodSoundEvent[] tempArray = SoundList.ToArray();
-		if(tempArray.Length < 7)
+		if (tempArray.Length < 7)
 			Debug.LogWarning("PlayerSoundList doesn't seem to have all base sounds.\n\"OnDashStart\",\"OnDashEnd\",\"OnDeath\",\"OnHit\",\"OnSpecialActivate\",\"OnSpecialRestored\",\"OnParry\".");
 		for (int i = 0; i < tempArray.Length; i++)
 		{
@@ -119,7 +119,7 @@ public class Stats
 
 public interface IDamageable
 {
-	void Damage(Vector3 direction, Vector3 impactPoint,  DamageData Sender);
+	void Damage(Vector3 direction, Vector3 impactPoint, DamageData Sender);
 }
 
 public interface IDamaging
@@ -132,8 +132,17 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 {
 	[HideInInspector]
 	public Player _playerRef;
-	[HideInInspector]
-	public bool _isInvul = false;
+	[SyncVar]
+	private bool _isInvulInternal = false;
+	public bool _isInvul
+	{
+		get { return _isInvulInternal; }
+		set
+		{
+			
+		}
+	}
+
 	[HideInInspector]
 	public Spawn Spawn;
 	[HideInInspector]
@@ -164,7 +173,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	protected Vector2 _acceleration = new Vector2(0.1f, -2f); // X => time needed to reach max speed, Y => Gravity multiplier
 	protected float _friction = 80; //friction applied to the player when it slides (pushed or end dash) (units/s)
 	protected float _parryTime = 0.08f; //time at the beginning of a Dash when the player is in countering attacks
-	
+
 	//protected float _airborneDelay = 0.02f;
 
 	protected float _fullDashActivationTime = 0.08f;
@@ -182,8 +191,8 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	protected TimeCooldown _stunTimer; //Seconds of stun on Hit
 	protected TimeCooldown _invulTimer; //Seconds of invulnerability
 	protected TimeCooldown _parryTimer; //Seconds of Parrying
-	//protected TimeCooldown _airborneTimeout; //Time before being considered airborne
-	protected TimeCooldown _forcedAirbornTimeout; 
+										//protected TimeCooldown _airborneTimeout; //Time before being considered airborne
+	protected TimeCooldown _forcedAirbornTimeout;
 
 	protected DamageDealer _dmgDealerSelf;
 	public DamageDealer DmgDealerSelf { get { return _dmgDealerSelf; } }
@@ -248,6 +257,12 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_rigidB.isKinematic = false;
 	}
 
+	[ClientRpc]
+	public void RpcUnFreeze()
+	{
+		UnFreeze();
+	}
+
 	#region Unity Functions
 	protected void Awake()
 	{
@@ -270,13 +285,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		CharacterModel playerMesh = _transf.GetComponentInChildren<CharacterModel>();
 		_characterData.SoundList.Generate();
 
-			//Instantiates player mesh and retrieves its props and particles
-			//playerMesh = Instantiate(_characterData.CharacterModel.gameObject) as GameObject;
-			//playerMesh.transform.SetParent(_transf.FindChild("CharacterModel"));
-			//playerMesh.transform.localPosition = Vector3.zero;
-			//playerMesh.transform.localRotation = Quaternion.identity;
-
-		playerMesh.Reskin(_characterData.CharacterMaterials[_playerRef.SkinNumber]);
+		playerMesh.Reskin(_playerRef.SkinNumber);
 
 		_animator = playerMesh.GetComponentInChildren<Animator>();
 		_characterProp = transform.GetComponentInChildren<CharacterProp>();
@@ -323,12 +332,12 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		//};
 
 		_forcedAirbornTimeout = new TimeCooldown(this);
-		
+
 		_lastDamageDealerTimeOut = new TimeCooldown(this);
 		_lastDamageDealerTimeOut.onFinish = OnLastDamageDealerTimeOut;
 		GameManager.Instance.OnPlayerWin.AddListener(OnPlayerWin);
 
-		_maxSpeed.x = _maxSpeed.x + _maxSpeed.x * (10 * (_characterData.CharacterStats.speed - Stats.maxValue * 0.5f) / 100);
+		_maxSpeed.x = _maxSpeed.x + _maxSpeed.x * (5 * (_characterData.CharacterStats.speed - Stats.maxValue * 0.5f) / 100);
 
 		_originalMaxSpeed = _maxSpeed;
 
@@ -373,15 +382,11 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		if (!_isLocalPlayer)
 			return;
 
-		if (InputManager.GetButtonDown("f5"))
-			_FEMref.SetExpression("Kawai");
-
 		//had to do that :p
 		if (_forcedAirbornTimeout.TimeLeft > 0)
 			IsGrounded = false;
 
 		ProcessCoolDowns();
-
 
 		ProcessActiveSpeed();
 		if (_allowInput)
@@ -443,9 +448,9 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	protected virtual void OnPlayerWin(Player winner)
 	{
 		_allowInput = false;
-		if(winner == _playerRef)
+		if (winner == _playerRef)
 		{
-			Debug.LogWarning("Character "+_characterData.IngameName+" controller by player N°=> " +_playerRef.PlayerNumber+" has won !");
+			Debug.LogWarning("Character " + _characterData.IngameName + " controller by player N°=> " + _playerRef.PlayerNumber + " has won !");
 			_FEMref.SetExpression("Happy");
 		}
 		//enabled = false;
@@ -511,7 +516,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 			}
 			_timeHeldDash += Time.deltaTime;
 		}
-		else if(_characterData.Dash.inProgress)
+		else if (_characterData.Dash.inProgress)
 		{
 			WaitForDashRelease = true;
 		}
@@ -522,6 +527,11 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		if (SpecialActivation() && _allowInput)
 		{
 			_specialCooldown.Set(_characterData.SpecialCoolDown);
+
+			_networkAnimator.SetTrigger("Special");
+			if (NetworkServer.active)
+				_animator.ResetTrigger("Special");
+
 			SpecialAction();
 			_stunTimer.Add(_characterData.SpecialLag);
 		}
@@ -540,7 +550,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 			if (secureAllowInput)
 				_activeSpeed = Quaternion.Inverse(Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized)) * _activeSpeed;
 
-			if(_isAffectedByFriction)
+			if (_isAffectedByFriction)
 				ApplyFriction();
 
 			if (secureAllowInput)
@@ -592,7 +602,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	private void ApplyCharacterFinalVelocity()
 	{
 		_rigidB.velocity = _activeSpeed;
-		_animator.SetFloat("Speed", _activeSpeed.ZeroY().magnitude);
+		_animator.SetFloat("SpeedCoef", _activeSpeed.ZeroY().magnitude / ((Vector3)_maxSpeed).ZeroY().magnitude);
 	}
 
 
@@ -616,20 +626,26 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 			projectile.transform.parent = ArenaManager.Instance.SpecialsRoot;
 	}
 
+	[Command]
+	public virtual void CmdSetIsInvul(bool invulValue)
+	{
+		_isInvulInternal = invulValue;
+	}
+
 	public void Kill()
 	{
-		Debug.Log("Player n°"+_playerRef.PlayerNumber+" with character "+_characterData.IngameName+" is DED!");
+		Debug.Log("Player n°" + _playerRef.PlayerNumber + " with character " + _characterData.IngameName + " is DED!");
 
 		_FEMref.SetExpression("Fear");
 		_characterData.SoundList["OnDeath"].Play(gameObject);
 
 		//_animator.SetTrigger("Death");
-		if(_isLocalPlayer)
+		if (_isLocalPlayer)
 			_networkAnimator.SetTrigger("Death");
 
 		if (NetworkServer.active)
 		{
-			Debug.Log("Kill detected from server for character "+_characterData.IngameName+" / Player n°=> "+_playerRef.PlayerNumber);
+			Debug.Log("Kill detected from server for character " + _characterData.IngameName + " / Player n°=> " + _playerRef.PlayerNumber);
 			_animator.ResetTrigger("Death");
 		}
 
@@ -667,7 +683,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	[ClientRpc]
 	public void RpcDamage(Vector3 direction, float newStunTime)
 	{
-		if(_isLocalPlayer)
+		if (_isLocalPlayer)
 		{
 			if (direction.magnitude > 15)
 			{
@@ -696,7 +712,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		}
 	}
 
-	public void Damage(Vector3 direction,Vector3 impactPoint, DamageData data)
+	public void Damage(Vector3 direction, Vector3 impactPoint, DamageData data)
 	{
 		if (_isInvul)
 			return;
@@ -782,14 +798,14 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		directionHeld.z = directionHeld.y;
 		directionHeld = Quaternion.FromToRotation(Vector3.right, Camera.main.transform.right.ZeroY().normalized) * directionHeld.ZeroY();
 
-		_activeSpeed += directionHeld * (0.03f + 0.002f * _characterData.CharacterStats.speed);
+		_activeSpeed += directionHeld * (0.035f + 0.005f * _characterData.CharacterStats.speed);
 	}
 
 	public void ForceAirborne(float timeForced = 0)
 	{
 		//_airborneTimeout.Set(0);
 		IsGrounded = false;
-		if(timeForced == 0)
+		if (timeForced == 0)
 			_forcedAirbornTimeout.Set(10000000);
 		else
 			_forcedAirbornTimeout.Set(timeForced);
@@ -798,12 +814,14 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 	protected void OnCollisionEnter(Collision colli)
 	{
-		PlayerCollisionHandler(colli);
+		if(_playerRef.isLocalPlayer)
+			PlayerCollisionHandler(colli);
 	}
 
 	protected void OnCollisionStay(Collision colli)
 	{
-		PlayerCollisionHandler(colli);
+		if(_playerRef.isLocalPlayer)
+			PlayerCollisionHandler(colli);
 	}
 
 	protected virtual void PlayerCollisionHandler(Collision colli)

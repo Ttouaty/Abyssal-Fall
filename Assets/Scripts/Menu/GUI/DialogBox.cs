@@ -57,7 +57,11 @@ public class DialogBox : MonoBehaviour
 	private IEnumerator DisplayTextOverTime(Message message)
 	{
 		//ControlDiv.gameObject.SetActive(false);
-		DeactivateControls();
+		if(message.IsSkippable)
+			ActivateControls();
+		else
+			DeactivateControls();
+
 		TextDiv.text = "";
 		string textToAdd = "";
 		int nextIndexToWrite = 0;
@@ -207,10 +211,12 @@ public class DialogBox : MonoBehaviour
 	public void ActivateControls()
 	{
 		ControlDiv.GetComponent<CanvasGroup>().alpha = 1;
+		ControlDiv.GetComponent<InputListener>().enabled = true;
 	}
 
 	public void DeactivateControls()
 	{
-		ControlDiv.GetComponent<CanvasGroup>().alpha = 0.3f;
+		ControlDiv.GetComponent<CanvasGroup>().alpha = 0.1f;
+		ControlDiv.GetComponent<InputListener>().enabled = false;
 	}
 }

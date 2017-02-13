@@ -20,29 +20,19 @@ public class InputManager : GenericSingleton<InputManager>
 {
 	//  Buttons							0		1		  2		  3		4	  5		  6			7
 	private string[] InputNames = { "Dash", "Cancel", "Special", null, null, null, "Select", "Start" };
-	private KeyCode[][] KeyboardControls = { new KeyCode[] { KeyCode.H }, new KeyCode[] { KeyCode.J, KeyCode.Mouse1 }, new KeyCode[] { KeyCode.K, KeyCode.Mouse1 }, new KeyCode[] { KeyCode.L }, new KeyCode[] { KeyCode.None }, new KeyCode[] { KeyCode.None }, new KeyCode[] { KeyCode.Return }, new KeyCode[] { KeyCode.Space } };
+	private KeyCode[][] KeyboardControls = { new KeyCode[] { KeyCode.R, KeyCode.Return }, new KeyCode[] { KeyCode.E, KeyCode.Backspace }, new KeyCode[] { KeyCode.Z, KeyCode.W }, new KeyCode[] { KeyCode.A, KeyCode.Q }, new KeyCode[] { KeyCode.None }, new KeyCode[] { KeyCode.None }, new KeyCode[] { KeyCode.LeftShift, KeyCode.RightShift }, new KeyCode[] { KeyCode.Space } };
 	private static float _inputLockTime = 0;
 
 	public static bool InputLocked { get { return _inputLockTime != 0; } }
-
-	private static GameObject _eventSystemGO;
 
 	private static int GetButtonNumber(string buttonName)
 	{
 		return Array.IndexOf(Instance.InputNames, buttonName);
 	}
 
-	void Update()
+	void LateUpdate()
 	{
 		_inputLockTime = _inputLockTime.Reduce(Time.deltaTime);
-
-		if (_eventSystemGO == null)
-		{
-			if(FindObjectOfType<EventSystem>() != null)
-				_eventSystemGO = FindObjectOfType<EventSystem>().gameObject;
-		}
-		else if (_eventSystemGO.activeInHierarchy != !InputLocked)
-			_eventSystemGO.SetActive(!InputLocked);
 	}
 
 	static string[] _tempJoyNames;
@@ -76,6 +66,7 @@ public class InputManager : GenericSingleton<InputManager>
 	public static string[] GetJoystickNames()
 	{
 		string[] joystickNames = Input.GetJoystickNames();
+
 		string[] returnArray = new string[joystickNames.Length + 1];
 		for (int i = 1; i < joystickNames.Length + 1; i++)
 		{
@@ -278,14 +269,42 @@ public class InputManager : GenericSingleton<InputManager>
 		return Input.GetAxisRaw(axisName + "_" + JoystickNumber);
 	}
 
-	public static Vector2 GetStickDirection(int JoystickNumber = 0)
+	public static Vector2 GetAllStickDirection()
+	{
+		return GetAllStickDirection(true);
+	}
+
+	public static Vector2 GetAllStickDirection(bool normalized)
+	{
+		Vector2 returnVector = Vector2.zero;
+		Vector2 tempVector;
+
+		for (int i = 0; i < GetJoystickNames().Length; i++)
+		{
+			tempVector = GetStickDirection(i, normalized);
+			if (tempVector.magnitude != 0)
+				returnVector += tempVector;
+		}
+
+		return returnVector;
+	}
+
+	public static Vector2 GetStickDirection(int JoystickNumber)
+	{
+		return GetStickDirection(JoystickNumber, true);
+	}
+
+	public static Vector2 GetStickDirection(int JoystickNumber, bool normalized)
 	{
 		if (StickIsNeutral(JoystickNumber) || InputLocked)
 			return Vector2.zero;
-		return new Vector2(GetAxis("x", JoystickNumber), GetAxis("y", JoystickNumber)).normalized;
+		if(normalized)
+			return new Vector2(GetAxis("x", JoystickNumber), GetAxis("y", JoystickNumber)).normalized;
+		return new Vector2(GetAxis("x", JoystickNumber), GetAxis("y", JoystickNumber));
+
 	}
 
-	public static bool StickIsNeutral(int JoystickNumber = 0, float deadZone= 0f)
+	public static bool StickIsNeutral(int JoystickNumber = 0, float deadZone = 0f)
 	{
 		if(deadZone == 0)
 			return Input.GetAxisRaw("x_" + JoystickNumber) == 0 && Input.GetAxisRaw("y_" + JoystickNumber) == 0;

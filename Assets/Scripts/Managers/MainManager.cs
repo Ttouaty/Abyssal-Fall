@@ -32,7 +32,7 @@ public class MainManager : GenericSingleton<MainManager>
 		base.Awake();
 		//DontDestroyOnLoad(gameObject);
 
-		//Cursor.visible = false;
+		Cursor.visible = false;
 		Application.targetFrameRate = 60;
 
 		GAME_OBJECT_POOL = GameObjectPool.Instance;
@@ -65,7 +65,7 @@ public class MainManager : GenericSingleton<MainManager>
 			}
 		}
 
-		StartCoroutine(ServerManager.Instance.GetExternalIP());
-		LEVEL_MANAGER.OpenMenu(true);
+		LEVEL_MANAGER.OpenMenu(true,"Title");
+		MenuPanelNew.GlobalInputDelay = 4;
 	}
 }

@@ -28,14 +28,16 @@ public class NetworkStatusCondition : MonoBehaviour
 		{
 			for (int i = 0; i < TargetObjects.Length; i++)
 			{
-				TargetObjects[i].SetActive(ActiveState);
+				if(TargetObjects[i] != null)
+					TargetObjects[i].SetActive(ActiveState);
 			}
 		}
 		else if(ForceOpposite)
 		{
 			for (int i = 0; i < TargetObjects.Length; i++)
 			{
-				TargetObjects[i].SetActive(!ActiveState);
+				if(TargetObjects[i] != null)
+					TargetObjects[i].SetActive(!ActiveState);
 			}
 		}
 

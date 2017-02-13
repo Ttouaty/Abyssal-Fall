@@ -1,10 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
+using System.Collections.Generic;
+
+[Serializable]
+struct ReskinPair
+{
+	public Renderer[] TargetMeshes;
+	public Material[] TargetMaterials;
+}
 
 public class CharacterModel : MonoBehaviour
 {
 	[SerializeField]
-	private Renderer[] _elementsToReskin;
+	private ReskinPair[] _skinArray;
+
 	[HideInInspector]
 	public FacialExpresionModule FEMref
 	{
@@ -14,18 +24,40 @@ public class CharacterModel : MonoBehaviour
 			{
 				_FEMref = GetComponent<FacialExpresionModule>();
 				if(_FEMref == null) //double checking because fuck off
+				{
 					_FEMref = gameObject.AddComponent<FacialExpresionModule>();
+				}
 			}
 			return _FEMref;
 		}
 	}
 	private FacialExpresionModule _FEMref;
 
-	public void Reskin(Material newMaterial)
+	public void Reskin(int skinNumber)
 	{
-		for (int i = 0; i < _elementsToReskin.Length; ++i)
+		if(_skinArray.Length <= skinNumber)
 		{
-			_elementsToReskin[i].material = newMaterial;
+			Debug.Log("No skinNumber found in CharacterModel => "+gameObject.name);
+			return;
+		}
+
+		for (int j = 0; j < _skinArray[skinNumber].TargetMaterials.Length; j++)
+		{
+			List<Material> materialArray = new List<Material>();
+			materialArray.Add(_skinArray[skinNumber].TargetMaterials[j]);
+			for (int i = j + 1; i < _skinArray[skinNumber].TargetMeshes.Length; i++)
+			{
+				if (_skinArray[skinNumber].TargetMeshes[i] == null)
+				{
+					if (_skinArray[skinNumber].TargetMaterials.Length > i)
+						materialArray.Add(_skinArray[skinNumber].TargetMaterials[i]);
+				}
+				else
+					break;
+			}
+
+			if(_skinArray[skinNumber].TargetMeshes[j] != null)
+				_skinArray[skinNumber].TargetMeshes[j].materials = materialArray.ToArray();
 		}
 	}
 }

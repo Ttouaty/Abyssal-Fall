@@ -1262,8 +1262,8 @@ MonoBehaviour:
   connectPunchthrough: 1
   connectRelay: 1
   useUnityMatchmaking: 1
-  externalIPSource: http://icanhazip.com
-  externalIPv6Source: http://ipv6.icanhazip.com
+  externalIPSource: http://ipv4.icanhazip.com/
+  externalIPv6Source: http://ipv6.icanhazip.com/
   clientPort: 0
   delayDirectConnection: 0
   IsInLobby: 0
@@ -1274,6 +1274,7 @@ MonoBehaviour:
   ExternalPlayerNumber: 0
   LobbySlotsOpen: 0
   HostingClient: {fileID: 0}
+  ForceUnready: 0
 --- !u!114 &2142853593
 MonoBehaviour:
   m_ObjectHideFlags: 0

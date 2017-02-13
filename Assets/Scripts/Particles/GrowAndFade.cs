@@ -26,7 +26,7 @@ public class GrowAndFade : MonoBehaviour {
 			{
 				tempComponents[i].enabled = false;
 			}
-			particle.GetComponent<Image>().enabled = true;
+			particle.GetComponent<Graphic>().enabled = true;
 
 			if (IsDetached)
 				particle.transform.SetParent(
@@ -45,7 +45,7 @@ public class GrowAndFade : MonoBehaviour {
 		}
 		else
 		{
-			Image[] affectedImages = GetComponentsInChildren<Image>();
+			Graphic[] affectedImages = GetComponentsInChildren<Graphic>();
 
 			for (int i = 0; i < affectedImages.Length; i++)
 			{
@@ -55,7 +55,7 @@ public class GrowAndFade : MonoBehaviour {
 
 	}
 
-	IEnumerator ActivateCoroutine(Image target)
+	IEnumerator ActivateCoroutine(Graphic target)
 	{
 		float targetStamp = Time.time + AnimationTime;
 

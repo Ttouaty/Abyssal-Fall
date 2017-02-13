@@ -7,6 +7,7 @@ public class TimedCallback : MonoBehaviour
 	public float Interval = 1;
 	public bool AutoStart = false;
 	public bool CallOnStart = true;
+	public bool Repeat = true;
 	public UnityEvent Callback;
 
 	private float eT = 0;
@@ -29,6 +30,8 @@ public class TimedCallback : MonoBehaviour
 		{
 			Callback.Invoke();
 			eT = 0;
+			if (!Repeat)
+				_isRunning = false;
 		}
 	}
 

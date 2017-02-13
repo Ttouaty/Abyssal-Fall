@@ -13,8 +13,7 @@ public class GroundFalling_Behaviour : ABaseBehaviour
 	{
 		if (!NetworkServer.active)
 			yield break;
-
-		_availableGrounds = ArenaManager.Instance.Tiles.ToList();
+		_availableGrounds = ArenaManager.Instance.Tiles.Where(x => x != null).ToList();
 		if(_availableGrounds.Count > 0)
 		{
 			_availableGrounds.Shuffle();

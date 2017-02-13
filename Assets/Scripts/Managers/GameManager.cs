@@ -24,15 +24,15 @@ public class GameManager : GenericSingleton<GameManager>
 	public static bool InProgress = false;
 
 	private AGameRules _gameRules;
-	public AGameRules GameRules 
+	public AGameRules GameRules
 	{
-		get 
+		get
 		{
 			return _gameRules;
 		}
 		set
 		{
-			if(_gameRules != null)
+			if (_gameRules != null)
 			{
 				OnLocalPlayerDeath.RemoveListener(_gameRules.OnPlayerDeath_Listener);
 				OnPlayerWin.RemoveListener(_gameRules.OnPlayerWin_Listener);
@@ -44,7 +44,7 @@ public class GameManager : GenericSingleton<GameManager>
 			OnPlayerWin.AddListener(_gameRules.OnPlayerWin_Listener);
 		}
 	}
-	
+
 	public AudioClip OnGroundDrop; //TODO Switch to FmodOneShotSound
 	public AudioClip OnObstacleDrop;
 	public AudioClip OnThree;
@@ -63,10 +63,10 @@ public class GameManager : GenericSingleton<GameManager>
 	public GameEventWin OnPlayerWin;
 
 	[Space()]
-	public GameConfiguration  CurrentGameConfiguration;
+	public GameConfiguration CurrentGameConfiguration;
 
 	public int CurrentStage = 0;
-	
+
 	public void StartGame()
 	{
 		ServerManager.Instance.ResetAlivePlayers();
@@ -81,12 +81,14 @@ public class GameManager : GenericSingleton<GameManager>
 		if (NetworkServer.active)
 		{
 			MenuManager.Instance.GetComponentInChildren<MapSelectWheel>(true).SendSelectionToGameManager();
+			AGameRules tempRules;
+			MainManager.Instance.DYNAMIC_CONFIG.GetConfig(CurrentGameConfiguration.ModeConfiguration, out tempRules);
+
 			for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; i++)
 			{
-				AGameRules tempRules;
-				MainManager.Instance.DYNAMIC_CONFIG.GetConfig(CurrentGameConfiguration.ModeConfiguration, out tempRules);
-				ServerManager.Instance.RegisteredPlayers[i].RpcStartGame(CurrentGameConfiguration, tempRules.Serialize());
+				ServerManager.Instance.RegisteredPlayers[i].Score = 0;
 			}
+			Player.LocalPlayer.RpcStartGame(CurrentGameConfiguration, tempRules.Serialize());
 		}
 		else
 			Debug.LogError("StartGame(); called from client! This should not be allowed! Aborting");
@@ -106,5 +108,5 @@ public class GameManager : GenericSingleton<GameManager>
 	}
 
 
-	
+
 }

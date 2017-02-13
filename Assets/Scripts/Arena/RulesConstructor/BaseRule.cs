@@ -17,7 +17,7 @@ public class BaseRule : ScriptableObject
 
 
 	protected void OnEnable() { _valueIndex = _defaultValue; }
-	public virtual object Value
+	public virtual string Value
 	{
 		get{ return Values[_valueIndex]; }
 	}

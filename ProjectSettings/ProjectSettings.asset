@@ -30,7 +30,7 @@ PlayerSettings:
   iosShowActivityIndicatorOnLoading: -1
   androidShowActivityIndicatorOnLoading: -1
   iosAppInBackgroundBehavior: 0
-  displayResolutionDialog: 1
+  displayResolutionDialog: 0
   iosAllowHTTPDownload: 1
   allowedAutorotateToPortrait: 1
   allowedAutorotateToPortraitUpsideDown: 1
@@ -96,7 +96,16 @@ PlayerSettings:
     Others: 0
   bundleIdentifier: com.Company.ProductName
   bundleVersion: 1.0
-  preloadedAssets: []
+  preloadedAssets:
+  - {fileID: 113056, guid: 9b85bde0b5dc1d74b8ec37b4561a265f, type: 2}
+  - {fileID: 130986, guid: e44733f7405603a42b6ee4b52dd53d53, type: 2}
+  - {fileID: 144624, guid: ba7fed6ca79414f4c93aa9bb12b559b9, type: 2}
+  - {fileID: 140124, guid: 3ec6965eb1188ff418e7a841ee9f4263, type: 2}
+  - {fileID: 158464, guid: 3d4a50b86d93dbd4b91acbc922964100, type: 2}
+  - {fileID: 104816, guid: 4cc52c0f75a5bf34eb5e7a7463e30859, type: 2}
+  - {fileID: 146212, guid: adc2308776991c0429825986e99b0c32, type: 2}
+  - {fileID: 176738, guid: c4134ab8ae5e15043ab1f2a0e6bc5451, type: 2}
+  - {fileID: 1000010324499440, guid: e4b5ca1db0274914fb613d3e8440a2ef, type: 2}
   metroEnableIndependentInputSource: 0
   xboxOneDisableKinectGpuReservation: 0
   singlePassStereoRendering: 0
@@ -115,7 +124,7 @@ PlayerSettings:
   CreateWallpaper: 0
   APKExpansionFiles: 0
   preloadShaders: 1
-  StripUnusedMeshComponents: 0
+  StripUnusedMeshComponents: 1
   VertexChannelCompressionMask:
     serializedVersion: 2
     m_Bits: 238
@@ -343,7 +352,14 @@ PlayerSettings:
   psp2UseDebugIl2cppLibs: 0
   psmSplashimage: {fileID: 0}
   spritePackerPolicy: 
-  scriptingDefineSymbols: {}
+  scriptingDefineSymbols:
+    1: CROSS_PLATFORM_INPUT
+    4: CROSS_PLATFORM_INPUT;MOBILE_INPUT
+    7: CROSS_PLATFORM_INPUT;MOBILE_INPUT
+    14: CROSS_PLATFORM_INPUT;MOBILE_INPUT
+    17: MOBILE_INPUT
+    20: MOBILE_INPUT
+    22: MOBILE_INPUT
   metroPackageName: Abyssal-Fall
   metroPackageVersion: 
   metroCertificatePath: 
