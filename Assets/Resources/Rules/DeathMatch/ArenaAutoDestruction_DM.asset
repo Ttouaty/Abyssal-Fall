@@ -8,9 +8,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 20adcf750d6889e488dbb9968145e077, type: 3}
-  m_Name: Mode_Sandbox
+  m_Script: {fileID: 11500000, guid: 5db81f9c3fc6387479700c450b32bdd6, type: 3}
+  m_Name: ArenaAutoDestruction_DM
   m_EditorClassIdentifier: 
-  DefaultArenaSize: 10
-  AdditionalBlocksPerPlayer: 3
-  FakePlayers: 2
+  Values:
+  - true
+  - false
+  _valueIndex: 0
+  _defaultValue: 0
+  Label: Can the arena borders fall after too long ?
+  UserCanModify: 1

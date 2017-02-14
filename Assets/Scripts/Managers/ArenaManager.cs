@@ -173,7 +173,7 @@ public class ArenaManager : MonoBehaviour
 		}
 		else
 		{
-			Debug.Log("Tile n°=> "+index+" was null in Arenamanager");
+			//Debug.Log("Tile n°=> "+index+" was null in Arenamanager");
 		}
 	}
 
@@ -318,6 +318,7 @@ public class ArenaManager : MonoBehaviour
 					tileComp.SetTimeLeft(tileComp.TimeLeftSave); // TODO -> Regler dans l'inspecteur
 					_tiles[(int)(y * _currentMapConfig.MapSize.x) + x] = tileComp;
 					tileComp.TileIndex = (int)(y * _currentMapConfig.MapSize.x) + x;
+					tileComp.TileCoordinates = new Vector2(x,y);
 					tileComp.SpawnComponent = null;
 					tileComp.enabled = true;
 					
@@ -458,5 +459,30 @@ public class ArenaManager : MonoBehaviour
 		++_obstaclesDropped;
 
 		yield return null;
+	}
+
+	public int[] GetOutsideTiles(int distanceToBorder)
+	{
+		//Determine most distant tile row
+		int farthestRow = Mathf.CeilToInt(Mathf.Max(CurrentMapConfig.MapSize.x * 0.5f, CurrentMapConfig.MapSize.y * 0.5f)) - distanceToBorder;
+		Vector2 mapCenter = CurrentMapConfig.MapSize * 0.5f;
+		
+		//fix truelle
+		mapCenter.x -= TileScale * 0.5f;
+		mapCenter.y -= TileScale * 0.5f;
+
+
+		List<int> selectedTiles = new List<int>();
+
+		for (int i = 0; i < Tiles.Length; i++)
+		{
+			if(Tiles[i] != null)
+			{
+				if ((int)Mathf.Max(Mathf.Abs(Tiles[i].TileCoordinates.x - mapCenter.x), Mathf.Abs(Tiles[i].TileCoordinates.y - mapCenter.y)) >= farthestRow)
+					selectedTiles.Add(i);
+			}
+		}
+
+		return selectedTiles.ToArray();
 	}
 }

@@ -27,6 +27,6 @@ public class BaseOptionField : MonoBehaviour
 
 	public BaseRule GetTargetRule()
 	{
-		return (BaseRule) TargetRuleSet.GetType().GetField(RuleFieldName).GetValue(TargetRuleSet);
+		return (BaseRule) TargetRuleSet.RuleObject.GetType().GetField(RuleFieldName).GetValue(TargetRuleSet.RuleObject);
 	}
 }

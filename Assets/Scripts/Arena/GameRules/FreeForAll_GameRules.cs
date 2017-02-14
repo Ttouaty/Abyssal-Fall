@@ -17,7 +17,6 @@ public class FreeForAll_GameRules : AGameRules
 	{
 		base.OnPlayerDeath_Listener(player, killer);
 
-		// + 1 Point to last alive
 		if(NetworkServer.active)
 		{
 			if (ServerManager.Instance.AlivePlayers.IndexOf(player) >= 0)
@@ -34,57 +33,72 @@ public class FreeForAll_GameRules : AGameRules
 			{
 				Debug.LogError("DRAW DETECTED !");
 				StopCoroutine(roundEndCoroutine);
-				Player.LocalPlayer.RpcOnRoundEnd(null);
+				GameManager.Instance.OnRoundEndServer.Invoke(null);
 			}
 		}
+	}
+
+	public override IEnumerator Update_Implementation()
+	{
+		yield return new WaitForSeconds(1);
+
+		int[] ass = ArenaManager.Instance.GetOutsideTiles(0);
+
+		Debug.Log("blackened");
+		for (int i = 0; i < ass.Length; i++)
+		{
+			ArenaManager.Instance.Tiles[ass[i]].GetComponentInChildren<Renderer>().material.color = Color.black;
+		}
+
+		/*
+		
+		faire tomber les cases petit a petit
+
+		*/
+
+	}
+
+	public override void OnRoundEnd_Listener_Server(Player winner)
+	{
+		// + 1 Point to last alive
+		winner.Score++;
+		base.OnRoundEnd_Listener_Server(winner);
 	}
 
 	private IEnumerator DelayRoundEnd()
 	{
 		yield return new WaitForSeconds(1);
 		if(ServerManager.Instance.AlivePlayers.Count == 0)
-			Player.LocalPlayer.RpcOnRoundEnd(null);
+			GameManager.Instance.OnRoundEndServer.Invoke(null);
 		else
-			Player.LocalPlayer.RpcOnRoundEnd(ServerManager.Instance.AlivePlayers[0].gameObject);
+			GameManager.Instance.OnRoundEndServer.Invoke(ServerManager.Instance.AlivePlayers[0]);
 	}
 
-	public override void OnPlayerWin_Listener (Player winner)
+	public override void OnRoundEnd_Listener(Player winner)
 	{
+		base.OnRoundEnd_Listener(winner);
+
 		if (winner == null)
 		{
 			Debug.LogWarning("DRAW !!!");
 			MessageManager.Log("Draw! No Point awarded !");
-			
 
 			base.OnPlayerWin_Listener(winner);
-
 			return;
 		}
+	}
+
+	public override void OnPlayerWin_Listener (Player winner)
+	{
+		
+		base.OnPlayerWin_Listener(winner);
 		//Player winner = ServerManager.Instance.AlivePlayers[0];
 		winner.Controller.Freeze();
 		winner.Score++;
 		InputManager.AddInputLockTime(1);
 
-		if (winner.Score >= GameManager.Instance.CurrentGameConfiguration.NumberOfStages)
-		{
-			EndGameManager.Instance.WinnerId = winner.PlayerNumber;
-			EndGameManager.Instance.Open();
-			GUIManager.Instance.SetActiveRoundCount(false);
-		}
-		else
-		{
-			EndStageManager.Instance.Open();
-			if (MainManager.Instance.LEVEL_MANAGER.CurrentModeConfig.IsMatchRoundBased)
-			{
-				++GameManager.Instance.CurrentStage;
-				GUIManager.Instance.UpdateRoundCount(GameManager.Instance.CurrentStage);
-			}
-			else
-			{
-				GUIManager.Instance.StopTimer();
-			}
-		}
+		GUIManager.Instance.SetActiveRoundCount(false);
+		
 
-		base.OnPlayerWin_Listener(winner);
 	}
 }

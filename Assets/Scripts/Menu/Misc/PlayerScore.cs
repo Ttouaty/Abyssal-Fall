@@ -47,7 +47,6 @@ public class PlayerScore : MonoBehaviour
             Image image                         = scoreGo.GetComponent<Image>();
             image.sprite                        = SpriteInactive;
             Points[i]                           = image;
-
         }
     }
 

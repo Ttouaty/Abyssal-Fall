@@ -147,7 +147,7 @@ public class LevelManager : GenericSingleton<LevelManager>
 		}
 	}
 
-	public IEnumerator StartLevel(GameConfiguration config, ParsedGameRules customRules)
+	public IEnumerator StartLevel(GameConfiguration config, int[] customRules)
 	{
 		if (!_bIsLoading)
 		{

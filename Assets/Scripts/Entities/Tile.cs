@@ -23,6 +23,7 @@ public class Tile : MonoBehaviour, IPoolable
 	public bool             IsSpawn			{ get { return SpawnComponent == null; } }
 	public Rigidbody		RigidBRef		{ get { return _rigidB; } }
 	public int				TileIndex = 0;
+	public Vector2			TileCoordinates;
 	
 
 	public float TimeLeftSave { get { return _timeLeftSave; } }

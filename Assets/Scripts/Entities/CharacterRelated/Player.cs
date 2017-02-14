@@ -70,8 +70,11 @@ public class Player : NetworkBehaviour
 
 	public void ChangeWheelState(bool ready)
 	{
-		CharacterSelectWheel.WheelsRef[PlayerNumber].SetAnimBool("IsSelected", ready);
-		CharacterSelectWheel.WheelsRef[PlayerNumber].GetComponentInParent<CharacterSlot>().SelectPedestal(ready);
+		if(CharacterSelectWheel.WheelsRef.ContainsKey(PlayerNumber))
+		{
+			CharacterSelectWheel.WheelsRef[PlayerNumber].SetAnimBool("IsSelected", ready);
+			CharacterSelectWheel.WheelsRef[PlayerNumber].GetComponentInParent<CharacterSlot>().SelectPedestal(ready);
+		}
 	}
 
 	[Command]
@@ -208,7 +211,7 @@ public class Player : NetworkBehaviour
 	}
 
 	[ClientRpc]
-	public void RpcStartGame(GameConfiguration newGameConfig, ParsedGameRules customRules)
+	public void RpcStartGame(GameConfiguration newGameConfig, int[] customRules)
 	{
 		Debug.Log("Player N°=> " + PlayerNumber + " is starting game with config.");
 		PlayerList = FindObjectsOfType<Player>();
@@ -284,7 +287,7 @@ public class Player : NetworkBehaviour
 			winner = winnerPlayerGo.GetComponent<Player>();
 
 		Debug.Log("RpcOnRoundEnd received on player n°=> " + PlayerNumber + " with localplayer n°=> " + LocalPlayer.PlayerNumber);
-		GameManager.Instance.OnPlayerWin.Invoke(winner);
+		GameManager.Instance.OnRoundEnd.Invoke(winner);
 	}
 
 	[ClientRpc]

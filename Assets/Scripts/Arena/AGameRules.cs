@@ -4,64 +4,60 @@ using System.Collections.Generic;
 using UnityEngine.Networking;
 using System.Linq;
 
-public struct ParsedGameRules
-{
-	public int NumberOfCharactersRequired;
-	public int IsMatchRoundBased;
-	public int CanPlayerRespawn;
-	public int CanFalledTilesRespawn;
-	public int NumberOfRounds;
-	public int MatchDuration;
-	public int TileRegerationTime;
-	public int PointsGainPerKill;
-	public int PointsLoosePerSuicide;
-	public int TimeBeforeSuicide;
-}
-
-public abstract class AGameRules : MonoBehaviour 
+public abstract class AGameRules : MonoBehaviour
 {
 
 	/*
 	 * Il faut remplacer tout les ints & bool  par des IntRule & BoolRule
 	 * & il faut faire suivre les custom editors
 	 */
-	public BoolRule IsMatchRoundBased;
-	public IntRule NumberOfCharactersRequired;
-	public IntRule ScoreToWin;
-	public IntRule MatchDuration;
+	public ModeConfiguration_SO RuleObject;
 
-	public BoolRule CanFalledTilesRespawn;
-	public IntRule TileRegerationTime;
+	public BoolRule IsMatchRoundBased			{ get { return RuleObject.IsMatchRoundBased; } }
+	public IntRule NumberOfCharactersRequired	{ get { return RuleObject.NumberOfCharactersRequired; } }
+	public IntRule ScoreToWin					{ get { return RuleObject.ScoreToWin; } }
+	public IntRule MatchDuration				{ get { return RuleObject.MatchDuration; } }
+	public IntRule TileRegerationTime			{ get { return RuleObject.TileRegerationTime; } }
+	public IntRule PointsGainPerKill			{ get { return RuleObject.PointsPerKill; } }
+	public IntRule PointsLoosePerSuicide		{ get { return RuleObject.PointsPerSuicide; } }
+	public IntRule TimeBeforeSuicide			{ get { return RuleObject.TimeBeforeSuicide; } }
 
-	public IntRule PointsGainPerKill;
-	public IntRule PointsLoosePerSuicide;
-	public IntRule TimeBeforeSuicide;
+	public BoolRule CanPlayerRespawn			{ get { return RuleObject.CanPlayerRespawn; } }
+	public BoolRule CanFalledTilesRespawn		{ get { return RuleObject.CanFallenTilesRespawn; } }
+	public BoolRule ArenaAutoDestruction		{ get { return RuleObject.ArenaAutoDestruction; } }
 
-	public BoolRule CanPlayerRespawn;
+
+	/*
+	
+		DO ARENA AUTO DESTRUCTION
+		
+		
+		*/
+
 	public List<Tile> RespawnZones = new List<Tile>();
 
 	public BehaviourConfiguration[] Behaviours;
 
 	public List<PoolConfiguration> AdditionalPoolsToLoad = new List<PoolConfiguration>();
 
-	public virtual void InitGameRules ()
+	public virtual void InitGameRules()
 	{
 		// On initi game rules common stuff
 		StartCoroutine(Update_Implementation());
 	}
 
-	public virtual IEnumerator Update_Implementation ()
+	public virtual IEnumerator Update_Implementation()
 	{
 		yield return null;
 	}
 
-	public virtual void RespawnFallenTiles (Tile tile)
+	public virtual void RespawnFallenTiles(Tile tile)
 	{
 		tile.PrepareRespawn();
 		StartCoroutine(RespawnFallenTiles_Implementation(tile));
 	}
 
-	protected virtual IEnumerator RespawnFallenTiles_Implementation (Tile tile)
+	protected virtual IEnumerator RespawnFallenTiles_Implementation(Tile tile)
 	{
 		if (!CanFalledTilesRespawn)
 			yield break;
@@ -69,7 +65,7 @@ public abstract class AGameRules : MonoBehaviour
 		tile.ActivateRespawn();
 	}
 
-	public virtual void OnPlayerDeath_Listener (Player player, Player killer)
+	public virtual void OnPlayerDeath_Listener(Player player, Player killer)
 	{
 		CameraManager.Instance.RemoveTargetToTrack(player.Controller.transform);
 
@@ -85,7 +81,7 @@ public abstract class AGameRules : MonoBehaviour
 				player.Score -= PointsLoosePerSuicide;
 			}
 
-			if(CanPlayerRespawn)
+			if (CanPlayerRespawn)
 				RespawnPlayer(player);
 		}
 	}
@@ -121,25 +117,8 @@ public abstract class AGameRules : MonoBehaviour
 		ArenaManager.Instance.DisableBehaviours();
 		CameraManager.Instance.ClearTrackedTargets();
 
-		if (NetworkServer.active)
-		{
-			ServerManager.Instance.ResetAlivePlayers();
+		EndStageManager.Instance.Open();
 
-			if (winner != null)
-			{
-				if (winner.Score >= ScoreToWin)
-				{
-					Player.LocalPlayer.RpcOnPlayerWin(winner.gameObject);
-				}
-			}
-		}
-
-		/*
-		Avoir une fonction server only & celle la
-		*/
-
-		if(winner.Score < ScoreToWin)
-			EndStageManager.Instance.Open();
 		if (IsMatchRoundBased)
 		{
 			++GameManager.Instance.CurrentStage;
@@ -151,38 +130,73 @@ public abstract class AGameRules : MonoBehaviour
 		}
 	}
 
-	public virtual void OnPlayerWin_Listener (Player winner)
+	public virtual void OnRoundEnd_Listener_Server(Player winner)
 	{
-		
+		ServerManager.Instance.ResetAlivePlayers();
+
+		if (winner != null)
+		{
+			if (winner.Score >= ScoreToWin)
+			{
+				Player.LocalPlayer.RpcOnPlayerWin(winner.gameObject);
+				return;
+			}
+		}
+
+		Player.LocalPlayer.RpcOnRoundEnd(winner.gameObject);
 	}
 
-	public virtual ParsedGameRules Serialize()
+	public virtual void OnPlayerWin_Listener(Player winner)
 	{
-		ParsedGameRules newParsedRules = new ParsedGameRules();
-		newParsedRules.NumberOfCharactersRequired = NumberOfCharactersRequired._valueIndex;
-		newParsedRules.IsMatchRoundBased = IsMatchRoundBased._valueIndex;
-		newParsedRules.CanPlayerRespawn = CanPlayerRespawn._valueIndex;
-		newParsedRules.CanFalledTilesRespawn = CanFalledTilesRespawn._valueIndex;
-		newParsedRules.NumberOfRounds = ScoreToWin._valueIndex;
-		newParsedRules.MatchDuration = MatchDuration._valueIndex;
-		newParsedRules.TileRegerationTime = TileRegerationTime._valueIndex;
-		newParsedRules.PointsGainPerKill = PointsGainPerKill._valueIndex;
-		newParsedRules.PointsLoosePerSuicide = PointsLoosePerSuicide._valueIndex;
-		newParsedRules.TimeBeforeSuicide = TimeBeforeSuicide._valueIndex;
-		return newParsedRules;
+		EndGameManager.Instance.WinnerId = winner.PlayerNumber;
+		EndGameManager.Instance.Open();
 	}
 
-	public virtual void Parse(ParsedGameRules newRule)
+	public virtual int[] Serialize()
 	{
-		NumberOfCharactersRequired._valueIndex = newRule.NumberOfCharactersRequired;
-		IsMatchRoundBased._valueIndex = newRule.IsMatchRoundBased;
-		CanPlayerRespawn._valueIndex = newRule.CanPlayerRespawn;
-		CanFalledTilesRespawn._valueIndex = newRule.CanFalledTilesRespawn;
-		ScoreToWin._valueIndex = newRule.NumberOfRounds;
-		MatchDuration._valueIndex = newRule.MatchDuration;
-		TileRegerationTime._valueIndex = newRule.TileRegerationTime;
-		PointsGainPerKill._valueIndex = newRule.PointsGainPerKill;
-		PointsLoosePerSuicide._valueIndex = newRule.PointsLoosePerSuicide;
-		TimeBeforeSuicide._valueIndex = newRule.TimeBeforeSuicide;
+		List<int> tempList = new List<int>();
+
+		foreach (var prop in RuleObject.GetType().GetFields())
+		{
+			if (prop.FieldType == typeof(BoolRule))
+			{
+				if (prop.GetValue(RuleObject) != null)
+					tempList.Add(((BoolRule)prop.GetValue(RuleObject))._valueIndex);
+				else
+					tempList.Add(0);
+			}
+			else if (prop.FieldType == typeof(IntRule))
+			{
+				if (prop.GetValue(RuleObject) != null)
+					tempList.Add(((IntRule)prop.GetValue(RuleObject))._valueIndex);
+				else
+					tempList.Add(0);
+			}
+			else if (prop.FieldType == typeof(EnumRule))
+			{
+				if (prop.GetValue(RuleObject) != null)
+					tempList.Add(((EnumRule)prop.GetValue(RuleObject))._valueIndex);
+				else
+					tempList.Add(0);
+			}
+		}
+
+		return tempList.ToArray();
+	}
+
+	public virtual void Parse(int[] newRules)
+	{
+		int i = 0;
+		foreach (var prop in RuleObject.GetType().GetFields())
+		{
+			if (prop.FieldType == typeof(BoolRule))
+				((BoolRule)prop.GetValue(RuleObject))._valueIndex = newRules[i];
+			else if (prop.FieldType == typeof(IntRule))
+				((IntRule)prop.GetValue(RuleObject))._valueIndex  = newRules[i];
+			else if (prop.FieldType == typeof(EnumRule))
+				((EnumRule)prop.GetValue(RuleObject))._valueIndex = newRules[i];
+
+			i++;
+		}
 	}
 }

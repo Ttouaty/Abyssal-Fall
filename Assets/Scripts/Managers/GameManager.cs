@@ -36,6 +36,7 @@ public class GameManager : GenericSingleton<GameManager>
 			{
 				OnLocalPlayerDeath.RemoveListener(_gameRules.OnPlayerDeath_Listener);
 				OnPlayerWin.RemoveListener(_gameRules.OnPlayerWin_Listener);
+				OnRoundEndServer.RemoveListener(_gameRules.OnRoundEnd_Listener_Server);
 				OnRoundEnd.RemoveListener(_gameRules.OnRoundEnd_Listener);
 			}
 
@@ -44,6 +45,7 @@ public class GameManager : GenericSingleton<GameManager>
 			OnLocalPlayerDeath.AddListener(_gameRules.OnPlayerDeath_Listener);
 			OnPlayerWin.AddListener(_gameRules.OnPlayerWin_Listener);
 			OnRoundEnd.AddListener(_gameRules.OnRoundEnd_Listener);
+			OnRoundEndServer.AddListener(_gameRules.OnRoundEnd_Listener_Server);
 		}
 	}
 
@@ -62,6 +64,7 @@ public class GameManager : GenericSingleton<GameManager>
 	//public int nbPlayers = -1;
 
 	public GameEventDeath OnLocalPlayerDeath;
+	public GameEventWin OnRoundEndServer;
 	public GameEventWin OnRoundEnd;
 	public GameEventWin OnPlayerWin;
 
@@ -98,13 +101,13 @@ public class GameManager : GenericSingleton<GameManager>
 	}
 
 
-	public void StartGameWithConfig(GameConfiguration newConfig, ParsedGameRules customConfig)
+	public void StartGameWithConfig(GameConfiguration newConfig, int[] customConfig)
 	{
 		CurrentGameConfiguration = newConfig;
 		CurrentStage = 1;
 		StartCoroutine(StartLevelCoroutine(customConfig));
 	}
-	private IEnumerator StartLevelCoroutine(ParsedGameRules customConfig)
+	private IEnumerator StartLevelCoroutine(int[] customConfig)
 	{
 		yield return StartCoroutine(AutoFade.StartFade(1, LevelManager.Instance.StartLevel(CurrentGameConfiguration, customConfig), AutoFade.EndFade(0.5f, 1, Color.black), Color.black));
 		InProgress = true;

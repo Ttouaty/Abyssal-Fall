@@ -27,8 +27,11 @@ public class OptionSelector : MonoBehaviour
 
 	void Update()
 	{
+
+		int Yoffset = Mathf.Clamp(_selectedFieldIndex, ButtonScrollMargin, ((ButtonScrollMargin * 2) > _allFields.Count ? ButtonScrollMargin : (_allFields.Count - ButtonScrollMargin))) - ButtonScrollMargin;
+
 		ButtonContainer.transform.localPosition = Vector3.Lerp(ButtonContainer.transform.localPosition, 
-																new Vector3(0,Mathf.Clamp(_selectedFieldIndex - ButtonScrollMargin, 0, _allFields.Count - 1 - (ButtonScrollMargin * 2)) * BoolOptionPrefab.GetComponent<RectTransform>().sizeDelta.y), 
+																new Vector3(0, - Yoffset * BoolOptionPrefab.GetComponent<RectTransform>().sizeDelta.y), 
 																Time.deltaTime * 10);
 	}
 
@@ -43,24 +46,24 @@ public class OptionSelector : MonoBehaviour
 	{
 		ButtonContainer.DestroyAllChildren();
 
-		foreach (var prop in _targetRuleSet.GetType().GetFields())
+		foreach (var prop in _targetRuleSet.RuleObject.GetType().GetFields())
 		{
 			if (prop.FieldType == typeof(BoolRule))
 			{
-				if(prop.GetValue(_targetRuleSet) != null)
-					if(((BoolRule)prop.GetValue(_targetRuleSet)).UserCanModify)
+				if(prop.GetValue(_targetRuleSet.RuleObject) != null)
+					if(((BoolRule)prop.GetValue(_targetRuleSet.RuleObject)).UserCanModify)
 						CreateOptionBoolField(prop.Name);
 			}
 			else if (prop.FieldType == typeof(IntRule))
 			{
-				if(prop.GetValue(_targetRuleSet) != null)
-					if(((IntRule)prop.GetValue(_targetRuleSet)).UserCanModify)
+				if(prop.GetValue(_targetRuleSet.RuleObject) != null)
+					if(((IntRule)prop.GetValue(_targetRuleSet.RuleObject)).UserCanModify)
 						CreateOptionIntField(prop.Name);
 			}
 			else if(prop.FieldType == typeof(EnumRule))
 			{
-				if(prop.GetValue(_targetRuleSet) != null)
-					if(((EnumRule)prop.GetValue(_targetRuleSet)).UserCanModify)
+				if(prop.GetValue(_targetRuleSet.RuleObject) != null)
+					if(((EnumRule)prop.GetValue(_targetRuleSet.RuleObject)).UserCanModify)
 						CreateOptionEnumField(prop.Name);
 			}
 		}

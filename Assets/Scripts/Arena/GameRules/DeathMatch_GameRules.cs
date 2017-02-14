@@ -43,8 +43,7 @@ public class DeathMatch_GameRules : AGameRules
 		base.OnPlayerWin_Listener(winner);
 
 		// TODO : Gérer les égalités
-		EndGameManager.Instance.WinnerId = winner.PlayerNumber;
-		EndGameManager.Instance.Open();
+	
 
 		GUIManager.Instance.Timer.OnCompleteCallback.RemoveListener(OnTimeOut);
 	}

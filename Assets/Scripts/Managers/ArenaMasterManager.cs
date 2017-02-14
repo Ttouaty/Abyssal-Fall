@@ -6,14 +6,6 @@ public class ArenaMasterManager : NetworkBehaviour
 {
 	public static ArenaMasterManager Instance;
 
-	/*
-		Doit gérer:
-		Les tiles
-		Les behaviors
-		x Les CallBacks de morts
-		
-	*/
-
 	void Start()
 	{
 		if (ArenaManager.Instance != null)
