@@ -19,7 +19,15 @@ public class BaseRule : ScriptableObject
 	protected void OnEnable() { _valueIndex = _defaultValue; }
 	public virtual string Value
 	{
-		get{ return Values[_valueIndex]; }
+		get
+		{
+			if(Values.Length < _valueIndex)
+			{
+				Debug.Log("_valueIndex is oustide of Values.Length in => "+name);
+				return "";
+			}
+			return Values[_valueIndex];
+		}
 	}
 
 
@@ -42,7 +50,7 @@ public class BaseRule : ScriptableObject
 	{
 		if (newValue.LoopAround(0, Values.Length - 1) != newValue)
 		{
-			Debug.LogWarning("ValueIndex set is outside of values array:\nindex: "+newValue+" / ValuesLength: "+Values.Length);
+			Debug.LogWarning("ValueIndex set is outside of values array:\nindex: " + newValue + " / ValuesLength: " + Values.Length);
 			return;
 		}
 		_valueIndex = newValue;

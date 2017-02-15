@@ -242,7 +242,7 @@ public class Player : NetworkBehaviour
 
 		if (NetworkServer.active)
 		{
-			ArenaMasterManager.Instance.RpcRemoveTileAtIndex(index);
+			ArenaMasterManager.Instance.RpcRemoveTile(index);
 		}
 	}
 

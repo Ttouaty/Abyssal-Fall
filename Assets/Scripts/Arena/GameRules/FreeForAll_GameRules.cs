@@ -38,30 +38,11 @@ public class FreeForAll_GameRules : AGameRules
 		}
 	}
 
-	public override IEnumerator Update_Implementation()
-	{
-		yield return new WaitForSeconds(1);
-
-		int[] ass = ArenaManager.Instance.GetOutsideTiles(0);
-
-		Debug.Log("blackened");
-		for (int i = 0; i < ass.Length; i++)
-		{
-			ArenaManager.Instance.Tiles[ass[i]].GetComponentInChildren<Renderer>().material.color = Color.black;
-		}
-
-		/*
-		
-		faire tomber les cases petit a petit
-
-		*/
-
-	}
-
 	public override void OnRoundEnd_Listener_Server(Player winner)
 	{
 		// + 1 Point to last alive
-		winner.Score++;
+		if(winner != null)
+			winner.Score++;
 		base.OnRoundEnd_Listener_Server(winner);
 	}
 

@@ -34,6 +34,8 @@ public class Obstacle : MonoBehaviour, IPoolable
 	{
 		TimeManager.Instance.OnPause.RemoveListener(OnPause);
 		TimeManager.Instance.OnResume.RemoveListener(OnResume);
+		_particleSystem.GetComponent<ParticleSystem>().Clear();
+		_particleSystem.SetActive(false);
 		_rigidB.isKinematic = true;
 	}
 

@@ -141,7 +141,8 @@ public class MenuPanelNew : MonoBehaviour
 		else
 		{
 			ActiveMenupanel.ActiveButtonPanel = ActiveMenupanel.PreselectedButtonPanel;
-			ActiveMenupanel.ActiveButtonPanel.Open();
+			if(ActiveMenupanel.ActiveButtonPanel != null)
+				ActiveMenupanel.ActiveButtonPanel.Open();
 		}
 
 		ActiveMenupanel.LaunchAnimation("Return");

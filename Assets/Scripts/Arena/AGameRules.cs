@@ -21,18 +21,14 @@ public abstract class AGameRules : MonoBehaviour
 	public IntRule PointsGainPerKill			{ get { return RuleObject.PointsPerKill; } }
 	public IntRule PointsLoosePerSuicide		{ get { return RuleObject.PointsPerSuicide; } }
 	public IntRule TimeBeforeSuicide			{ get { return RuleObject.TimeBeforeSuicide; } }
+	public IntRule TimeBeforeAutoDestruction	{ get { return RuleObject.TimeBeforeAutoDestruction; } }
+	public IntRule IntervalAutoDestruction		{ get { return RuleObject.IntervalAutoDestruction; } }
 
 	public BoolRule CanPlayerRespawn			{ get { return RuleObject.CanPlayerRespawn; } }
-	public BoolRule CanFalledTilesRespawn		{ get { return RuleObject.CanFallenTilesRespawn; } }
+	public BoolRule CanFallenTilesRespawn		{ get { return RuleObject.CanFallenTilesRespawn; } }
 	public BoolRule ArenaAutoDestruction		{ get { return RuleObject.ArenaAutoDestruction; } }
 
-
-	/*
-	
-		DO ARENA AUTO DESTRUCTION
-		
-		
-		*/
+	protected int _autoDestroyedTileIndex = 0;
 
 	public List<Tile> RespawnZones = new List<Tile>();
 
@@ -44,6 +40,9 @@ public abstract class AGameRules : MonoBehaviour
 	{
 		// On initi game rules common stuff
 		StartCoroutine(Update_Implementation());
+		if(ArenaAutoDestruction)
+			StartCoroutine(ArenaAutoDestruction_Implementation());
+
 	}
 
 	public virtual IEnumerator Update_Implementation()
@@ -59,10 +58,31 @@ public abstract class AGameRules : MonoBehaviour
 
 	protected virtual IEnumerator RespawnFallenTiles_Implementation(Tile tile)
 	{
-		if (!CanFalledTilesRespawn)
+		if (!CanFallenTilesRespawn)
 			yield break;
 		yield return new WaitForSeconds(TileRegerationTime);
 		tile.ActivateRespawn();
+	}
+
+	protected virtual IEnumerator ArenaAutoDestruction_Implementation()
+	{
+		_autoDestroyedTileIndex = 0;
+		yield return new WaitForSeconds(TimeBeforeAutoDestruction - 1);
+
+		while (true)
+		{
+			CameraManager.Shake(ShakeStrength.Medium, 0.5f);
+			yield return new WaitForSeconds(1);
+			if (NetworkServer.active)
+			{
+				int[] tempTileArray = ArenaManager.Instance.GetOutsideTiles(_autoDestroyedTileIndex);
+
+				_autoDestroyedTileIndex++;
+
+				ArenaMasterManager.Instance.RpcRemoveTiles(tempTileArray);
+			}
+			yield return new WaitForSeconds(IntervalAutoDestruction - 1);
+		}
 	}
 
 	public virtual void OnPlayerDeath_Listener(Player player, Player killer)
@@ -82,7 +102,7 @@ public abstract class AGameRules : MonoBehaviour
 			}
 
 			if (CanPlayerRespawn)
-				RespawnPlayer(player);
+				StartCoroutine(RespawnPlayer_Retry(player, 1));
 		}
 	}
 
@@ -102,7 +122,7 @@ public abstract class AGameRules : MonoBehaviour
 			Tile tile = tiles.RandomElement();
 			tile.SetTimeLeft(tile.TimeLeftSave);
 
-			player.Controller.RpcRespawn(tile.transform.position + Vector3.up * 2.25f);
+			player.Controller.RpcRespawn(tile.transform.position + Vector3.up * 1.5f);
 		}
 	}
 
@@ -141,9 +161,11 @@ public abstract class AGameRules : MonoBehaviour
 				Player.LocalPlayer.RpcOnPlayerWin(winner.gameObject);
 				return;
 			}
+
+			Player.LocalPlayer.RpcOnRoundEnd(winner.gameObject);
 		}
 
-		Player.LocalPlayer.RpcOnRoundEnd(winner.gameObject);
+		Player.LocalPlayer.RpcOnRoundEnd(null);
 	}
 
 	public virtual void OnPlayerWin_Listener(Player winner)

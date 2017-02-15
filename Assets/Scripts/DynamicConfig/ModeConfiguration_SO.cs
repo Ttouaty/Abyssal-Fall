@@ -5,18 +5,21 @@ using System.Collections.Generic;
 [CreateAssetMenu(fileName = "NewModeConfiguration", menuName = "Abyssal Fall/Mode Configuration", order = 1)]
 public class ModeConfiguration_SO : ScriptableObject
 {
-	public BoolRule IsMatchRoundBased;
 	public IntRule ScoreToWin;
 	public IntRule NumberOfCharactersRequired;
 	public IntRule MatchDuration;
 
-	public BoolRule CanFallenTilesRespawn;
 	public IntRule TileRegerationTime;
 
 	public IntRule PointsPerKill;
 	public IntRule PointsPerSuicide;
 	public IntRule TimeBeforeSuicide;
 
+	public IntRule TimeBeforeAutoDestruction;
+	public IntRule IntervalAutoDestruction;
+
+	public BoolRule CanFallenTilesRespawn;
+	public BoolRule IsMatchRoundBased;
 	public BoolRule CanPlayerRespawn;
 	public BoolRule ArenaAutoDestruction;
 	//Defined in the gameObject

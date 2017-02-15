@@ -30,8 +30,17 @@ public class ArenaMasterManager : NetworkBehaviour
 	}
 
 	[ClientRpc]
-	public void RpcRemoveTileAtIndex(int index)
+	public void RpcRemoveTile(int index)
 	{
 		ArenaManager.Instance.RemoveTile(index);
+	}
+
+	[ClientRpc]
+	public void RpcRemoveTiles(int[] indexes)
+	{
+		for (int i = 0; i < indexes.Length; i++)
+		{
+			ArenaManager.Instance.RemoveTile(indexes[i]);
+		}
 	}
 }

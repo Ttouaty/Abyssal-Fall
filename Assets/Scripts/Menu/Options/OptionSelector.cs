@@ -24,14 +24,14 @@ public class OptionSelector : MonoBehaviour
 	private int _selectedFieldIndex;
 	private BaseOptionField _selectedField;
 	private List<BaseOptionField> _allFields = new List<BaseOptionField>();
+	private bool _isGenerated = false;
 
 	void Update()
 	{
-
 		int Yoffset = Mathf.Clamp(_selectedFieldIndex, ButtonScrollMargin, ((ButtonScrollMargin * 2) > _allFields.Count ? ButtonScrollMargin : (_allFields.Count - ButtonScrollMargin))) - ButtonScrollMargin;
 
 		ButtonContainer.transform.localPosition = Vector3.Lerp(ButtonContainer.transform.localPosition, 
-																new Vector3(0, - Yoffset * BoolOptionPrefab.GetComponent<RectTransform>().sizeDelta.y), 
+																new Vector3(0, Yoffset * BoolOptionPrefab.GetComponent<RectTransform>().sizeDelta.y), 
 																Time.deltaTime * 10);
 	}
 
@@ -45,6 +45,8 @@ public class OptionSelector : MonoBehaviour
 	void GenerateOptionFields()
 	{
 		ButtonContainer.DestroyAllChildren();
+		_allFields.Clear();
+		_nextButtonPosition.y = 0;
 
 		foreach (var prop in _targetRuleSet.RuleObject.GetType().GetFields())
 		{
