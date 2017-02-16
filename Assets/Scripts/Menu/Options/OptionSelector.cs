@@ -24,7 +24,6 @@ public class OptionSelector : MonoBehaviour
 	private int _selectedFieldIndex;
 	private BaseOptionField _selectedField;
 	private List<BaseOptionField> _allFields = new List<BaseOptionField>();
-	private bool _isGenerated = false;
 
 	void Update()
 	{

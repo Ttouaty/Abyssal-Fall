@@ -72,8 +72,8 @@ public class Player : NetworkBehaviour
 	{
 		if(CharacterSelectWheel.WheelsRef.ContainsKey(PlayerNumber))
 		{
-			CharacterSelectWheel.WheelsRef[PlayerNumber].SetAnimBool("IsSelected", ready);
 			CharacterSelectWheel.WheelsRef[PlayerNumber].GetComponentInParent<CharacterSlot>().SelectPedestal(ready);
+			CharacterSelectWheel.WheelsRef[PlayerNumber].SetAnimBool("IsSelected", ready);
 		}
 	}
 
@@ -111,18 +111,25 @@ public class Player : NetworkBehaviour
 	{
 		if (NetworkServer.active)
 		{
-			if (Controller != null && isLocalPlayer)
-				Destroy(Controller.gameObject);
+
+			
 		}
+
 		enabled = false;
 		PlayerList = FindObjectsOfType<Player>();
-		if (PlayerList.Length == 1)
+		if (NetworkServer.active)
 		{
-			if(NetworkServer.active && ServerManager.Instance._isInGame)
+			if (Controller != null && isLocalPlayer)
+				Destroy(Controller.gameObject);
+
+			if (GameManager.Instance.GameRules != null)
 			{
-				Debug.Log("Is last player remaining in game, going back to main menu");
-				if(EndGameManager.Instance != null)
-					EndGameManager.Instance.ResetGame(false);
+				if (PlayerList.Length < GameManager.Instance.GameRules.NumberOfCharactersRequired)
+				{
+					MessageManager.Log("Not Enough Characters to continue. Returning to Main Menu");
+					if (EndGameManager.Instance != null)
+						EndGameManager.Instance.ResetGame(false);
+				}
 			}
 		}
 	}
@@ -301,5 +308,11 @@ public class Player : NetworkBehaviour
 	public void RpcOpenMenu(bool showSplashScreens, string targetMenuName, bool openCharacterSelect)
 	{
 		MainManager.Instance.LEVEL_MANAGER.OpenMenu(showSplashScreens, targetMenuName, openCharacterSelect);
+	}
+
+	[ClientRpc]
+	public void RpcOnPlayerDisconnect(int playerNumber)
+	{
+		BroadcastMessage("OnPlayerDisconnect", playerNumber, SendMessageOptions.DontRequireReceiver);
 	}
 }

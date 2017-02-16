@@ -9,25 +9,33 @@ public class MageController : PlayerController
 	private float _explosionDelay = 0.7f; // Time before explosion occurs after the special is activated
 	[SerializeField]
 	private float _explosionRadius = 4f;
-	//[SerializeField]
-	//private Vector2 _explosionEjection = new Vector2(5, 5);
+	[SerializeField]
+	private float _maxChargeTime = 0.7f;
 
-	private GameObject _lastFireBallCasted;
-	
+	private float _chargingTime = 0;
+	private bool _specialActivating = false;
+
 	protected override bool SpecialActivation()
 	{
-		if (InputManager.GetButtonDown("Special", _playerRef.JoystickNumber))
+		if (InputManager.GetButtonHeld("Special", _playerRef.JoystickNumber))
 		{
-			if (_lastFireBallCasted != null)
+			if(_canSpecial)
 			{
-				_lastFireBallCasted.GetComponent<FireBall>().Activate();
-				_lastFireBallCasted = null;
-				return false;
+				_specialActivating = true;
+				if (_chargingTime <= _maxChargeTime)
+					_chargingTime += Time.deltaTime;
+				else
+				{
+					_chargingTime = _maxChargeTime;
+					return true;
+				}
 			}
-			else if(_canSpecial)
-			{
-				return _lastFireBallCasted == null;
-			}
+		}
+		
+		if(InputManager.GetButtonUp("Special", _playerRef.JoystickNumber))
+		{
+			if(_specialActivating && _canSpecial)
+				return true;
 		}
 
 		return false;
@@ -35,12 +43,14 @@ public class MageController : PlayerController
 
 	protected override void SpecialAction()
 	{
+		_specialActivating = false;
 		//cast fireball
-		CmdLaunchFireProjectile(transform.position + transform.forward, transform.forward, _playerRef.gameObject);
+		CmdLaunchFireProjectile(transform.position + transform.forward, transform.forward, _chargingTime);
+		_chargingTime = 0;
 	}
 
 	[Command]
-	public void CmdLaunchFireProjectile(Vector3 pos, Vector3 dir, GameObject ownerMage)
+	public void CmdLaunchFireProjectile(Vector3 pos, Vector3 dir, float charge)
 	{
 		GameObject fireBallObj = GameObjectPool.GetAvailableObject("FireBall");
 
@@ -54,18 +64,11 @@ public class MageController : PlayerController
 			gameObject.GetInstanceID()
 		);
 
-		NetworkServer.SpawnWithClientAuthority(fireBallObj, ownerMage);
-
-		TargetLinkFireBall(_playerRef.connectionToClient, fireBallObj);
+		NetworkServer.Spawn(fireBallObj);
 
 		if (ArenaManager.Instance != null)
 			fireBallObj.transform.parent = ArenaManager.Instance.SpecialsRoot;
-	}
 
-	[TargetRpc]
-	public void TargetLinkFireBall(NetworkConnection target, GameObject targetFireball)
-	{
-		_lastFireBallCasted = targetFireball;
+		fireBallObj.GetComponent<FireBall>().Invoke("Activate", charge);
 	}
-
 }

@@ -360,6 +360,12 @@ public class ServerManager : NATTraversal.NetworkManager
 			ExternalPlayerNumber--;
 
 		NetworkServer.DestroyPlayersForConnection(conn);
+		
+		if(Player.LocalPlayer != null)
+		{
+			Player.LocalPlayer.RpcOnPlayerDisconnect(conn.playerControllers[0].gameObject.GetComponent<Player>().PlayerNumber);
+		}
+
 		base.OnServerDisconnect(conn);
 	}
 

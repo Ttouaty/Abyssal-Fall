@@ -94,11 +94,10 @@ public abstract class AGameRules : MonoBehaviour
 			if (killer != null)
 			{
 				killer.Score += PointsGainPerKill;
-				--player.Score;
 			}
 			else
 			{
-				player.Score -= PointsLoosePerSuicide;
+				player.Score += PointsLoosePerSuicide; // (added because IntRule is negative for display)
 			}
 
 			if (CanPlayerRespawn)
@@ -172,6 +171,11 @@ public abstract class AGameRules : MonoBehaviour
 	{
 		EndGameManager.Instance.WinnerId = winner.PlayerNumber;
 		EndGameManager.Instance.Open();
+	}
+
+	public virtual void OnPlayerDisconnect(int playerNumber)
+	{
+
 	}
 
 	public virtual int[] Serialize()
