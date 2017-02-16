@@ -13,7 +13,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EditorBanks:
   - {fileID: 114000010971631458}
-  - {fileID: 114000012915262280}
+  - {fileID: 114000011044085714}
   EditorEvents:
   - {fileID: 114000013063655528}
   - {fileID: 114000011156654498}
@@ -25,7 +25,7 @@ MonoBehaviour:
   - {fileID: 114000013387001980}
   - {fileID: 114000012551152914}
   - {fileID: 114000011182252258}
-  MasterBankRef: {fileID: 114000012915262280}
+  MasterBankRef: {fileID: 114000011044085714}
   StringsBankRef: {fileID: 114000010971631458}
   stringsBankWriteTime: 636197570493537452
   cacheVersion: 2
@@ -182,13 +182,32 @@ MonoBehaviour:
   Path: event:/Sfx/Menu/Menu Cancel
   guid: 10e1b8d576fb0446aa51d6c19d490b35
   Banks:
-  - {fileID: 114000012915262280}
+  - {fileID: 114000011044085714}
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
   Parameters: []
   MinDistance: 0
   MaxDistance: 0
+--- !u!114 &114000011044085714
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Path: C:\Users\T0T0S\Desktop\Isart 2016\Abyssal Fall\Assets\Sounds\Fmod\Desktop\Master
+    Bank.bank
+  lastModified: 636197570493527451
+  LoadResult: 0
+  FileSizes:
+  - Name: 
+    Value: 119328
+  Exists: 1
 --- !u!114 &114000011097726154
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -224,7 +243,7 @@ MonoBehaviour:
   Path: event:/Sfx/viking/sfx_viking_dash_start
   guid: 73a75319ec98c64ea292e5c42854efc7
   Banks:
-  - {fileID: 114000012915262280}
+  - {fileID: 114000011044085714}
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
@@ -245,7 +264,7 @@ MonoBehaviour:
   Path: event:/Sfx/Menu/Menu Small Validate
   guid: 85ef885fbed8c24dae756647ccb76cac
   Banks:
-  - {fileID: 114000012915262280}
+  - {fileID: 114000011044085714}
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
@@ -306,7 +325,7 @@ MonoBehaviour:
   Path: event:/Sfx/viking/sfx_viking_hammer_hit_wall
   guid: 8e2af2ef21e2f64489fd49514347ba30
   Banks:
-  - {fileID: 114000012915262280}
+  - {fileID: 114000011044085714}
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
@@ -368,7 +387,7 @@ MonoBehaviour:
   Path: event:/Sfx/viking/sfx_viking_hammer_hit_player
   guid: a85262cab88516448ac159fc7d76d2fa
   Banks:
-  - {fileID: 114000012915262280}
+  - {fileID: 114000011044085714}
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
@@ -510,7 +529,7 @@ MonoBehaviour:
   Path: event:/Sfx/Menu/Typing
   guid: d212a7d1960fbc4590208b6cb5619c7e
   Banks:
-  - {fileID: 114000012915262280}
+  - {fileID: 114000011044085714}
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
@@ -592,7 +611,7 @@ MonoBehaviour:
   Path: event:/Sfx/viking/sfx_viking_death
   guid: 64f810f98813c542857c598c05d705df
   Banks:
-  - {fileID: 114000012915262280}
+  - {fileID: 114000011044085714}
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
@@ -632,7 +651,7 @@ MonoBehaviour:
   Path: event:/Sfx/viking/sfx_viking_dash_end
   guid: fac266686ad72b408bcbef4eb321b320
   Banks:
-  - {fileID: 114000012915262280}
+  - {fileID: 114000011044085714}
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
@@ -653,7 +672,7 @@ MonoBehaviour:
   Path: event:/Sfx/viking/sfx_viking_hammer_throw
   guid: e64aa6db5370374986daffaf932a051d
   Banks:
-  - {fileID: 114000012915262280}
+  - {fileID: 114000011044085714}
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
@@ -736,7 +755,7 @@ MonoBehaviour:
   Path: event:/Sfx/Menu/Menu Validate
   guid: 49e029caf790cf45a3bd928d8acd545c
   Banks:
-  - {fileID: 114000012915262280}
+  - {fileID: 114000011044085714}
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
@@ -802,6 +821,24 @@ MonoBehaviour:
   FileSizes:
   - Name: Desktop
     Value: 1038
+  Exists: 1
+--- !u!114 &114000013965707768
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Path: D:\Abyssal_Fall_Projet\Assets\Sounds\Fmod\Desktop\Master Bank.bank
+  lastModified: 636203561498317396
+  LoadResult: 0
+  FileSizes:
+  - Name: 
+    Value: 119328
   Exists: 1
 --- !u!114 &114000013974617746
 MonoBehaviour:

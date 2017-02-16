@@ -257,11 +257,12 @@ public class CameraManager : GenericSingleton<CameraManager>
 
 	private IEnumerator MoveOverTimeCoroutine(Transform target, Transform end, float time)
 	{
-		float targetTime = Time.time + time;
+		float eT = 0;
 		Vector3 startpos = target.position;
-		while (targetTime > Time.time)
+		while (eT < time)
 		{
-			target.position = Vector3.Lerp(startpos, end.position, Curves.EaseInOutCurve.Evaluate(Time.time % (targetTime - time) / time));
+			target.position = Vector3.Lerp(startpos, end.position, Curves.EaseInOutCurve.Evaluate(eT / time));
+			eT += Time.deltaTime;
 			yield return null;
 		}
 

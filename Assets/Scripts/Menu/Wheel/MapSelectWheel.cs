@@ -52,12 +52,6 @@ public class MapSelectWheel : MenuWheel<EArenaConfiguration>
 
 	public void SendSelectionToGameManager()
 	{
-		if (GetSelectedElement() == EArenaConfiguration.Sea)
-		{
-			MessageManager.Log("Cette map existe pas encore, on l'a mise juste pour avoir les placeholders.");
-			GameManager.Instance.CurrentGameConfiguration.ArenaConfiguration = EArenaConfiguration.Aerial;
-			return;
-		}
 		GameManager.Instance.CurrentGameConfiguration.ArenaConfiguration = GetSelectedElement();
 	}
 
