@@ -171,7 +171,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	protected Vector2 _originalMaxSpeed;
 	protected Vector2 _maxSpeed = new Vector2(7f, 20f);
 	protected Vector2 _acceleration = new Vector2(0.1f, -2f); // X => time needed to reach max speed, Y => Gravity multiplier
-	protected float _friction = 80; //friction applied to the player when it slides (pushed or end dash) (units/s)
+	protected float _friction = 140; //friction applied to the player when it slides (pushed or end dash) (units/s)
 	protected float _parryTime = 0.08f; //time at the beginning of a Dash when the player is in countering attacks
 
 	//protected float _airborneDelay = 0.02f;
@@ -306,7 +306,9 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 		_stunTimer = new TimeCooldown(this);
 		_FEMref = playerMesh.GetComponent<CharacterModel>().FEMref;
-		_stunTimer.onFinish = () => { _isStunned = false; _allowInput = true; _FEMref.SetExpression(_FEMref.StartingExpression); };
+		CmdSetExpression(_FEMref.DefaultExpression);
+
+		_stunTimer.onFinish = () => { _isStunned = false; _allowInput = true; CmdSetExpression(_FEMref.DefaultExpression); };
 		_stunTimer.onProgress = () =>
 		{
 			if (!IsGrounded) { _stunTimer.Add(TimeManager.DeltaTime); }
@@ -363,6 +365,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		TimeManager.Instance.OnTimeScaleChange.AddListener(OnTimeScaleChange);
 
 		_activeDirection = transform.rotation * Vector3.forward;
+
 
 		GetComponent<Rigidbody>().velocity = Vector3.zero;
 		CustomStart();
@@ -450,11 +453,19 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		if (winner == _playerRef)
 		{
 			Debug.LogWarning("Character " + _characterData.IngameName + " controller by player N°=> " + _playerRef.PlayerNumber + " has won !");
-			_FEMref.SetExpression("Happy");
+			CmdSetExpression("Happy");
 		}
 		//enabled = false;
 		Freeze();
 		//_animator.SetTrigger("Reset");
+	}
+
+	[Command]
+	public void CmdSetExpression(string expressionName) { RpcSetExpression(expressionName); }
+	[ClientRpc]
+	public void RpcSetExpression(string expressionName)
+	{
+		_FEMref.SetExpression(expressionName, _playerRef.SkinNumber);
 	}
 
 	#endregion
@@ -549,7 +560,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 			if (secureAllowInput)
 				_activeSpeed = Quaternion.Inverse(Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized)) * _activeSpeed;
 
-			if (_isAffectedByFriction)
+			if (_isAffectedByFriction || ( secureAllowInput && InputManager.StickIsNeutral(_playerRef.JoystickNumber, 0.5f)))
 				ApplyFriction();
 
 			if (secureAllowInput)
@@ -558,7 +569,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 				tempStickPosition.z = tempStickPosition.y;
 				tempStickPosition.y = 0;
 
-				_activeSpeed = tempStickPosition * (_activeSpeed.magnitude + ((_maxSpeed.x / _acceleration.x) * TimeManager.DeltaTime + _friction * TimeManager.DeltaTime));
+				_activeSpeed = tempStickPosition * (_activeSpeed.magnitude + ((_maxSpeed.x / _acceleration.x) * TimeManager.DeltaTime));
 
 				_activeSpeed = Vector3.ClampMagnitude(_activeSpeed.ZeroY(), _maxSpeed.x);
 
@@ -635,7 +646,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	{
 		Debug.Log("Player n°" + _playerRef.PlayerNumber + " with character " + _characterData.IngameName + " is DED!");
 
-		_FEMref.SetExpression("Fear");
+		CmdSetExpression("Fear");
 		_characterData.SoundList["OnDeath"].Play(gameObject);
 
 		//_animator.SetTrigger("Death");
@@ -716,7 +727,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		if (_isInvul)
 			return;
 
-		_FEMref.SetExpression("Pain");
+		CmdSetExpression("Pain");
 
 		direction.x += direction.x * ((0.5f - _characterData.CharacterStats.resistance.Percentage(0, Stats.maxValue)) * 0.5f);
 		direction.z += direction.z * ((0.5f - _characterData.CharacterStats.resistance.Percentage(0, Stats.maxValue)) * 0.5f);

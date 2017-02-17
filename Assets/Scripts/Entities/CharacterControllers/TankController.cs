@@ -49,7 +49,15 @@ public class TankController : PlayerController
 		_charging = false;
 		_isAffectedByFriction = true;
 
-		yield return new WaitForSeconds(_characterData.SpecialCoolDown);
+		eT = 0;
+		while (eT < _characterData.SpecialCoolDown * 0.7f)
+		{
+			_activeSpeed.y = 0;
+			eT += Time.deltaTime;
+			yield return null;
+		}
+
+		yield return new WaitForSeconds(_characterData.SpecialCoolDown * 0.3f);
 
 		_isInvul = false;
 		_allowInput = true;

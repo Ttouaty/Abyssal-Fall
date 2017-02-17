@@ -88,7 +88,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 140124}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.6087706, y: 1.3, z: -0.38896337}
+  m_LocalPosition: {x: 9.228639, y: 0.18004298, z: -3.181009}
   m_LocalScale: {x: 0.75, y: 0.75, z: 0.75}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
@@ -191,6 +191,7 @@ GameObject:
   - 33: {fileID: 33000010292515968}
   - 23: {fileID: 23000010266515070}
   - 95: {fileID: 95000011103467570}
+  - 114: {fileID: 114000012818279740}
   m_Layer: 0
   m_Name: VikingNew2
   m_TagString: Untagged
@@ -446,7 +447,7 @@ Animator:
   m_GameObject: {fileID: 1000010407452774}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 91c69dd24fdd22b43bf06f46f4def1ea, type: 3}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 7b2ad23e13707bf4f84661528846ffe0, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -563,6 +564,63 @@ MonoBehaviour:
     - {fileID: 2100000, guid: 5b736c2bf7ba45e42a431ea9d26a516d, type: 2}
     - {fileID: 2100000, guid: efaac75a0e437e648b9c1d578b2d59b0, type: 2}
     - {fileID: 2100000, guid: 8274517f1726ba44d9c4d08a04a4727c, type: 2}
+--- !u!114 &114000012818279740
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000010407452774}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93e1c807120f95a4ab44e024fa89356b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ExpressionArray:
+  - name: fear
+    mat:
+    - {fileID: 2100000, guid: b3aa83ba03e1d9e4a91b3f61bbce571d, type: 2}
+    - {fileID: 2100000, guid: 899e94143c8b14341be1d030df8189df, type: 2}
+    - {fileID: 2100000, guid: a0d1e59720afe3e478509a570bdec9f0, type: 2}
+    - {fileID: 2100000, guid: 49c850749b6a39649b76217ba6a98e30, type: 2}
+  - name: happy
+    mat:
+    - {fileID: 2100000, guid: 8e14622051ed5ac4a8a1e1d717687e71, type: 2}
+    - {fileID: 2100000, guid: da078532bb657d348b695ebfbc6891a8, type: 2}
+    - {fileID: 2100000, guid: c74d5c08468cda34f8bc69339675e66b, type: 2}
+    - {fileID: 2100000, guid: b54dc100b44950549aa7d5d09b2e79d4, type: 2}
+  - name: hit
+    mat:
+    - {fileID: 2100000, guid: d92aec0fc63feca459b2e6a4b2803a6c, type: 2}
+    - {fileID: 2100000, guid: f9a64957bd3848e45a2481a84a32f762, type: 2}
+    - {fileID: 2100000, guid: f287eb4cd61049f41ba8ba4c2d3c15db, type: 2}
+    - {fileID: 2100000, guid: 9486c04e91e9bfd488cf69fbb4ee26d7, type: 2}
+  - name: kawai
+    mat:
+    - {fileID: 2100000, guid: 968d5c13fcd49a144b0d2f021ae71c29, type: 2}
+    - {fileID: 2100000, guid: ade40aca479055548adfef277ba7c3bf, type: 2}
+    - {fileID: 2100000, guid: 1cc2bc11b1762194fb8fbdf22d4eeec6, type: 2}
+    - {fileID: 2100000, guid: d3e86060bdc47a848850464e2a7d1798, type: 2}
+  - name: neutral
+    mat:
+    - {fileID: 2100000, guid: 40f765708a94d104fbf816a7bedca6b7, type: 2}
+    - {fileID: 2100000, guid: d6386994d5cd4b14599e331093bdd300, type: 2}
+    - {fileID: 2100000, guid: 9a9b164d0a195cd43921638a539bd851, type: 2}
+    - {fileID: 2100000, guid: efaac75a0e437e648b9c1d578b2d59b0, type: 2}
+  - name: sad
+    mat:
+    - {fileID: 2100000, guid: 08aa2a6791abb9d4194d25f62d942f8f, type: 2}
+    - {fileID: 2100000, guid: 507b6f87131490249960701db61c5915, type: 2}
+    - {fileID: 2100000, guid: 9daa4f2516c0af34680a0a438a580f11, type: 2}
+    - {fileID: 2100000, guid: b1cd62e08865a0d449212784bfae36ff, type: 2}
+  - name: taunt
+    mat:
+    - {fileID: 2100000, guid: 918a1dc10231685469311e87feed6ca5, type: 2}
+    - {fileID: 2100000, guid: 309c91d801d30c041a15bd3234aa719e, type: 2}
+    - {fileID: 2100000, guid: 58aa02fff485f56469fb0a71e2513fad, type: 2}
+    - {fileID: 2100000, guid: 800e64362aeefe84aace6818f9c915f2, type: 2}
+  ExpressionTarget: {fileID: 23000010266515070}
+  TargetMaterialIndex: 1
+  DefaultExpression: neutral
 --- !u!114 &114000013035095066
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -574,7 +632,7 @@ MonoBehaviour:
   m_Script: {fileID: 1590678366, guid: 870353891bb340e2b2a9c8707e7419ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Animator: {fileID: 0}
+  m_Animator: {fileID: 95000011103467570}
   m_ParameterSendBits: 0
   param0: 
   param1: 

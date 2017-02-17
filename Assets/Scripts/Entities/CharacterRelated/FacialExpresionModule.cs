@@ -7,63 +7,59 @@ using System;
 public struct FacialExpressionData
 {
 	public string name;
-	public Vector2 Offset;
+	public Material[] mat;
 }
 
 public class FacialExpresionModule : MonoBehaviour
 {
-	public Material ExpressionMaterialModel;
+	public FacialExpressionData[] ExpressionArray;
 	public Renderer ExpressionTarget;
-	[Tooltip("Leave empty for default Starting expression")]
-	public string StartingExpression = "Neutral";
+	public int TargetMaterialIndex = 0;
+	public string DefaultExpression = "Neutral";
 
-	public FacialExpressionData[] AvailableExpressions;
-	private Material _expressionMaterialInstance;
-	private Dictionary<string, Vector2> _expressionDictionnary = new Dictionary<string, Vector2>();
+	private Dictionary<string, Material[]> _expressionDictionnary = new Dictionary<string, Material[]>();
 	private bool _generated = false;
 
 	void Awake()
 	{
-		if (ExpressionMaterialModel == null)
-		{
-			Debug.LogWarning("No ExpressionMaterialModel set for expression module in " + gameObject.name);
-			enabled = false;
-			return;
-		}
-
 		Generate();
-		if(StartingExpression.Length != 0)
-			SetExpression(StartingExpression);
+
+		//SetExpression(DefaultExpression);
 	}
 
-	public void SetExpression(string expressionName)
+	public void SetExpression(string expressionName, int skinNumber)
 	{
-		if (!enabled)
+		if (!enabled || ExpressionTarget == null)
 			return;
 		if (!_generated)
 		{
 			Generate();
 		}
 
+		expressionName = expressionName.ToLower();
+
 		if (!_expressionDictionnary.ContainsKey(expressionName))
 		{
 			Debug.LogWarning("Expression: \"" + expressionName + "\" not found on object " + gameObject.name);
 			return;
 		}
+		else if(ExpressionTarget.materials.Length > TargetMaterialIndex)
+			ExpressionTarget.materials[TargetMaterialIndex] = _expressionDictionnary[expressionName][skinNumber];
 		else
-			ExpressionTarget.materials[1].mainTextureOffset = _expressionDictionnary[expressionName];
+		{
+			Debug.LogWarning("TargetMaterialIndex is out of bound (ExpressionTarget.materials.Length)");
+			return;
+		}
 	}
 
 
 	void Generate()
 	{
-		for (int i = 0; i < AvailableExpressions.Length; i++)
+		for (int i = 0; i < ExpressionArray.Length; i++)
 		{
-			_expressionDictionnary[AvailableExpressions[i].name] = AvailableExpressions[i].Offset;
+			if(ExpressionArray[i].name.Length != 0)
+				_expressionDictionnary[ExpressionArray[i].name] = ExpressionArray[i].mat;
 		}
-
-		_expressionMaterialInstance = new Material(ExpressionMaterialModel);
-		ExpressionTarget.materials[1] = _expressionMaterialInstance;
 
 		_generated = true;
 	}

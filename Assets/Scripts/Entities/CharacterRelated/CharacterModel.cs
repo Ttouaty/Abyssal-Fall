@@ -22,9 +22,11 @@ public class CharacterModel : MonoBehaviour
 		{
 			if (_FEMref == null)
 			{
-				_FEMref = GetComponent<FacialExpresionModule>();
+				_FEMref = GetComponentInChildren<FacialExpresionModule>();
 				if(_FEMref == null) //double checking because fuck off
 				{
+
+					Debug.LogWarning("Adding default FEM for character model => "+name);
 					_FEMref = gameObject.AddComponent<FacialExpresionModule>();
 				}
 			}
