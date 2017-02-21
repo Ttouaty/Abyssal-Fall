@@ -100,8 +100,7 @@ public class FmodOneShotSound
 		if (position != null)
 			FMODUnity.RuntimeManager.PlayOneShotAttached(FmodEvent, position);
 		else
-			FMODUnity.RuntimeManager.PlayOneShotAttached(FmodEvent, Camera.main.gameObject);
-
+			FMODUnity.RuntimeManager.PlayOneShot(FmodEvent, Camera.main.transform.position + Camera.main.transform.forward * 5);
 	}
 }
 
@@ -139,7 +138,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		get { return _isInvulInternal; }
 		set
 		{
-
+			CmdSetIsInvul(value);
 		}
 	}
 
@@ -154,9 +153,8 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	public bool IsGrounded = false;
 	[HideInInspector]
 	public bool _isInDebugMode = false;
-
-
-	protected CharacterProp _characterProp;
+	[HideInInspector]
+	public CharacterProp _characterProp;
 
 	#region references
 
@@ -461,7 +459,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	}
 
 	[Command]
-	public void CmdSetExpression(string expressionName) { RpcSetExpression(expressionName); }
+	public void CmdSetExpression(string expressionName) { _FEMref.SetExpression(expressionName, _playerRef.SkinNumber); RpcSetExpression(expressionName); }
 	[ClientRpc]
 	public void RpcSetExpression(string expressionName)
 	{
@@ -560,8 +558,16 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 			if (secureAllowInput)
 				_activeSpeed = Quaternion.Inverse(Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized)) * _activeSpeed;
 
-			if (_isAffectedByFriction || ( secureAllowInput && InputManager.StickIsNeutral(_playerRef.JoystickNumber, 0.5f)))
-				ApplyFriction();
+			if (_isAffectedByFriction)
+			{
+				if (secureAllowInput)
+				{
+					if(InputManager.StickIsNeutral(_playerRef.JoystickNumber, 0.4f))
+						ApplyFriction();
+				}
+				else
+					ApplyFriction();
+			}
 
 			if (secureAllowInput)
 			{
@@ -629,6 +635,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		GameObject projectile = GameObjectPool.GetAvailableObject(poolName);
 		projectile.GetComponent<ABaseProjectile>().Launch(projPosition, projDirection, _characterData.SpecialDamageData, gameObject.GetInstanceID());
 		//NetworkServer.SpawnWithClientAuthority(projectile, connectionToClient);
+
 		NetworkServer.Spawn(projectile);
 		_characterData.SoundList["OnSpecialActivate"].Play(projectile);
 

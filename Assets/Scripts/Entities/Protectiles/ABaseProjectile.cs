@@ -49,8 +49,17 @@ public abstract class ABaseProjectile : NetworkBehaviour, IPoolable
 		transform.rotation = Quaternion.LookRotation(Direction, Vector3.up);
 
 		_rigidB.velocity = Direction.normalized * _speed;
+		
 		StartCoroutine(DelayStop());
 	}
+
+	public override void OnStartClient()
+	{
+		base.OnStartClient();
+		OnLaunch(_shooter.ObjectRef);
+	}
+
+	protected virtual void OnLaunch(GameObject Launcher) { }
 
 	private IEnumerator DelayStop()
 	{

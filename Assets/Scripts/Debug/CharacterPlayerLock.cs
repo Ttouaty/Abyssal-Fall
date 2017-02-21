@@ -5,13 +5,19 @@ using System.Collections.Generic;
 
 public class CharacterPlayerLock : MonoBehaviour
 {
-
+	public Player playerPrefab;
+	[Space]
 	public PlayerController[] Characters = new PlayerController[4]; 
 	public int[] JoystickListening = new int[4];
-	void Start()
+	IEnumerator Start()
 	{
-		//ServerManager.Instance.StartHostAll("Debug AF", 4, false, "osd4fdsfs8f4s98d7f");
-		ServerManager.Instance.StartServer();
+		yield return new WaitUntil(()=> ServerManager.Instance != null);
+		yield return new WaitUntil(() => ServerManager.Instance.externalIP != null);
+
+		ServerManager.Instance.StartHostAll("Debug AF", 4, true);
+		//NetworkClient tempClient = ServerManager.Instance.StartHost();
+		ServerManager.Instance.IsDebug = true;
+
 		Player tempPlayer;
 		for (int i = 0; i < Characters.Length; i++)
 		{
@@ -19,10 +25,16 @@ public class CharacterPlayerLock : MonoBehaviour
 				continue;
 			if (!Characters[i].gameObject.activeInHierarchy)
 				continue;
-				tempPlayer = new GameObject("Player n"+i).AddComponent<Player>();
-			tempPlayer.SkinNumber = 0;
+			ServerManager.Instance.TryToAddPlayer();
+			yield return new WaitUntil(() => Player.PlayerList.Length > i);
+			tempPlayer = Player.PlayerList[0];
+			//tempPlayer = Instantiate(playerPrefab.gameObject).GetComponent<Player>();
+			//tempPlayer.SkinNumber = 0;
 			tempPlayer.JoystickNumber = JoystickListening[i];
+			//ClientScene.AddPlayer(tempClient.connection, (short)i, );
+			//NetworkServer.AddPlayerForConnection(tempClient.connection, tempPlayer.gameObject, (short)i);
 			//NetworkServer.Spawn(tempPlayer.gameObject);
+			NetworkServer.SpawnWithClientAuthority(Characters[i].gameObject, tempPlayer.gameObject);
 			Characters[i]._isInDebugMode = true;
 			Characters[i].Init(tempPlayer.gameObject);
 		}

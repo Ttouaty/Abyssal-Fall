@@ -12,7 +12,7 @@ public struct FacialExpressionData
 
 public class FacialExpresionModule : MonoBehaviour
 {
-	public FacialExpressionData[] ExpressionArray;
+	public FacialExpressionData[] ExpressionArray = new FacialExpressionData[0];
 	public Renderer ExpressionTarget;
 	public int TargetMaterialIndex = 0;
 	public string DefaultExpression = "Neutral";
@@ -29,7 +29,7 @@ public class FacialExpresionModule : MonoBehaviour
 
 	public void SetExpression(string expressionName, int skinNumber)
 	{
-		if (!enabled || ExpressionTarget == null)
+		if (!enabled || ExpressionTarget == null || ExpressionArray == null)
 			return;
 		if (!_generated)
 		{

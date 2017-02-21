@@ -94,7 +94,7 @@ public class InputListener : MonoBehaviour
 
 	void TestAxis(int joystickNumber)
 	{
-		_tempStickPosition = InputManager.GetStickDirection(joystickNumber);
+		_tempStickPosition = InputManager.GetStickDirection(joystickNumber, false);
 
 		if (!_firstHeldFrame[joystickNumber])
 		{
@@ -169,7 +169,7 @@ public class InputListener : MonoBehaviour
 		}
 	}
 
-	protected virtual void LaunchCallback(int joy)
+	public virtual void LaunchCallback(int joy)
 	{
 		if (!CanLoop)
 			_waitForRelease[joy] = true;

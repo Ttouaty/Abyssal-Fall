@@ -210,7 +210,8 @@ public class CharacterSelectWheel : NetworkBehaviour
 
 	public override void OnNetworkDestroy()
 	{
-		WheelsRef.Remove(_playerRef.GetComponent<Player>().PlayerNumber);
+		if(_playerRef != null)
+			WheelsRef.Remove(_playerRef.GetComponent<Player>().PlayerNumber);
 		Destroy(gameObject);
 		base.OnNetworkDestroy();
 	}

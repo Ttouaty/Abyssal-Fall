@@ -40,6 +40,10 @@ public class ServerManager : NATTraversal.NetworkManager
 	public Player HostingClient;
 
 	public bool ForceUnready = false;
+	[HideInInspector]
+	public bool IsDebug = false;
+
+
 	public bool AreAllPlayerReady
 	{
 		get
@@ -239,23 +243,22 @@ public class ServerManager : NATTraversal.NetworkManager
 	public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
 	{
 		Debug.Log("trying to add a new Player");
-		if (!IsInLobby || RegisteredPlayers.Count >= 4)
+		if(!IsDebug)
 		{
-			conn.Disconnect();
-			if(RegisteredPlayers.Count >= 4)
-				Debug.Log("Max players registered !");
-			else
-				Debug.Log("ServerManager is not in lobby, not accepting any new connection.");
-			return;
+			if (!IsInLobby || RegisteredPlayers.Count >= 4)
+			{
+				conn.Disconnect();
+				if(RegisteredPlayers.Count >= 4)
+					Debug.Log("Max players registered !");
+				else
+					Debug.Log("ServerManager is not in lobby, not accepting any new connection.");
+				return;
+			}
 		}
 
 		if(conn.address != "localClient")
 			ExternalPlayerNumber++;
 
-		for (int j = 0; j < Network.connections.Length; j++)
-		{
-			Debug.Log(j+" => " +Network.connections[j]);
-		}
 		GameObject playerGo = (GameObject)Instantiate(playerPrefab);
 
 		Player player = playerGo.GetComponent<Player>();
@@ -291,7 +294,7 @@ public class ServerManager : NATTraversal.NetworkManager
 		player.PlayerNumber = i;
 		NetworkServer.AddPlayerForConnection(conn, playerGo, playerControllerId);
 
-		if(MenuManager.Instance != null)
+		if(MenuManager.Instance != null && !IsDebug)
 			SpawnCharacterWheel(player.gameObject);
 		
 
@@ -383,6 +386,7 @@ public class ServerManager : NATTraversal.NetworkManager
 	}
 
 	private int _playersReadyForMapSpawn = 0;
+
 	public void AddArenaWaiting()
 	{
 		if (_isInGame)

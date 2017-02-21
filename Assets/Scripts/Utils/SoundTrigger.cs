@@ -18,6 +18,6 @@ public class SoundTrigger : MonoBehaviour
 		if(Spatialized)
 			SoundEvent.Play(gameObject);
 		else
-			SoundEvent.Play(Camera.main.gameObject);
+			SoundEvent.Play();
 	}
 }

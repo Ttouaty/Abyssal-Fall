@@ -37,18 +37,15 @@ public class FireBall : ABaseProjectile
 	public void Activate()
 	{
 		_rigidB.velocity = Vector3.zero;
-		CmdActivate();
-	}
-
-	[Command]
-	public void CmdActivate()
-	{
+		Debug.Log("Activated !");
 		RpcExplode();
 	}
+
 
 	[ClientRpc]
 	public void RpcExplode()
 	{
+		Debug.Log("rpc called");
 		StartCoroutine(DelayedExplosion());
 	}
 

@@ -46,9 +46,6 @@ public class MenuManager : GenericSingleton<MenuManager>
 		_canvas.worldCamera = Camera.main;
 		MiniLoading.SetActive(false);
 
-		if (_needFTUE)
-			MenuPanelNew.PanelRefs["FTUE"].Open();
-
 		CameraManager.OnCameraChange.AddListener(OnCameraChange);
 	}
 
@@ -160,6 +157,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 	IEnumerator FadeSplashscreens_Implementation(bool shouldShowSplashscreens)
 	{
 		//SetActiveButtons(_activeMenu, false);
+		InputManager.SetInputLockTime(100000);
 		Color color;
 		int i = 0;
 
@@ -182,10 +180,10 @@ public class MenuManager : GenericSingleton<MenuManager>
 				yield return new WaitForSeconds(0.5f);
 			}
 		}
-
 		yield return StartCoroutine(LoadPreview_Implementation(EArenaConfiguration.Aerial));
 		SplashScreens.transform.Find("Background_black").GetComponent<Image>().CrossFadeAlpha(0, 1, false);
 		Destroy(SplashScreens, 1);
+		InputManager.SetInputLockTime(1);
 	}
 
 	public void LoadPreview(EArenaConfiguration levelName)
@@ -261,5 +259,18 @@ public class MenuManager : GenericSingleton<MenuManager>
 	public void LogMessage(string message)
 	{
 		MessageManager.Log(message);
+	}
+
+	public void Shake()
+	{
+		CameraManager.Shake(ShakeStrength.High, 0.5f);
+	}
+
+	public void CheckIfNeedFTUE()
+	{
+		if (_needFTUE)
+			MenuPanelNew.PanelRefs["FTUE"].Open();
+		else
+			MenuPanelNew.PanelRefs["Main"].Open();
 	}
 }

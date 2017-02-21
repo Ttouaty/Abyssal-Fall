@@ -109,12 +109,6 @@ public class Player : NetworkBehaviour
 
 	void OnDestroy()
 	{
-		if (NetworkServer.active)
-		{
-
-			
-		}
-
 		enabled = false;
 		PlayerList = FindObjectsOfType<Player>();
 		if (NetworkServer.active)
@@ -122,13 +116,16 @@ public class Player : NetworkBehaviour
 			if (Controller != null && isLocalPlayer)
 				Destroy(Controller.gameObject);
 
-			if (GameManager.Instance.GameRules != null)
+			if(GameManager.Instance != null)
 			{
-				if (PlayerList.Length < GameManager.Instance.GameRules.NumberOfCharactersRequired)
+				if (GameManager.Instance.GameRules != null)
 				{
-					MessageManager.Log("Not Enough Characters to continue. Returning to Main Menu");
-					if (EndGameManager.Instance != null)
-						EndGameManager.Instance.ResetGame(false);
+					if (PlayerList.Length < GameManager.Instance.GameRules.NumberOfCharactersRequired)
+					{
+						MessageManager.Log("Not Enough Characters to continue. Returning to Main Menu");
+						if (EndGameManager.Instance != null)
+							EndGameManager.Instance.ResetGame(false);
+					}
 				}
 			}
 		}
@@ -151,6 +148,8 @@ public class Player : NetworkBehaviour
 			RpcCloseTargetSlot(PlayerNumber - 1);
 			CmdUpdatePlayerList();
 		}
+		if(CharacterSelectWheel.WheelsRef.ContainsKey(PlayerNumber))
+			CharacterSelectWheel.WheelsRef.Remove(PlayerNumber);
 		base.OnNetworkDestroy();
 	}
 
@@ -180,22 +179,22 @@ public class Player : NetworkBehaviour
 
 	void Update()
 	{
-		if(isLocalPlayer)
-		{
-			if(!NetworkServer.active && JoystickNumber == 0)
-			{
-				int newJoystick = InputManager.AnyButtonDown(true);
-				if (newJoystick != 0)
-				{
-					MessageManager.Log("Joystick Detected.\nOverriding keyboard controls.");
-					JoystickNumber = newJoystick;
-				}
-			}
-		}
+		//if(isLocalPlayer)
+		//{
+		//	if(!NetworkServer.active && JoystickNumber == 0)
+		//	{
+		//		int newJoystick = InputManager.AnyButtonDown(true);
+		//		if (newJoystick != 0)
+		//		{
+		//			MessageManager.Log("Joystick Detected.\nOverriding keyboard controls.");
+		//			JoystickNumber = newJoystick;
+		//		}
+		//	}
+		//}
 	}
 
 	[Command]
-	private void CmdUpdatePlayerList(){ RpcUpdatePlayerList(); }
+	private void CmdUpdatePlayerList() { PlayerList = FindObjectsOfType<Player>(); RpcUpdatePlayerList(); }
 	[ClientRpc]
 	private void RpcUpdatePlayerList() { PlayerList = FindObjectsOfType<Player>(); }
 

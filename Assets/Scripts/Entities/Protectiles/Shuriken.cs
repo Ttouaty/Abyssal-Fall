@@ -20,9 +20,10 @@ public class Shuriken : ABaseProjectile
 	protected override void Stop()
 	{
 		ParticleSystem OldSmokeTrail = _smokeTrail;
-		_smokeTrail = Instantiate(_smokeTrail) as ParticleSystem;
-		Destroy(OldSmokeTrail.gameObject, OldSmokeTrail.startLifetime);
+		_smokeTrail = Instantiate(_smokeTrail, transform, false) as ParticleSystem;
+		_smokeTrail.transform.position = Vector3.zero;
 		OldSmokeTrail.transform.parent = null;
+		GameObject.Destroy(OldSmokeTrail.gameObject, OldSmokeTrail.startLifetime);
 		base.Stop();
 	}
 }

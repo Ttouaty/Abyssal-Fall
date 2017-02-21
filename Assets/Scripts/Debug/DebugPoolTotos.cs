@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Networking;
 
 public class DebugPoolTotos : MonoBehaviour
 {
 
-	void Start()
+	IEnumerator Start()
 	{
+		yield return new WaitUntil(()=> NetworkServer.active);
 		PlayerController[] tempPlayersFound = FindObjectsOfType<PlayerController>();
 		for (int i = 0; i < tempPlayersFound.Length; i++)
 		{

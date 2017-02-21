@@ -21,7 +21,7 @@ public class CharacterSelectButton : InputListener
  			base.Update();
 	}
 
-	protected override void LaunchCallback(int joy)
+	public override void LaunchCallback(int joy)
 	{
 		if (ServerManager.Instance.AreAllPlayerReady)
 			base.LaunchCallback(joy);
