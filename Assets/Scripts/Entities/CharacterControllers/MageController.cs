@@ -53,7 +53,7 @@ public class MageController : PlayerController
 	public void CmdLaunchFireProjectile(Vector3 pos, Vector3 dir, float charge)
 	{
 		GameObject fireBallObj = GameObjectPool.GetAvailableObject("FireBall");
-		DamageData tempDamageData = _characterData.DashDamageData.Copy();
+		DamageData tempDamageData = _characterData.SpecialDamageData.Copy();
 		tempDamageData.Dealer = _dmgDealerSelf;
 		fireBallObj.GetComponent<FireBall>().Launch(
 			pos,

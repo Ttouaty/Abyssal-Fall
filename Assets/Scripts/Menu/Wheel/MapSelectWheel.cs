@@ -46,7 +46,7 @@ public class MapSelectWheel : MenuWheel<EArenaConfiguration>
 		base.Update();
 		for (int i = 0; i < _displayArray.Length; i++)
 		{
-			if (Vector3.Angle(-Camera.main.transform.forward.ZeroY(), (_displayArray[i].transform.position - transform.position).ZeroY()) < _rotationBetweenElements * 0.9f)
+			if (Vector3.Angle(-Camera.main.transform.forward.ZeroY().normalized, (_displayArray[i].transform.position - transform.position).ZeroY().normalized) < _rotationBetweenElements * 0.75f)
 				_displayArray[i].transform.SetAsLastSibling();
 		}
 	}
