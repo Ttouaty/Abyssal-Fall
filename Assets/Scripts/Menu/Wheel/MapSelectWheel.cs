@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using UnityEngine.Networking;
 
 public class MapSelectWheel : MenuWheel<EArenaConfiguration>
 {
@@ -57,7 +58,7 @@ public class MapSelectWheel : MenuWheel<EArenaConfiguration>
 
 	public override void ScrollToIndex(int newIndex)
 	{
-		if(Player.LocalPlayer.isServer)
+		if(NetworkServer.active)
 			base.ScrollToIndex(newIndex);
 	}
 }

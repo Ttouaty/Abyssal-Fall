@@ -277,6 +277,7 @@ public class Player : NetworkBehaviour
 	[ClientRpc]
 	public void RpcOnPlayerWin(GameObject winnerPlayerGo)
 	{
+
 		Player winner = null;
 		if (winnerPlayerGo != null)
 			winner = winnerPlayerGo.GetComponent<Player>();

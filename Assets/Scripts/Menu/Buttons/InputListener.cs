@@ -127,8 +127,14 @@ public class InputListener : MonoBehaviour
 	}
 	void TestButton(int joystickNumber)
 	{
+		
 		if (_waitForRelease[joystickNumber])
-			_waitForRelease[joystickNumber] = !InputManager.GetButtonUp(InputToListen, joystickNumber);
+		{
+			if (UseKeyboard)
+				_waitForRelease[joystickNumber] = !InputManager.GetButtonUp(InputStringToListen);
+			else
+				_waitForRelease[joystickNumber] = !InputManager.GetButtonUp(InputToListen, joystickNumber);
+		}
 
 		if (InputMethodUsed == InputMethod.Down)
 		{

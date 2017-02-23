@@ -1,4 +1,4 @@
 public enum EArenaConfiguration
 {
-   Aerial,Hell,Sea,Voxel
+   Aerial,Sea,Voxel
 }

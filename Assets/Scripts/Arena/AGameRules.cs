@@ -39,10 +39,12 @@ public abstract class AGameRules : MonoBehaviour
 	public virtual void InitGameRules()
 	{
 		// On initi game rules common stuff
-		StartCoroutine(Update_Implementation());
-		if(ArenaAutoDestruction)
-			StartCoroutine(ArenaAutoDestruction_Implementation());
+		StopAllCoroutines();
 
+		StartCoroutine(Update_Implementation());
+
+		if (ArenaAutoDestruction)
+			StartCoroutine(ArenaAutoDestruction_Implementation());
 	}
 
 	public virtual IEnumerator Update_Implementation()
@@ -71,8 +73,8 @@ public abstract class AGameRules : MonoBehaviour
 
 		while (true)
 		{
-			CameraManager.Shake(ShakeStrength.Medium, 0.5f);
-			yield return new WaitForSeconds(1);
+			CameraManager.Shake(ShakeStrength.Low, 0.3f);
+			yield return new WaitForSeconds(0.5f);
 			if (NetworkServer.active)
 			{
 				int[] tempTileArray = ArenaManager.Instance.GetOutsideTiles(_autoDestroyedTileIndex);
@@ -81,13 +83,21 @@ public abstract class AGameRules : MonoBehaviour
 
 				ArenaMasterManager.Instance.RpcRemoveTiles(tempTileArray);
 			}
-			yield return new WaitForSeconds(IntervalAutoDestruction - 1);
+			yield return new WaitForSeconds(IntervalAutoDestruction - 0.5f);
 		}
 	}
 
 	public virtual void OnPlayerDeath_Listener(Player player, Player killer)
 	{
 		CameraManager.Instance.RemoveTargetToTrack(player.Controller.transform);
+
+		if (killer != null)
+		{
+			if (player != null)
+				MessageManager.Log("Player " + killer.PlayerNumber+" killed => Player " + player.PlayerNumber);
+		}
+		else
+			MessageManager.Log("Player " + player.PlayerNumber + " killed himself!");
 
 		if (NetworkServer.active)
 		{
@@ -121,7 +131,7 @@ public abstract class AGameRules : MonoBehaviour
 			Tile tile = tiles.RandomElement();
 			tile.SetTimeLeft(tile.TimeLeftSave);
 
-			player.Controller.RpcRespawn(tile.transform.position + Vector3.up * 1.5f);
+			player.Controller.RpcRespawn(tile.transform.position + Vector3.up * tile.transform.localScale.y * 0.5f + Vector3.up * player.GetComponent<CapsuleCollider>().height * 0.5f * player.transform.localScale.y);
 		}
 	}
 
@@ -135,6 +145,7 @@ public abstract class AGameRules : MonoBehaviour
 	{
 		ArenaManager.Instance.DisableBehaviours();
 		CameraManager.Instance.ClearTrackedTargets();
+		StopAllCoroutines();
 
 		EndStageManager.Instance.Open();
 
@@ -153,6 +164,12 @@ public abstract class AGameRules : MonoBehaviour
 	{
 		ServerManager.Instance.ResetAlivePlayers();
 
+		for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; i++)
+		{
+			if(ServerManager.Instance.RegisteredPlayers[i].Controller != null)
+				ServerManager.Instance.RegisteredPlayers[i].Controller.RpcFreeze();
+		}
+
 		if (winner != null)
 		{
 			if (winner.Score >= ScoreToWin)
@@ -163,12 +180,13 @@ public abstract class AGameRules : MonoBehaviour
 
 			Player.LocalPlayer.RpcOnRoundEnd(winner.gameObject);
 		}
-
-		Player.LocalPlayer.RpcOnRoundEnd(null);
+		else
+			Player.LocalPlayer.RpcOnRoundEnd(null);
 	}
 
 	public virtual void OnPlayerWin_Listener(Player winner)
 	{
+		StopAllCoroutines();
 		EndGameManager.Instance.WinnerId = winner.PlayerNumber;
 		EndGameManager.Instance.Open();
 	}

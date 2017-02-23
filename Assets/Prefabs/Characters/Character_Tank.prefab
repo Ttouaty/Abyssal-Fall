@@ -130,6 +130,7 @@ MonoBehaviour:
   _isDead: 0
   IsGrounded: 1
   _isInDebugMode: 0
+  _characterProp: {fileID: 0}
   WaitForDashRelease: 0
   _characterData: {fileID: 11400000, guid: 44d72ab9770ca1245ad41b4663de953f, type: 2}
   AllowDash: 1
@@ -4757,7 +4758,7 @@ MonoBehaviour:
   m_SyncSpin: 0
   m_MovementTheshold: 0.01
   m_SnapThreshold: 5
-  m_InterpolateRotation: 10
+  m_InterpolateRotation: 1
   m_InterpolateMovement: 1
 --- !u!135 &135000011568156930
 SphereCollider:

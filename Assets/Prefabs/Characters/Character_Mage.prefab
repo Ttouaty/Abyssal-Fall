@@ -99,6 +99,7 @@ MonoBehaviour:
   _isDead: 0
   IsGrounded: 0
   _isInDebugMode: 0
+  _characterProp: {fileID: 0}
   WaitForDashRelease: 0
   _characterData: {fileID: 11400000, guid: 853866ac5103e4944bf840503898067e, type: 2}
   AllowDash: 1
@@ -490,7 +491,7 @@ MonoBehaviour:
   m_SyncSpin: 0
   m_MovementTheshold: 0.01
   m_SnapThreshold: 5
-  m_InterpolateRotation: 10
+  m_InterpolateRotation: 1
   m_InterpolateMovement: 1
 --- !u!114 &114000011074192812
 MonoBehaviour:

@@ -116,7 +116,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 			if (ServerManager.Instance.RegisteredPlayers[i].isLocalPlayer)
 				_controllerAlreadyInUse[ServerManager.Instance.RegisteredPlayers[i].JoystickNumber] = true;
 
-			GetComponentInChildren<TextIP>().ReGenerate();
+			GetComponentInChildren<TextIP>(true).ReGenerate();
 		}
 		ServerManager.Instance.ForceUnready = false;
 	}
@@ -263,14 +263,14 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	public void Shake()
 	{
-		CameraManager.Shake(ShakeStrength.High, 0.5f);
+		CameraManager.Shake(ShakeStrength.High, 0.3f);
 	}
 
 	public void CheckIfNeedFTUE()
 	{
-		if (_needFTUE)
-			MenuPanelNew.PanelRefs["FTUE"].Open();
-		else
+		//if (_needFTUE)
+			//MenuPanelNew.PanelRefs["FTUE"].Open();
+		//else
 			MenuPanelNew.PanelRefs["Main"].Open();
 	}
 }

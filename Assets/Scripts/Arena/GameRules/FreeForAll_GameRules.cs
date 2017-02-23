@@ -61,10 +61,7 @@ public class FreeForAll_GameRules : AGameRules
 
 		if (winner == null)
 		{
-			Debug.LogWarning("DRAW !!!");
-			MessageManager.Log("Draw! No Point awarded !");
-
-			base.OnPlayerWin_Listener(winner);
+			MessageManager.Log("Draw! No bonus point awarded !");
 			return;
 		}
 	}

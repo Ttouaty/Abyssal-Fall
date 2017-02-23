@@ -68,4 +68,17 @@ public class MainManager : GenericSingleton<MainManager>
 		LEVEL_MANAGER.OpenMenu(true,"Title");
 		MenuPanelNew.GlobalInputDelay = 4;
 	}
+
+	void Update()
+	{
+		if(Input.GetKey(KeyCode.LeftShift))
+		{
+			if (Input.GetKeyDown(KeyCode.F1))
+				Screen.SetResolution(1920, 1080, true);
+			if (Input.GetKeyDown(KeyCode.F2))
+				Screen.SetResolution(1600, 900, true);
+			if (Input.GetKeyDown(KeyCode.F3))
+				Screen.SetResolution(1280, 720, true);
+		}
+	}
 }

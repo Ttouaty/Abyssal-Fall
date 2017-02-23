@@ -129,6 +129,7 @@ MonoBehaviour:
   _isDead: 0
   IsGrounded: 0
   _isInDebugMode: 0
+  _characterProp: {fileID: 0}
   WaitForDashRelease: 0
   _characterData: {fileID: 11400000, guid: 24a0a06ce55a2b54794e14afa7bd9465, type: 2}
   AllowDash: 1
@@ -192,7 +193,7 @@ GameObject:
   - 23: {fileID: 23000010266515070}
   - 95: {fileID: 95000011103467570}
   - 114: {fileID: 114000012818279740}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: VikingNew2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -208,7 +209,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 4000011337461920}
   - 114: {fileID: 114000013380737686}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Character_Prop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -224,7 +225,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 4000011891326204}
   - 114: {fileID: 114000011291148358}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Character_Viking_SelectModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -242,7 +243,7 @@ GameObject:
   - 33: {fileID: 33000011617063100}
   - 23: {fileID: 23000010980585258}
   - 95: {fileID: 95000012956471290}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Marteau
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -507,7 +508,7 @@ MonoBehaviour:
   m_SyncSpin: 0
   m_MovementTheshold: 0.01
   m_SnapThreshold: 5
-  m_InterpolateRotation: 10
+  m_InterpolateRotation: 1
   m_InterpolateMovement: 1
 --- !u!114 &114000011217356138
 MonoBehaviour:

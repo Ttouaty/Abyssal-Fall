@@ -319,3 +319,11 @@ public static class NetworkBehaviourExtensions
 	}
 }
 
+public static class ButtonExtensions
+{
+	public static void SelfClick(this Button target)
+	{
+		target.onClick.Invoke();
+	}
+}
+

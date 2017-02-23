@@ -220,6 +220,7 @@ public class ArenaManager : MonoBehaviour
 
 		yield return StartCoroutine(CountdownManager.Instance.Countdown());
 		GameManager.Instance.GameRules.InitGameRules();
+
 		EnableBehaviours();
 
 		for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; i++)

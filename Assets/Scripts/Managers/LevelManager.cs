@@ -132,6 +132,7 @@ public class LevelManager : GenericSingleton<LevelManager>
 
 			if (openCharacterSlots)
 			{
+				InputManager.SetInputLockTime(1.2f);
 				yield return new WaitForSeconds(1);
 				MenuManager.Instance.OpenSlotsForPreselectedPlayers();
 			}

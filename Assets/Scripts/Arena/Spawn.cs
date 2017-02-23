@@ -19,7 +19,7 @@ public class Spawn : MonoBehaviour
 	public void SpawnPlayer (PlayerController player)
 	{
 		_player = player.gameObject;
-		_player.transform.position = transform.position + Vector3.up * 2.25f;
+		_player.transform.position = transform.position + Vector3.up * transform.localScale.y * 0.5f + Vector3.up * player.GetComponent<CapsuleCollider>().height * 0.5f * player.transform.localScale.y;
 		_player.transform.LookAt(transform.parent.position.SetAxis(Axis.y, _player.transform.position.y));
 	}
 }

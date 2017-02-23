@@ -70,11 +70,14 @@ public class TankController : PlayerController
 		{
 			if (colli.transform.GetComponent<IDamageable>() != null)
 			{
+				DamageData tempDamageData = _characterData.SpecialDamageData.Copy();
+				tempDamageData.Dealer = _dmgDealerSelf;
+
 				colli.transform.GetComponent<IDamageable>()
 					.Damage(Quaternion.FromToRotation(Vector3.right,
 					(colli.transform.position - transform.position).ZeroY().normalized + _rigidB.velocity.normalized * 1.5f) * SO_Character.SpecialEjection.Multiply(Axis.x, _characterData.CharacterStats.strength),
 					colli.contacts[0].point,
-					_characterData.SpecialDamageData);
+					tempDamageData);
 			}
 		}
 	}

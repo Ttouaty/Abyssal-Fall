@@ -26,4 +26,9 @@ public class Shuriken : ABaseProjectile
 		GameObject.Destroy(OldSmokeTrail.gameObject, OldSmokeTrail.startLifetime);
 		base.Stop();
 	}
+
+	protected override void OnLaunch(GameObject launcher)
+	{
+		GetComponentInChildren<MeshRenderer>().material = launcher.GetComponent<PlayerController>()._characterProp.PropRenderer.material;
+	}
 }

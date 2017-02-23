@@ -356,8 +356,6 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_dmgDealerSelf.Icon = _characterData.Icon;
 		_dmgDealerSelf.ObjectRef = gameObject;
 
-		_characterData.SpecialDamageData.Dealer = _characterData.DashDamageData.Dealer = _dmgDealerSelf;
-
 		TimeManager.Instance.OnPause.AddListener(OnPause);
 		TimeManager.Instance.OnResume.AddListener(OnResume);
 		TimeManager.Instance.OnTimeScaleChange.AddListener(OnTimeScaleChange);
@@ -439,7 +437,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	protected virtual void OnSpecialReset()
 	{
 		if (_characterProp.PropRenderer != null)
-			_characterProp.PropRenderer.enabled = true;
+			_characterProp.PropRenderer.gameObject.SetActive(true);
 		if (_characterProp.PropRespawnParticles != null)
 			_characterProp.PropRespawnParticles.Play();
 	}
@@ -536,7 +534,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		{
 			_specialCooldown.Set(_characterData.SpecialCoolDown);
 
-			_networkAnimator.SetTrigger("Special");
+			_animator.SetTrigger("Special");
 			//if (NetworkServer.active)
 			//	_animator.ResetTrigger("Special");
 
@@ -633,7 +631,10 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	public virtual void CmdLaunchProjectile(string poolName, Vector3 projPosition, Vector3 projDirection)
 	{
 		GameObject projectile = GameObjectPool.GetAvailableObject(poolName);
-		projectile.GetComponent<ABaseProjectile>().Launch(projPosition, projDirection, _characterData.SpecialDamageData, gameObject.GetInstanceID());
+		DamageData tempDamageData = _characterData.SpecialDamageData.Copy();
+		tempDamageData.Dealer = _dmgDealerSelf;
+
+		projectile.GetComponent<ABaseProjectile>().Launch(projPosition, projDirection, tempDamageData, gameObject.GetInstanceID());
 		//NetworkServer.SpawnWithClientAuthority(projectile, connectionToClient);
 
 		NetworkServer.Spawn(projectile);
@@ -658,7 +659,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 		//_animator.SetTrigger("Death");
 		if (_isLocalPlayer)
-			_networkAnimator.SetTrigger("Death");
+			_animator.SetTrigger("Death");
 
 		if (NetworkServer.active)
 		{
@@ -667,7 +668,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		}
 
 		_isDead = true;
-		Player killer = _playerRef.Controller.LastDamageDealer != null ? _playerRef.Controller.LastDamageDealer.PlayerRef : null;
+		Player killer = LastDamageDealer != null ? LastDamageDealer.PlayerRef : null;
 		GameManager.Instance.OnLocalPlayerDeath.Invoke(_playerRef, killer);
 		CameraManager.Instance.RemoveTargetToTrack(transform);
 	}
@@ -681,7 +682,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		if (_isLocalPlayer)
 		{
 			transform.position = newPos;
-			_networkAnimator.SetTrigger("Reset");
+			_animator.SetTrigger("Reset");
 		}
 
 		//if (NetworkServer.active)
@@ -722,7 +723,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 			_characterData.SoundList["OnHit"].Play(gameObject);
 			//_animator.SetTrigger("Hit");
 
-			_networkAnimator.SetTrigger("Hit");
+			_animator.SetTrigger("Hit");
 
 			//if (NetworkServer.active)
 			//	_animator.ResetTrigger("Hit");
@@ -772,7 +773,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_stunTimer.Add(_characterData.Dash.endingLag);
 
 		//_animator.SetTrigger("Dash_Start");
-		_networkAnimator.SetTrigger("Dash_Start");
+		_animator.SetTrigger("Dash_Start");
 
 		//if (NetworkServer.active)
 		//	_animator.ResetTrigger("Dash_Start");
@@ -792,7 +793,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 		_isInvul = false;
 		//_animator.SetTrigger("Dash_End");
-		_networkAnimator.SetTrigger("Dash_End");
+		_animator.SetTrigger("Dash_End");
 
 		//if (NetworkServer.active)
 		//	_animator.ResetTrigger("Dash_End");
@@ -845,11 +846,13 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	{
 		if (colli.gameObject.GetComponent<IDamageable>() != null && _characterData.Dash.inProgress)
 		{
+			DamageData tempDamageData = _characterData.DashDamageData.Copy();
+			tempDamageData.Dealer = _dmgDealerSelf;
 			colli.gameObject.GetComponent<IDamageable>()
 				.Damage(Quaternion.FromToRotation(Vector3.right,
 				(colli.transform.position - transform.position).ZeroY().normalized) * (SO_Character.SpecialEjection.Multiply(Axis.x, _characterData.Dash.Impact)),
 				colli.contacts[0].point,
-				_characterData.DashDamageData);
+				tempDamageData);
 		}
 		//else if (colli.gameObject.layer == LayerMask.NameToLayer("Wall") && _characterData.Dash.inProgress)
 		//{
