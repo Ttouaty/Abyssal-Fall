@@ -130,7 +130,7 @@ public class MenuPanelNew : MonoBehaviour
 		LaunchAnimation("SendOut");
 	}
 
-	public void Return()
+	public virtual void Return()
 	{
 		LaunchAnimation("SendOutRight");
 

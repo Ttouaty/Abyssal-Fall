@@ -6,11 +6,14 @@ public class TankController : PlayerController
 
 	[Space()]
 	[SerializeField]
-	private float _specialStartSpeed = 50;
+	private float _specialStartSpeed = 20;
 	[SerializeField]
 	private float _specialTime = 0.3f;
 	[SerializeField]
 	private ParticleSystem _specialParticles;
+	[SerializeField]
+	private SphereCollider ChargeHitbox;
+
 
 	private bool _charging = false;
 	protected override void SpecialAction()
@@ -23,6 +26,8 @@ public class TankController : PlayerController
 		float eT = 0;
 		_specialParticles.Clear();
 		_specialParticles.Play();
+
+		ChargeHitbox.enabled = true;
 
 		_isAffectedByFriction = false;
 		_isInvul = true;
@@ -49,18 +54,21 @@ public class TankController : PlayerController
 		_charging = false;
 		_isAffectedByFriction = true;
 
+		
+		ChargeHitbox.enabled = false;
+		if(Physics.CheckSphere(ChargeHitbox.transform.position, ChargeHitbox.radius + 0.2f, 1 << LayerMask.NameToLayer("Wall")))
+		{
+			_activeSpeed = Vector3.zero;
+			_rigidB.velocity = _activeSpeed;
+		}
+
 		eT = 0;
-		while (eT < _characterData.SpecialCoolDown * 0.7f)
+		while (eT < _characterData.SpecialLag * 0.7f)
 		{
 			_activeSpeed.y = 0;
 			eT += Time.deltaTime;
 			yield return null;
 		}
-
-		yield return new WaitForSeconds(_characterData.SpecialCoolDown * 0.3f);
-
-		_isInvul = false;
-		_allowInput = true;
 	}
 
 	protected override void PlayerCollisionHandler(Collision colli)

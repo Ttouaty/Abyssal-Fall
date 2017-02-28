@@ -20,14 +20,14 @@ MonoBehaviour:
   SpecialInfoKey: Shoot 3 Shurikens
   SpeedInfoKey: Fast
   CharacterStats:
-    strength: 3
-    speed: 8
+    strength: 2
+    speed: 7
     resistance: 2
   Dash:
     endingLag: 0.2
     Forces:
-    - {x: 6, y: 4.905}
-    - {x: 9, y: 4.905}
+    - {x: 4, y: 7.3575}
+    - {x: 6, y: 7.3575}
     Impact: 3
     inProgress: 0
   DashDamageData:
@@ -40,8 +40,8 @@ MonoBehaviour:
     StunInflicted: 0.15
     IsParryable: 1
     Projectile: {fileID: 0}
-  SpecialCoolDown: 0.7
-  SpecialLag: 0.2
+  SpecialCoolDown: 1
+  SpecialLag: 0.3
   SoundList:
     SoundList:
     - Key: OnDashStart

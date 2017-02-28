@@ -90,6 +90,7 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_Materials:
   - {fileID: 2100000, guid: 0754559e430d3c24a8af4d65027de5c4, type: 2}
+  - {fileID: 2100000, guid: 4b2041844bf1c6a48951b109da0d3088, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_ProbeAnchor: {fileID: 0}
@@ -189,6 +190,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Obstacle: {fileID: 0}
   SpawnComponent: {fileID: 0}
+  TileIndex: 0
+  TileCoordinates: {x: 0, y: 0}
 --- !u!114 &114000013150979200
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -20,16 +20,16 @@ MonoBehaviour:
   SpecialInfoKey: Charge through opponents
   SpeedInfoKey: Slow
   CharacterStats:
-    strength: 7
-    speed: 1
+    strength: 9
+    speed: 2
     resistance: 8
   Dash:
     endingLag: 0.3
     Forces:
-    - {x: 5, y: 4.905}
-    - {x: 8, y: 4.905}
+    - {x: 3.333, y: 7.3575}
+    - {x: 5.333, y: 7.3575}
     Impact: 4
-    inProgress: 1
+    inProgress: 0
   DashDamageData:
     AttackTypeUsed: 0
     StunInflicted: 0.3
@@ -37,11 +37,11 @@ MonoBehaviour:
     Projectile: {fileID: 0}
   SpecialDamageData:
     AttackTypeUsed: 1
-    StunInflicted: 0.7
+    StunInflicted: 1
     IsParryable: 0
     Projectile: {fileID: 0}
-  SpecialCoolDown: 1.5
-  SpecialLag: 0.6
+  SpecialCoolDown: 2
+  SpecialLag: 0.8
   SoundList:
     SoundList:
     - Key: OnDashStart

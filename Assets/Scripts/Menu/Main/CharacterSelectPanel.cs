@@ -9,6 +9,12 @@ public class CharacterSelectPanel : MenuPanelNew {
 		base.Open();
 	}
 
+	public override void Return()
+	{
+		ServerManager.Instance.IsInLobby = true;
+		base.Return();
+	}
+
 	public override void Close()
 	{
 		ServerManager.Instance.IsInLobby = false;

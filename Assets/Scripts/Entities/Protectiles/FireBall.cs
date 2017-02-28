@@ -14,6 +14,8 @@ public class FireBall : ABaseProjectile
 	private float _explosionRadius;
 	private Vector3 _ejection;
 	private DamageData _explosionDamageData;
+	private bool _activated;
+
 
 	public void Launch(Vector3 Position, Vector3 Direction, float explosionDelay, float explosionRadius, Vector3 ejection, DamageData newDamageData, int instanceId)
 	{
@@ -26,6 +28,7 @@ public class FireBall : ABaseProjectile
 		_explosionDamageData = newDamageData;
 		_movingParticlesRef = Instantiate(MoveParticles, transform) as ParticleSystem;
 		_movingParticlesRef.transform.localPosition = Vector3.zero;
+		_activated = false;
 	}
 
 	private IEnumerator DelayStop()
@@ -36,8 +39,11 @@ public class FireBall : ABaseProjectile
 
 	public void Activate()
 	{
+		if (_activated)
+			return;
+
 		_rigidB.velocity = Vector3.zero;
-		Debug.Log("Activated !");
+		_activated = true;
 		RpcExplode();
 	}
 
@@ -45,7 +51,6 @@ public class FireBall : ABaseProjectile
 	[ClientRpc]
 	public void RpcExplode()
 	{
-		Debug.Log("rpc called");
 		StartCoroutine(DelayedExplosion());
 	}
 
@@ -81,6 +86,10 @@ public class FireBall : ABaseProjectile
 
 			for (int i = 0; i < foundElements.Length; i++)
 			{
+				if(foundElements[i].gameObject.GetInstanceID() == LauncherId)
+				{
+					continue;
+				}
 				if (foundElements[i].GetComponent<IDamageable>() != null)
 					foundElements[i].GetComponent<IDamageable>().Damage(
 						Quaternion.FromToRotation(Vector3.right, (foundElements[i].transform.position - transform.position).ZeroY().normalized) * _ejection,

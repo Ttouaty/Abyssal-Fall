@@ -357,14 +357,16 @@ public class ArenaManager : MonoBehaviour
 	{
 		int i = 0;
 		int index = 0;
+
+		yield return new WaitUntil(() => !AutoFade.Fading);
+
 		for (i = 0; i < _tiles.Length; ++i)
 		{
 			if(_tiles[i] != null)
 			{
 				if(animate)
 				{
-					float delay = 0.01f * Mathf.Floor(i / _currentMapConfig.MapSize.y);
-					StartCoroutine(DropGround(_tiles[i].gameObject, delay, index, _tiles[i].transform.localPosition.y));
+					StartCoroutine(DropGround(_tiles[i].gameObject, index));
 					++index;
 				}
 				else
@@ -392,7 +394,7 @@ public class ArenaManager : MonoBehaviour
 			{
 				if(animate)
 				{
-					StartCoroutine(DropObstacle(_obstacles[i].gameObject, 0.05f * index, index % 5 == 0));
+					StartCoroutine(DropObstacle(_obstacles[i].gameObject, 0.02f * index, index % 5 == 0));
 					++index;
 				}
 				else
@@ -414,21 +416,21 @@ public class ArenaManager : MonoBehaviour
 		}
 	}
 
-	private IEnumerator DropGround (GameObject element, float delay, float pos, float initY)
+	private IEnumerator DropGround (GameObject element, float pos)
 	{
-		yield return new WaitForSeconds(delay);
+		float timeForMapToSpawn = 1.5f;
 
-		float timer = -pos * 0.05f;
+		float timer = -timeForMapToSpawn * pos / Map.Length;
 		float initialY = element.transform.localPosition.y;
 
 		while (timer < 1)
 		{
-			timer += TimeManager.DeltaTime * 5;
+			timer += TimeManager.DeltaTime;
 			float y = Mathf.Lerp(initialY, 0, timer);
 			element.transform.localPosition = new Vector3(element.transform.localPosition.x, y, element.transform.localPosition.z);
 			yield return null;
 		}
-
+		element.transform.localPosition = new Vector3(element.transform.localPosition.x, 0, element.transform.localPosition.z);
 		++_tilesDropped;
 
 		yield return null;
@@ -440,17 +442,17 @@ public class ArenaManager : MonoBehaviour
 
 		float timer = 0;
 		float initialY = element.transform.localPosition.y;
-		element.GetComponentInChildren<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
 
 		while (timer < 1)
 		{
 			timer += TimeManager.DeltaTime;
-			float y = Mathf.Lerp(initialY, 1.0f * TileScale, timer);
+			float y = Mathf.Lerp(initialY, TileScale, timer);
 			element.transform.localPosition = new Vector3(element.transform.localPosition.x, y, element.transform.localPosition.z);
 			yield return null;
 		}
+		element.transform.localPosition = new Vector3(element.transform.localPosition.x, TileScale, element.transform.localPosition.z);
 
-		if(bIsSounded)
+		if (bIsSounded)
 		{
 			GameManager.Instance.AudioSource.PlayOneShot(GameManager.Instance.OnObstacleDrop);
 		}

@@ -174,7 +174,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 	//protected float _airborneDelay = 0.02f;
 
-	protected float _fullDashActivationTime = 0.08f;
+	protected float _fullDashActivationTime = 0.1f;
 	private float _timeHeldDash;
 	[HideInInspector]
 	public bool WaitForDashRelease = false;
@@ -182,6 +182,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 	protected int _dashActivationSteps;
 	protected int _dashStepActivated = 1;
+	protected Dash _dashCopy;
 	[Space]
 	public SO_Character _characterData;
 
@@ -226,7 +227,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	{
 		get
 		{
-			return AllowSpecial && !_characterData.Dash.inProgress && !_isDead && _specialCooldown.TimeLeft <= 0;
+			return AllowSpecial && !_dashCopy.inProgress && !_isDead && _specialCooldown.TimeLeft <= 0;
 		}
 	}
 
@@ -234,7 +235,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	{
 		get
 		{
-			return AllowDash && !_isDead && !_dashMaxed && (_characterData.Dash.inProgress || _allowInput);
+			return AllowDash && !_isDead && !_dashMaxed && (_dashCopy.inProgress || _allowInput);
 		}
 	}
 
@@ -296,8 +297,9 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		if (_characterProp == null)
 			Debug.LogError("No player prop found in playermesh: " + gameObject.name + " !");
 
-		_dashActivationSteps = _characterData.Dash.Forces.Length;
-		_characterData.Dash.inProgress = false; // security because sometimes dash is activated, lolwutomfgrektbbq
+		_dashCopy = _characterData.Dash;
+		_dashActivationSteps = _dashCopy.Forces.Length;
+		_dashCopy.inProgress = false; // security because sometimes dash is activated, lolwutomfgrektbbq
 
 		_specialCooldown = new TimeCooldown(this);
 		_specialCooldown.onFinish = OnSpecialReset;
@@ -323,7 +325,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		//_airborneTimeout = new TimeCooldown(this);
 		//_airborneTimeout.onFinish = () => {	if (IsGrounded)	_airborneTimeout.Set(_airborneDelay);};
 		//_airborneTimeout.onProgress = () => {
-		//	if (_characterData.Dash.inProgress)
+		//	if (_dashCopy.inProgress)
 		//		return;
 		//	if (IsGrounded)
 		//		_airborneTimeout.Set(_airborneDelay);
@@ -508,9 +510,9 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	{
 		if (InputManager.GetButtonHeld("Dash", _playerRef.JoystickNumber) && !WaitForDashRelease && _canDash)
 		{
-			if (_dashStepActivated <= (_dashActivationSteps - 1) * (_timeHeldDash / _fullDashActivationTime) + 1 && _characterData.Dash.Forces.Length > _dashStepActivated - 1)
+			if (_dashStepActivated <= (_dashActivationSteps - 1) * (_timeHeldDash / _fullDashActivationTime) + 1 && _dashCopy.Forces.Length > _dashStepActivated - 1)
 			{
-				Eject(Quaternion.FromToRotation(Vector3.right, _activeDirection) * _characterData.Dash.Forces[_dashStepActivated - 1]);
+				Eject(Quaternion.FromToRotation(Vector3.right, _activeDirection) * _dashCopy.Forces[_dashStepActivated - 1]);
 
 				if (_dashStepActivated == 1)
 					StartCoroutine(ActivateDash());
@@ -522,7 +524,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 			}
 			_timeHeldDash += Time.deltaTime;
 		}
-		else if (_characterData.Dash.inProgress)
+		else if (_dashCopy.inProgress)
 		{
 			WaitForDashRelease = true;
 		}
@@ -706,10 +708,10 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 			if (direction.magnitude > 15)
 			{
 				Debug.Log("strong push detected");
-				CameraManager.Shake(ShakeStrength.High);
+				CameraManager.Shake(ShakeStrength.Medium);
 			}
 			else
-				CameraManager.Shake(ShakeStrength.Medium);
+				CameraManager.Shake(ShakeStrength.Low);
 
 			Eject(direction);
 
@@ -744,6 +746,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		{
 			Debug.Log("Character \"" + _characterData.IngameName + "\" was damaged by: \"" + data.Dealer.InGameName + "\"");
 			LastDamageDealer = data.Dealer;
+			_isInvul = true;
 			RpcDamage(direction, data.StunInflicted);
 		}
 
@@ -765,12 +768,12 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 	protected virtual IEnumerator ActivateDash()
 	{
-		_characterData.Dash.inProgress = true;
+		_dashCopy.inProgress = true;
 		_isInvul = true;
 		_allowInput = false;
 		_parryTimer.Set(_parryTime);
 
-		_stunTimer.Add(_characterData.Dash.endingLag);
+		_stunTimer.Add(_dashCopy.endingLag);
 
 		//_animator.SetTrigger("Dash_Start");
 		_animator.SetTrigger("Dash_Start");
@@ -782,10 +785,9 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 		ForceAirborne(0.4f);
 
-		yield return new WaitForSeconds(0.1f);
 		while (!IsGrounded)
 		{
-			DashAirControl();
+			AirControl();
 			yield return null;
 		} //wait for landing
 
@@ -799,8 +801,8 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		//	_animator.ResetTrigger("Dash_End");
 		_characterData.SoundList["OnDashEnd"].Play(gameObject);
 
-		yield return new WaitForSeconds(_characterData.Dash.endingLag);
-		_characterData.Dash.inProgress = false;
+		yield return new WaitForSeconds(_dashCopy.endingLag);
+		_dashCopy.inProgress = false;
 		_allowInput = true;
 
 		_timeHeldDash = 0;
@@ -810,13 +812,20 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 			WaitForDashRelease = false;
 	}
 
-	protected virtual void DashAirControl()
+	protected virtual void AirControl()
 	{
+		if (InputManager.StickIsNeutral(_playerRef.JoystickNumber, 0.3f))
+			return;
+
 		Vector3 directionHeld = InputManager.GetStickDirection(_playerRef.JoystickNumber);
 		directionHeld.z = directionHeld.y;
-		directionHeld = Quaternion.FromToRotation(Vector3.right, Camera.main.transform.right.ZeroY().normalized) * directionHeld.ZeroY();
+		directionHeld = Quaternion.FromToRotation(Vector3.right, Camera.main.transform.right.ZeroY().normalized) * directionHeld.ZeroY().normalized;
 
-		_activeSpeed += directionHeld * (0.035f + 0.005f * _characterData.CharacterStats.speed);
+		// angle = speed * 9 ( == 90° with 10 speed) * (Time.deltaTime * 2f) (per 0.5f second) * 1 - dot() (base on anle )
+		float angleGiven = _characterData.CharacterStats.speed * 9 * (Time.deltaTime * 2f) * Vector3.Dot(directionHeld.normalized, Quaternion.AngleAxis(90, Vector3.up) * _activeSpeed.ZeroY().normalized);
+
+		_activeSpeed = Quaternion.AngleAxis(angleGiven, Vector3.up) * _activeSpeed;
+		//_activeSpeed += (directionHeld * (0.10f + 0.005f * _characterData.CharacterStats.speed)) * (1 - Mathf.Abs(Vector3.Dot(_activeSpeed.normalized, directionHeld.normalized)));
 	}
 
 	public void ForceAirborne(float timeForced = 0)
@@ -844,17 +853,17 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 	protected virtual void PlayerCollisionHandler(Collision colli)
 	{
-		if (colli.gameObject.GetComponent<IDamageable>() != null && _characterData.Dash.inProgress)
+		if (colli.gameObject.GetComponent<IDamageable>() != null && _dashCopy.inProgress)
 		{
 			DamageData tempDamageData = _characterData.DashDamageData.Copy();
 			tempDamageData.Dealer = _dmgDealerSelf;
 			colli.gameObject.GetComponent<IDamageable>()
 				.Damage(Quaternion.FromToRotation(Vector3.right,
-				(colli.transform.position - transform.position).ZeroY().normalized) * (SO_Character.SpecialEjection.Multiply(Axis.x, _characterData.Dash.Impact)),
+				(colli.transform.position - transform.position).ZeroY().normalized) * (SO_Character.SpecialEjection.Multiply(Axis.x, _dashCopy.Impact)),
 				colli.contacts[0].point,
 				tempDamageData);
 		}
-		//else if (colli.gameObject.layer == LayerMask.NameToLayer("Wall") && _characterData.Dash.inProgress)
+		//else if (colli.gameObject.layer == LayerMask.NameToLayer("Wall") && _dashCopy.inProgress)
 		//{
 		//	if (Vector3.Dot((colli.transform.position - transform.position), _activeSpeed) > 0) // if you are going towards a wall
 		//	{

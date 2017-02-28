@@ -21,8 +21,9 @@ public class Shuriken : ABaseProjectile
 	{
 		ParticleSystem OldSmokeTrail = _smokeTrail;
 		_smokeTrail = Instantiate(_smokeTrail, transform, false) as ParticleSystem;
-		_smokeTrail.transform.position = Vector3.zero;
+		_smokeTrail.transform.localPosition = Vector3.zero;
 		OldSmokeTrail.transform.parent = null;
+		OldSmokeTrail.Stop();
 		GameObject.Destroy(OldSmokeTrail.gameObject, OldSmokeTrail.startLifetime);
 		base.Stop();
 	}

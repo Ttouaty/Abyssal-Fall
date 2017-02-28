@@ -12,30 +12,33 @@ public class MageController : PlayerController
 	[SerializeField]
 	private float _maxChargeTime = 0.7f;
 
-	private float _chargingTime = 0;
-	private bool _specialActivating = false;
+	private GameObject _fireBallObject;
+	private bool _fireballIsActive = false;
 
-	protected override bool SpecialActivation()
+
+	protected override void CustomStart()
 	{
-		if (InputManager.GetButtonHeld("Special", _playerRef.JoystickNumber))
+		base.CustomStart();
+		_fireballIsActive = false;
+	}
+
+protected override bool SpecialActivation()
+	{
+		if (InputManager.GetButtonDown("Special", _playerRef.JoystickNumber))
 		{
-			if(_canSpecial)
+			if(_canSpecial && !_fireballIsActive)
 			{
-				_specialActivating = true;
-				if (_chargingTime <= _maxChargeTime)
-					_chargingTime += Time.deltaTime;
-				else
-				{
-					_chargingTime = _maxChargeTime;
-					return true;
-				}
+				return true;
 			}
 		}
 		
 		if(InputManager.GetButtonUp("Special", _playerRef.JoystickNumber))
 		{
-			if(_specialActivating && _canSpecial)
-				return true;
+			if(_fireballIsActive)
+			{
+				_fireballIsActive = false;
+				CmdActivateFireBall();
+			}
 		}
 
 		return false;
@@ -43,19 +46,25 @@ public class MageController : PlayerController
 
 	protected override void SpecialAction()
 	{
-		_specialActivating = false;
 		//cast fireball
-		CmdLaunchFireProjectile(transform.position + transform.forward, transform.forward, _chargingTime);
-		_chargingTime = 0;
+		_fireballIsActive = true;
+		CmdLaunchFireProjectile(transform.position + transform.forward, transform.forward);
 	}
 
 	[Command]
-	public void CmdLaunchFireProjectile(Vector3 pos, Vector3 dir, float charge)
+	protected void CmdActivateFireBall()
 	{
-		GameObject fireBallObj = GameObjectPool.GetAvailableObject("FireBall");
+		_fireBallObject.GetComponent<FireBall>().Activate();
+		_fireBallObject = null;
+	}
+
+	[Command]
+	public void CmdLaunchFireProjectile(Vector3 pos, Vector3 dir)
+	{
+		_fireBallObject = GameObjectPool.GetAvailableObject("FireBall");
 		DamageData tempDamageData = _characterData.SpecialDamageData.Copy();
 		tempDamageData.Dealer = _dmgDealerSelf;
-		fireBallObj.GetComponent<FireBall>().Launch(
+		_fireBallObject.GetComponent<FireBall>().Launch(
 			pos,
 			dir,
 			_explosionDelay,
@@ -65,11 +74,9 @@ public class MageController : PlayerController
 			gameObject.GetInstanceID()
 		);
 
-		NetworkServer.Spawn(fireBallObj);
+		NetworkServer.Spawn(_fireBallObject);
 
 		if (ArenaManager.Instance != null)
-			fireBallObj.transform.parent = ArenaManager.Instance.SpecialsRoot;
-
-		fireBallObj.GetComponent<FireBall>().Invoke("Activate", charge);
+			_fireBallObject.transform.parent = ArenaManager.Instance.SpecialsRoot;
 	}
 }

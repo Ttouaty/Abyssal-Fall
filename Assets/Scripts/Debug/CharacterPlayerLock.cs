@@ -23,10 +23,11 @@ public class CharacterPlayerLock : MonoBehaviour
 		{
 			if (Characters[i] == null)
 				continue;
-			if (!Characters[i].gameObject.activeInHierarchy)
-				continue;
+
+
+			int tempPlayerListLength = Player.PlayerList.Length;
 			ServerManager.Instance.TryToAddPlayer();
-			yield return new WaitUntil(() => Player.PlayerList.Length > i);
+			yield return new WaitUntil(() => Player.PlayerList.Length > tempPlayerListLength);
 			tempPlayer = Player.PlayerList[0];
 			//tempPlayer = Instantiate(playerPrefab.gameObject).GetComponent<Player>();
 			//tempPlayer.SkinNumber = 0;
@@ -36,6 +37,7 @@ public class CharacterPlayerLock : MonoBehaviour
 			//NetworkServer.Spawn(tempPlayer.gameObject);
 			NetworkServer.SpawnWithClientAuthority(Characters[i].gameObject, tempPlayer.gameObject);
 			Characters[i]._isInDebugMode = true;
+			Characters[i].gameObject.SetActive(true);
 			Characters[i].Init(tempPlayer.gameObject);
 		}
 
@@ -49,7 +51,10 @@ public class CharacterPlayerLock : MonoBehaviour
 			if (Characters[i] == null)
 				continue;
 			if (Characters[i].gameObject.activeInHierarchy)
-				Characters[i]._playerRef.JoystickNumber = JoystickListening[i];
+			{
+				if(Characters[i]._playerRef != null)
+					Characters[i]._playerRef.JoystickNumber = JoystickListening[i];
+			}
 		}
 	}
 }
