@@ -30,6 +30,7 @@ public class ArenaManager : MonoBehaviour
 	private List<Obstacle>							_obstacles;
 	private List<ABaseBehaviour>                    _behaviours;
 	private List<Spawn>                             _spawns;
+	
 	#endregion
 	#region public
 	public float                                    TileScale = 1.50f;
@@ -107,6 +108,23 @@ public class ArenaManager : MonoBehaviour
 		{
 			Debug.LogError("[ArenaManager] Trying to reinitialize the instance");
 			Debug.Break();
+		}
+	}
+
+	void Update()
+	{
+		if(NetworkServer.active)
+		{
+			ArenaMasterManager.Instance.ForceIntroSkip = false;
+
+			// Skip Intro with L + R + A
+			if(InputManager.GetButtonHeld(InputEnum.LB))
+			{
+				if (InputManager.GetButtonHeld(InputEnum.RB))
+				{
+					ArenaMasterManager.Instance.ForceIntroSkip = InputManager.GetButtonHeld(InputEnum.A);
+				}
+			}
 		}
 	}
 
@@ -243,6 +261,12 @@ public class ArenaManager : MonoBehaviour
 			}
 		}
 
+		List<int> unUsedSpawnIndexes = new List<int>();
+		for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; i++)
+		{
+			unUsedSpawnIndexes.Add(i);
+		}
+
 		for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; ++i)
 		{
 			Player player = ServerManager.Instance.RegisteredPlayers[i];
@@ -250,9 +274,13 @@ public class ArenaManager : MonoBehaviour
 			{
 				_players[i] = Instantiate(player.CharacterUsed.gameObject) as GameObject;
 				PlayerController playerController = _players[i].GetComponent<PlayerController>();
-				_spawns[i].SpawnPlayer(playerController);
-				playerController.Freeze();
+				Spawn selectedSpawn = _spawns[unUsedSpawnIndexes.ShiftRandomElement()];
 
+				selectedSpawn.SpawnPlayer(playerController);
+
+				selectedSpawn.Colorize(GameManager.Instance.PlayerColors[i]);
+
+				playerController.Freeze();
 				NetworkServer.SpawnWithClientAuthority(_players[i], player.gameObject);
 
 				player.RpcInitController(_players[i]);
@@ -423,7 +451,7 @@ public class ArenaManager : MonoBehaviour
 		float timer = -timeForMapToSpawn * pos / Map.Length;
 		float initialY = element.transform.localPosition.y;
 
-		while (timer < 1)
+		while (timer < 1 && !ArenaMasterManager.Instance.ForceIntroSkip)
 		{
 			timer += TimeManager.DeltaTime;
 			float y = Mathf.Lerp(initialY, 0, timer);
@@ -443,7 +471,7 @@ public class ArenaManager : MonoBehaviour
 		float timer = 0;
 		float initialY = element.transform.localPosition.y;
 
-		while (timer < 1)
+		while (timer < 1 && !ArenaMasterManager.Instance.ForceIntroSkip)
 		{
 			timer += TimeManager.DeltaTime;
 			float y = Mathf.Lerp(initialY, TileScale, timer);

@@ -456,6 +456,21 @@ public class ServerManager : NATTraversal.NetworkManager
 		TargetGameId = code;
 	}
 
+	public void FreezeAllPlayers()
+	{
+		for (int i = 0; i < RegisteredPlayers.Count; ++i)
+		{
+			RegisteredPlayers[i].Controller.RpcFreeze();
+		}
+	}
+
+	public void UnFreezeAllPlayers()
+	{
+		for (int i = 0; i < RegisteredPlayers.Count; ++i)
+		{
+			RegisteredPlayers[i].Controller.RpcUnFreeze();
+		}
+	}
 
 	public override void OnMatchList(bool success, string extendedInfo, List<MatchInfoSnapshot> matchList)
 	{

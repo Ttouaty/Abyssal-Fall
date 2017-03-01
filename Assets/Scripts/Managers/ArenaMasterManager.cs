@@ -6,6 +6,9 @@ public class ArenaMasterManager : NetworkBehaviour
 {
 	public static ArenaMasterManager Instance;
 
+	[HideInInspector]
+	[SyncVar]
+	public bool ForceIntroSkip = false;
 	void Start()
 	{
 		if (ArenaManager.Instance != null)

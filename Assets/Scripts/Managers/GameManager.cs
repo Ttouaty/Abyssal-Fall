@@ -58,6 +58,10 @@ public class GameManager : GenericSingleton<GameManager>
 	public AudioSource AudioSource;
 	public AudioSource GameLoop;
 
+	[Space]
+	public Color[] PlayerColors;
+	[Space]
+
 	//[HideInInspector]
 	//public Player[] RegisteredPlayers = new Player[4];
 	//// [HideInInspector]

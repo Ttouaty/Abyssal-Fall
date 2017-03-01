@@ -326,4 +326,3 @@ public static class ButtonExtensions
 		target.onClick.Invoke();
 	}
 }
-

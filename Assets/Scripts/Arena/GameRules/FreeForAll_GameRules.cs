@@ -41,8 +41,10 @@ public class FreeForAll_GameRules : AGameRules
 	public override void OnRoundEnd_Listener_Server(Player winner)
 	{
 		// + 1 Point to last alive
-		if(winner != null)
-			winner.Score++;
+		if (winner != null)
+			if (ServerManager.Instance.AlivePlayers.Count == 1)
+				winner.Score++;
+
 		base.OnRoundEnd_Listener_Server(winner);
 	}
 

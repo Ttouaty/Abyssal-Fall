@@ -104,11 +104,19 @@ public abstract class AGameRules : MonoBehaviour
 			if (killer != null)
 			{
 				killer.Score += PointsGainPerKill;
+
+				if (killer.Score >= ScoreToWin)
+				{
+					GameManager.Instance.OnRoundEndServer.Invoke(killer);
+					return;
+				}
 			}
 			else
 			{
 				player.Score += PointsLoosePerSuicide; // (added because IntRule is negative for display)
 			}
+
+		
 
 			if (CanPlayerRespawn)
 				StartCoroutine(RespawnPlayer_Retry(player, 1));
@@ -163,23 +171,19 @@ public abstract class AGameRules : MonoBehaviour
 	public virtual void OnRoundEnd_Listener_Server(Player winner)
 	{
 		ServerManager.Instance.ResetAlivePlayers();
+		ServerManager.Instance.FreezeAllPlayers();
 
 		for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; i++)
 		{
-			if(ServerManager.Instance.RegisteredPlayers[i].Controller != null)
-				ServerManager.Instance.RegisteredPlayers[i].Controller.RpcFreeze();
-		}
-
-		if (winner != null)
-		{
-			if (winner.Score >= ScoreToWin)
+			if (ServerManager.Instance.RegisteredPlayers[i].Score >= ScoreToWin)
 			{
 				Player.LocalPlayer.RpcOnPlayerWin(winner.gameObject);
 				return;
 			}
-
-			Player.LocalPlayer.RpcOnRoundEnd(winner.gameObject);
 		}
+
+		if (winner != null)
+			Player.LocalPlayer.RpcOnRoundEnd(winner.gameObject);
 		else
 			Player.LocalPlayer.RpcOnRoundEnd(null);
 	}
