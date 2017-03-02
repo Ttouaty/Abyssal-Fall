@@ -46,4 +46,12 @@ public class ArenaMasterManager : NetworkBehaviour
 			ArenaManager.Instance.RemoveTile(indexes[i]);
 		}
 	}
+
+	[ClientRpc]
+	public void RpcDisplayPlayerNumber(int playerNumber, Vector3 position, float destroyDelay)
+	{
+		GameObject newImage = Instantiate(GameManager.Instance.PlayerNumberImages[playerNumber - 1], transform, false) as GameObject;
+		newImage.transform.position = position;
+		Destroy(newImage, destroyDelay);
+	}
 }

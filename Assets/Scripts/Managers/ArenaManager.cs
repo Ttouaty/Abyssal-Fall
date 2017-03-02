@@ -277,7 +277,7 @@ public class ArenaManager : MonoBehaviour
 				Spawn selectedSpawn = _spawns[unUsedSpawnIndexes.ShiftRandomElement()];
 
 				selectedSpawn.SpawnPlayer(playerController);
-
+				ArenaMasterManager.Instance.RpcDisplayPlayerNumber(player.PlayerNumber, selectedSpawn.transform.position + Vector3.up * 6, 3);
 				selectedSpawn.Colorize(GameManager.Instance.PlayerColors[i]);
 
 				playerController.Freeze();

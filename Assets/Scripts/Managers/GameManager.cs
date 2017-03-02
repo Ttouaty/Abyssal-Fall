@@ -60,6 +60,7 @@ public class GameManager : GenericSingleton<GameManager>
 
 	[Space]
 	public Color[] PlayerColors;
+	public GameObject[] PlayerNumberImages;
 	[Space]
 
 	//[HideInInspector]
