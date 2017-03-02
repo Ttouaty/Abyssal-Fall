@@ -115,12 +115,12 @@ public class MenuPanelNew : MonoBehaviour
 			Player.LocalPlayer.RpcMenuTransition(PanelName, true);
 	}
 
-	public void FinishedEntering()
+	public virtual void FinishedEntering()
 	{
 		InputEnabled = true;
 	}
 
-	public void FinishedGoingOut()
+	public virtual void FinishedGoingOut()
 	{
 		gameObject.SetActive(false);
 	}
@@ -199,5 +199,10 @@ public class MenuPanelNew : MonoBehaviour
 
 		_activeInputDelay += addDelay;
 
+	}
+
+	public void SetGlobalDelay(float delay)
+	{
+		GlobalInputDelay = delay;
 	}
 }
