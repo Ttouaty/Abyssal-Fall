@@ -326,3 +326,29 @@ public static class ButtonExtensions
 		target.onClick.Invoke();
 	}
 }
+
+
+public static class CanvasGroupExtension
+{
+	public static void CrossFadeAlpha(this CanvasGroup target, float alpha, float time)
+	{
+		if(target.GetComponent<MonoBehaviour>() != null)
+			target.GetComponent<MonoBehaviour>().StartCoroutine(CrossFadeAlphaCoroutine(target, alpha, time));
+		else
+			Debug.LogError("No Monobehavior found in object => "+target.name+". Can't call StartCoroutine CrossFadeAlpha");
+	}
+
+	static IEnumerator CrossFadeAlphaCoroutine(CanvasGroup target, float alpha, float time)
+	{
+		float eT = 0;
+
+		float startAlpha = target.alpha;
+		while (eT < time)
+		{
+			eT += Time.deltaTime;
+			target.alpha = Mathf.Lerp(startAlpha, alpha, eT / time);
+			yield return null;
+		}
+		target.alpha = alpha;
+	}
+}

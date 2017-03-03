@@ -18,6 +18,7 @@ ModelImporter:
     100020: S_Break
     100022: //RootNode
     100024: Y_Break
+    100026: GRP_Anim
     400000: A_Break
     400002: A_Break2
     400004: A_break3
@@ -31,6 +32,7 @@ ModelImporter:
     400020: S_Break
     400022: //RootNode
     400024: Y_Break
+    400026: GRP_Anim
     2300000: A_Break
     2300002: A_Break2
     2300004: A_break3
@@ -117,29 +119,31 @@ ModelImporter:
       transformMask:
       - path: 
         weight: 1
-      - path: A_Break
+      - path: GRP_Anim
         weight: 1
-      - path: A_Break2
+      - path: GRP_Anim/A_Break
         weight: 1
-      - path: A_break3
+      - path: GRP_Anim/A_Break2
         weight: 1
-      - path: B_Break
+      - path: GRP_Anim/A_break3
         weight: 1
-      - path: B_Break2
+      - path: GRP_Anim/B_Break
         weight: 1
-      - path: F_Break
+      - path: GRP_Anim/B_Break2
         weight: 1
-      - path: L_Break
+      - path: GRP_Anim/F_Break
         weight: 1
-      - path: L_Break2
+      - path: GRP_Anim/L_Break
         weight: 1
-      - path: L_Break3
+      - path: GRP_Anim/L_Break2
         weight: 1
-      - path: Main_Structure
+      - path: GRP_Anim/L_Break3
         weight: 1
-      - path: S_Break
+      - path: GRP_Anim/Main_Structure
         weight: 1
-      - path: Y_Break
+      - path: GRP_Anim/S_Break
+        weight: 1
+      - path: GRP_Anim/Y_Break
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}

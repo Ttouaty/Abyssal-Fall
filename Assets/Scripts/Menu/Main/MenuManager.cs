@@ -22,7 +22,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 	private bool[] _controllerAlreadyInUse = new bool[12];
 	[HideInInspector]
 	public CharacterSelector _characterSlotsContainerRef;
-	private RawImage[] _splashscreens;
+	private CanvasGroup[] _splashscreens;
 	private Coroutine _miniLoadingCoroutine;
 	private bool _needFTUE = false;
 
@@ -35,7 +35,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 	{
 
 		_canvas = GetComponentInChildren<Canvas>();
-		_splashscreens = SplashScreens.GetComponentsInChildren<RawImage>();
+		_splashscreens = SplashScreens.GetComponentsInChildren<CanvasGroup>();
 		_characterSlotsContainerRef = GetComponentInChildren<CharacterSelector>(true);
 	
 		_needFTUE = !PlayerPrefs.HasKey("FTUEDone");
@@ -156,28 +156,27 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	IEnumerator FadeSplashscreens_Implementation(bool shouldShowSplashscreens)
 	{
-		//SetActiveButtons(_activeMenu, false);
 		InputManager.SetInputLockTime(100000);
-		Color color;
 		int i = 0;
+		float timePerScreenFadeIn = 0.5f;
+		float timePerScreenWait = 1f;
+		float timePerScreenFadeOut = 0.5f;
+		float TimeBetweenScreens = 0.5f;
 
 		for (i = 0; i < _splashscreens.Length; ++i)
 		{
-			color = _splashscreens[i].color;
-			color.a = 0;
-			_splashscreens[i].color = color;
+			_splashscreens[i].CrossFadeAlpha(0, 0);
 		}
 
 		if (shouldShowSplashscreens)
 		{
 			for (i = 0; i < _splashscreens.Length; ++i)
 			{
-				color = _splashscreens[i].color;
-				color.a = 1;
-				_splashscreens[i].color = color;
-				yield return new WaitForSeconds(0.5f);
-				_splashscreens[i].CrossFadeAlpha(0, 0.5f, false);
-				yield return new WaitForSeconds(0.5f);
+				yield return new WaitForSeconds(TimeBetweenScreens);
+				_splashscreens[i].CrossFadeAlpha(1, timePerScreenFadeIn);
+				yield return new WaitForSeconds(timePerScreenFadeIn + timePerScreenWait);
+				_splashscreens[i].CrossFadeAlpha(0, timePerScreenFadeOut);
+				yield return new WaitForSeconds(timePerScreenFadeOut);
 			}
 		}
 		yield return StartCoroutine(LoadPreview_Implementation(EArenaConfiguration.Aerial));
@@ -268,9 +267,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	public void CheckIfNeedFTUE()
 	{
-		//if (_needFTUE)
-			//MenuPanelNew.PanelRefs["FTUE"].Open();
-		//else
-			MenuPanelNew.PanelRefs["Main"].Open();
+		if (_needFTUE)
+			MenuPanelNew.PanelRefs["FTUE"].Open();
 	}
 }

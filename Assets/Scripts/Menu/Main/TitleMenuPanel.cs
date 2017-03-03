@@ -23,5 +23,4 @@ public class TitleMenuPanel : MenuPanelNew
 
 		GlobalInputDelay = 100000000; // deactivated by inputlistener
 	}
-
 }
