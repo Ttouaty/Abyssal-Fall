@@ -178,6 +178,12 @@ public class AutoFade : MonoBehaviour
 		yield return Instance.StartCoroutine(StartFade(start, waitforCoroutine, endCoroutine, Color.black));
 	}
 
+	public static IEnumerator StartFade(float start, IEnumerator waitforCoroutine, Color aColor)
+	{
+		Instance.m_Fading = true;
+		yield return Instance.StartCoroutine(Instance.FadeWaitForCoroutine(start, waitforCoroutine, null, aColor));
+	}
+
 	public static IEnumerator StartFade(float start, IEnumerator waitforCoroutine, IEnumerator endCoroutine, Color aColor)
 	{
 		Instance.m_Fading = true;

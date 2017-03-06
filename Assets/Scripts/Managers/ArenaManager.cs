@@ -130,8 +130,16 @@ public class ArenaManager : MonoBehaviour
 
 	public void ResetMap(bool animate = true)
 	{
-		CameraManager.Instance.ClearTrackedTargets();
 		gameObject.SetActive(true);
+
+		UnloadArena();
+
+		StartCoroutine(Initialization(animate));
+	}
+
+	public void UnloadArena()
+	{
+		CameraManager.Instance.ClearTrackedTargets();
 
 		Transform[] roots = new Transform[] { TilesRoot, ObstaclesRoot, SpecialsRoot, BehavioursRoot };
 		int i;
@@ -141,11 +149,11 @@ public class ArenaManager : MonoBehaviour
 		{
 			if (roots[i].childCount > 0)
 			{
-				for(int j = roots[i].childCount - 1; j >= 0; --j)
+				for (int j = roots[i].childCount - 1; j >= 0; --j)
 				{
 					child = roots[i].GetChild(j);
 					Poolable poolable = child.GetComponent<Poolable>();
-					if(poolable != null)
+					if (poolable != null)
 					{
 						poolable.AddToPool();
 					}
@@ -157,22 +165,32 @@ public class ArenaManager : MonoBehaviour
 			}
 		}
 
-		for(i = 0; i < PlayersRoot.childCount; ++i)
+		for (i = 0; i < PlayersRoot.childCount; ++i)
 		{
 			child = PlayersRoot.GetChild(i);
 			child.GetComponent<PlayerController>().OnBeforeDestroy();
 			Destroy(child.gameObject);
 		}
 
-		_tilesDropped       = 0;
-		_obstaclesDropped   = 0;
+		_tilesDropped = 0;
+		_obstaclesDropped = 0;
 
-		_tiles              = new Tile[(int)(_currentMapConfig.MapSize.x * _currentMapConfig.MapSize.y)];
-		_obstacles          = new List<Obstacle>();
-		_spawns             = new List<Spawn>();
-		_behaviours         = new List<ABaseBehaviour>();
+		_tiles = new Tile[(int)(_currentMapConfig.MapSize.x * _currentMapConfig.MapSize.y)];
+		_obstacles = new List<Obstacle>();
+		_spawns = new List<Spawn>();
+		_behaviours = new List<ABaseBehaviour>();
 
-		StartCoroutine(Initialization(animate));
+		if (NetworkServer.active)
+		{
+			for (i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; i++)
+			{
+				if (ServerManager.Instance.RegisteredPlayers[i].Controller != null)
+				{
+					Debug.Log("Destroying character " + ServerManager.Instance.RegisteredPlayers[i].Controller._characterData.IngameName);
+					Destroy(ServerManager.Instance.RegisteredPlayers[i].Controller.gameObject);
+				}
+			}
+		}
 	}
 
 	//Don't use this one
@@ -252,14 +270,14 @@ public class ArenaManager : MonoBehaviour
 		_players = new GameObject[ServerManager.Instance.RegisteredPlayers.Count];
 
 		//Clean up remaining characters
-		for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; i++)
-		{
-			if(ServerManager.Instance.RegisteredPlayers[i].Controller != null)
-			{
-				Debug.Log("Destroying character "+ ServerManager.Instance.RegisteredPlayers[i].Controller._characterData.IngameName);
-				Destroy(ServerManager.Instance.RegisteredPlayers[i].Controller.gameObject);
-			}
-		}
+		//for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; i++)
+		//{
+		//	if(ServerManager.Instance.RegisteredPlayers[i].Controller != null)
+		//	{
+		//		Debug.Log("Destroying character "+ ServerManager.Instance.RegisteredPlayers[i].Controller._characterData.IngameName);
+		//		Destroy(ServerManager.Instance.RegisteredPlayers[i].Controller.gameObject);
+		//	}
+		//}
 
 		List<int> unUsedSpawnIndexes = new List<int>();
 		for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; i++)
@@ -515,5 +533,37 @@ public class ArenaManager : MonoBehaviour
 		}
 
 		return selectedTiles.ToArray();
+	}
+
+	public void DisplayWinner(GameObject winnerGo)
+	{
+		Debug.Log("Start coroutine DisplayWinnerCoroutine with gameObject => " + winnerGo.name);
+		StartCoroutine(DisplayWinnerCoroutine(winnerGo));
+	}
+
+	IEnumerator DisplayWinnerCoroutine(GameObject winnerGo)
+	{
+		AutoFade.StartFade(0.5f, 0.5f, 0.5f, Color.white);
+		yield return new WaitForSeconds(0.55f);
+
+		UnloadArena();
+		VictoryPlatform victoryPlatform = Instantiate(_currentArenaConfig.VictoryPlatformGo) as VictoryPlatform;
+		victoryPlatform.transform.SetParent(TilesRoot, false);
+		victoryPlatform.transform.localPosition = Vector3.zero;
+
+		GameObject characterGo = Instantiate(winnerGo) as GameObject;
+		characterGo.GetComponentInChildren<SetRenderQueue>().SetCutOff(1);
+		characterGo.transform.SetParent(victoryPlatform.CharacterPos.transform, false);
+		characterGo.transform.localPosition = Vector3.zero;
+		characterGo.transform.localRotation = Quaternion.identity;
+		characterGo.transform.localScale = Vector3.one * 0.5f;
+
+		yield return new WaitForSeconds(0.4f);
+		victoryPlatform.CameraPos.GetComponentInChildren<Animator>().SetTrigger("Enter");
+		yield return new WaitForSeconds(1.1f);
+		characterGo.GetComponentInChildren<Animator>().SetTrigger("Win");
+		yield return new WaitForSeconds(2);
+
+		EndGameManager.Instance.Open();
 	}
 }

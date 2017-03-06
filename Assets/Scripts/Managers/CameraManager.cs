@@ -18,6 +18,8 @@ public enum ShakeStrength
 
 public class CameraManager : GenericSingleton<CameraManager>
 {
+	public static bool IsManual = false;
+
 	private float _shakeTimeLeft = 0;
 	private ShakeStrength _activeShakeStrength;
 
@@ -96,20 +98,25 @@ public class CameraManager : GenericSingleton<CameraManager>
 
 		IsMoving = (transform.position - previousPosition).magnitude > 0.05f;
 		previousPosition = transform.position;
-		if (_targetsTracked.Count != 0)
-		{
-			CalculateTargetsDistance();
 
-			Debug.DrawRay(_centerPoint.position, _targetsCentroid - _centerPoint.position, Color.red);
-			Debug.DrawRay(transform.position, transform.forward * _distance, Color.blue);
-		}
-		else
-		{
-			_targetsCentroid = _centerPoint.position;
-		}
 
-		transform.localPosition = -Vector3.forward * _distance;
-		FollowCentroid();
+		if(!IsManual)
+		{
+			if (_targetsTracked.Count != 0)
+			{
+				CalculateTargetsDistance();
+
+				Debug.DrawRay(_centerPoint.position, _targetsCentroid - _centerPoint.position, Color.red);
+				Debug.DrawRay(transform.position, transform.forward * _distance, Color.blue);
+			}
+			else
+			{
+				_targetsCentroid = _centerPoint.position;
+			}
+
+			transform.localPosition = -Vector3.forward * _distance;
+			FollowCentroid();
+		}
 
 		ProcessScreenShake();
 	}

@@ -9,8 +9,8 @@ public class MageController : PlayerController
 	private float _explosionDelay = 0.7f; // Time before explosion occurs after the special is activated
 	[SerializeField]
 	private float _explosionRadius = 4f;
-	[SerializeField]
-	private float _maxChargeTime = 0.7f;
+	//[SerializeField]
+	//private float _maxChargeTime = 0.7f;
 
 	private GameObject _fireBallObject;
 	private bool _fireballIsActive = false;

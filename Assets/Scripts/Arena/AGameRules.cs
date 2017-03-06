@@ -40,7 +40,7 @@ public abstract class AGameRules : MonoBehaviour
 	{
 		// On initi game rules common stuff
 		StopAllCoroutines();
-
+		CameraManager.IsManual = false;
 		StartCoroutine(Update_Implementation());
 
 		if (ArenaAutoDestruction)
@@ -192,7 +192,9 @@ public abstract class AGameRules : MonoBehaviour
 	{
 		StopAllCoroutines();
 		EndGameManager.Instance.WinnerId = winner.PlayerNumber;
-		EndGameManager.Instance.Open();
+		//EndGameManager.Instance.Open();
+		
+		ArenaManager.Instance.DisplayWinner(winner.CharacterUsed._characterData.CharacterSelectModel.gameObject);
 	}
 
 	public virtual void OnPlayerDisconnect(int playerNumber)

@@ -13,4 +13,6 @@ public class ArenaConfiguration_SO : ScriptableObject
 	public Sprite Artwork;
 	public EArenaConfiguration TargetMapEnum;
 	public MapConfiguration_SO[] MapConfigs;
+	[Space]
+	public VictoryPlatform VictoryPlatformGo; 
 }
