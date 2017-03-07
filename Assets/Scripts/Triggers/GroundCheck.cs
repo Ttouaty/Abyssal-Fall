@@ -6,7 +6,7 @@ using System.Collections.Generic;
 public class GroundCheck : MonoBehaviour
 {
 	private PlayerController _playerRef;
-	private Collider _colliderRef;
+	private SphereCollider _colliderRef;
 	private Rigidbody _rigidBRef;
 	//private float _ownSize;
 
@@ -18,7 +18,7 @@ public class GroundCheck : MonoBehaviour
 	{
 		//_ownSize = GetComponent<SphereCollider>().radius;
 		_playerRef = GetComponentInParent<PlayerController>();
-		_colliderRef = GetComponent<Collider>();
+		_colliderRef = GetComponent<SphereCollider>();
 		_rigidBRef = _playerRef.GetComponent<Rigidbody>();
 	}
 
@@ -54,7 +54,9 @@ public class GroundCheck : MonoBehaviour
 
 		if (_colliderIds.Count == 0 && _playerRef != null)
 			_playerRef.ContactGround();
-		_colliderIds.Add(colli.GetInstanceID());
+
+		if(!_colliderIds.Contains(colli.GetInstanceID()))
+			_colliderIds.Add(colli.GetInstanceID());
 
 		if (colli.gameObject.activeInHierarchy && colli.GetComponent<Tile>() != null)
 			colli.GetComponent<Tile>().ActivateFall();
@@ -70,6 +72,12 @@ public class GroundCheck : MonoBehaviour
 	public void Activate()
 	{
 		enabled = true;
+		Collider[] tempCollis = Physics.OverlapSphere(transform.position, _colliderRef.radius + 0.2f, 1 << LayerMask.NameToLayer("Ground"));
+
+		for (int i = 0; i < tempCollis.Length; i++)
+		{
+			OnTriggerEnter(tempCollis[i]);
+		}
 	}
 
 	public void Deactivate()

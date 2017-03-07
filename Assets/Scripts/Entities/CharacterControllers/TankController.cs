@@ -54,21 +54,26 @@ public class TankController : PlayerController
 		_charging = false;
 		_isAffectedByFriction = true;
 
-		
 		ChargeHitbox.enabled = false;
 		if(Physics.CheckSphere(ChargeHitbox.transform.position, ChargeHitbox.radius + 0.2f, 1 << LayerMask.NameToLayer("Wall")))
 		{
+
+			Debug.Log("colli wall");
 			_activeSpeed = Vector3.zero;
 			_rigidB.velocity = _activeSpeed;
 		}
 
+		_isInvul = false;
+
 		eT = 0;
 		while (eT < _characterData.SpecialLag * 0.7f)
 		{
+			Debug.Log("waiting for end");
 			_activeSpeed.y = 0;
 			eT += Time.deltaTime;
 			yield return null;
 		}
+
 	}
 
 	protected override void PlayerCollisionHandler(Collision colli)
