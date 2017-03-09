@@ -133,7 +133,7 @@ public class ArenaManager : MonoBehaviour
 		gameObject.SetActive(true);
 
 		UnloadArena();
-
+		//ArenaMasterManager.Instance.GameInProgress = false;
 		StartCoroutine(Initialization(animate));
 	}
 
@@ -263,6 +263,7 @@ public class ArenaManager : MonoBehaviour
 		{
 			ServerManager.Instance.RegisteredPlayers[i].Controller.RpcUnFreeze();
 		}
+		//ArenaMasterManager.Instance.GameInProgress = true;
 	}
 
 	public void PlaceCharacters()
@@ -298,9 +299,7 @@ public class ArenaManager : MonoBehaviour
 				ArenaMasterManager.Instance.RpcDisplayPlayerNumber(player.PlayerNumber, selectedSpawn.transform.position + Vector3.up * 6, 3);
 				selectedSpawn.Colorize(GameManager.Instance.PlayerColors[i]);
 
-				playerController.Freeze();
 				NetworkServer.SpawnWithClientAuthority(_players[i], player.gameObject);
-
 				player.RpcInitController(_players[i]);
 			}
 		}
@@ -551,16 +550,17 @@ public class ArenaManager : MonoBehaviour
 		victoryPlatform.transform.SetParent(TilesRoot, false);
 		victoryPlatform.transform.localPosition = Vector3.zero;
 
-		GameObject characterGo = Instantiate(winnerGo) as GameObject;
+		GameObject characterGo = Instantiate(winnerGo.GetComponent<Player>().CharacterUsed._characterData.CharacterSelectModel.gameObject) as GameObject;
+
+		characterGo.GetComponentInChildren<CharacterModel>().Reskin(winnerGo.GetComponent<Player>().SkinNumber);
 		characterGo.GetComponentInChildren<SetRenderQueue>().SetCutOff(1);
 		characterGo.transform.SetParent(victoryPlatform.CharacterPos.transform, false);
 		characterGo.transform.localPosition = Vector3.zero;
 		characterGo.transform.localRotation = Quaternion.identity;
-		characterGo.transform.localScale = Vector3.one * 0.5f;
 
 		yield return new WaitForSeconds(0.4f);
 		victoryPlatform.CameraPos.GetComponentInChildren<Animator>().SetTrigger("Enter");
-		yield return new WaitForSeconds(1.1f);
+		yield return new WaitForSeconds(1.2f);
 		characterGo.GetComponentInChildren<Animator>().SetTrigger("Win");
 		yield return new WaitForSeconds(2);
 

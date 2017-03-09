@@ -71,7 +71,7 @@ protected override bool SpecialActivation()
 			_explosionRadius,
 			SO_Character.SpecialEjection.Multiply(Axis.x, _characterData.CharacterStats.strength),
 			tempDamageData,
-			gameObject.GetInstanceID()
+			netId
 		);
 
 		NetworkServer.Spawn(_fireBallObject);

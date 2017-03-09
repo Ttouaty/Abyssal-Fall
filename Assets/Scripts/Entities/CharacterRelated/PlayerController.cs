@@ -246,6 +246,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_rigidB.velocity = Vector3.zero;
 		_rigidB.isKinematic = true;
 		_activeSpeed = Vector3.zero;
+		GetComponentInChildren<GroundCheck>(true).Deactivate();
 		//_animator.SetTrigger("Reset");
 	}
 
@@ -254,6 +255,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_isFrozen = false;
 		_allowInput = true;
 		_rigidB.isKinematic = false;
+		GetComponentInChildren<GroundCheck>(true).Activate();
 	}
 
 	[ClientRpc]
@@ -366,6 +368,9 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 
 		GetComponent<Rigidbody>().velocity = Vector3.zero;
+		//DEFAULT FREEZE TO PREVENT LAG INPUT DETECTION
+		Freeze();
+
 		CustomStart();
 	}
 
@@ -636,7 +641,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		DamageData tempDamageData = _characterData.SpecialDamageData.Copy();
 		tempDamageData.Dealer = _dmgDealerSelf;
 
-		projectile.GetComponent<ABaseProjectile>().Launch(projPosition, projDirection, tempDamageData, gameObject.GetInstanceID());
+		projectile.GetComponent<ABaseProjectile>().Launch(projPosition, projDirection, tempDamageData, netId);
 		//NetworkServer.SpawnWithClientAuthority(projectile, connectionToClient);
 
 		NetworkServer.Spawn(projectile);
@@ -749,7 +754,6 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 			_isInvul = true;
 			RpcDamage(direction, data.StunInflicted);
 		}
-
 	}
 
 	public void Parry(ABaseProjectile projectileParried)

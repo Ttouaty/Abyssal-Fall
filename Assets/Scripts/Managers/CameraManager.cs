@@ -38,7 +38,7 @@ public class CameraManager : GenericSingleton<CameraManager>
 
 	public float MinDistance = 5;
 	public float Margin = 5;
-	public float Growth = 0.1f;
+	//public float Growth = 0.1f;
 	public float VerticalOffsetCoef = 2;
 
 	private const float _centroidCoefficient = 1f;
@@ -181,7 +181,7 @@ public class CameraManager : GenericSingleton<CameraManager>
 			_targetsCentroid /= nbRays;
 		_targetsCentroid.y = _centerPoint.position.y;
 
-		_distance = Mathf.Lerp(_distance, _tempDistance * 0.5f / Mathf.Tan(_camera.fieldOfView * 0.5f * Mathf.Deg2Rad) * (1 + Growth) + Margin, 5 * Time.deltaTime);
+		_distance = Mathf.Lerp(_distance, _tempDistance * 0.5f / Mathf.Tan(_camera.fieldOfView * 0.5f * Mathf.Deg2Rad)/* * (1 + Growth) */+ Margin, 5 * Time.deltaTime);
 
 		if (_distance < MinDistance)
 			_distance = MinDistance;

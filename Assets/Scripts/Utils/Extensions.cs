@@ -129,12 +129,12 @@ public static class IntExtensions
 		return number;
 	}
 
-	public static float Percentage(this int number, float min, float max,  float decimalValue = 1f)
+	public static float Percentage(this int number, float min, float max, float decimalValue = 1f)
 	{
 		return Mathf.InverseLerp(min, max, number) * decimalValue;
 	}
 
-	
+
 }
 
 public static class ListExtensions
@@ -154,7 +154,7 @@ public static class ListExtensions
 		}
 	}
 
-	public static T First<T> (this IList<T> list)
+	public static T First<T>(this IList<T> list)
 	{
 		if (list.Count == 0)
 		{
@@ -166,13 +166,13 @@ public static class ListExtensions
 		}
 	}
 
-	public static T Last<T> (this IList<T> list)
+	public static T Last<T>(this IList<T> list)
 	{
-		if(list.Count == 0)
+		if (list.Count == 0)
 		{
 			return default(T);
 		}
-		else 
+		else
 		{
 			return list[list.Count - 1];
 		}
@@ -206,9 +206,9 @@ public static class ListExtensions
 		}
 	}
 
-	public static void Add<T> (this IList<T> list, List<T> elements)
+	public static void Add<T>(this IList<T> list, List<T> elements)
 	{
-		if(elements != null)
+		if (elements != null)
 		{
 			for (int i = 0; i < elements.Count; ++i)
 			{
@@ -217,9 +217,9 @@ public static class ListExtensions
 		}
 	}
 
-	public static void Add<T> (this IList<T> list, params T[] elements)
+	public static void Add<T>(this IList<T> list, params T[] elements)
 	{
-		if(elements != null)
+		if (elements != null)
 		{
 			for (int i = 0; i < elements.Length; ++i)
 			{
@@ -253,7 +253,7 @@ public static class MonoBehaviourExtensions
 		objectMoved.StartCoroutine(MoveCoroutine(objectMoved, target, time, local));
 	}
 
-	static IEnumerator MoveCoroutine(MonoBehaviour target,Vector3 end, float time, bool local = false)
+	static IEnumerator MoveCoroutine(MonoBehaviour target, Vector3 end, float time, bool local = false)
 	{
 		float eT = 0;
 
@@ -287,7 +287,7 @@ public static class MonoBehaviourExtensions
 	static IEnumerator FadeNDestroy(MonoBehaviour target, float time)
 	{
 		Material objMat = target.GetComponentInChildren<Renderer>().material;
-		if(!objMat.IsKeywordEnabled("_ALPHATEST_ON") && !objMat.IsKeywordEnabled("_ALPHABLEND_ON") && !objMat.IsKeywordEnabled("_ALPHAPREMULTIPLY_ON"))
+		if (!objMat.IsKeywordEnabled("_ALPHATEST_ON") && !objMat.IsKeywordEnabled("_ALPHABLEND_ON") && !objMat.IsKeywordEnabled("_ALPHAPREMULTIPLY_ON"))
 		{
 			Debug.LogWarning("Object must have a transparency using rendering mode for FadeDestroy() to work!  \n(cutout, fade, transparent would work). Canceling!");
 			yield break;
@@ -332,10 +332,10 @@ public static class CanvasGroupExtension
 {
 	public static void CrossFadeAlpha(this CanvasGroup target, float alpha, float time)
 	{
-		if(target.GetComponent<MonoBehaviour>() != null)
+		if (target.GetComponent<MonoBehaviour>() != null)
 			target.GetComponent<MonoBehaviour>().StartCoroutine(CrossFadeAlphaCoroutine(target, alpha, time));
 		else
-			Debug.LogError("No Monobehavior found in object => "+target.name+". Can't call StartCoroutine CrossFadeAlpha");
+			Debug.LogError("No Monobehavior found in object => " + target.name + ". Can't call StartCoroutine CrossFadeAlpha");
 	}
 
 	static IEnumerator CrossFadeAlphaCoroutine(CanvasGroup target, float alpha, float time)
@@ -350,5 +350,44 @@ public static class CanvasGroupExtension
 			yield return null;
 		}
 		target.alpha = alpha;
+	}
+}
+
+public static class AnimatorExtensions
+{
+	public static void SetTriggerAfterInit(this Animator target, string triggerName)
+	{
+		MainManager.Instance.GetComponent<MonoBehaviour>().StartCoroutine(SetTriggerAfterInitCoroutine(target, triggerName));
+	}
+
+	static IEnumerator SetTriggerAfterInitCoroutine(Animator target, string triggerName)
+	{
+		while (target != null)
+		{
+			if (target.isInitialized && target.gameObject.activeInHierarchy)
+				break;
+			yield return null;
+		}
+
+		if (target != null)
+			target.SetTrigger(triggerName);
+	}
+
+	public static void SetBoolAfterInit(this Animator target, string boolName, bool active)
+	{
+		MainManager.Instance.GetComponent<MonoBehaviour>().StartCoroutine(SetBoolAfterInitCoroutine(target, boolName, active));
+	}
+
+	static IEnumerator SetBoolAfterInitCoroutine(Animator target, string boolName, bool active)
+	{
+		while (target != null)
+		{
+			if (target.isInitialized && target.gameObject.activeInHierarchy)
+				break;
+			yield return null;
+		}
+
+		if (target != null)
+			target.SetBool(boolName, active);
 	}
 }

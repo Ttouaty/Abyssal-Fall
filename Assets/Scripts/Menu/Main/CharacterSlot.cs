@@ -62,9 +62,11 @@ public class CharacterSlot : MonoBehaviour
 
 		if (_playerRef == null)
 			return;
+
+		SelectPedestal(_playerRef.isReady);
+
 		if (!_playerRef.isLocalPlayer)
 			return;
-
 
 		if (InputManager.GetButtonDown(InputEnum.B, _playerRef.JoystickNumber) && Selected)
 			CancelCharacterSelection();
@@ -132,9 +134,6 @@ public class CharacterSlot : MonoBehaviour
 
 		_playerRef = _wheelRef._playerRef.GetComponent<Player>();
 		_wheelRef.transform.localRotation = Quaternion.identity;
-
-		if (_playerRef.isLocalPlayer)
-			SetTextAlpha(1);
 	}
 
 	public void CloseSlot()

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Networking;
 
 [RequireComponent(typeof(SphereCollider))]
 public class GroundCheck : MonoBehaviour
@@ -24,7 +25,7 @@ public class GroundCheck : MonoBehaviour
 
 	void Update()
 	{
-		if(_playerRef._playerRef != null)
+		if (_playerRef._playerRef != null)
 			if (!_playerRef._isLocalPlayer)
 				enabled = false; // Deactivate if character is not local
 
@@ -44,7 +45,8 @@ public class GroundCheck : MonoBehaviour
 
 	void LateUpdate()
 	{
-		_playerRef.IsGrounded = _colliderIds.Count > 0;
+		if (_playerRef._isLocalPlayer)
+			_playerRef.IsGrounded = _colliderIds.Count > 0;
 	}
 
 	void OnTriggerEnter(Collider colli)
@@ -72,6 +74,7 @@ public class GroundCheck : MonoBehaviour
 	public void Activate()
 	{
 		enabled = true;
+		_colliderRef = GetComponent<SphereCollider>();
 		Collider[] tempCollis = Physics.OverlapSphere(transform.position, _colliderRef.radius + 0.2f, 1 << LayerMask.NameToLayer("Ground"));
 
 		for (int i = 0; i < tempCollis.Length; i++)

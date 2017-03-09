@@ -34,9 +34,10 @@ public class PlayerScore : MonoBehaviour
 		SpriteActive	= CurrentPlayer.CharacterUsed._characterData.Icon;
 		SpriteInactive	= CurrentPlayer.CharacterUsed._characterData.DarkIcon;
 
-		float ratio     = Root.sizeDelta.x / GameManager.Instance.CurrentGameConfiguration.NumberOfStages;
-        Points          = new Image[GameManager.Instance.CurrentGameConfiguration.NumberOfStages];
+		float ratio     = Root.sizeDelta.x / GameManager.Instance.GameRules.ScoreToWin;
+        Points          = new Image[GameManager.Instance.GameRules.ScoreToWin];
 
+		Debug.LogWarning("Refaire display de point!");
         for (int i = 0; i < Points.Length; ++i)
         {
             GameObject scoreGo = new GameObject(name+ " point "+i, typeof(Image));
@@ -49,6 +50,20 @@ public class PlayerScore : MonoBehaviour
             Points[i]                           = image;
         }
     }
+
+	void Update()
+	{
+		if (Active)
+		{
+			for (int i = 0; i < Points.Length; ++i)
+			{
+				if (Points[i] != null)
+				{
+					Points[i].sprite = i < Score ? SpriteActive : SpriteInactive;
+				}
+			}
+		}
+	}
 
     public void DisplayScore ()
     {

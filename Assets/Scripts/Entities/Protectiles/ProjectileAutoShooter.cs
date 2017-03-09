@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Networking;
 
 public class ProjectileAutoShooter : MonoBehaviour
 {
@@ -24,7 +25,7 @@ public class ProjectileAutoShooter : MonoBehaviour
 		_shootTimer.onFinish = () =>
 		{
 			_shootTimer.Set(Interval);
-			GameObjectPool.GetAvailableObject(_projectilePoolName).GetComponent<ABaseProjectile>().Launch(transform.position, transform.forward, _ownDamageData, gameObject.GetInstanceID());
+			GameObjectPool.GetAvailableObject(_projectilePoolName).GetComponent<ABaseProjectile>().Launch(transform.position, transform.forward, _ownDamageData, gameObject.GetComponent<NetworkIdentity>().netId);
 		};
 		_shootTimer.Set(Interval);
 	}

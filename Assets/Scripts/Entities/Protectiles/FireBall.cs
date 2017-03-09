@@ -17,7 +17,7 @@ public class FireBall : ABaseProjectile
 	private bool _activated;
 
 
-	public void Launch(Vector3 Position, Vector3 Direction, float explosionDelay, float explosionRadius, Vector3 ejection, DamageData newDamageData, int instanceId)
+	public void Launch(Vector3 Position, Vector3 Direction, float explosionDelay, float explosionRadius, Vector3 ejection, DamageData newDamageData, NetworkInstanceId instanceId)
 	{
 		GetComponent<Collider>().enabled = true;
 		base.Launch(Position, Direction, newDamageData, instanceId);
@@ -26,8 +26,6 @@ public class FireBall : ABaseProjectile
 		_explosionDelay = explosionDelay;
 		_ejection = ejection;
 		_explosionDamageData = newDamageData;
-		_movingParticlesRef = Instantiate(MoveParticles, transform) as ParticleSystem;
-		_movingParticlesRef.transform.localPosition = Vector3.zero;
 		_activated = false;
 	}
 
@@ -47,6 +45,13 @@ public class FireBall : ABaseProjectile
 		RpcExplode();
 	}
 
+	protected override void OnLaunch(GameObject Launcher)
+	{
+		_movingParticlesRef = Instantiate(MoveParticles, transform) as ParticleSystem;
+		_movingParticlesRef.transform.localPosition = Vector3.zero;
+
+		Debug.Log("Onlaunch Called");
+	}
 
 	[ClientRpc]
 	public void RpcExplode()
@@ -57,7 +62,7 @@ public class FireBall : ABaseProjectile
 	protected override void Stop()
 	{
 		if (_movingParticlesRef != null)
-			_movingParticlesRef.Stop();
+			Destroy(_movingParticlesRef);
 
 		base.Stop();
 	}
@@ -86,7 +91,7 @@ public class FireBall : ABaseProjectile
 
 			for (int i = 0; i < foundElements.Length; i++)
 			{
-				if(foundElements[i].gameObject.GetInstanceID() == LauncherId)
+				if (foundElements[i].gameObject.GetComponent<NetworkIdentity>().netId == LauncherNetId)
 				{
 					continue;
 				}

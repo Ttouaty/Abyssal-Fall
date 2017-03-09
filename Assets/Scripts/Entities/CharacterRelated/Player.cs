@@ -159,6 +159,10 @@ public class Player : NetworkBehaviour
 		{
 			LocalPlayer = this;
 
+			CmdUpdatePlayerList();
+			ChangeWheelState(_ready);
+			CmdSpawnCharacterSelectWheel();
+
 			if (MenuManager.Instance != null)
 			{
 				if (MenuManager.Instance.LocalJoystickBuffer.Count != 0)
@@ -170,11 +174,16 @@ public class Player : NetworkBehaviour
 		}
 	}
 
+	[Command]
+	private void CmdSpawnCharacterSelectWheel()
+	{
+		if (MenuManager.Instance != null && !ServerManager.Instance.IsDebug)
+			ServerManager.Instance.SpawnCharacterWheel(gameObject);
+	}
+
 	public override void OnStartClient()
 	{
 		base.OnStartClient();
-		CmdUpdatePlayerList();
-		ChangeWheelState(_ready);
 	}
 
 	void Update()
@@ -255,23 +264,19 @@ public class Player : NetworkBehaviour
 	[ClientRpc]
 	public void RpcInitController(GameObject targetObject)
 	{
-		if (targetObject == null)
-			Debug.LogError("RPC init >targetObject< was null !");
-
-
 		targetObject.GetComponent<PlayerController>().Init(gameObject);
 
-		for (int i = 0; i < PlayerList.Length; i++)
-		{
-			if(PlayerList[i].PlayerNumber != PlayerNumber)
-			{
-				if (PlayerList[i].SkinNumber == SkinNumber && PlayerList[i].CharacterUsedIndex == CharacterUsedIndex)
-				{
-					Debug.Log("Player N°=> "+PlayerNumber+" is adding differentialAlpha to player => "+targetObject.GetComponent<PlayerController>()._characterData.IngameName);
-					targetObject.GetComponent<PlayerController>().AddDifferentialAlpha(CharacterAlpha);
-				}
-			}
-		}
+		//for (int i = 0; i < PlayerList.Length; i++)
+		//{
+		//	if(PlayerList[i].PlayerNumber != PlayerNumber)
+		//	{
+		//		if (PlayerList[i].SkinNumber == SkinNumber && PlayerList[i].CharacterUsedIndex == CharacterUsedIndex)
+		//		{
+		//			Debug.Log("Player N°=> "+PlayerNumber+" is adding differentialAlpha to player => "+targetObject.GetComponent<PlayerController>()._characterData.IngameName);
+		//			targetObject.GetComponent<PlayerController>().AddDifferentialAlpha(CharacterAlpha);
+		//		}
+		//	}
+		//}
 	}
 
 	[ClientRpc]

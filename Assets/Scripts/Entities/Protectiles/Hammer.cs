@@ -4,7 +4,7 @@ using UnityEngine.Networking;
 
 public class Hammer : ABaseProjectile
 {
-	public override void Launch(Vector3 Position, Vector3 Direction, DamageData Shooter, int instanceId)
+	public override void Launch(Vector3 Position, Vector3 Direction, DamageData Shooter, NetworkInstanceId instanceId)
 	{
 		base.Launch(Position, Direction, Shooter, instanceId);
 	}
@@ -21,6 +21,6 @@ public class Hammer : ABaseProjectile
 
 	public override void OnHitEnvironnement()
 	{
-		//base.OnHitEnvironnement();
+		base.OnHitEnvironnement();
 	}
 }

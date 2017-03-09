@@ -19,6 +19,7 @@ public class MapSelectWheel : MenuWheel<EArenaConfiguration>
 	{
 		GameObject[] elementsToProcess = new GameObject[_configRefs.Length];
 		EArenaConfiguration[] returnArray = new EArenaConfiguration[_configRefs.Length];
+		_selectedElementIndex = 0;
 
 		Image tempImageRef;
 		_wheelRadius = Mathf.Abs(transform.parent.localPosition.z);

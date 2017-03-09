@@ -50,7 +50,6 @@ public class AutoFade : MonoBehaviour
 			mat.name = "Plane_No_zTest";
 			UnityEditor.AssetDatabase.CreateAsset(mat, "Assets/Resources/Plane_No_zTest.mat");
 			m_Material = mat;
-
 		}
 #endif
 	}

@@ -267,7 +267,8 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	public void CheckIfNeedFTUE()
 	{
-		if (_needFTUE)
-			MenuPanelNew.PanelRefs["FTUE"].Open();
+		//if (_needFTUE)
+		//	MenuPanelNew.PanelRefs["FTUE"].Open();
+		Debug.LogWarning("Tuto has been disabled");
 	}
 }

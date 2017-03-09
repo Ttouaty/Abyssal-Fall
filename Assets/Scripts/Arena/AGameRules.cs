@@ -194,7 +194,7 @@ public abstract class AGameRules : MonoBehaviour
 		EndGameManager.Instance.WinnerId = winner.PlayerNumber;
 		//EndGameManager.Instance.Open();
 		
-		ArenaManager.Instance.DisplayWinner(winner.CharacterUsed._characterData.CharacterSelectModel.gameObject);
+		ArenaManager.Instance.DisplayWinner(winner.gameObject);
 	}
 
 	public virtual void OnPlayerDisconnect(int playerNumber)
