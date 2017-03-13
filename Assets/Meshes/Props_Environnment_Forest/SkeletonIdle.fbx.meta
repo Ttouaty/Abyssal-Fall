@@ -1,0 +1,195 @@
+fileFormatVersion: 2
+guid: f45534b0424d86445ac879809933e6e9
+timeCreated: 1489162792
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Head
+    100002: Head_End
+    100004: Left_Foot
+    100006: Left_Leg1
+    100008: Left_Palm1
+    100010: Left_Palm2
+    100012: Left_Shoulder1
+    100014: Left_Wrist
+    100016: LeftPalm_End
+    100018: Leftt_Foot_Leg
+    100020: Pelvis
+    100022: polySurface9
+    100024: Right_Foot
+    100026: Right_Foot_Leg
+    100028: Right_Leg
+    100030: Right_Palm1
+    100032: Right_Palm2
+    100034: Right_Palm_End
+    100036: Right_Shoulder
+    100038: Right_Wrist
+    100040: //RootNode
+    100042: Spine1
+    100044: Spine2
+    400000: Head
+    400002: Head_End
+    400004: Left_Foot
+    400006: Left_Leg1
+    400008: Left_Palm1
+    400010: Left_Palm2
+    400012: Left_Shoulder1
+    400014: Left_Wrist
+    400016: LeftPalm_End
+    400018: Leftt_Foot_Leg
+    400020: Pelvis
+    400022: polySurface9
+    400024: Right_Foot
+    400026: Right_Foot_Leg
+    400028: Right_Leg
+    400030: Right_Palm1
+    400032: Right_Palm2
+    400034: Right_Palm_End
+    400036: Right_Shoulder
+    400038: Right_Wrist
+    400040: //RootNode
+    400042: Spine1
+    400044: Spine2
+    4300000: polySurface9
+    7400000: Idle
+    9500000: //RootNode
+    13700000: polySurface9
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Idle
+      takeName: Idle
+      firstFrame: 61
+      lastFrame: 129
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Pelvis
+        weight: 1
+      - path: Pelvis/Left_Leg1
+        weight: 1
+      - path: Pelvis/Left_Leg1/Left_Foot
+        weight: 1
+      - path: Pelvis/Left_Leg1/Left_Foot/Leftt_Foot_Leg
+        weight: 1
+      - path: Pelvis/Right_Leg
+        weight: 1
+      - path: Pelvis/Right_Leg/Right_Foot
+        weight: 1
+      - path: Pelvis/Right_Leg/Right_Foot/Right_Foot_Leg
+        weight: 1
+      - path: Pelvis/Spine1
+        weight: 1
+      - path: Pelvis/Spine1/Spine2
+        weight: 1
+      - path: Pelvis/Spine1/Spine2/Head
+        weight: 1
+      - path: Pelvis/Spine1/Spine2/Head/Head_End
+        weight: 1
+      - path: Pelvis/Spine1/Spine2/Left_Shoulder1
+        weight: 1
+      - path: Pelvis/Spine1/Spine2/Left_Shoulder1/Left_Wrist
+        weight: 1
+      - path: Pelvis/Spine1/Spine2/Left_Shoulder1/Left_Wrist/Left_Palm1
+        weight: 1
+      - path: Pelvis/Spine1/Spine2/Left_Shoulder1/Left_Wrist/Left_Palm1/Left_Palm2
+        weight: 1
+      - path: Pelvis/Spine1/Spine2/Left_Shoulder1/Left_Wrist/Left_Palm1/Left_Palm2/LeftPalm_End
+        weight: 1
+      - path: Pelvis/Spine1/Spine2/Right_Shoulder
+        weight: 1
+      - path: Pelvis/Spine1/Spine2/Right_Shoulder/Right_Wrist
+        weight: 1
+      - path: Pelvis/Spine1/Spine2/Right_Shoulder/Right_Wrist/Right_Palm1
+        weight: 1
+      - path: Pelvis/Spine1/Spine2/Right_Shoulder/Right_Wrist/Right_Palm1/Right_Palm2
+        weight: 1
+      - path: Pelvis/Spine1/Spine2/Right_Shoulder/Right_Wrist/Right_Palm1/Right_Palm2/Right_Palm_End
+        weight: 1
+      - path: polySurface9
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 61
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 100
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
