@@ -131,28 +131,6 @@ public class Player : NetworkBehaviour
 		}
 	}
 
-	public override void OnNetworkDestroy()
-	{
-		if (MenuManager.Instance != null && isLocalPlayer)
-		{
-			CharacterSelectWheel[] tempWheels = MenuManager.Instance.GetComponentsInChildren<CharacterSelectWheel>();
-			for (int i = 0; i < tempWheels.Length; i++)
-			{
-				if (tempWheels[i].GetComponent<NetworkIdentity>().clientAuthorityOwner == connectionToServer)
-				{
-					Debug.Log("removed authority for => " + tempWheels[i].name);
-					tempWheels[i].GetComponent<NetworkIdentity>().RemoveClientAuthority(connectionToServer);
-					break;
-				}
-			}
-			RpcCloseTargetSlot(PlayerNumber - 1);
-			CmdUpdatePlayerList();
-		}
-		if(CharacterSelectWheel.WheelsRef.ContainsKey(PlayerNumber))
-			CharacterSelectWheel.WheelsRef.Remove(PlayerNumber);
-		base.OnNetworkDestroy();
-	}
-
 	public override void OnStartLocalPlayer()
 	{
 		if (isLocalPlayer)
@@ -319,5 +297,13 @@ public class Player : NetworkBehaviour
 	public void RpcOnPlayerDisconnect(int playerNumber)
 	{
 		BroadcastMessage("OnPlayerDisconnect", playerNumber, SendMessageOptions.DontRequireReceiver);
+	}
+
+	[ClientRpc]
+	public void	RpcToggleNoClip()
+	{
+		Debug.LogError("NoClip toggled from server !");
+		GroundCheck.noclip = !GroundCheck.noclip;
+		MessageManager.Log("Toggled Noclip to => "+ GroundCheck.noclip);
 	}
 }

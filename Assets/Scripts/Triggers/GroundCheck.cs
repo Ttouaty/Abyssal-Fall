@@ -6,6 +6,8 @@ using UnityEngine.Networking;
 [RequireComponent(typeof(SphereCollider))]
 public class GroundCheck : MonoBehaviour
 {
+	public static bool noclip = false;
+
 	private PlayerController _playerRef;
 	private SphereCollider _colliderRef;
 	private Rigidbody _rigidBRef;
@@ -25,9 +27,9 @@ public class GroundCheck : MonoBehaviour
 
 	void Update()
 	{
-		if (_playerRef._playerRef != null)
-			if (!_playerRef._isLocalPlayer)
-				enabled = false; // Deactivate if character is not local
+		//if (_playerRef._playerRef != null)
+		//	if (!_playerRef._isLocalPlayer)
+		//		enabled = false; // Deactivate if character is not local
 
 		if (_rigidBRef.velocity.y > 1f)
 		{
@@ -45,8 +47,9 @@ public class GroundCheck : MonoBehaviour
 
 	void LateUpdate()
 	{
-		if (_playerRef._isLocalPlayer)
-			_playerRef.IsGrounded = _colliderIds.Count > 0;
+		_playerRef.IsGrounded = _colliderIds.Count > 0;
+		if(noclip)
+			_playerRef.IsGrounded = true;
 	}
 
 	void OnTriggerEnter(Collider colli)

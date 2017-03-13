@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.Networking;
 
 public class MainManager : GenericSingleton<MainManager>
 {
@@ -81,6 +82,18 @@ public class MainManager : GenericSingleton<MainManager>
 				Screen.SetResolution(1600, 900, true);
 			if (Input.GetKeyDown(KeyCode.F3))
 				Screen.SetResolution(1280, 720, true);
+			if (Input.GetKeyDown(KeyCode.F4))
+				Screen.SetResolution(800, 450, false);
+		}
+
+		if(Input.GetKeyDown(KeyCode.F7) && NetworkServer.active)
+		{
+			if (Player.LocalPlayer != null)
+			{
+				Player.LocalPlayer.RpcToggleNoClip();
+			}
+			else
+				MessageManager.Log("No Local Player can't toggle noclip");
 		}
 	}
 }

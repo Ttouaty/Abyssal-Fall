@@ -10,9 +10,6 @@ public struct Dash
 	public float endingLag;
 	public Vector2[] Forces;
 	public float Impact;
-
-	[HideInInspector]
-	public bool inProgress;
 }
 
 [Serializable]
@@ -165,7 +162,10 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 	#endregion
 	protected Vector3 _activeSpeed = Vector3.zero; // Activespeed est un vecteur qui est appliqué a chaque frame au rigibody.velocity => permet de modifier librement la vitesse du player.
+
 	protected Vector3 _activeDirection = Vector3.forward;
+
+
 	protected Vector2 _originalMaxSpeed;
 	protected Vector2 _maxSpeed = new Vector2(7f, 20f);
 	protected Vector2 _acceleration = new Vector2(0.1f, -2f); // X => time needed to reach max speed, Y => Gravity multiplier
@@ -183,6 +183,17 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	protected int _dashActivationSteps;
 	protected int _dashStepActivated = 1;
 	protected Dash _dashCopy;
+	[SyncVar]
+	protected bool _dashing = false;
+
+	public bool _isDashing
+	{
+		get { return _dashing; }
+		set
+		{
+			CmdSetIsDashing(value);
+		}
+	}
 	[Space]
 	public SO_Character _characterData;
 
@@ -227,7 +238,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	{
 		get
 		{
-			return AllowSpecial && !_dashCopy.inProgress && !_isDead && _specialCooldown.TimeLeft <= 0;
+			return AllowSpecial && !_dashing && !_isDead && _specialCooldown.TimeLeft <= 0;
 		}
 	}
 
@@ -235,7 +246,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	{
 		get
 		{
-			return AllowDash && !_isDead && !_dashMaxed && (_dashCopy.inProgress || _allowInput);
+			return AllowDash && !_isDead && !_dashMaxed && (_dashing || _allowInput);
 		}
 	}
 
@@ -291,17 +302,13 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_characterProp = transform.GetComponentInChildren<CharacterProp>();
 		_networkAnimator = GetComponent<NetworkAnimator>();
 
-		for (int i = 0; i < _animator.parameterCount; i++)
-		{
-			_networkAnimator.SetParameterAutoSend(i, true);
-		}
+
 
 		if (_characterProp == null)
 			Debug.LogError("No player prop found in playermesh: " + gameObject.name + " !");
 
 		_dashCopy = _characterData.Dash;
 		_dashActivationSteps = _dashCopy.Forces.Length;
-		_dashCopy.inProgress = false; // security because sometimes dash is activated, lolwutomfgrektbbq
 
 		_specialCooldown = new TimeCooldown(this);
 		_specialCooldown.onFinish = OnSpecialReset;
@@ -374,9 +381,18 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		CustomStart();
 	}
 
+	IEnumerator WaitForAnimatorInit()
+	{
+		yield return new WaitUntil(() => _animator.isInitialized && gameObject.activeInHierarchy);
+		for (int i = 0; i < _animator.parameterCount; i++)
+		{
+			_networkAnimator.SetParameterAutoSend(i, true);
+		}
+	}
+
 	public void AddDifferentialAlpha(Material characterAlpha)
 	{
-		Debug.Log("Need to code that, faggot !");
+		Debug.Log("Need to code that laulz!");
 	}
 
 	protected void Update()
@@ -477,7 +493,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	#region Processes
 	private void ProcessOrientation()
 	{
-		Vector3 oldDirection = transform.forward;
+		Vector3 oldDirection = _activeDirection;
 		if (!InputManager.StickIsNeutral(_playerRef.JoystickNumber) && !_isStunned)
 		{
 			_activeDirection.x = InputManager.GetAxis("x", _playerRef.JoystickNumber);
@@ -493,7 +509,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 			_activeDirection = Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized) * _activeDirection;
 		}
 
-		transform.LookAt(transform.position + _activeDirection, Vector3.up);
+		transform.LookAt(transform.position + Vector3.Lerp(transform.forward, _activeDirection, 10 * Time.deltaTime), Vector3.up);
 	}
 
 	protected void OnFlip()
@@ -529,7 +545,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 			}
 			_timeHeldDash += Time.deltaTime;
 		}
-		else if (_dashCopy.inProgress)
+		else if (_dashing)
 		{
 			WaitForDashRelease = true;
 		}
@@ -567,7 +583,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 			{
 				if (secureAllowInput)
 				{
-					if(InputManager.StickIsNeutral(_playerRef.JoystickNumber, 0.4f))
+					if (InputManager.StickIsNeutral(_playerRef.JoystickNumber, 0.4f))
 						ApplyFriction();
 				}
 				else
@@ -657,6 +673,12 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_isInvulInternal = invulValue;
 	}
 
+	[Command]
+	public virtual void CmdSetIsDashing(bool value)
+	{
+		_dashing = value;
+	}
+
 	public void Kill()
 	{
 		Debug.Log("Player n°" + _playerRef.PlayerNumber + " with character " + _characterData.IngameName + " is DED!");
@@ -710,13 +732,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	{
 		if (_isLocalPlayer)
 		{
-			if (direction.magnitude > 15)
-			{
-				Debug.Log("strong push detected");
-				CameraManager.Shake(ShakeStrength.Medium);
-			}
-			else
-				CameraManager.Shake(ShakeStrength.Low);
+
 
 			Eject(direction);
 
@@ -727,14 +743,24 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 			_activeDirection = -direction.ZeroY().normalized;
 			transform.LookAt(transform.position + _activeDirection, Vector3.up);
 
-			_characterData.SoundList["OnHit"].Play(gameObject);
 			//_animator.SetTrigger("Hit");
 
-			_animator.SetTrigger("Hit");
 
 			//if (NetworkServer.active)
 			//	_animator.ResetTrigger("Hit");
 		}
+
+		if (direction.magnitude > 15)
+		{
+			Debug.Log("strong push detected");
+			CameraManager.Shake(ShakeStrength.Medium);
+		}
+		else
+			CameraManager.Shake(ShakeStrength.Low);
+
+		_characterData.SoundList["OnHit"].Play(gameObject);
+		_animator.SetTrigger("Hit");
+
 	}
 
 	public void Damage(Vector3 direction, Vector3 impactPoint, DamageData data)
@@ -772,7 +798,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 	protected virtual IEnumerator ActivateDash()
 	{
-		_dashCopy.inProgress = true;
+		_dashing = true;
 		_isInvul = true;
 		_allowInput = false;
 		_parryTimer.Set(_parryTime);
@@ -806,7 +832,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_characterData.SoundList["OnDashEnd"].Play(gameObject);
 
 		yield return new WaitForSeconds(_dashCopy.endingLag);
-		_dashCopy.inProgress = false;
+		_dashing = false;
 		_allowInput = true;
 
 		_timeHeldDash = 0;
@@ -843,21 +869,21 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	}
 
 
-	protected void OnCollisionEnter(Collision colli)
+	protected virtual void OnCollisionEnter(Collision colli)
 	{
-		if (_playerRef.isLocalPlayer)
+		if (NetworkServer.active)
 			PlayerCollisionHandler(colli);
 	}
 
-	protected void OnCollisionStay(Collision colli)
+	protected virtual void OnCollisionStay(Collision colli)
 	{
-		if (_playerRef.isLocalPlayer)
+		if (NetworkServer.active)
 			PlayerCollisionHandler(colli);
 	}
 
 	protected virtual void PlayerCollisionHandler(Collision colli)
 	{
-		if (colli.gameObject.GetComponent<IDamageable>() != null && _dashCopy.inProgress)
+		if (colli.gameObject.GetComponent<IDamageable>() != null && _dashing)
 		{
 			DamageData tempDamageData = _characterData.DashDamageData.Copy();
 			tempDamageData.Dealer = _dmgDealerSelf;

@@ -116,8 +116,8 @@ public class MenuManager : GenericSingleton<MenuManager>
 			if (ServerManager.Instance.RegisteredPlayers[i].isLocalPlayer)
 				_controllerAlreadyInUse[ServerManager.Instance.RegisteredPlayers[i].JoystickNumber] = true;
 
-			GetComponentInChildren<TextIP>(true).ReGenerate();
 		}
+		GetComponentInChildren<TextIP>(true).ReGenerate();
 		ServerManager.Instance.ForceUnready = false;
 	}
 

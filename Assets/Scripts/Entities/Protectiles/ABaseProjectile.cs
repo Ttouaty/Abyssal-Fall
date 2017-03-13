@@ -52,16 +52,17 @@ public abstract class ABaseProjectile : NetworkBehaviour, IPoolable
 
 		_rigidB.velocity = Direction.normalized * _speed;
 
-		RpcSendOnLaunch(_shooter.ObjectRef);
-
 		StartCoroutine(DelayStop());
 	}
 
 	public override void OnStartClient()
 	{
 		base.OnStartClient();
+		if(NetworkServer.active)
+			RpcSendOnLaunch(_shooter.ObjectRef);
 	}
 
+	[ClientRpc]
 	protected void RpcSendOnLaunch(GameObject Launcher)
 	{
 		OnLaunch(_shooter.ObjectRef);
@@ -100,7 +101,13 @@ public abstract class ABaseProjectile : NetworkBehaviour, IPoolable
 		if (colli.GetComponent<IDamageable>() != null)
 		{
 			if(colli.gameObject.GetComponentInParent<NetworkIdentity>().netId != LauncherNetId)
+			{
 				OnHitPlayer(colli.GetComponent<IDamageable>());
+			}
+			else
+			{
+				Debug.Log("Same netid detected / own => "+LauncherNetId+" / colli => "+ colli.gameObject.GetComponentInParent<NetworkIdentity>().netId); 
+			}
 		}
 		else if (colli.gameObject.layer == LayerMask.NameToLayer("Wall"))
 		{

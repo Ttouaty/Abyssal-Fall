@@ -140,11 +140,11 @@ public class InputManager : GenericSingleton<InputManager>
 	{
 		for (int i = 0; i < Instance.KeyboardControls[buttonNumber].Length; i++)
 		{
-			if (buttonNumber == 0 && GameManager.InProgress)
-			{
-				if (Input.GetKeyDown(KeyCode.Mouse0))
-					return true;
-			}
+			//if (buttonNumber == 0 && GameManager.InProgress)
+			//{
+			//	if (Input.GetKeyDown(KeyCode.Mouse0))
+			//		return true;
+			//}
 			if (Input.GetKeyDown(Instance.KeyboardControls[buttonNumber][i]))
 				return true;
 		}
@@ -190,11 +190,11 @@ public class InputManager : GenericSingleton<InputManager>
 	{
 		for (int i = 0; i < Instance.KeyboardControls[buttonNumber].Length; i++)
 		{
-			if (buttonNumber == 0 && GameManager.InProgress)
-			{
-				if (Input.GetKeyUp(KeyCode.Mouse0))
-					return true;
-			}
+			//if (buttonNumber == 0 && GameManager.InProgress)
+			//{
+			//	if (Input.GetKeyUp(KeyCode.Mouse0))
+			//		return true;
+			//}
 			if (Input.GetKeyUp(Instance.KeyboardControls[buttonNumber][i]))
 				return true;
 		}
@@ -241,11 +241,11 @@ public class InputManager : GenericSingleton<InputManager>
 	{
 		for (int i = 0; i < Instance.KeyboardControls[buttonNumber].Length; i++)
 		{
-			if(buttonNumber == 0 && GameManager.InProgress)
-			{
-				if (Input.GetKey(KeyCode.Mouse0))
-					return true;
-			}
+			//if(buttonNumber == 0 && GameManager.InProgress)
+			//{
+			//	if (Input.GetKey(KeyCode.Mouse0))
+			//		return true;
+			//}
 
 			if (Input.GetKey(Instance.KeyboardControls[buttonNumber][i])) 
 				return true;

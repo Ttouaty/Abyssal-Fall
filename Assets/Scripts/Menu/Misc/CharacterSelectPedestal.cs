@@ -6,12 +6,11 @@ public class CharacterSelectPedestal : MonoBehaviour
 {
 	public float RotatePerSec	= 180;
 	public float TimeToScaleUp	= 0.1f;
-
-	private bool _previousState = false;
+	 
 	private List<Transform> _lights = new List<Transform>();
 	private List<Vector3> _lightsScales = new List<Vector3>();
 
-	void Start()
+	void Awake()
 	{
 		for (int i = 0; i < transform.childCount; i++)
 		{
@@ -31,20 +30,13 @@ public class CharacterSelectPedestal : MonoBehaviour
 
 	public void SetSelect(bool active)
 	{
-		if (_previousState != active)
+		StopAllCoroutines();
+
+		for (int i = 0; i < _lights.Count; i++)
 		{
-			StopAllCoroutines();
-
-			for (int i = 0; i < _lights.Count; i++)
-			{
-				_lights[i].gameObject.SetActive(active);
-				if (_previousState != false)
-				{
-					StartCoroutine(ScaleUp(_lights[i], _lightsScales[i]));
-				}
-			}
-
-			_previousState = active;
+			_lights[i].gameObject.SetActive(active);
+			if (active)
+				StartCoroutine(ScaleUp(_lights[i], _lightsScales[i]));
 		}
 	}
 

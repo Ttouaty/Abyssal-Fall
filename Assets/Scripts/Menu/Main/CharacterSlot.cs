@@ -63,8 +63,6 @@ public class CharacterSlot : MonoBehaviour
 		if (_playerRef == null)
 			return;
 
-		SelectPedestal(_playerRef.isReady);
-
 		if (!_playerRef.isLocalPlayer)
 			return;
 

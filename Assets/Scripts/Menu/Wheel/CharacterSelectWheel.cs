@@ -29,6 +29,7 @@ public class CharacterSelectWheel : NetworkBehaviour
 	[HideInInspector]
 	[SyncVar]
 	public GameObject _playerRef;
+	private int playerNumber = 0;
 
 	#region baseClass
 	private void Internal_Generate(GameObject[] elementsToDisplay, PlayerController[] elementsToReturn)
@@ -149,16 +150,16 @@ public class CharacterSelectWheel : NetworkBehaviour
 
 		_wheelRadius = Mathf.Abs(transform.parent.localPosition.z * 2.5f);
 		Internal_Generate(tempGenerationSelectableCharacters, AvailablePlayers);
-		_selectedSkinIndex = _playerRef.GetComponent<Player>().SkinNumber;
 
 		ScrollToIndex(_playerRef.GetComponent<Player>().CharacterUsedIndex);
-
+		ChangeCharacterSkin(_playerRef.GetComponent<Player>().SkinNumber);
 		SetAnimBool("IsSelected", _playerRef.GetComponent<Player>().isReady);
+		MenuManager.Instance._characterSlotsContainerRef.SlotsAvailable[playerNumber - 1].SelectPedestal(_playerRef.GetComponent<Player>().isReady);
 
-		if (WheelsRef.ContainsKey(_playerRef.GetComponent<Player>().PlayerNumber))
-			WheelsRef.Remove(_playerRef.GetComponent<Player>().PlayerNumber);
+		if (WheelsRef.ContainsKey(playerNumber))
+			WheelsRef.Remove(playerNumber);
 
-		WheelsRef.Add(_playerRef.GetComponent<Player>().PlayerNumber, this);
+		WheelsRef.Add(playerNumber, this);
 	}
 
 	public void ChangeCharacterSkinPrecise(int skinIndex, int characterIndex)
@@ -196,10 +197,19 @@ public class CharacterSelectWheel : NetworkBehaviour
 	public override void OnStartClient()
 	{
 		base.OnStartClient();
-		transform.SetParent(MenuManager.Instance._characterSlotsContainerRef.SlotsAvailable[_playerRef.GetComponent<Player>().PlayerNumber - 1].WheelSlot, false);
+		playerNumber = _playerRef.GetComponent<Player>().PlayerNumber;
 
-		MenuManager.Instance._characterSlotsContainerRef.SlotsAvailable[_playerRef.GetComponent<Player>().PlayerNumber - 1].OpenSlot(this);
-		Invoke("Generate", 0.2f); // delayed to prevent setTrigger not firing :S
+		transform.SetParent(MenuManager.Instance._characterSlotsContainerRef.SlotsAvailable[playerNumber - 1].WheelSlot, false);
+
+		MenuManager.Instance._characterSlotsContainerRef.SlotsAvailable[playerNumber - 1].OpenSlot(this);
+
+		MenuManager.Instance.GetComponent<MonoBehaviour>().StartCoroutine(WaitForActive()); // delayed to prevent setTrigger not firing
+	}
+
+	IEnumerator WaitForActive()
+	{
+		yield return new WaitUntil(() => gameObject.activeInHierarchy);
+		Generate();
 	}
 
 	public void SetAnimTrigger(string triggerName)
@@ -214,9 +224,13 @@ public class CharacterSelectWheel : NetworkBehaviour
 
 	public override void OnNetworkDestroy()
 	{
-		if(_playerRef != null)
-			WheelsRef.Remove(_playerRef.GetComponent<Player>().PlayerNumber);
-		Destroy(gameObject);
+		WheelsRef.Remove(playerNumber);
 		base.OnNetworkDestroy();
+	}
+
+	void OnDestroy()
+	{
+		if (Player.LocalPlayer == null) // If client Disconnect
+			WheelsRef.Clear();
 	}
 }

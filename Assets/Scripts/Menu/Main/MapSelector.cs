@@ -8,9 +8,17 @@ public class MapSelector : MenuPanelNew
 	public Transform MapWheelTarget;
 	protected void OnEnable()
 	{
-		if(NetworkServer.active)
+		if (NetworkServer.active)
 		{
 			ServerManager.Instance.SpawnMapWheel(Player.LocalPlayer.gameObject);
+		}
+	}
+
+	protected void OnDisable()
+	{
+		if (NetworkServer.active)
+		{
+			Destroy(MapWheelTarget.GetChild(0).gameObject);
 		}
 	}
 }

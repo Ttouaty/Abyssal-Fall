@@ -36,6 +36,7 @@ public class MapSelectWheel : MenuWheel<EArenaConfiguration>
 			elementsToProcess[i].transform.SetParent(transform);
 			elementsToProcess[i].transform.localScale = Vector3.one;
 			tempImageRef.rectTransform.sizeDelta = transform.parent.GetComponent<RectTransform>().sizeDelta;
+
 			returnArray[i] = _configRefs[i].TargetMapEnum;
 		}
 
