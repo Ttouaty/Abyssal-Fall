@@ -41,10 +41,7 @@ public class TimeCooldown : CoolDown{
 	public void Set(float value)
 	{
 		targetTimeStamp = Time.time + value;
-		isFinished = false;
-
-		if (value == 0)
-			isFinished = true;
+		isFinished = value == 0;
 	}
 
 }

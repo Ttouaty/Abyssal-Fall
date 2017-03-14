@@ -47,15 +47,17 @@ public class FireBall : ABaseProjectile
 
 	protected override void OnLaunch(GameObject Launcher)
 	{
-		_movingParticlesRef = Instantiate(MoveParticles, transform) as ParticleSystem;
-		_movingParticlesRef.transform.localPosition = Vector3.zero;
+		base.OnLaunch(Launcher);
 
-		Debug.Log("Onlaunch Called");
+		_movingParticlesRef = Instantiate(MoveParticles, transform, false) as ParticleSystem;
+		_movingParticlesRef.transform.localPosition = Vector3.zero;
+		_movingParticlesRef.Play();
 	}
 
 	[ClientRpc]
 	public void RpcExplode()
 	{
+		_rigidB.velocity = Vector3.zero;
 		StartCoroutine(DelayedExplosion());
 	}
 
@@ -91,10 +93,10 @@ public class FireBall : ABaseProjectile
 
 			for (int i = 0; i < foundElements.Length; i++)
 			{
-				if (foundElements[i].gameObject.GetComponent<NetworkIdentity>().netId == LauncherNetId)
-				{
+				if (foundElements[i].gameObject.GetComponent<NetworkIdentity>() == null)
 					continue;
-				}
+				if (foundElements[i].gameObject.GetComponent<NetworkIdentity>().netId == LauncherNetId)
+					continue;
 				if (foundElements[i].GetComponent<IDamageable>() != null)
 					foundElements[i].GetComponent<IDamageable>().Damage(
 						Quaternion.FromToRotation(Vector3.right, (foundElements[i].transform.position - transform.position).ZeroY().normalized) * _ejection,

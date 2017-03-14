@@ -161,15 +161,13 @@ public class CharacterSelectWheel : NetworkBehaviour
 
 		WheelsRef.Add(playerNumber, this);
 	}
-
-	public void ChangeCharacterSkinPrecise(int skinIndex, int characterIndex)
+	[ClientRpc]
+	private void RpcChangeCharacterSkinPrecise(int skinIndex, int characterIndex)
 	{
 		if(characterIndex == -1)
 			_displayArray[_selectedElementIndex].GetComponent<CharacterModel>().Reskin(skinIndex);
 		else
 			_displayArray[characterIndex].GetComponent<CharacterModel>().Reskin(skinIndex);
-
-		_selectedSkinIndex = skinIndex;
 	}
 
 	public void ChangeCharacterSkin(int skinIndex)
@@ -190,8 +188,14 @@ public class CharacterSelectWheel : NetworkBehaviour
 	public void CmdChangeCharacterSkin(int newIndex)
 	{
 		_selectedSkinIndex = newIndex;
-		if(_playerRef != null)
+		if (_playerRef != null)
 			_playerRef.GetComponent<Player>().CmdSetPlayerCharacter(_selectedElementIndex, _selectedSkinIndex);
+	}
+
+	[Command]
+	public void CmdChangeCharacterSkinPrecise(int skinIndex, int characterIndex)
+	{
+		RpcChangeCharacterSkinPrecise(skinIndex, characterIndex);
 	}
 
 	public override void OnStartClient()

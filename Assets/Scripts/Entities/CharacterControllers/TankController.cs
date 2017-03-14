@@ -76,7 +76,6 @@ public class TankController : PlayerController
 	public void RpcActiveCharge(bool active)
 	{
 
-		Debug.Log("charge activated on p obj n => "+_playerRef.PlayerNumber);
 		_charging = active;
 		ChargeHitbox.enabled = active;
 
@@ -97,12 +96,8 @@ public class TankController : PlayerController
 
 		if (_charging)
 		{
-			Debug.Log("is charging");
-
 			if (colli.transform.GetComponent<IDamageable>() != null)
 			{
-				Debug.Log("damaged");
-
 				DamageData tempDamageData = _characterData.SpecialDamageData.Copy();
 				tempDamageData.Dealer = _dmgDealerSelf;
 

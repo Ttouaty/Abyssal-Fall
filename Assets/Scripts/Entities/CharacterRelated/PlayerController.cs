@@ -302,7 +302,10 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_characterProp = transform.GetComponentInChildren<CharacterProp>();
 		_networkAnimator = GetComponent<NetworkAnimator>();
 
-
+		for (int i = 0; i < _animator.parameterCount; i++)
+		{
+			_networkAnimator.SetParameterAutoSend(i, true);
+		}
 
 		if (_characterProp == null)
 			Debug.LogError("No player prop found in playermesh: " + gameObject.name + " !");
@@ -379,15 +382,6 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		Freeze();
 
 		CustomStart();
-	}
-
-	IEnumerator WaitForAnimatorInit()
-	{
-		yield return new WaitUntil(() => _animator.isInitialized && gameObject.activeInHierarchy);
-		for (int i = 0; i < _animator.parameterCount; i++)
-		{
-			_networkAnimator.SetParameterAutoSend(i, true);
-		}
 	}
 
 	public void AddDifferentialAlpha(Material characterAlpha)
@@ -509,7 +503,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 			_activeDirection = Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized) * _activeDirection;
 		}
 
-		transform.LookAt(transform.position + Vector3.Lerp(transform.forward, _activeDirection, 10 * Time.deltaTime), Vector3.up);
+		transform.LookAt(transform.position + _activeDirection, Vector3.up);
 	}
 
 	protected void OnFlip()
@@ -557,7 +551,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		{
 			_specialCooldown.Set(_characterData.SpecialCoolDown);
 
-			_animator.SetTrigger("Special");
+			_networkAnimator.BroadCastTrigger("Special");
 			//if (NetworkServer.active)
 			//	_animator.ResetTrigger("Special");
 
@@ -658,10 +652,9 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		tempDamageData.Dealer = _dmgDealerSelf;
 
 		projectile.GetComponent<ABaseProjectile>().Launch(projPosition, projDirection, tempDamageData, netId);
-		//NetworkServer.SpawnWithClientAuthority(projectile, connectionToClient);
-
-		NetworkServer.Spawn(projectile);
-		_characterData.SoundList["OnSpecialActivate"].Play(projectile);
+		NetworkServer.SpawnWithClientAuthority(projectile, _playerRef.gameObject);
+		projectile.GetComponent<ABaseProjectile>().RpcSendOnLaunch(gameObject);
+		//NetworkServer.Spawn(projectile);
 
 		if (ArenaManager.Instance != null)
 			projectile.transform.parent = ArenaManager.Instance.SpecialsRoot;
@@ -688,7 +681,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 		//_animator.SetTrigger("Death");
 		if (_isLocalPlayer)
-			_animator.SetTrigger("Death");
+			_networkAnimator.BroadCastTrigger("Death");
 
 		if (NetworkServer.active)
 		{
@@ -711,7 +704,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		if (_isLocalPlayer)
 		{
 			transform.position = newPos;
-			_animator.SetTrigger("Reset");
+			//_animator.SetTrigger("Reset");
 		}
 
 		//if (NetworkServer.active)
@@ -738,6 +731,8 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 			if (newStunTime > 0)
 				_stunTimer.Set(newStunTime);
+			else
+				_isInvul = false;
 			_invulTimer.Set(newStunTime * 1.3f);
 
 			_activeDirection = -direction.ZeroY().normalized;
@@ -759,7 +754,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 			CameraManager.Shake(ShakeStrength.Low);
 
 		_characterData.SoundList["OnHit"].Play(gameObject);
-		_animator.SetTrigger("Hit");
+		_networkAnimator.BroadCastTrigger("Hit");
 
 	}
 
@@ -772,12 +767,12 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 		direction.x += direction.x * ((0.5f - _characterData.CharacterStats.resistance.Percentage(0, Stats.maxValue)) * 0.5f);
 		direction.z += direction.z * ((0.5f - _characterData.CharacterStats.resistance.Percentage(0, Stats.maxValue)) * 0.5f);
+		_isInvul = true;
 
 		if (NetworkServer.active)
 		{
 			Debug.Log("Character \"" + _characterData.IngameName + "\" was damaged by: \"" + data.Dealer.InGameName + "\"");
 			LastDamageDealer = data.Dealer;
-			_isInvul = true;
 			RpcDamage(direction, data.StunInflicted);
 		}
 	}
@@ -806,7 +801,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_stunTimer.Add(_dashCopy.endingLag);
 
 		//_animator.SetTrigger("Dash_Start");
-		_animator.SetTrigger("Dash_Start");
+		_networkAnimator.BroadCastTrigger("Dash_Start");
 
 		//if (NetworkServer.active)
 		//	_animator.ResetTrigger("Dash_Start");
@@ -825,7 +820,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 		_isInvul = false;
 		//_animator.SetTrigger("Dash_End");
-		_animator.SetTrigger("Dash_End");
+		_networkAnimator.BroadCastTrigger("Dash_End");
 
 		//if (NetworkServer.active)
 		//	_animator.ResetTrigger("Dash_End");

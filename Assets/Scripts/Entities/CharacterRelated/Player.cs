@@ -302,7 +302,7 @@ public class Player : NetworkBehaviour
 	[ClientRpc]
 	public void	RpcToggleNoClip()
 	{
-		Debug.LogError("NoClip toggled from server !");
+		//Debug.LogError("NoClip toggled from server !");
 		GroundCheck.noclip = !GroundCheck.noclip;
 		MessageManager.Log("Toggled Noclip to => "+ GroundCheck.noclip);
 	}

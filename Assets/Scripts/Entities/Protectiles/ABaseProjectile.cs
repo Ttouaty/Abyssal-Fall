@@ -58,17 +58,18 @@ public abstract class ABaseProjectile : NetworkBehaviour, IPoolable
 	public override void OnStartClient()
 	{
 		base.OnStartClient();
-		if(NetworkServer.active)
-			RpcSendOnLaunch(_shooter.ObjectRef);
 	}
 
 	[ClientRpc]
-	protected void RpcSendOnLaunch(GameObject Launcher)
+	public void RpcSendOnLaunch(GameObject Launcher)
 	{
-		OnLaunch(_shooter.ObjectRef);
+		OnLaunch(Launcher);
 	}
 
-	protected virtual void OnLaunch(GameObject Launcher) { }
+	protected virtual void OnLaunch(GameObject Launcher)
+	{
+		Launcher.GetComponent<PlayerController>()._characterData.SoundList["OnSpecialActivate"].Play(gameObject);
+	}
 
 	private IEnumerator DelayStop()
 	{
@@ -103,10 +104,6 @@ public abstract class ABaseProjectile : NetworkBehaviour, IPoolable
 			if(colli.gameObject.GetComponentInParent<NetworkIdentity>().netId != LauncherNetId)
 			{
 				OnHitPlayer(colli.GetComponent<IDamageable>());
-			}
-			else
-			{
-				Debug.Log("Same netid detected / own => "+LauncherNetId+" / colli => "+ colli.gameObject.GetComponentInParent<NetworkIdentity>().netId); 
 			}
 		}
 		else if (colli.gameObject.layer == LayerMask.NameToLayer("Wall"))

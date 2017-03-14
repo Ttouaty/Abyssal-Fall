@@ -64,6 +64,7 @@ protected override bool SpecialActivation()
 		_fireBallObject = GameObjectPool.GetAvailableObject("FireBall");
 		DamageData tempDamageData = _characterData.SpecialDamageData.Copy();
 		tempDamageData.Dealer = _dmgDealerSelf;
+
 		_fireBallObject.GetComponent<FireBall>().Launch(
 			pos,
 			dir,
@@ -74,7 +75,8 @@ protected override bool SpecialActivation()
 			netId
 		);
 
-		NetworkServer.Spawn(_fireBallObject);
+		NetworkServer.SpawnWithClientAuthority(_fireBallObject, _playerRef.gameObject);
+		_fireBallObject.GetComponent<ABaseProjectile>().RpcSendOnLaunch(gameObject);
 
 		if (ArenaManager.Instance != null)
 			_fireBallObject.transform.parent = ArenaManager.Instance.SpecialsRoot;

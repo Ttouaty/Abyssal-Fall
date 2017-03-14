@@ -11,6 +11,7 @@ public class Hammer : ABaseProjectile
 
 	protected override void OnLaunch(GameObject launcher)
 	{
+		base.OnLaunch(launcher);
 		GetComponentInChildren<MeshRenderer>().material = launcher.GetComponent<PlayerController>()._characterProp.PropRenderer.material;
 	}
 

@@ -29,8 +29,7 @@ public abstract class CoolDown {
 		CoolDownManager.Instance.AddCoolDown(this);
 	}
 
-	virtual public void Start () {
-	}
+	virtual public void Start () {}
 
 	public void _internalUpdate()
 	{

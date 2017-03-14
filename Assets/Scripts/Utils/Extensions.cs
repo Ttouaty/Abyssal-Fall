@@ -390,4 +390,11 @@ public static class AnimatorExtensions
 		if (target != null)
 			target.SetBool(boolName, active);
 	}
+
+	public static void BroadCastTrigger(this NetworkAnimator targetAnimator, string triggerName)
+	{
+		targetAnimator.SetTrigger(triggerName);
+		if (NetworkServer.active)
+			targetAnimator.animator.ResetTrigger(triggerName);
+	}
 }

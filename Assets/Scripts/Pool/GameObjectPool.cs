@@ -69,6 +69,9 @@ public class GameObjectPool : GenericSingleton<GameObjectPool>
 
 	public static void AddObjectIntoPool(GameObject go)
 	{
+		if (go == null)
+			return;
+
 		Poolable poolableComponent = go.GetComponent<Poolable>();
 		if (poolableComponent != null)
 		{
