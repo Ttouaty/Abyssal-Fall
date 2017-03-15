@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 26dcd0d4d7f27fb4aa4a045581b41704
+guid: ba69dd64da114d4469d5b1bbb574cc33
 timeCreated: 1489586385
 licenseType: Free
 ModelImporter:
@@ -52,11 +52,11 @@ ModelImporter:
     400042: Spine1
     400044: Spine2
     4300000: polySurface9
-    7400000: Dance
+    7400000: Idle_sit
     9500000: //RootNode
     13700000: polySurface9
   materials:
-    importMaterials: 1
+    importMaterials: 0
     materialName: 0
     materialSearch: 1
   animations:
@@ -77,10 +77,10 @@ ModelImporter:
     extraExposedTransformPaths: []
     clipAnimations:
     - serializedVersion: 16
-      name: Dance
-      takeName: Dance
-      firstFrame: 0
-      lastFrame: 60
+      name: Idle_sit
+      takeName: Idle_sit
+      firstFrame: 130
+      lastFrame: 190
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -149,7 +149,7 @@ ModelImporter:
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
-      additiveReferencePoseFrame: 0
+      additiveReferencePoseFrame: 130
     isReadable: 1
   meshes:
     lODScreenPercentages: []
