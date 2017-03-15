@@ -113,12 +113,13 @@ public abstract class AGameRules : MonoBehaviour
 			}
 			else
 			{
-				player.Score += PointsLoosePerSuicide; // (added because IntRule is negative for display)
+				if(player != null)
+					player.Score += PointsLoosePerSuicide; // (added because IntRule is negative for display)
 			}
 
 		
 
-			if (CanPlayerRespawn)
+			if (CanPlayerRespawn && player != null)
 				StartCoroutine(RespawnPlayer_Retry(player, 1));
 		}
 	}
@@ -199,7 +200,7 @@ public abstract class AGameRules : MonoBehaviour
 
 	public virtual void OnPlayerDisconnect(int playerNumber)
 	{
-
+		GameManager.Instance.OnLocalPlayerDeath.Invoke(null, null);
 	}
 
 	public virtual int[] Serialize()

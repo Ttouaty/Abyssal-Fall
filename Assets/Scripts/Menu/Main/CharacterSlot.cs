@@ -161,6 +161,9 @@ public class CharacterSlot : MonoBehaviour
 
 	public void SetTextAlpha(float alpha)
 	{
+		if (SpecialText.GetComponentInParent<CanvasGroup>() == null)
+			return;
+
 		if(_playerRef != null)
 		{
 			if(_playerRef.isLocalPlayer)

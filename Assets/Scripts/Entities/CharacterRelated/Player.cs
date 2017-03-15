@@ -146,7 +146,9 @@ public class Player : NetworkBehaviour
 				if (MenuManager.Instance.LocalJoystickBuffer.Count != 0)
 				{
 					JoystickNumber = MenuManager.Instance.LocalJoystickBuffer[MenuManager.Instance.LocalJoystickBuffer.Count - 1];
-					Debug.Log("player " + name + " created with joystick number: " + JoystickNumber);
+					MenuManager.Instance.LocalJoystickBuffer.RemoveAt(MenuManager.Instance.LocalJoystickBuffer.Count - 1);
+
+					Debug.Log("player N°"+PlayerNumber+" created with joystick number: " + JoystickNumber);
 				}
 			}
 		}

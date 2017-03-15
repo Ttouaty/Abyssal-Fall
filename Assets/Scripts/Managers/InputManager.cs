@@ -20,7 +20,7 @@ public class InputManager : GenericSingleton<InputManager>
 {
 	//  Buttons							0		1		  2		  3		4	  5		  6			7
 	private string[] InputNames = { "Dash", "Cancel", "Special", null, null, null, "Select", "Start" };
-	private KeyCode[][] KeyboardControls = { new KeyCode[] { KeyCode.R, KeyCode.Return }, new KeyCode[] { KeyCode.E, KeyCode.Backspace }, new KeyCode[] { KeyCode.Z, KeyCode.W }, new KeyCode[] { KeyCode.A, KeyCode.Q }, new KeyCode[] { KeyCode.None }, new KeyCode[] { KeyCode.None }, new KeyCode[] { KeyCode.LeftShift, KeyCode.RightShift }, new KeyCode[] { KeyCode.Space } };
+	private KeyCode[][] KeyboardControls = { new KeyCode[] { KeyCode.R, KeyCode.Space }, new KeyCode[] { KeyCode.E, KeyCode.Backspace }, new KeyCode[] { KeyCode.Z, KeyCode.W, KeyCode.S }, new KeyCode[] { KeyCode.A, KeyCode.Q }, new KeyCode[] { KeyCode.None }, new KeyCode[] { KeyCode.None }, new KeyCode[] { KeyCode.LeftShift, KeyCode.RightShift }, new KeyCode[] { KeyCode.Escape, KeyCode.Return } };
 	private static float _inputLockTime = 0;
 
 	public static bool InputLocked { get { return _inputLockTime != 0; } }
