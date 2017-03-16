@@ -320,7 +320,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_FEMref = playerMesh.GetComponent<CharacterModel>().FEMref;
 		CmdSetExpression(_FEMref.DefaultExpression);
 
-		_stunTimer.onFinish = () => { _isStunned = false; _allowInput = true; CmdSetExpression(_FEMref.DefaultExpression); };
+		_stunTimer.onFinish = () => { _isStunned = false; _allowInput = true; /*CmdSetExpression(_FEMref.DefaultExpression);*/ };
 		_stunTimer.onProgress = () =>
 		{
 			if (!IsGrounded) { _stunTimer.Add(TimeManager.DeltaTime); }
@@ -676,7 +676,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	{
 		Debug.Log("Player n°" + _playerRef.PlayerNumber + " with character " + _characterData.IngameName + " is DED!");
 
-		CmdSetExpression("Fear");
+		//CmdSetExpression("Fear");
 		_characterData.SoundList["OnDeath"].Play(gameObject);
 
 		//_animator.SetTrigger("Death");
@@ -763,7 +763,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		if (_isInvul)
 			return;
 
-		CmdSetExpression("Pain");
+		//CmdSetExpression("Pain");
 
 		direction.x += direction.x * ((0.5f - _characterData.CharacterStats.resistance.Percentage(0, Stats.maxValue)) * 0.5f);
 		direction.z += direction.z * ((0.5f - _characterData.CharacterStats.resistance.Percentage(0, Stats.maxValue)) * 0.5f);

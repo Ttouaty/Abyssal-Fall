@@ -179,22 +179,13 @@ public class MenuManager : GenericSingleton<MenuManager>
 				yield return new WaitForSeconds(timePerScreenFadeOut);
 			}
 		}
-		yield return StartCoroutine(LoadPreview_Implementation(EArenaConfiguration.Aerial));
+		yield return StartCoroutine(LoadPreview_Implementation(LevelManager.Instance.SceneMenuBg));
 		SplashScreens.transform.Find("Background_black").GetComponent<Image>().CrossFadeAlpha(0, 1, false);
 		Destroy(SplashScreens, 1);
 		InputManager.SetInputLockTime(1);
 	}
 
-	public void LoadPreview(EArenaConfiguration levelName)
-	{
-		if (_miniLoadingCoroutine != null)
-		{
-			StopCoroutine(_miniLoadingCoroutine);
-		}
-		_miniLoadingCoroutine = StartCoroutine(LoadPreview_Implementation(levelName));
-	}
-
-	IEnumerator LoadPreview_Implementation(EArenaConfiguration levelName)
+	IEnumerator LoadPreview_Implementation(SceneField levelName)
 	{
 		MiniLoading.SetActive(true);
 		Image loadingInImage = LoadingIn.GetComponent<Image>();

@@ -190,7 +190,6 @@ GameObject:
   m_Component:
   - 4: {fileID: 4000013584448650}
   - 137: {fileID: 137000013062044986}
-  - 114: {fileID: 114000013771819274}
   m_Layer: 0
   m_Name: "VikingNew:T\xEAte1"
   m_TagString: Untagged
@@ -606,6 +605,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 4000010470162094}
   - 95: {fileID: 95000011621977372}
+  - 114: {fileID: 114000013030877080}
   m_Layer: 0
   m_Name: Viking
   m_TagString: Untagged
@@ -1207,31 +1207,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b818b3b56770234c9a9725398ebdde8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &114000013035095066
+--- !u!114 &114000013030877080
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 140124}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 1590678366, guid: 870353891bb340e2b2a9c8707e7419ba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Animator: {fileID: 95000011621977372}
-  m_ParameterSendBits: 0
-  param0: 
-  param1: 
-  param2: 
-  param3: 
-  param4: 
-  param5: 
---- !u!114 &114000013771819274
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000010000283742}
+  m_GameObject: {fileID: 1000014072893620}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 93e1c807120f95a4ab44e024fa89356b, type: 3}
@@ -1283,6 +1264,25 @@ MonoBehaviour:
   ExpressionTarget: {fileID: 137000013062044986}
   TargetMaterialIndex: 1
   DefaultExpression: neutral
+--- !u!114 &114000013035095066
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 140124}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1590678366, guid: 870353891bb340e2b2a9c8707e7419ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Animator: {fileID: 95000011621977372}
+  m_ParameterSendBits: 0
+  param0: 
+  param1: 
+  param2: 
+  param3: 
+  param4: 
+  param5: 
 --- !u!114 &114000013941045010
 MonoBehaviour:
   m_ObjectHideFlags: 1

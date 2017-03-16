@@ -31,6 +31,7 @@ public class LevelManager : GenericSingleton<LevelManager>
 	[Header("Scenes Settings")]
 	public SceneField                       SceneLoading;
 	public SceneField                       SceneMenu;
+	public SceneField                       SceneMenuBg;
 	public SceneField                       SceneCountdown;
 	public SceneField                       ScenePause;
 	public SceneField                       SceneEndStage;
@@ -55,6 +56,7 @@ public class LevelManager : GenericSingleton<LevelManager>
 		Dictionary<string, SceneField> scenes = new Dictionary<string, SceneField> {
 			{ "SCENE_LOADING", SceneLoading },
 			{ "SCENE_MENU", SceneMenu },
+			{ "SCENE_MENU_BG", SceneMenuBg },
 			{ "SCENE_COUNTDOWN", SceneCountdown },
 			{ "SCENE_PAUSE", ScenePause },
 			{ "SCENE_END_STAGE", SceneEndStage },
@@ -346,16 +348,8 @@ public class LevelManager : GenericSingleton<LevelManager>
 		_bIsLoading = false;
 	}
 
-	public IEnumerator LoadLevelPreview (EArenaConfiguration arena, Action<AsyncOperation> callback = null)
+	public IEnumerator LoadLevelPreview (SceneField arena, Action<AsyncOperation> callback = null)
 	{
-		ArenaConfiguration_SO arenaConfig;
-		MainManager.Instance.DYNAMIC_CONFIG.GetConfig(arena, out arenaConfig);
-		yield return StartCoroutine(LoadScene(arenaConfig.BackgroundLevel, true, callback));
-		//if (CurrentArenaConfig != null)
-		//{
-		//	UnloadScene(CurrentArenaConfig.BackgroundLevel);
-		//}
-		CurrentArenaConfig = arenaConfig;
-		Destroy(ArenaManager.Instance);
+		yield return StartCoroutine(LoadScene(arena, true, callback));
 	}
 }

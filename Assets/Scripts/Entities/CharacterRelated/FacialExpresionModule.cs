@@ -46,7 +46,7 @@ public class FacialExpresionModule : MonoBehaviour
 			return;
 		}
 		else if(ExpressionTarget.materials.Length > TargetMaterialIndex)
-		{;
+		{
 			if (skinNumber == -1)
 			{
 				for (int i = 0; i < _expressionDictionnary[ActiveExpression].Length; i++)
@@ -59,8 +59,12 @@ public class FacialExpresionModule : MonoBehaviour
 				}
 			}
 
-			//Debug.Log("switching to expression => "+expressionName +" with skin number => "+skinNumber);
 			Material[] tempMats = ExpressionTarget.materials;
+
+			//Debug.Log("switching to expression => "+expressionName +" with skin number => "+skinNumber);
+			if (tempMats[TargetMaterialIndex].mainTexture == _expressionDictionnary[expressionName][skinNumber].mainTexture)
+				return;
+
 			tempMats[TargetMaterialIndex] = _expressionDictionnary[expressionName][skinNumber];
 
 			ExpressionTarget.materials = tempMats;
