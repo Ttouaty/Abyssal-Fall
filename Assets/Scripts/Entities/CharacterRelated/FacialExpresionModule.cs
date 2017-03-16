@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
 [Serializable]
 public struct FacialExpressionData
@@ -15,19 +16,20 @@ public class FacialExpresionModule : MonoBehaviour
 	public FacialExpressionData[] ExpressionArray = new FacialExpressionData[0];
 	public Renderer ExpressionTarget;
 	public int TargetMaterialIndex = 0;
-	public string DefaultExpression = "Neutral";
+	public string DefaultExpression = "neutral";
 
 	private Dictionary<string, Material[]> _expressionDictionnary = new Dictionary<string, Material[]>();
 	private bool _generated = false;
-
+	private string ActiveExpression;
 	void Awake()
 	{
+		ActiveExpression = DefaultExpression;
 		Generate();
 
 		//SetExpression(DefaultExpression);
 	}
 
-	public void SetExpression(string expressionName, int skinNumber)
+	public void SetExpressionPrecise(string expressionName, int skinNumber)
 	{
 		if (!enabled || ExpressionTarget == null || ExpressionArray == null)
 			return;
@@ -44,14 +46,37 @@ public class FacialExpresionModule : MonoBehaviour
 			return;
 		}
 		else if(ExpressionTarget.materials.Length > TargetMaterialIndex)
-			ExpressionTarget.materials[TargetMaterialIndex] = _expressionDictionnary[expressionName][skinNumber];
+		{;
+			if (skinNumber == -1)
+			{
+				for (int i = 0; i < _expressionDictionnary[ActiveExpression].Length; i++)
+				{
+					if(_expressionDictionnary[ActiveExpression][i].mainTexture == ExpressionTarget.materials[TargetMaterialIndex].mainTexture)
+					{
+						skinNumber = i;
+						break;
+					}
+				}
+			}
+
+			//Debug.Log("switching to expression => "+expressionName +" with skin number => "+skinNumber);
+			Material[] tempMats = ExpressionTarget.materials;
+			tempMats[TargetMaterialIndex] = _expressionDictionnary[expressionName][skinNumber];
+
+			ExpressionTarget.materials = tempMats;
+		}
 		else
 		{
 			Debug.LogWarning("TargetMaterialIndex is out of bound (ExpressionTarget.materials.Length)");
 			return;
 		}
+		ActiveExpression = expressionName;
 	}
 
+	public void SetExpression(string expressionName)
+	{
+		SetExpressionPrecise(expressionName, -1);
+	}
 
 	void Generate()
 	{

@@ -187,7 +187,222 @@ ModelImporter:
     animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
-    clipAnimations: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Win
+      takeName: Win
+      firstFrame: 0
+      lastFrame: 200
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events:
+      - time: 0
+        functionName: SetExpression
+        data: happy
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.3618421
+        functionName: SetExpression
+        data: taunt
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.56578946
+        functionName: SetExpression
+        data: hit
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.73355263
+        functionName: SetExpression
+        data: neutral
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.96052635
+        functionName: SetExpression
+        data: happy
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      transformMask:
+      - path: 
+        weight: 1
+      - path: back
+        weight: 1
+      - path: bottom
+        weight: 1
+      - path: front1
+        weight: 1
+      - path: group1
+        weight: 1
+      - path: group1/grp1Null_Pelvis
+        weight: 1
+      - path: group1/grp1Null_Pelvis/CTRL_Pelvis
+        weight: 1
+      - path: group1/grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1
+        weight: 1
+      - path: group1/grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1
+        weight: 1
+      - path: group1/grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2
+        weight: 1
+      - path: group1/grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4
+        weight: 1
+      - path: group1/grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3
+        weight: 1
+      - path: group1/grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3/CTRL_Spine3
+        weight: 1
+      - path: group1/grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3/CTRL_Spine3/Null_Head
+        weight: 1
+      - path: group1/grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3/CTRL_Spine3/Null_Head/CTRL_Head
+        weight: 1
+      - path: group1/grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3/CTRL_Spine3/Null_Head/CTRL_Head/Null_Barbe
+        weight: 1
+      - path: group1/grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3/CTRL_Spine3/Null_Head/CTRL_Head/Null_Barbe/CTRL_Barbe
+        weight: 1
+      - path: group1/grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3/CTRL_Spine3/Null_Head/CTRL_Head/Null_Helmet
+        weight: 1
+      - path: group1/grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3/CTRL_Spine3/Null_Head/CTRL_Head/Null_Helmet/CTRL_Helmet
+        weight: 1
+      - path: group1/grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3/CTRL_Spine3/Null_Left_Shoulder
+        weight: 1
+      - path: group1/grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3/CTRL_Spine3/Null_Left_Shoulder/CTRL_Left_Shoulder
+        weight: 1
+      - path: group1/grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3/CTRL_Spine3/Null_Left_Shoulder/CTRL_Left_Shoulder/Null_Left_Wrist
+        weight: 1
+      - path: group1/grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3/CTRL_Spine3/Null_Left_Shoulder/CTRL_Left_Shoulder/Null_Left_Wrist/CTRL_Left_Wrist
+        weight: 1
+      - path: group1/grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3/CTRL_Spine3/Null_Left_Shoulder/CTRL_Left_Shoulder/Null_Left_Wrist/CTRL_Left_Wrist/Null_Left_Handcontrol
+        weight: 1
+      - path: group1/grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3/CTRL_Spine3/Null_Left_Shoulder/CTRL_Left_Shoulder/Null_Left_Wrist/CTRL_Left_Wrist/Null_Left_Handcontrol/CTRL_Left_Handcontrol
+        weight: 1
+      - path: group1/grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3/CTRL_Spine3/Null_Right_Shoulder
+        weight: 1
+      - path: group1/grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3/CTRL_Spine3/Null_Right_Shoulder/CTRL_Right_Shoulder
+        weight: 1
+      - path: group1/grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3/CTRL_Spine3/Null_Right_Shoulder/CTRL_Right_Shoulder/Null_Right_Wrist
+        weight: 1
+      - path: group1/grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3/CTRL_Spine3/Null_Right_Shoulder/CTRL_Right_Shoulder/Null_Right_Wrist/CTRL_Right_Wrist
+        weight: 1
+      - path: group1/grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3/CTRL_Spine3/Null_Right_Shoulder/CTRL_Right_Shoulder/Null_Right_Wrist/CTRL_Right_Wrist/Box001
+        weight: 1
+      - path: group1/grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3/CTRL_Spine3/Null_Right_Shoulder/CTRL_Right_Shoulder/Null_Right_Wrist/CTRL_Right_Wrist/Null_Right_HandControl
+        weight: 1
+      - path: group1/grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3/CTRL_Spine3/Null_Right_Shoulder/CTRL_Right_Shoulder/Null_Right_Wrist/CTRL_Right_Wrist/Null_Right_HandControl/CTRL_Right_Handcontrol
+        weight: 1
+      - path: group1/grp1Null_Pelvis/Null_Left_Leg
+        weight: 1
+      - path: group1/grp1Null_Pelvis/Null_Left_Leg/CTRL_Left_Leg
+        weight: 1
+      - path: group1/grp1Null_Pelvis/Null_Left_Leg/CTRL_Left_Leg/Null_Left_Foot
+        weight: 1
+      - path: group1/grp1Null_Pelvis/Null_Left_Leg/CTRL_Left_Leg/Null_Left_Foot/CTRL_Left_Foot
+        weight: 1
+      - path: group1/grp1Null_Pelvis/Null_Right_Leg
+        weight: 1
+      - path: group1/grp1Null_Pelvis/Null_Right_Leg/CTRL_Right__Leg
+        weight: 1
+      - path: group1/grp1Null_Pelvis/Null_Right_Leg/CTRL_Right__Leg/Null_Right_Foot
+        weight: 1
+      - path: group1/grp1Null_Pelvis/Null_Right_Leg/CTRL_Right__Leg/Null_Right_Foot/CTRL_Right_Foot
+        weight: 1
+      - path: left
+        weight: 1
+      - path: Pelvis
+        weight: 1
+      - path: Pelvis/Hips
+        weight: 1
+      - path: Pelvis/Hips/Spine1
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Head
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Head/Barbe_1etdemi
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Head/Barbe_1etdemi/Barbe_2
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Head/Barbe_1etdemi/Barbe_2/Barbe3
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Head/Head_End
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Head/Head_End/joint1
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Left_Shoulder1
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Left_Shoulder1/Left_Wrist
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Left_Shoulder1/Left_Wrist/Left_Palm1
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Left_Shoulder1/Left_Wrist/Left_Palm1/Left_Palm2
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Left_Shoulder1/Left_Wrist/Left_Palm1/Left_Palm2/LeftPalm_End
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Left_Shoulder1/Left_Wrist/Left_Thumb1
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Left_Shoulder1/Left_Wrist/Left_Thumb1/Left_Thumb2
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Left_Shoulder1/Left_Wrist/Left_Thumb1/Left_Thumb2/Left_Thumb_end
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Right_Shoulder
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Right_Shoulder/Right_Wrist
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Right_Shoulder/Right_Wrist/Right_Palm1
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Right_Shoulder/Right_Wrist/Right_Palm1/Right_Palm2
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Right_Shoulder/Right_Wrist/Right_Palm1/Right_Palm2/Right_Palm_End
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Right_Shoulder/Right_Wrist/Right_Thumb1
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Right_Shoulder/Right_Wrist/Right_Thumb1/Right_Thumb2
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Right_Shoulder/Right_Wrist/Right_Thumb1/Right_Thumb2/Right_Thumb_end
+        weight: 1
+      - path: Pelvis/Left_Leg1
+        weight: 1
+      - path: Pelvis/Left_Leg1/Left_Foot
+        weight: 1
+      - path: Pelvis/Left_Leg1/Left_Foot/Left_Foot_End
+        weight: 1
+      - path: Pelvis/Right_Leg
+        weight: 1
+      - path: Pelvis/Right_Leg/Right_Foot
+        weight: 1
+      - path: Pelvis/Right_Leg/Right_Foot/Right_Foot_End
+        weight: 1
+      - path: pPlane1
+        weight: 1
+      - path: transform1
+        weight: 1
+      - path: "VikingNew:T\xEAte1"
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     isReadable: 1
   meshes:
     lODScreenPercentages: []

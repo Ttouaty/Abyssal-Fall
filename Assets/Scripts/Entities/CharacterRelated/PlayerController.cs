@@ -466,7 +466,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		if (winner == _playerRef)
 		{
 			Debug.LogWarning("Character " + _characterData.IngameName + " controller by player N°=> " + _playerRef.PlayerNumber + " has won !");
-			CmdSetExpression("Happy");
+			//CmdSetExpression("Happy");
 		}
 		//enabled = false;
 		Freeze();
@@ -474,11 +474,11 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	}
 
 	[Command]
-	public void CmdSetExpression(string expressionName) { _FEMref.SetExpression(expressionName, _playerRef.SkinNumber); RpcSetExpression(expressionName); }
+	public void CmdSetExpression(string expressionName) { _FEMref.SetExpressionPrecise(expressionName, _playerRef.SkinNumber); RpcSetExpression(expressionName); }
 	[ClientRpc]
 	public void RpcSetExpression(string expressionName)
 	{
-		_FEMref.SetExpression(expressionName, _playerRef.SkinNumber);
+		_FEMref.SetExpressionPrecise(expressionName, _playerRef.SkinNumber);
 	}
 
 	#endregion
