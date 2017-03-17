@@ -274,14 +274,14 @@ public class InputManager : GenericSingleton<InputManager>
 		return GetAllStickDirection(true);
 	}
 
-	public static Vector2 GetAllStickDirection(bool normalized)
+	public static Vector2 GetAllStickDirection(bool raw)
 	{
 		Vector2 returnVector = Vector2.zero;
 		Vector2 tempVector;
 
 		for (int i = 0; i < GetJoystickNames().Length; i++)
 		{
-			tempVector = GetStickDirection(i, normalized);
+			tempVector = GetStickDirection(i, raw);
 			if (tempVector.magnitude != 0)
 				returnVector += tempVector;
 		}
@@ -294,12 +294,12 @@ public class InputManager : GenericSingleton<InputManager>
 		return GetStickDirection(JoystickNumber, true);
 	}
 
-	public static Vector2 GetStickDirection(int JoystickNumber, bool normalized)
+	public static Vector2 GetStickDirection(int JoystickNumber, bool raw)
 	{
 		if (StickIsNeutral(JoystickNumber) || InputLocked)
 			return Vector2.zero;
-		if(normalized)
-			return new Vector2(GetAxis("x", JoystickNumber), GetAxis("y", JoystickNumber)).normalized;
+		if(raw)
+			return new Vector2(GetAxisRaw("x", JoystickNumber), GetAxisRaw("y", JoystickNumber));
 		return new Vector2(GetAxis("x", JoystickNumber), GetAxis("y", JoystickNumber));
 
 	}

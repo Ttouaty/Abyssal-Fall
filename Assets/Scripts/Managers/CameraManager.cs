@@ -62,8 +62,8 @@ public class CameraManager : GenericSingleton<CameraManager>
 
 		if (GetComponent<FMODUnity.StudioListener>() == null)
 			gameObject.AddComponent<FMODUnity.StudioListener>();
-
-		_baseDistance = _distance = Vector3.Distance(transform.position, transform.parent.position);
+		if(transform.parent != null)
+			_baseDistance = _distance = Vector3.Distance(transform.position, transform.parent.position);
 	}
 
 	public void ReplaceInstance(CameraManager newInstance)
