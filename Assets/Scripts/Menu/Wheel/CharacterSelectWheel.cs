@@ -109,8 +109,7 @@ public class CharacterSelectWheel : NetworkBehaviour
 		_selectedElementIndex = _selectedElementIndex.LoopAround(0, _returnArray.Length - 1);
 
 		transform.parent.parent.GetComponent<CharacterSlot>().SetCharacterInfoText(
-			_returnArray[_selectedElementIndex]._characterData.SpecialInfoKey,
-			_returnArray[_selectedElementIndex]._characterData.SpeedInfoKey);
+			_returnArray[_selectedElementIndex]._characterData.SpecialInfoKey);
 		//_displayArray[_selectedElementIndex].transform.SetAsLastSibling();
 	}
 

@@ -14,7 +14,6 @@ public class CharacterSlot : MonoBehaviour
 	public Transform WheelSlot;
 	public GameObject PressAContainer;
 	public Text SpecialText;
-	public Text SpeedText;
 
 	[HideInInspector]
 	public bool Open = false;
@@ -68,8 +67,12 @@ public class CharacterSlot : MonoBehaviour
 
 		if (InputManager.GetButtonDown(InputEnum.B, _playerRef.JoystickNumber) && Selected)
 			CancelCharacterSelection();
+
+		SetTextAlpha(Convert.ToInt32(InputManager.GetButtonHeld(InputEnum.X, _playerRef.JoystickNumber)));
+
 		if (Selected)
 			return;
+
 
 		if (Mathf.Abs(InputManager.GetAxis("x", _playerRef.JoystickNumber)) < 0.5f)
 		{
@@ -82,8 +85,8 @@ public class CharacterSlot : MonoBehaviour
 			ChangeCharacter((int)Mathf.Sign(InputManager.GetAxis("x", _playerRef.JoystickNumber)));
 		}
 
-		if (InputManager.GetButtonDown(InputEnum.X, _playerRef.JoystickNumber))
-			_wheelRef.CmdChangeCharacterSkin((_wheelRef._selectedSkinIndex - 1).LoopAround(0, _availableCharacters[_wheelRef._selectedElementIndex]._characterData.NumberOfSkins -1));
+		//if (InputManager.GetButtonDown(InputEnum.X, _playerRef.JoystickNumber))
+		//	_wheelRef.CmdChangeCharacterSkin((_wheelRef._selectedSkinIndex - 1).LoopAround(0, _availableCharacters[_wheelRef._selectedElementIndex]._characterData.NumberOfSkins -1));
 		if (InputManager.GetButtonDown(InputEnum.Y, _playerRef.JoystickNumber))
 			_wheelRef.CmdChangeCharacterSkin((_wheelRef._selectedSkinIndex + 1).LoopAround(0, _availableCharacters[_wheelRef._selectedElementIndex]._characterData.NumberOfSkins -1));
 
@@ -95,7 +98,6 @@ public class CharacterSlot : MonoBehaviour
 	public void SelectPedestal(bool ready)
 	{
 		TargetPedestal.SetSelect(ready);
-		SetTextAlpha(Convert.ToInt32(!ready));
 	}
 
 	void SelectCharacter()
@@ -153,10 +155,9 @@ public class CharacterSlot : MonoBehaviour
 		_switchCharacterCooldown.Add(_switchCharacterDelay);
 	}
 
-	public void SetCharacterInfoText(string special, string speed)
+	public void SetCharacterInfoText(string special)
 	{
 		SpecialText.text = special;
-		SpeedText.text = speed;
 	}
 
 	public void SetTextAlpha(float alpha)

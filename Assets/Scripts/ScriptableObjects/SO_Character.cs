@@ -12,7 +12,6 @@ public class SO_Character :  ScriptableObject{
 	public int NumberOfSkins = 4;
 	[Header("Info")]
 	public string SpecialInfoKey;
-	public string SpeedInfoKey;
 
 	[Header("Stats")]
 	public Stats CharacterStats;
