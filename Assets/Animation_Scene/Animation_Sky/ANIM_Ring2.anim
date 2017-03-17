@@ -48,6 +48,33 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     path: 
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - time: 0
+        value: {x: 14.2, y: 26.3, z: -76.4}
+        inSlope: {x: 0, y: 1.5241934, z: 0}
+        outSlope: {x: 0, y: 1.5241934, z: 0}
+        tangentMode: 0
+      - time: 4.133333
+        value: {x: 14.2, y: 32.6, z: -76.4}
+        inSlope: {x: 0, y: 3.1197991, z: 0}
+        outSlope: {x: 0, y: 3.1197991, z: 0}
+        tangentMode: 0
+      - time: 10.516666
+        value: {x: 14.2, y: 62.7, z: -76.4}
+        inSlope: {x: 0, y: 0.68028307, z: 0}
+        outSlope: {x: 0, y: 0.68028307, z: 0}
+        tangentMode: 0
+      - time: 21.366667
+        value: {x: 14.2, y: 26.3, z: -76.4}
+        inSlope: {x: 0, y: -3.3548388, z: 0}
+        outSlope: {x: 0, y: -3.3548388, z: 0}
+        tangentMode: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    path: Wind trail
   m_ScaleCurves: []
   m_FloatCurves: []
   m_PPtrCurves: []
@@ -58,6 +85,12 @@ AnimationClip:
     m_Extent: {x: 0, y: 0, z: 0}
   m_ClipBindingConstant:
     genericBindings:
+    - path: 2180804451
+      attribute: 1
+      script: {fileID: 0}
+      classID: 4
+      customType: 0
+      isPPtrCurve: 0
     - path: 0
       attribute: 4
       script: {fileID: 0}
@@ -210,6 +243,96 @@ AnimationClip:
       m_RotationOrder: 4
     attribute: m_LocalPosition.z
     path: 
+    classID: 4
+    script: {fileID: 0}
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - time: 0
+        value: 14.2
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 10
+      - time: 4.133333
+        value: 14.2
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 10
+      - time: 10.516666
+        value: 14.2
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 10
+      - time: 21.366667
+        value: 14.2
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 10
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_LocalPosition.x
+    path: Wind trail
+    classID: 4
+    script: {fileID: 0}
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - time: 0
+        value: 26.3
+        inSlope: 1.5241934
+        outSlope: 1.5241934
+        tangentMode: 10
+      - time: 4.133333
+        value: 32.6
+        inSlope: 3.1197991
+        outSlope: 3.1197991
+        tangentMode: 10
+      - time: 10.516666
+        value: 62.7
+        inSlope: 0.68028307
+        outSlope: 0.68028307
+        tangentMode: 10
+      - time: 21.366667
+        value: 26.3
+        inSlope: -3.3548388
+        outSlope: -3.3548388
+        tangentMode: 10
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_LocalPosition.y
+    path: Wind trail
+    classID: 4
+    script: {fileID: 0}
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - time: 0
+        value: -76.4
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 10
+      - time: 4.133333
+        value: -76.4
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 10
+      - time: 10.516666
+        value: -76.4
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 10
+      - time: 21.366667
+        value: -76.4
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 10
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_LocalPosition.z
+    path: Wind trail
     classID: 4
     script: {fileID: 0}
   m_EulerEditorCurves:
