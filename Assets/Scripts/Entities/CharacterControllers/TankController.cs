@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Networking;
 
 public class TankController : PlayerController
 {
@@ -14,7 +15,7 @@ public class TankController : PlayerController
 	[SerializeField]
 	private SphereCollider ChargeHitbox;
 
-
+	[SyncVar]
 	private bool _charging = false;
 	protected override void SpecialAction()
 	{
@@ -24,16 +25,13 @@ public class TankController : PlayerController
 	IEnumerator SpecialCoroutine()
 	{
 		float eT = 0;
-		_specialParticles.Clear();
-		_specialParticles.Play();
 
-		ChargeHitbox.enabled = true;
+		CmdActiveCharge(true);
 
 		_isAffectedByFriction = false;
 		_isInvul = true;
 		_allowInput = false;
 		_activeSpeed = _activeDirection.normalized * _specialStartSpeed;
-		_charging = true;
 		GetComponentInChildren<GroundCheck>().Deactivate();
 
 		while (eT < _specialTime)
@@ -50,17 +48,16 @@ public class TankController : PlayerController
 		if (IsGrounded)
 			_activeSpeed = Vector3.zero;
 
-		_specialParticles.Stop();
-		_charging = false;
+		CmdActiveCharge(false);
 		_isAffectedByFriction = true;
 
-		
-		ChargeHitbox.enabled = false;
 		if(Physics.CheckSphere(ChargeHitbox.transform.position, ChargeHitbox.radius + 0.2f, 1 << LayerMask.NameToLayer("Wall")))
 		{
 			_activeSpeed = Vector3.zero;
 			_rigidB.velocity = _activeSpeed;
 		}
+
+		_isInvul = false;
 
 		eT = 0;
 		while (eT < _characterData.SpecialLag * 0.7f)
@@ -69,11 +66,34 @@ public class TankController : PlayerController
 			eT += Time.deltaTime;
 			yield return null;
 		}
+
+	}
+
+	[Command]
+	public void CmdActiveCharge(bool active) { RpcActiveCharge(active); }
+
+	[ClientRpc]
+	public void RpcActiveCharge(bool active)
+	{
+
+		_charging = active;
+		ChargeHitbox.enabled = active;
+
+		if (active)
+		{
+			_specialParticles.Clear();
+			_specialParticles.Play();
+		}
+		else
+		{
+			_specialParticles.Stop();
+		}
 	}
 
 	protected override void PlayerCollisionHandler(Collision colli)
 	{
 		base.PlayerCollisionHandler(colli);
+
 		if (_charging)
 		{
 			if (colli.transform.GetComponent<IDamageable>() != null)

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Networking;
 
 public class Shuriken : ABaseProjectile
 {
@@ -11,8 +12,9 @@ public class Shuriken : ABaseProjectile
 		_maxLifeSpan = 0.5f;
 	}
 
-	public override void Launch(Vector3 Position, Vector3 Direction, DamageData data, int newLauncherId)
+	public override void Launch(Vector3 Position, Vector3 Direction, DamageData data, NetworkInstanceId newLauncherId)
 	{
+		_smokeTrail.transform.localPosition = Vector3.zero;
 		_smokeTrail.Play();
 		base.Launch(Position, Direction, data, newLauncherId);
 	}
@@ -30,6 +32,7 @@ public class Shuriken : ABaseProjectile
 
 	protected override void OnLaunch(GameObject launcher)
 	{
+		base.OnLaunch(launcher);
 		GetComponentInChildren<MeshRenderer>().material = launcher.GetComponent<PlayerController>()._characterProp.PropRenderer.material;
 	}
 }

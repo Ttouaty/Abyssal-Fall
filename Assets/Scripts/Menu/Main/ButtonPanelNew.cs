@@ -157,8 +157,9 @@ public class ButtonPanelNew : MonoBehaviour
 
 	public void Activate()
 	{
-		if(ActiveElement.GetComponent<Button>() != null)
-			ActiveElement.GetComponent<Button>().onClick.Invoke();
+		if(ActiveElement.isActiveAndEnabled)
+			if(ActiveElement.GetComponent<Button>() != null)
+				ActiveElement.GetComponent<Button>().onClick.Invoke();
 	}
 
 	public IEnumerator AnimCoroutine(string triggerName)

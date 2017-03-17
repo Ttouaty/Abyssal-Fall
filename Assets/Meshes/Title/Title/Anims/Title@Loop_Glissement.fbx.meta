@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 400d7fdde4dc13e4cbb91d18eb9fd4ed
-timeCreated: 1488541614
+guid: a35a3e24a4820c545b0f1a74b06ff217
+timeCreated: 1488207847
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
@@ -11,28 +11,28 @@ ModelImporter:
     100006: B_Break
     100008: B_Break2
     100010: F_Break
-    100012: GRP_Anim
-    100014: L_Break
-    100016: L_Break2
-    100018: L_Break3
-    100020: Main_Structure
-    100022: S_Break
-    100024: //RootNode
-    100026: Y_Break
+    100012: L_Break
+    100014: L_Break2
+    100016: L_Break3
+    100018: Main_Structure
+    100020: S_Break
+    100022: //RootNode
+    100024: Y_Break
+    100026: GRP_Anim
     400000: A_Break
     400002: A_Break2
     400004: A_break3
     400006: B_Break
     400008: B_Break2
     400010: F_Break
-    400012: GRP_Anim
-    400014: L_Break
-    400016: L_Break2
-    400018: L_Break3
-    400020: Main_Structure
-    400022: S_Break
-    400024: //RootNode
-    400026: Y_Break
+    400012: L_Break
+    400014: L_Break2
+    400016: L_Break3
+    400018: Main_Structure
+    400020: S_Break
+    400022: //RootNode
+    400024: Y_Break
+    400026: GRP_Anim
     2300000: A_Break
     2300002: A_Break2
     2300004: A_break3
@@ -72,7 +72,7 @@ ModelImporter:
     7400000: Loop_Glissement
     9500000: //RootNode
   materials:
-    importMaterials: 1
+    importMaterials: 0
     materialName: 0
     materialSearch: 1
   animations:
@@ -91,11 +91,67 @@ ModelImporter:
     animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
-    clipAnimations: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Loop_Glissement
+      takeName: Loop_Glissement
+      firstFrame: 554
+      lastFrame: 1500
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 1
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: GRP_Anim
+        weight: 1
+      - path: GRP_Anim/A_Break
+        weight: 1
+      - path: GRP_Anim/A_Break2
+        weight: 1
+      - path: GRP_Anim/A_break3
+        weight: 1
+      - path: GRP_Anim/B_Break
+        weight: 1
+      - path: GRP_Anim/B_Break2
+        weight: 1
+      - path: GRP_Anim/F_Break
+        weight: 1
+      - path: GRP_Anim/L_Break
+        weight: 1
+      - path: GRP_Anim/L_Break2
+        weight: 1
+      - path: GRP_Anim/L_Break3
+        weight: 1
+      - path: GRP_Anim/Main_Structure
+        weight: 1
+      - path: GRP_Anim/S_Break
+        weight: 1
+      - path: GRP_Anim/Y_Break
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 554
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 1
+    globalScale: 100
     meshCompression: 0
     addColliders: 0
     importBlendShapes: 1

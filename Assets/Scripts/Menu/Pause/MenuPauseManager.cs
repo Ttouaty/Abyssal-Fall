@@ -55,7 +55,7 @@ public class MenuPauseManager : GenericSingleton<MenuPauseManager>
 
 	public void Open ()
 	{
-		if (IsOpen)
+		if (IsOpen || !CanPause)
 			return;
 
 

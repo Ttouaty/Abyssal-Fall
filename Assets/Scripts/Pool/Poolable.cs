@@ -16,6 +16,9 @@ public class Poolable : MonoBehaviour
 			tempScriptRefs[i].StopAllCoroutines();
 		}
 
+		if (Pool.IsNull())
+			return;
+
         gameObject.transform.parent = Pool.Root.transform;
         gameObject.transform.position = Vector3.zero;
         gameObject.transform.rotation = Quaternion.identity;

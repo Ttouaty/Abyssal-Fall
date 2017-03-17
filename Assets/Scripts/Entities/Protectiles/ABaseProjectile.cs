@@ -11,7 +11,8 @@ public abstract class ABaseProjectile : NetworkBehaviour, IPoolable
 	protected Vector3 _ejectionForce;
 	protected DamageData _ownDamageData;
 	protected float _maxLifeSpan = 5;
-	protected int LauncherId;
+	[SyncVar]
+	protected NetworkInstanceId LauncherNetId;
 
 
 	[SerializeField]
@@ -25,11 +26,11 @@ public abstract class ABaseProjectile : NetworkBehaviour, IPoolable
 			Debug.LogWarning("Projectile "+gameObject.name+" has no component \"Poolable\" this may break stuff!");
 	}
 
-	public virtual void Launch(Vector3 Position, Vector3 Direction, DamageData data, int newLauncherId)
+	public virtual void Launch(Vector3 Position, Vector3 Direction, DamageData data, NetworkInstanceId newLauncherId)
 	{
 		gameObject.SetActive(true);
 		_shooter = data.Dealer;
-		
+		 
 		if (_shooter.PlayerRef != null) 
 		{
 			_ejectionForce = SO_Character.SpecialEjection.Multiply(Axis.x, _shooter.PlayerRef.Controller._characterData.CharacterStats.strength);
@@ -40,26 +41,35 @@ public abstract class ABaseProjectile : NetworkBehaviour, IPoolable
 		}
 
 		_ownDamageData = data.SetProjectile(this).Copy();
-		LauncherId = newLauncherId;
+		LauncherNetId = newLauncherId; 
 
 		//Only activate collision is launcher is local
-		GetComponentInChildren<Collider>().enabled = _ownDamageData.Dealer.PlayerRef.isLocalPlayer;
+		//GetComponentInChildren<Collider>().enabled = _ownDamageData.Dealer.PlayerRef.isLocalPlayer;
+		//Deactivated (removed collisions entierly)
 
 		transform.position = Position;
 		transform.rotation = Quaternion.LookRotation(Direction, Vector3.up);
 
 		_rigidB.velocity = Direction.normalized * _speed;
-		
+
 		StartCoroutine(DelayStop());
 	}
 
 	public override void OnStartClient()
 	{
 		base.OnStartClient();
-		OnLaunch(_shooter.ObjectRef);
 	}
 
-	protected virtual void OnLaunch(GameObject Launcher) { }
+	[ClientRpc]
+	public void RpcSendOnLaunch(GameObject Launcher)
+	{
+		OnLaunch(Launcher);
+	}
+
+	protected virtual void OnLaunch(GameObject Launcher)
+	{
+		Launcher.GetComponent<PlayerController>()._characterData.SoundList["OnSpecialActivate"].Play(gameObject);
+	}
 
 	private IEnumerator DelayStop()
 	{
@@ -91,8 +101,10 @@ public abstract class ABaseProjectile : NetworkBehaviour, IPoolable
 	{
 		if (colli.GetComponent<IDamageable>() != null)
 		{
-			if(colli.gameObject.GetInstanceID() != LauncherId)
+			if(colli.gameObject.GetComponentInParent<NetworkIdentity>().netId != LauncherNetId)
+			{
 				OnHitPlayer(colli.GetComponent<IDamageable>());
+			}
 		}
 		else if (colli.gameObject.layer == LayerMask.NameToLayer("Wall"))
 		{
@@ -123,6 +135,6 @@ public abstract class ABaseProjectile : NetworkBehaviour, IPoolable
 		StopAllCoroutines();
 		_ownDamageData.Dealer = characterParrying;
 		
-		Launch(transform.position, (_shooter.ObjectRef.transform.position - transform.position).ZeroY(), _ownDamageData, LauncherId);
+		Launch(transform.position, (_shooter.ObjectRef.transform.position - transform.position).ZeroY(), _ownDamageData, characterParrying.ObjectRef.GetComponent<NetworkIdentity>().netId);
 	}
 }

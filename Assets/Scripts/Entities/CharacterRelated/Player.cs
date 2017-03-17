@@ -131,50 +131,39 @@ public class Player : NetworkBehaviour
 		}
 	}
 
-	public override void OnNetworkDestroy()
-	{
-		if (MenuManager.Instance != null && isLocalPlayer)
-		{
-			CharacterSelectWheel[] tempWheels = MenuManager.Instance.GetComponentsInChildren<CharacterSelectWheel>();
-			for (int i = 0; i < tempWheels.Length; i++)
-			{
-				if (tempWheels[i].GetComponent<NetworkIdentity>().clientAuthorityOwner == connectionToServer)
-				{
-					Debug.Log("removed authority for => " + tempWheels[i].name);
-					tempWheels[i].GetComponent<NetworkIdentity>().RemoveClientAuthority(connectionToServer);
-					break;
-				}
-			}
-			RpcCloseTargetSlot(PlayerNumber - 1);
-			CmdUpdatePlayerList();
-		}
-		if(CharacterSelectWheel.WheelsRef.ContainsKey(PlayerNumber))
-			CharacterSelectWheel.WheelsRef.Remove(PlayerNumber);
-		base.OnNetworkDestroy();
-	}
-
 	public override void OnStartLocalPlayer()
 	{
 		if (isLocalPlayer)
 		{
 			LocalPlayer = this;
 
+			CmdUpdatePlayerList();
+			ChangeWheelState(_ready);
+			CmdSpawnCharacterSelectWheel();
+
 			if (MenuManager.Instance != null)
 			{
 				if (MenuManager.Instance.LocalJoystickBuffer.Count != 0)
 				{
 					JoystickNumber = MenuManager.Instance.LocalJoystickBuffer[MenuManager.Instance.LocalJoystickBuffer.Count - 1];
-					Debug.Log("player " + name + " created with joystick number: " + JoystickNumber);
+					MenuManager.Instance.LocalJoystickBuffer.RemoveAt(MenuManager.Instance.LocalJoystickBuffer.Count - 1);
+
+					Debug.Log("player N°"+PlayerNumber+" created with joystick number: " + JoystickNumber);
 				}
 			}
 		}
 	}
 
+	[Command]
+	private void CmdSpawnCharacterSelectWheel()
+	{
+		if (MenuManager.Instance != null && !ServerManager.Instance.IsDebug)
+			ServerManager.Instance.SpawnCharacterWheel(gameObject);
+	}
+
 	public override void OnStartClient()
 	{
 		base.OnStartClient();
-		CmdUpdatePlayerList();
-		ChangeWheelState(_ready);
 	}
 
 	void Update()
@@ -255,23 +244,19 @@ public class Player : NetworkBehaviour
 	[ClientRpc]
 	public void RpcInitController(GameObject targetObject)
 	{
-		if (targetObject == null)
-			Debug.LogError("RPC init >targetObject< was null !");
-
-
 		targetObject.GetComponent<PlayerController>().Init(gameObject);
 
-		for (int i = 0; i < PlayerList.Length; i++)
-		{
-			if(PlayerList[i].PlayerNumber != PlayerNumber)
-			{
-				if (PlayerList[i].SkinNumber == SkinNumber && PlayerList[i].CharacterUsedIndex == CharacterUsedIndex)
-				{
-					Debug.Log("Player N°=> "+PlayerNumber+" is adding differentialAlpha to player => "+targetObject.GetComponent<PlayerController>()._characterData.IngameName);
-					targetObject.GetComponent<PlayerController>().AddDifferentialAlpha(CharacterAlpha);
-				}
-			}
-		}
+		//for (int i = 0; i < PlayerList.Length; i++)
+		//{
+		//	if(PlayerList[i].PlayerNumber != PlayerNumber)
+		//	{
+		//		if (PlayerList[i].SkinNumber == SkinNumber && PlayerList[i].CharacterUsedIndex == CharacterUsedIndex)
+		//		{
+		//			Debug.Log("Player N°=> "+PlayerNumber+" is adding differentialAlpha to player => "+targetObject.GetComponent<PlayerController>()._characterData.IngameName);
+		//			targetObject.GetComponent<PlayerController>().AddDifferentialAlpha(CharacterAlpha);
+		//		}
+		//	}
+		//}
 	}
 
 	[ClientRpc]
@@ -314,5 +299,13 @@ public class Player : NetworkBehaviour
 	public void RpcOnPlayerDisconnect(int playerNumber)
 	{
 		BroadcastMessage("OnPlayerDisconnect", playerNumber, SendMessageOptions.DontRequireReceiver);
+	}
+
+	[ClientRpc]
+	public void	RpcToggleNoClip()
+	{
+		//Debug.LogError("NoClip toggled from server !");
+		GroundCheck.noclip = !GroundCheck.noclip;
+		MessageManager.Log("Toggled Noclip to => "+ GroundCheck.noclip);
 	}
 }

@@ -40,7 +40,7 @@ public abstract class AGameRules : MonoBehaviour
 	{
 		// On initi game rules common stuff
 		StopAllCoroutines();
-
+		CameraManager.IsManual = false;
 		StartCoroutine(Update_Implementation());
 
 		if (ArenaAutoDestruction)
@@ -113,12 +113,13 @@ public abstract class AGameRules : MonoBehaviour
 			}
 			else
 			{
-				player.Score += PointsLoosePerSuicide; // (added because IntRule is negative for display)
+				if(player != null)
+					player.Score += PointsLoosePerSuicide; // (added because IntRule is negative for display)
 			}
 
 		
 
-			if (CanPlayerRespawn)
+			if (CanPlayerRespawn && player != null)
 				StartCoroutine(RespawnPlayer_Retry(player, 1));
 		}
 	}
@@ -192,12 +193,14 @@ public abstract class AGameRules : MonoBehaviour
 	{
 		StopAllCoroutines();
 		EndGameManager.Instance.WinnerId = winner.PlayerNumber;
-		EndGameManager.Instance.Open();
+		//EndGameManager.Instance.Open();
+		
+		ArenaManager.Instance.DisplayWinner(winner.gameObject);
 	}
 
 	public virtual void OnPlayerDisconnect(int playerNumber)
 	{
-
+		GameManager.Instance.OnLocalPlayerDeath.Invoke(null, null);
 	}
 
 	public virtual int[] Serialize()

@@ -25,9 +25,6 @@ public class MenuWheel<ReturnType> : MonoBehaviour
 	protected float _tempElementAngle;
 	public Player ParentPlayer;
 
-	[HideInInspector]
-	public bool isGenerated = false;
-
 	protected virtual void Start()
 	{
 
@@ -59,7 +56,6 @@ public class MenuWheel<ReturnType> : MonoBehaviour
 		}
 
 		ScrollToIndex(_selectedElementIndex);
-		isGenerated = true;
 		Update();
 	}
 

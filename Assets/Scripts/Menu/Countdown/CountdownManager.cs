@@ -17,18 +17,20 @@ public class CountdownManager : GenericSingleton<CountdownManager>
     public IEnumerator Countdown ()
     {
         TimeManager.Pause();
+
         for (int i = 0; i < Images.Length; ++i)
         {
             Images[i].gameObject.SetActive(true);
             RectTransform transform = Images[i].GetComponent<RectTransform>();
-            yield return StartCoroutine(Countdonw_Implementation(i, transform, Images[i]));
+            yield return StartCoroutine(Countdown_Implementation(i, transform, Images[i]));
             Images[i].gameObject.SetActive(false);
         }
+
         TimeManager.Resume();
         MenuPauseManager.Instance.CanPause = true;
     }
 
-    IEnumerator Countdonw_Implementation (int index, RectTransform transform, Image image)
+    IEnumerator Countdown_Implementation (int index, RectTransform transform, Image image)
     {
         float initScale = 3.0f;
         float initAlpha = 1.0f;

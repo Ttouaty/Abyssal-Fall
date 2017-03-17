@@ -4,13 +4,14 @@ using UnityEngine.Networking;
 
 public class Hammer : ABaseProjectile
 {
-	public override void Launch(Vector3 Position, Vector3 Direction, DamageData Shooter, int instanceId)
+	public override void Launch(Vector3 Position, Vector3 Direction, DamageData Shooter, NetworkInstanceId instanceId)
 	{
 		base.Launch(Position, Direction, Shooter, instanceId);
 	}
 
 	protected override void OnLaunch(GameObject launcher)
 	{
+		base.OnLaunch(launcher);
 		GetComponentInChildren<MeshRenderer>().material = launcher.GetComponent<PlayerController>()._characterProp.PropRenderer.material;
 	}
 
@@ -21,6 +22,6 @@ public class Hammer : ABaseProjectile
 
 	public override void OnHitEnvironnement()
 	{
-		//base.OnHitEnvironnement();
+		base.OnHitEnvironnement();
 	}
 }

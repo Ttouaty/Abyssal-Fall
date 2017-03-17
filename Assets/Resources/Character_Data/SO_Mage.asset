@@ -17,12 +17,12 @@ MonoBehaviour:
   CharacterSelectModel: {fileID: 11475656, guid: 3d4a50b86d93dbd4b91acbc922964100,
     type: 2}
   NumberOfSkins: 4
-  SpecialInfoKey: Charge then release a FireBall with X.
+  SpecialInfoKey: Charge (Hold) & release a FireBall with X.
   SpeedInfoKey: Normal
   CharacterStats:
-    strength: 8
+    strength: 9
     speed: 5
-    resistance: 3
+    resistance: 4
   Dash:
     endingLag: 0.3
     Forces:
@@ -37,11 +37,11 @@ MonoBehaviour:
     Projectile: {fileID: 0}
   SpecialDamageData:
     AttackTypeUsed: 1
-    StunInflicted: 0.5
+    StunInflicted: 0.7
     IsParryable: 0
     Projectile: {fileID: 0}
   SpecialCoolDown: 3
-  SpecialLag: 0.3
+  SpecialLag: 0.1
   SoundList:
     SoundList:
     - Key: OnDashStart

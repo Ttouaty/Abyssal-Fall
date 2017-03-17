@@ -9,8 +9,8 @@ public class MageController : PlayerController
 	private float _explosionDelay = 0.7f; // Time before explosion occurs after the special is activated
 	[SerializeField]
 	private float _explosionRadius = 4f;
-	[SerializeField]
-	private float _maxChargeTime = 0.7f;
+	//[SerializeField]
+	//private float _maxChargeTime = 0.7f;
 
 	private GameObject _fireBallObject;
 	private bool _fireballIsActive = false;
@@ -64,6 +64,7 @@ protected override bool SpecialActivation()
 		_fireBallObject = GameObjectPool.GetAvailableObject("FireBall");
 		DamageData tempDamageData = _characterData.SpecialDamageData.Copy();
 		tempDamageData.Dealer = _dmgDealerSelf;
+
 		_fireBallObject.GetComponent<FireBall>().Launch(
 			pos,
 			dir,
@@ -71,10 +72,11 @@ protected override bool SpecialActivation()
 			_explosionRadius,
 			SO_Character.SpecialEjection.Multiply(Axis.x, _characterData.CharacterStats.strength),
 			tempDamageData,
-			gameObject.GetInstanceID()
+			netId
 		);
 
-		NetworkServer.Spawn(_fireBallObject);
+		NetworkServer.SpawnWithClientAuthority(_fireBallObject, _playerRef.gameObject);
+		_fireBallObject.GetComponent<ABaseProjectile>().RpcSendOnLaunch(gameObject);
 
 		if (ArenaManager.Instance != null)
 			_fireBallObject.transform.parent = ArenaManager.Instance.SpecialsRoot;

@@ -6,6 +6,9 @@ public class ArenaMasterManager : NetworkBehaviour
 {
 	public static ArenaMasterManager Instance;
 
+	//[SyncVar]
+	//public bool GameInProgress = false;
+
 	[HideInInspector]
 	[SyncVar]
 	public bool ForceIntroSkip = false;

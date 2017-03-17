@@ -67,6 +67,13 @@ public class ConnectionModule : MonoBehaviour
 	void OnSuccessCallBack(string Code)
 	{
 		MenuManager.Instance.GetComponentInChildren<TextIP>(true).SetText(Code.ToLower());
+		MainManager.Instance.GetComponent<MonoBehaviour>().StartCoroutine(ShowCharacterSelectCoroutine());
+	}
+
+	IEnumerator ShowCharacterSelectCoroutine()
+	{
+		yield return new WaitUntil(() => Player.LocalPlayer != null);
+		MenuPanelNew.PanelRefs["CharacterSelect"].Open();
 	}
 
 	void OnFailedToConnect(NetworkConnectionError error)

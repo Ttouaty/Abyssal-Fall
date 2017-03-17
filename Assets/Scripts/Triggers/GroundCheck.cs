@@ -1,12 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Networking;
 
 [RequireComponent(typeof(SphereCollider))]
 public class GroundCheck : MonoBehaviour
 {
+	public static bool noclip = false;
+
 	private PlayerController _playerRef;
-	private Collider _colliderRef;
+	private SphereCollider _colliderRef;
 	private Rigidbody _rigidBRef;
 	//private float _ownSize;
 
@@ -18,15 +21,15 @@ public class GroundCheck : MonoBehaviour
 	{
 		//_ownSize = GetComponent<SphereCollider>().radius;
 		_playerRef = GetComponentInParent<PlayerController>();
-		_colliderRef = GetComponent<Collider>();
+		_colliderRef = GetComponent<SphereCollider>();
 		_rigidBRef = _playerRef.GetComponent<Rigidbody>();
 	}
 
 	void Update()
 	{
-		if(_playerRef._playerRef != null)
-			if (!_playerRef._isLocalPlayer)
-				enabled = false; // Deactivate if character is not local
+		//if (_playerRef._playerRef != null)
+		//	if (!_playerRef._isLocalPlayer)
+		//		enabled = false; // Deactivate if character is not local
 
 		if (_rigidBRef.velocity.y > 1f)
 		{
@@ -45,6 +48,8 @@ public class GroundCheck : MonoBehaviour
 	void LateUpdate()
 	{
 		_playerRef.IsGrounded = _colliderIds.Count > 0;
+		if(noclip)
+			_playerRef.IsGrounded = true;
 	}
 
 	void OnTriggerEnter(Collider colli)
@@ -54,7 +59,9 @@ public class GroundCheck : MonoBehaviour
 
 		if (_colliderIds.Count == 0 && _playerRef != null)
 			_playerRef.ContactGround();
-		_colliderIds.Add(colli.GetInstanceID());
+
+		if(!_colliderIds.Contains(colli.GetInstanceID()))
+			_colliderIds.Add(colli.GetInstanceID());
 
 		if (colli.gameObject.activeInHierarchy && colli.GetComponent<Tile>() != null)
 			colli.GetComponent<Tile>().ActivateFall();
@@ -70,6 +77,13 @@ public class GroundCheck : MonoBehaviour
 	public void Activate()
 	{
 		enabled = true;
+		_colliderRef = GetComponent<SphereCollider>();
+		Collider[] tempCollis = Physics.OverlapSphere(transform.position, _colliderRef.radius + 0.2f, 1 << LayerMask.NameToLayer("Ground"));
+
+		for (int i = 0; i < tempCollis.Length; i++)
+		{
+			OnTriggerEnter(tempCollis[i]);
+		}
 	}
 
 	public void Deactivate()

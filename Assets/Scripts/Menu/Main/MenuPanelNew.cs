@@ -104,7 +104,6 @@ public class MenuPanelNew : MonoBehaviour
 
 	public void LaunchAnimation(string triggerName)
 	{
-		
 		if (isActiveAndEnabled)
 			StartCoroutine(AnimCoroutine(triggerName));
 	}

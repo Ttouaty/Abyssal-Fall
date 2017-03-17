@@ -294,10 +294,6 @@ public class ServerManager : NATTraversal.NetworkManager
 		player.PlayerNumber = i;
 		NetworkServer.AddPlayerForConnection(conn, playerGo, playerControllerId);
 
-		if(MenuManager.Instance != null && !IsDebug)
-			SpawnCharacterWheel(player.gameObject);
-		
-
 		LobbySlotsOpen |= newSlot;
 	}
 
@@ -341,16 +337,19 @@ public class ServerManager : NATTraversal.NetworkManager
 
 	public override void OnServerDisconnect(NetworkConnection conn)
 	{
+
 		if(conn.playerControllers.Count == 0)
 		{
 			Debug.Log("empty player");
 			return;
 		}
+		int playerNumber = conn.playerControllers[0].gameObject.GetComponent<Player>().PlayerNumber;
+
 		if (IsInLobby)
 		{
 			for (int i = 0; i < RegisteredPlayers.Count; i++)
 			{
-				RegisteredPlayers[i].RpcCloseTargetSlot(conn.playerControllers[0].gameObject.GetComponent<Player>().PlayerNumber - 1);
+				RegisteredPlayers[i].RpcCloseTargetSlot(playerNumber - 1);
 			}
 		}
 
@@ -366,7 +365,7 @@ public class ServerManager : NATTraversal.NetworkManager
 		
 		if(Player.LocalPlayer != null)
 		{
-			Player.LocalPlayer.RpcOnPlayerDisconnect(conn.playerControllers[0].gameObject.GetComponent<Player>().PlayerNumber);
+			Player.LocalPlayer.RpcOnPlayerDisconnect(playerNumber);
 		}
 
 		base.OnServerDisconnect(conn);

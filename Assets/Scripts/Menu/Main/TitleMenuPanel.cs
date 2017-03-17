@@ -12,16 +12,17 @@ public class TitleMenuPanel : MenuPanelNew
 
 	IEnumerator WaitForCameraMovement()
 	{
-		PanelRefs["Main"].Open();
-		yield return new WaitUntil(() => PanelRefs["Main"].transform.Find("Title").GetComponentInChildren<Animator>());
-		yield return new WaitUntil(() => InputEnabled);
+
 		foreach (Transform child in transform)
 		{
 			child.SetParent(PanelRefs["Main"].transform, false);
+			child.localPosition = Vector3.zero;
 		}
+		PanelRefs["Main"].Open();
+		GlobalInputDelay = 100000000; // deactivated by inputlistener
+		yield return new WaitUntil(() => PanelRefs["Main"].transform.Find("Title").GetComponentInChildren<Animator>());
 		PanelRefs["Main"].transform.Find("Title").GetComponentInChildren<Animator>().SetTrigger("wait");
 
 		GlobalInputDelay = 100000000; // deactivated by inputlistener
 	}
-
 }

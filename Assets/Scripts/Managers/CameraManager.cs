@@ -18,6 +18,8 @@ public enum ShakeStrength
 
 public class CameraManager : GenericSingleton<CameraManager>
 {
+	public static bool IsManual = false;
+
 	private float _shakeTimeLeft = 0;
 	private ShakeStrength _activeShakeStrength;
 
@@ -36,7 +38,7 @@ public class CameraManager : GenericSingleton<CameraManager>
 
 	public float MinDistance = 5;
 	public float Margin = 5;
-	public float Growth = 0.1f;
+	//public float Growth = 0.1f;
 	public float VerticalOffsetCoef = 2;
 
 	private const float _centroidCoefficient = 1f;
@@ -96,20 +98,25 @@ public class CameraManager : GenericSingleton<CameraManager>
 
 		IsMoving = (transform.position - previousPosition).magnitude > 0.05f;
 		previousPosition = transform.position;
-		if (_targetsTracked.Count != 0)
-		{
-			CalculateTargetsDistance();
 
-			Debug.DrawRay(_centerPoint.position, _targetsCentroid - _centerPoint.position, Color.red);
-			Debug.DrawRay(transform.position, transform.forward * _distance, Color.blue);
-		}
-		else
-		{
-			_targetsCentroid = _centerPoint.position;
-		}
 
-		transform.localPosition = -Vector3.forward * _distance;
-		FollowCentroid();
+		if(!IsManual)
+		{
+			if (_targetsTracked.Count != 0)
+			{
+				CalculateTargetsDistance();
+
+				Debug.DrawRay(_centerPoint.position, _targetsCentroid - _centerPoint.position, Color.red);
+				Debug.DrawRay(transform.position, transform.forward * _distance, Color.blue);
+			}
+			else
+			{
+				_targetsCentroid = _centerPoint.position;
+			}
+
+			transform.localPosition = -Vector3.forward * _distance;
+			FollowCentroid();
+		}
 
 		ProcessScreenShake();
 	}
@@ -174,7 +181,7 @@ public class CameraManager : GenericSingleton<CameraManager>
 			_targetsCentroid /= nbRays;
 		_targetsCentroid.y = _centerPoint.position.y;
 
-		_distance = Mathf.Lerp(_distance, _tempDistance * 0.5f / Mathf.Tan(_camera.fieldOfView * 0.5f * Mathf.Deg2Rad) * (1 + Growth) + Margin, 5 * Time.deltaTime);
+		_distance = Mathf.Lerp(_distance, _tempDistance * 0.5f / Mathf.Tan(_camera.fieldOfView * 0.5f * Mathf.Deg2Rad)/* * (1 + Growth) */+ Margin, 5 * Time.deltaTime);
 
 		if (_distance < MinDistance)
 			_distance = MinDistance;
