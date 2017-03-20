@@ -53,6 +53,8 @@ public class CharacterSelectWheel : NetworkBehaviour
 		{
 			elementsToDisplay[i].transform.SetParent(transform);
 			elementsToDisplay[i].transform.localPosition = elementsToDisplay[i].transform.localPosition.ZeroY();
+
+
 			ElementGenerate(elementsToDisplay[i], Quaternion.AngleAxis(-_rotationBetweenElements * i, Vector3.up) * Vector3.back * _wheelRadius);
 			//elementsToDisplay[i].transform.RotateAround(transform.position, transform.up, -_rotationBetweenElements * i);
 		}
@@ -108,7 +110,7 @@ public class CharacterSelectWheel : NetworkBehaviour
 		_selectedElementIndex = newIndex;
 		_selectedElementIndex = _selectedElementIndex.LoopAround(0, _returnArray.Length - 1);
 
-		transform.parent.parent.GetComponent<CharacterSlot>().SetCharacterInfoText(
+		transform.GetComponentInParent<CharacterSlot>().SetCharacterInfoText(
 			_returnArray[_selectedElementIndex]._characterData.SpecialInfoKey);
 		//_displayArray[_selectedElementIndex].transform.SetAsLastSibling();
 	}
@@ -141,19 +143,24 @@ public class CharacterSelectWheel : NetworkBehaviour
 		for (int i = 0; i < tempGenerationSelectableCharacters.Length; i++)
 		{
 			tempGenerationSelectableCharacters[i] = Instantiate(AvailablePlayers[i]._characterData.CharacterSelectModel.gameObject) as GameObject;
-			tempGenerationSelectableCharacters[i].transform.localScale = transform.parent.localScale * 1.8f;
 			tempGenerationSelectableCharacters[i].GetComponentInChildren<Animator>().SetTriggerAfterInit("Selection");
 			//tempGenerationSelectableCharacters[i].AddComponent<NetworkIdentity>();
 			//NetworkServer.Spawn(tempGenerationSelectableCharacters[i]);
 		}
 
-		_wheelRadius = Mathf.Abs(transform.parent.localPosition.z * 2.5f);
+		_wheelRadius = Mathf.Abs(transform.parent.localPosition.z * (1 / transform.parent.localScale.z));
 		Internal_Generate(tempGenerationSelectableCharacters, AvailablePlayers);
 
 		ScrollToIndex(_playerRef.GetComponent<Player>().CharacterUsedIndex);
 		ChangeCharacterSkin(_playerRef.GetComponent<Player>().SkinNumber);
 		SetAnimBool("IsSelected", _playerRef.GetComponent<Player>().isReady);
 		MenuManager.Instance._characterSlotsContainerRef.SlotsAvailable[playerNumber - 1].SelectPedestal(_playerRef.GetComponent<Player>().isReady);
+
+		for (int i = 0; i < _displayArray.Length; i++)
+		{
+			_displayArray[i].GetComponentInChildren<CharacterModel>().SetOutlineColor(GameManager.Instance.PlayerColors[playerNumber - 1].SetAlpha(0), true);
+			_displayArray[i].GetComponentInChildren<SetRenderQueue>().SetCutOff(0);
+		}
 
 		if (WheelsRef.ContainsKey(playerNumber))
 			WheelsRef.Remove(playerNumber);
@@ -237,5 +244,17 @@ public class CharacterSelectWheel : NetworkBehaviour
 
 		if (Player.LocalPlayer == null) // If client Disconnect
 			WheelsRef.Clear();
+	}
+
+	void OnEnable()
+	{
+		if (_displayArray == null || _playerRef == null)
+			return;
+		for (int i = 0; i < _displayArray.Length; i++)
+		{
+			_displayArray[i].GetComponentInChildren<Animator>().SetTriggerAfterInit("Selection");
+		}
+		SetAnimBool("IsSelected", _playerRef.GetComponent<Player>().isReady);
+
 	}
 }

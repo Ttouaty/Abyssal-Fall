@@ -23,6 +23,7 @@ public class GroundCheck : MonoBehaviour
 		_playerRef = GetComponentInParent<PlayerController>();
 		_colliderRef = GetComponent<SphereCollider>();
 		_rigidBRef = _playerRef.GetComponent<Rigidbody>();
+		gameObject.layer = LayerMask.NameToLayer("GroundCheck");
 	}
 
 	void Update()

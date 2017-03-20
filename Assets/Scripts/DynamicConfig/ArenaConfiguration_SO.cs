@@ -14,5 +14,6 @@ public class ArenaConfiguration_SO : ScriptableObject
 	public EArenaConfiguration TargetMapEnum;
 	public MapConfiguration_SO[] MapConfigs;
 	[Space]
-	public VictoryPlatform VictoryPlatformGo; 
+	public VictoryPlatform VictoryPlatformGo;
+	public Texture AmbientRamp;
 }

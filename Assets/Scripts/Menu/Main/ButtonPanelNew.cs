@@ -41,7 +41,7 @@ public class ButtonPanelNew : MonoBehaviour
 		}
 	}
 
-	private MenuPanelNew _parentMenu;
+	protected MenuPanelNew _parentMenu;
 	private Animator _animator;
 	private string _lastTrigger = "";
 

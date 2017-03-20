@@ -318,7 +318,6 @@ GameObject:
   - 4: {fileID: 664798912}
   - 114: {fileID: 664798915}
   - 82: {fileID: 664798914}
-  - 82: {fileID: 664798913}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -339,80 +338,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1511463442}
   m_RootOrder: 1
---- !u!82 &664798913
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 664798911}
-  m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: c3b6978900756f44aa661424f1f19d51, type: 3}
-  m_PlayOnAwake: 0
-  m_Volume: 1
-  m_Pitch: 1
-  Loop: 0
-  Mute: 0
-  Spatialize: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    - time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 0
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 0
 --- !u!82 &664798914
 AudioSource:
   m_ObjectHideFlags: 0
@@ -505,7 +430,7 @@ MonoBehaviour:
   OnOne: {fileID: 8300000, guid: 76b95c286108e104e8d0942bc4d4bcda, type: 3}
   OnGo: {fileID: 8300000, guid: da994bf18daa348478aca40b01533d79, type: 3}
   AudioSource: {fileID: 664798914}
-  GameLoop: {fileID: 664798913}
+  GameLoop: {fileID: 0}
   PlayerColors:
   - {r: 0.791, g: 0.13130601, b: 0.13130601, a: 1}
   - {r: 0.06423012, g: 0.28851876, b: 0.72794116, a: 1}
@@ -863,7 +788,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Abyssal Fall Beta: v0.1'
+  m_Text: 'Abyssal Fall Beta: v0.2'
 --- !u!222 &1071578260
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -902,8 +827,6 @@ MonoBehaviour:
     Configuration: {fileID: 11400000, guid: 9607891b4d5eeed4ba887eebc917efe0, type: 2}
   - Name: Sea
     Configuration: {fileID: 11400000, guid: 07dddb203e6065b4d808d90ba788c5ce, type: 2}
-  - Name: Voxel
-    Configuration: {fileID: 11400000, guid: c71dc0f42e72c224dbf890861e361986, type: 2}
   - Name: Forest
     Configuration: {fileID: 11400000, guid: e505e2e92d7a126418be7b0f2f929c9e, type: 2}
   ModeConfigurations:

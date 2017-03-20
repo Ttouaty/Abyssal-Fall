@@ -43,7 +43,7 @@ public class MenuPanelNew : MonoBehaviour
 		_animator = GetComponent<Animator>();
 	}
 
-	void Update()
+	protected virtual void Update()
 	{
 		if (ActiveMenupanel == null)
 			return;
@@ -150,7 +150,7 @@ public class MenuPanelNew : MonoBehaviour
 			Player.LocalPlayer.RpcMenuTransition(PanelName, false);
 	}
 
-	void ProcessInput()
+	protected virtual void ProcessInput()
 	{
 		if(ActiveButtonPanel != null)
 		{

@@ -13,7 +13,7 @@ public class Player : NetworkBehaviour
 	public static Player[] PlayerList = new Player[0];
 	public Material CharacterAlpha;
 	[HideInInspector]
-	public int JoystickNumber = 0;
+	public int JoystickNumber = -1;
 
 	[SyncVar]
 	[HideInInspector]

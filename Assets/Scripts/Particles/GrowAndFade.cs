@@ -19,26 +19,23 @@ public class GrowAndFade : MonoBehaviour {
 			return;
 		if (DublicateSprite)
 		{
-			GameObject particle = (GameObject)Instantiate(gameObject, transform.position, Quaternion.identity);
+			GameObject particle = new GameObject(name); /*(GameObject)Instantiate(gameObject, transform.position, Quaternion.identity);*/
 
-			MonoBehaviour[] tempComponents = particle.GetComponents<MonoBehaviour>();
-			for (int i = 0; i < tempComponents.Length; i++)
-			{
-				tempComponents[i].enabled = false;
-			}
-			particle.GetComponent<Graphic>().enabled = true;
+			particle.CopyComponentFrom(GetComponent<Image>());
+			particle.CopyComponentFrom(GetComponent<GrowAndFade>());
 
 			if (IsDetached)
 				particle.transform.SetParent(
 					GetComponentInParent<Canvas>() == null ?
 					MessageManager.Instance.GetComponentInChildren<Canvas>().transform : 
-					GetComponentInParent<Canvas>().transform
+					GetComponentInParent<Canvas>().transform,
+					false
 				);
 			else
-				particle.transform.SetParent(transform.parent);
+				particle.transform.SetParent(transform, false);
 
-			particle.transform.localScale = transform.localScale;
-			particle.transform.localRotation = transform.localRotation;
+			particle.transform.localScale = IsDetached ? transform.localScale : Vector3.one;
+			particle.transform.localRotation = IsDetached ? transform.localRotation : Quaternion.identity;
 			particle.GetComponent<GrowAndFade>().enabled = true;
 			particle.GetComponent<GrowAndFade>().DublicateSprite = false;
 			particle.GetComponent<GrowAndFade>().Activate();
@@ -57,16 +54,19 @@ public class GrowAndFade : MonoBehaviour {
 
 	IEnumerator ActivateCoroutine(Graphic target)
 	{
-		float targetStamp = Time.time + AnimationTime;
+		float eT = 0;
 
 		target.CrossFadeAlpha(0.5f, 0, false);
 		target.CrossFadeAlpha(0, AnimationTime, false);
 		Vector3 startScale = target.transform.localScale;
-		while (Time.time < targetStamp)
+
+		while (eT < AnimationTime)
 		{
-			target.transform.localScale = Vector3.Lerp(startScale, TargetScale, 1 - (targetStamp - Time.time));
+			eT += Time.deltaTime;
+			target.transform.localScale = Vector3.Lerp(startScale, TargetScale, eT / AnimationTime);
 			yield return null;
 		}
+		StopAllCoroutines();
 		Destroy(target.gameObject);
 	}
 

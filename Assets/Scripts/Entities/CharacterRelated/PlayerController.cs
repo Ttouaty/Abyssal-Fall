@@ -297,6 +297,17 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_characterData.SoundList.Generate();
 
 		playerMesh.Reskin(_playerRef.SkinNumber);
+		playerMesh.SetOutlineColor(GameManager.Instance.PlayerColors[_playerRef.PlayerNumber - 1]);
+
+		Debug.Log("SetOuline for playercontroller with playerN° => "+_playerRef.PlayerNumber);
+
+		if(ArenaManager.Instance != null)
+		{
+			if(ArenaManager.Instance.CurrentArenaConfig.AmbientRamp != null)
+			{
+				playerMesh.SetAmbientRamp(ArenaManager.Instance.CurrentArenaConfig.AmbientRamp);
+			}
+		}
 
 		_animator = playerMesh.GetComponentInChildren<Animator>();
 		_characterProp = transform.GetComponentInChildren<CharacterProp>();

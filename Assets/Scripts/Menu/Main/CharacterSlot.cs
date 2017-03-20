@@ -14,6 +14,9 @@ public class CharacterSlot : MonoBehaviour
 	public Transform WheelSlot;
 	public GameObject PressAContainer;
 	public Text SpecialText;
+	public Image GamePadController;
+	public Image KeyboardController;
+	public GameObject ArrowContainers;
 
 	[HideInInspector]
 	public bool Open = false;
@@ -103,6 +106,7 @@ public class CharacterSlot : MonoBehaviour
 	void SelectCharacter()
 	{
 		_playerRef.Ready(_wheelRef._selectedElementIndex, _wheelRef._selectedSkinIndex);
+		ArrowContainers.SetActive(false);
 
 		Selected = true;
 	}
@@ -114,6 +118,8 @@ public class CharacterSlot : MonoBehaviour
 		Selected = false;
 		if(_playerRef != null)
 			_playerRef.UnReady();
+
+		ArrowContainers.SetActive(_playerRef.isLocalPlayer);
 	}
 
 
@@ -132,8 +138,19 @@ public class CharacterSlot : MonoBehaviour
 			OnSlotOpen.Invoke();
 		}
 
+		PressAContainer.SetActive(false);
+
 		_playerRef = _wheelRef._playerRef.GetComponent<Player>();
 		_wheelRef.transform.localRotation = Quaternion.identity;
+
+		if(_playerRef.JoystickNumber == 0)
+			KeyboardController.gameObject.SetActive(true);
+		else if(_playerRef.JoystickNumber != -1)
+			GamePadController.gameObject.SetActive(true);
+
+		TargetPedestal.transform.rotation = Quaternion.LookRotation((Camera.main.transform.position - TargetPedestal.transform.position).normalized, transform.up);
+
+		ArrowContainers.SetActive(_playerRef.isLocalPlayer);
 	}
 
 	public void CloseSlot()
@@ -142,6 +159,8 @@ public class CharacterSlot : MonoBehaviour
 		Open = false;
 		frameDelay = 1;
 		SetTextAlpha(0);
+		GamePadController.gameObject.SetActive(false);
+		KeyboardController.gameObject.SetActive(false);
 		Debug.Log("SLOT: " + name + " Closed");
 	}
 

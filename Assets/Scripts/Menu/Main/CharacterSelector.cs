@@ -29,8 +29,17 @@ public class CharacterSelector : MonoBehaviour
 
 	void Start()
 	{
+		if(GetComponentsInChildren<CharacterSlot>().Length > 4)
+		{
+			for (int i = 4; i < GetComponentsInChildren<CharacterSlot>().Length; i++)
+			{
+				Destroy(GetComponentsInChildren<CharacterSlot>()[i].gameObject);
+			}
+		}
+
 		if(SlotsAvailable == null)
 			SlotsAvailable = GetComponentsInChildren<CharacterSlot>();
+
 	}
 
 	public void CloseTargetSlot(int slotNumber)
