@@ -17,8 +17,8 @@ public class ButtonPanelNew : MonoBehaviour
 	public Selectable FirstElementSelected;
 
 	private Selectable _lastSelectedElement;
-	private Selectable _internalActiveButton;
-	private Selectable ActiveElement
+	protected Selectable _internalActiveButton;
+	protected Selectable ActiveElement
 	{
 		get { return _internalActiveButton; }
 		set
@@ -51,7 +51,7 @@ public class ButtonPanelNew : MonoBehaviour
 		_animator = GetComponent<Animator>();
 	}
 
-	public void Open()
+	public virtual void Open()
 	{
 		if (ParentButtonPanel != null)
 			ParentButtonPanel.FadeParent();
@@ -105,7 +105,7 @@ public class ButtonPanelNew : MonoBehaviour
 		Close();
 	}
 
-	public void SelectNewButton(UIDirection newDirection)
+	public virtual void SelectNewButton(UIDirection newDirection)
 	{
 		if (ActiveElement == null)
 			return;
@@ -155,7 +155,7 @@ public class ButtonPanelNew : MonoBehaviour
 		_parentMenu.AddInputDelay();
 	}
 
-	public void Activate()
+	public virtual void Activate()
 	{
 		if(ActiveElement.isActiveAndEnabled)
 			if(ActiveElement.GetComponent<Button>() != null)

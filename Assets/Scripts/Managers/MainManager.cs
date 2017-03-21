@@ -36,7 +36,6 @@ public class MainManager : GenericSingleton<MainManager>
 
 		Cursor.visible = false;
 		Application.targetFrameRate = 60;
-		Screen.fullScreen = true;
 
 		GAME_OBJECT_POOL = GameObjectPool.Instance;
 		DYNAMIC_CONFIG      = DynamicConfig.Instance;
@@ -95,5 +94,8 @@ public class MainManager : GenericSingleton<MainManager>
 			else
 				MessageManager.Log("No Local Player can't toggle noclip");
 		}
+
+		if(Input.GetKeyDown(KeyCode.F8))
+			Cursor.visible = !Cursor.visible;
 	}
 }

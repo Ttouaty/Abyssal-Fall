@@ -77,6 +77,7 @@ public class CharacterModel : MonoBehaviour
 				_skinArray[skinNumber].TargetMeshes[j].materials = materialArray.ToArray();
 
 			SetOutlineColor(OutlineColorInUse);
+			SetAmbientRamp(AmbientRampInUse);
 		}
 	}
 
@@ -103,6 +104,8 @@ public class CharacterModel : MonoBehaviour
 
 	public void SetAmbientRamp(Texture newTexture)
 	{
+		if (newTexture == null)
+			return;
 		AmbientRampInUse = newTexture;
 
 		for (int i = 0; i < MaterialsInUse.Count; i++)
