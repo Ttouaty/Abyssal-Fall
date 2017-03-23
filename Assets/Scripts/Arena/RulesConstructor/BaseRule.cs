@@ -21,12 +21,20 @@ public class BaseRule : ScriptableObject
 	{
 		get
 		{
-			if(Values.Length < _valueIndex)
+			if (Values.Length < _valueIndex)
 			{
-				Debug.Log("_valueIndex is oustide of Values.Length in => "+name);
+				Debug.Log("_valueIndex is oustide of Values.Length in => " + name);
 				return "";
 			}
 			return Values[_valueIndex];
+		}
+	}
+
+	public virtual int ValuesLength
+	{
+		get
+		{
+			return Values.Length;
 		}
 	}
 

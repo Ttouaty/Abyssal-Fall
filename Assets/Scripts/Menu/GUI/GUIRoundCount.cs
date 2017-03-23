@@ -13,6 +13,13 @@ public class GUIRoundCount : MonoBehaviour
 
 	public void SetRound(int round)
 	{
+		GetComponent<CanvasGroup>().alpha = 1;
 		_RoundCountDisplay.SetText(new KeyValuePair<string, string>("%NUMBER%", round.ToString()));
+		Fade();
+	}
+
+	public void Fade()
+	{
+		GetComponent<CanvasGroup>().CrossFadeAlpha(0, 3);
 	}
 }

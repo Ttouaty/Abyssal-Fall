@@ -68,8 +68,6 @@ public class OptionPanel : ButtonPanelNew
 	public void ChangeTextureQuality(int value)
 	{
 		QualitySettings.masterTextureLimit = value;
-
-		Debug.Log("jeej");
 		_optionsObj.TextureQuality = value;
 	}
 

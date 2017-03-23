@@ -63,7 +63,8 @@ public class GUIManager : GenericSingleton<GUIManager>
 
 	public void SetPlayerScoreIcon(int playerNumber, Sprite newSprite)
 	{
-		ScoreFields[playerNumber - 1].GetComponentInChildren<Image>().sprite = newSprite;
+		ScoreFields[playerNumber - 1].transform.Find("Player Icon").GetComponent<Image>().sprite = newSprite;
+		ScoreFields[playerNumber - 1].transform.Find("Player Icon").GetComponent<Image>().color = GameManager.Instance.PlayerColors[playerNumber - 1];
 	}
 
 	public void SetPlayerScore(int playerNumber, int score)

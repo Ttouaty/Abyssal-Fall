@@ -4,6 +4,7 @@ using System;
 using System.Reflection;
 using UnityEngine.UI;
 using UnityEngine.Networking;
+using UnityEngine.EventSystems;
 
 public class OptionSelector : MonoBehaviour
 {
@@ -106,21 +107,30 @@ public class OptionSelector : MonoBehaviour
 
 	public void IncreaseRule()
 	{
-		_selectedField.GetTargetRule().SetToNextValue();
-		_selectedField.OnIncrease();
+		if(_selectedField.GetTargetRule()._valueIndex != _selectedField.GetTargetRule().ValuesLength - 1)
+		{
+			_selectedField.GetTargetRule().SetToNextValue();
+			_selectedField.OnIncrease();
+		}
 	}
 
 	public void DecreaseRule()
 	{
-		_selectedField.GetTargetRule().SetToPreviousValue();
-		_selectedField.OnDecrease();
+		if (_selectedField.GetTargetRule()._valueIndex != 0)
+		{
+			_selectedField.GetTargetRule().SetToPreviousValue();
+			_selectedField.OnDecrease();
+		}
 	}
 
 	private void SelectField(BaseOptionField targetField)
 	{
-		if (_selectedField != null)
-			_selectedField.gameObject.GetComponent<Image>().sprite = NormalSprite;
-		targetField.gameObject.GetComponent<Image>().sprite = HighlightSprite;
+		if(targetField.GetComponentInChildren<Selectable>(true) != null)
+		{
+			if(_selectedField != null)
+				_selectedField.GetComponent<Animator>().SetTrigger("Normal");
+			targetField.GetComponent<Animator>().SetTrigger("Highlighted");
+		}
 		_selectedField = targetField;
 		_selectedFieldIndex = _allFields.IndexOf(_selectedField);
 	}

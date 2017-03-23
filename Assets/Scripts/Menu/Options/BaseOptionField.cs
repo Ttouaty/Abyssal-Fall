@@ -16,17 +16,33 @@ public class BaseOptionField : MonoBehaviour
 	public GameObject IncreaseButton;
 	public GameObject DecreaseButton;
 
-	public virtual void OnDecrease() { DecreaseButton.GetComponent<GrowAndFade>().Activate(); }
-	public virtual void OnIncrease() { IncreaseButton.GetComponent<GrowAndFade>().Activate(); }
+	public virtual void OnDecrease()
+	{
+		DecreaseButton.GetComponent<GrowAndFade>().Activate();
+		CheckButtonsMatching();
+	}
+	public virtual void OnIncrease()
+	{
+		IncreaseButton.GetComponent<GrowAndFade>().Activate();
+		CheckButtonsMatching();
+	}
 
 	public virtual void SetTargetRule(string newFieldName)
 	{
-		RuleFieldName = newFieldName; 
+		RuleFieldName = newFieldName;
 		Description.text = GetTargetRule().Label;
+		CheckButtonsMatching();
+
+	}
+
+	public void CheckButtonsMatching()
+	{
+		IncreaseButton.SetActive(GetTargetRule()._valueIndex != GetTargetRule().ValuesLength - 1);
+		DecreaseButton.SetActive(GetTargetRule()._valueIndex != 0);
 	}
 
 	public BaseRule GetTargetRule()
 	{
-		return (BaseRule) TargetRuleSet.RuleObject.GetType().GetField(RuleFieldName).GetValue(TargetRuleSet.RuleObject);
+		return (BaseRule)TargetRuleSet.RuleObject.GetType().GetField(RuleFieldName).GetValue(TargetRuleSet.RuleObject);
 	}
 }

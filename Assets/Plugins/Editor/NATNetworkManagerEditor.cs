@@ -367,8 +367,14 @@ namespace NATTraversal
             }
             EditorGUILayout.PropertyField(m_ScriptCRCCheckProperty, m_ScriptCRCCheckLabel);
             EditorGUILayout.PropertyField(m_MaxDelayProperty);
-            EditorGUILayout.PropertyField(m_MaxBufferedPacketsProperty, m_MaxBufferedPacketsLabel);
-            EditorGUILayout.PropertyField(m_AllowFragmentationProperty, m_AllowFragmentationLabel);
+            if (m_MaxBufferedPacketsProperty != null)
+            {
+                EditorGUILayout.PropertyField(m_MaxBufferedPacketsProperty, m_MaxBufferedPacketsLabel);
+            }
+            if (m_AllowFragmentationProperty != null)
+            {
+                EditorGUILayout.PropertyField(m_AllowFragmentationProperty, m_AllowFragmentationLabel);
+            }
             EditorGUILayout.PropertyField(m_MatchHostProperty, m_MatchHostLabel);
             EditorGUILayout.PropertyField(m_MatchPortProperty, m_MatchPortLabel);
             EditorGUILayout.PropertyField(m_MatchNameProperty, m_MatchNameLabel);

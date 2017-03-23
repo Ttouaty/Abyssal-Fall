@@ -421,6 +421,42 @@ public static class AnimatorExtensions
 			target.SetBool(boolName, active);
 	}
 
+	public static void SetIntAfterInit(this Animator target, string intName, int value)
+	{
+		MainManager.Instance.GetComponent<MonoBehaviour>().StartCoroutine(SetIntAfterInitCoroutine(target, intName, value));
+	}
+
+	static IEnumerator SetIntAfterInitCoroutine(Animator target, string intName, int value)
+	{
+		while (target != null)
+		{
+			if (target.isInitialized && target.gameObject.activeInHierarchy)
+				break;
+			yield return null;
+		}
+
+		if (target != null)
+			target.SetInteger(intName, value);
+	}
+
+	public static void SetFloatAfterInit(this Animator target, string floatName, float value)
+	{
+		MainManager.Instance.GetComponent<MonoBehaviour>().StartCoroutine(SetFloatAfterInitCoroutine(target, floatName, value));
+	}
+
+	static IEnumerator SetFloatAfterInitCoroutine(Animator target, string floatName, float value)
+	{
+		while (target != null)
+		{
+			if (target.isInitialized && target.gameObject.activeInHierarchy)
+				break;
+			yield return null;
+		}
+
+		if (target != null)
+			target.SetFloat(floatName, value);
+	}
+
 	public static void BroadCastTrigger(this NetworkAnimator targetAnimator, string triggerName)
 	{
 		targetAnimator.SetTrigger(triggerName);

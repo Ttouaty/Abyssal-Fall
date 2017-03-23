@@ -297,9 +297,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_characterData.SoundList.Generate();
 
 		playerMesh.Reskin(_playerRef.SkinNumber);
-		playerMesh.SetOutlineColor(GameManager.Instance.PlayerColors[_playerRef.PlayerNumber - 1]);
-
-		Debug.Log("SetOuline for playercontroller with playerN° => "+_playerRef.PlayerNumber);
+		playerMesh.SetOutlineColor(_playerRef.PlayerColor);
 
 		if(ArenaManager.Instance != null)
 		{

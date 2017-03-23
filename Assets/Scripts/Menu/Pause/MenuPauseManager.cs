@@ -36,7 +36,6 @@ public class MenuPauseManager : GenericSingleton<MenuPauseManager>
 				ScoresFields[i].CurrentPlayer = Player.PlayerList[i].GetComponent<Player>();
 			}
 
-			Debug.Log("INIT Scorfield n° => "+i);
 			ScoresFields[i].Init();
 		}
 	}

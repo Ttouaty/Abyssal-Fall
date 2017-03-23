@@ -16,11 +16,13 @@ public class OptionFieldBool : BaseOptionField
 
 	public override void OnDecrease()
 	{
+		base.OnDecrease();
 		ToggleValue();
 	}
 
 	public override void OnIncrease()
 	{
+		base.OnIncrease();
 		ToggleValue();
 	}
 

@@ -4,57 +4,30 @@ using System.Collections;
 
 public class CountdownManager : GenericSingleton<CountdownManager>
 {
-    public Image[] Images = new Image[4];
+	public GameObject[] Elements = new GameObject[4];
+	public float TotalTimeTaken = 3;
 
-    public override void Init()
-    {
-        for(int i = 0; i < Images.Length; ++i)
-        {
-            Images[i].gameObject.SetActive(false);
-        }
-    }
+	public float DistanceFromCam = 20;
 
-    public IEnumerator Countdown ()
-    {
-        TimeManager.Pause();
+	public IEnumerator Countdown ()
+	{
+		Elements[0].transform.parent.SetParent(Camera.main.transform, false);
+		Elements[0].transform.parent.localRotation = Quaternion.identity;
+		Elements[0].transform.parent.localPosition = new Vector3(0,0, 6.5f);
+		Elements[0].transform.parent.localScale = new Vector3(0.25f, 0.25f, 0.25f);
 
-        for (int i = 0; i < Images.Length; ++i)
-        {
-            Images[i].gameObject.SetActive(true);
-            RectTransform transform = Images[i].GetComponent<RectTransform>();
-            yield return StartCoroutine(Countdown_Implementation(i, transform, Images[i]));
-            Images[i].gameObject.SetActive(false);
-        }
+		TimeManager.Pause();
 
-        TimeManager.Resume();
-        MenuPauseManager.Instance.CanPause = true;
-    }
+		for (int i = 0; i < Elements.Length; i++)
+		{
+			Elements[i].SetActive(true);
+			Elements[i].GetComponentInChildren<Animator>().SetTriggerAfterInit("Activate");
+			Elements[i].GetComponentInChildren<Animator>().SetFloatAfterInit("TimeMultiplier", Elements.Length / TotalTimeTaken);
+			yield return new WaitForSeconds(TotalTimeTaken / Elements.Length);
+			Elements[i].SetActive(false);
+		}
 
-    IEnumerator Countdown_Implementation (int index, RectTransform transform, Image image)
-    {
-        float initScale = 3.0f;
-        float initAlpha = 1.0f;
-        float timer     = 1.0f;
-        float delta     = 0.0f;
-
-        transform.localScale.Set(initScale, initScale, initScale);
-
-        Color color = image.color;
-        color.a = initAlpha;
-        image.color = color;
-
-        while (timer > 0)
-        {
-            timer -= Time.deltaTime;
-            delta = 1.0f - timer;
-            float scale = Mathf.Lerp(initScale, 0.0f, delta);
-            float alpha = Mathf.Lerp(initAlpha, 0.0f, delta);
-
-            transform.sizeDelta.Set(scale, scale);
-            color.a = alpha;
-            image.color = color;
-
-            yield return null;
-        }
-    }
+		TimeManager.Resume();
+		MenuPauseManager.Instance.CanPause = true;
+	}
 }

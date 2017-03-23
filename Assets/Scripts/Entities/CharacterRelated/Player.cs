@@ -25,6 +25,14 @@ public class Player : NetworkBehaviour
 		private set { _ready = value; }
 	}
 
+	public Color PlayerColor
+	{
+		get
+		{
+			return GameManager.Instance.PlayerColors[PlayerNumber - 1];
+		}
+	}
+
 	[SyncVar(hook = "SetWheelReady")]
 	private bool _ready;
 	[HideInInspector]

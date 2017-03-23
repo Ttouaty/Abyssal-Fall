@@ -78,7 +78,5 @@ public class FreeForAll_GameRules : AGameRules
 		InputManager.AddInputLockTime(1);
 
 		GUIManager.Instance.SetActiveRoundCount(false);
-		
-
 	}
 }
