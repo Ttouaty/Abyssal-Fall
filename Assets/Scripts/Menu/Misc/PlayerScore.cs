@@ -63,6 +63,8 @@ public class PlayerScore : MonoBehaviour
 		float timeToFillUp = 1;
 		while(eT < timeToFillUp)
 		{
+
+			Debug.Log("Filing up");
 			eT += Time.deltaTime;
 			SpriteFill.fillAmount = Mathf.Lerp(startingScore / GameManager.Instance.GameRules.ScoreToWin, CurrentPlayer.Score / GameManager.Instance.GameRules.ScoreToWin, eT / timeToFillUp);
 			yield return null;

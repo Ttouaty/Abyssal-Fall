@@ -29,8 +29,8 @@ public class FaceCam : MonoBehaviour
 			return;
 
 		if(Up != null)
-			transform.rotation = Quaternion.LookRotation(targetForward, Up.up);
+			transform.rotation = Quaternion.LookRotation(targetForward.normalized, Up.up);
 		else
-			transform.rotation = Quaternion.LookRotation(targetForward);
+			transform.rotation = Quaternion.LookRotation(targetForward.normalized);
 	}
 }

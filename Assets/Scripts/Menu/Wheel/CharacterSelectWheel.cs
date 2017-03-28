@@ -146,7 +146,7 @@ public class CharacterSelectWheel : NetworkBehaviour
 		{
 			tempGenerationSelectableCharacters[i] = Instantiate(AvailablePlayers[i]._characterData.CharacterSelectModel.gameObject) as GameObject;
 			tempGenerationSelectableCharacters[i].GetComponentInChildren<Animator>().SetTriggerAfterInit("Selection");
-			tempGenerationSelectableCharacters[i].GetComponentInChildren<CharacterModel>(true).SetAmbientRamp(DefaultToonRamp);
+			tempGenerationSelectableCharacters[i].GetComponentInChildren<CharacterModel>(true).SetAmbientRampForced(DefaultToonRamp);
 			//tempGenerationSelectableCharacters[i].AddComponent<NetworkIdentity>();
 			//NetworkServer.Spawn(tempGenerationSelectableCharacters[i]);
 		}
