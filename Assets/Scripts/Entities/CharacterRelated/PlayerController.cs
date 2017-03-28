@@ -341,7 +341,12 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 		_invulTimer = new TimeCooldown(this);
 		_invulTimer.onFinish = () => { _isInvul = false; };
-		_invulTimer.onProgress = () => { _isInvul = true; if (!IsGrounded) _invulTimer.Add(Time.deltaTime); };
+		_invulTimer.onProgress = () =>
+		{
+			_isInvul = true;
+			if (_stunTimer.TimeLeft > 0)
+				_invulTimer.Add(Time.deltaTime);
+		};
 
 		_parryTimer = new TimeCooldown(this);
 
@@ -744,7 +749,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 				_stunTimer.Set(newStunTime);
 			else
 				_isInvul = false;
-			_invulTimer.Set(newStunTime * 1.3f);
+			_invulTimer.Set(newStunTime * 1.5f);
 
 			_activeDirection = -direction.ZeroY().normalized;
 			transform.LookAt(transform.position + _activeDirection, Vector3.up);

@@ -52,7 +52,6 @@ public class CharacterModel : MonoBehaviour
 
 		MaterialsInUse.Clear();
 
-		Debug.Log("reskin");
 		for (int j = 0; j < _skinArray[skinNumber].TargetMaterials.Length; j++)
 		{
 			List<Material> materialArray = new List<Material>();
@@ -107,6 +106,16 @@ public class CharacterModel : MonoBehaviour
 	{
 		if (newTexture == null)
 			return;
+		AmbientRampInUse = newTexture;
+
+		for (int i = 0; i < MaterialsInUse.Count; i++)
+		{
+			MaterialsInUse[i].SetTexture("_Ramp", newTexture);
+		}
+	}
+
+	public void SetAmbientRampForced(Texture newTexture)
+	{
 		AmbientRampInUse = newTexture;
 
 		for (int i = 0; i < MaterialsInUse.Count; i++)

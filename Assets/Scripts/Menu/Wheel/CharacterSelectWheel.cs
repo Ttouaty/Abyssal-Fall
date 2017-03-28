@@ -11,6 +11,8 @@ public class CharacterSelectWheel : NetworkBehaviour
 	public float _wheelRadius = 3;
 	public float _rotateSpeed = 0.2f;
 
+	public Texture DefaultToonRamp;
+
 	protected float _alphaThresholdAngleMin = 10;
 	protected float _alphaThresholdAngleMax = 90;
 
@@ -144,6 +146,7 @@ public class CharacterSelectWheel : NetworkBehaviour
 		{
 			tempGenerationSelectableCharacters[i] = Instantiate(AvailablePlayers[i]._characterData.CharacterSelectModel.gameObject) as GameObject;
 			tempGenerationSelectableCharacters[i].GetComponentInChildren<Animator>().SetTriggerAfterInit("Selection");
+			tempGenerationSelectableCharacters[i].GetComponentInChildren<CharacterModel>(true).SetAmbientRamp(DefaultToonRamp);
 			//tempGenerationSelectableCharacters[i].AddComponent<NetworkIdentity>();
 			//NetworkServer.Spawn(tempGenerationSelectableCharacters[i]);
 		}

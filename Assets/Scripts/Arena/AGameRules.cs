@@ -74,7 +74,10 @@ public abstract class AGameRules : MonoBehaviour
 		while (true)
 		{
 			CameraManager.Shake(ShakeStrength.Low, 0.3f);
+
+			yield return new WaitWhile(() => MenuPauseManager.Instance.IsOpen);
 			yield return new WaitForSeconds(0.5f);
+			yield return new WaitWhile(() => MenuPauseManager.Instance.IsOpen);
 			if (NetworkServer.active)
 			{
 				int[] tempTileArray = ArenaManager.Instance.GetOutsideTiles(_autoDestroyedTileIndex);
@@ -83,6 +86,8 @@ public abstract class AGameRules : MonoBehaviour
 
 				ArenaMasterManager.Instance.RpcRemoveTiles(tempTileArray);
 			}
+
+			yield return new WaitWhile(() => MenuPauseManager.Instance.IsOpen);
 			yield return new WaitForSeconds(IntervalAutoDestruction - 0.5f);
 		}
 	}

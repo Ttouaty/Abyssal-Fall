@@ -38,7 +38,7 @@ public class LevelManager : GenericSingleton<LevelManager>
 	public SceneField                       SceneEndGame;
 	public SceneField                       SceneGUI;
 	public SceneField 						SceneTutorial;
-
+	 
 	/* Events */
 	[HideInInspector]   public LoadEvent    OnLoadStart;
 	[HideInInspector]   public LoadEvent    OnLoadProgress;

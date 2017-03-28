@@ -6,7 +6,6 @@ public class EndStageManager : GenericSingleton<EndStageManager>
 {
 	public bool IsOpen = false;
 	private PlayerScore[] ScoresFields;
-	public Text StageText;
 
 	public void ResetMap(bool checkIfOpen = true)
 	{
@@ -56,8 +55,8 @@ public class EndStageManager : GenericSingleton<EndStageManager>
 			ScoresFields[i].DisplayScore();
 		}
 
-		StageText.GetComponent<Localizator.LocalizedText>().OnChangeLanguage();
-		StageText.text = StageText.text.Replace("%NUMBER%", GameManager.Instance.CurrentStage.ToString());
+		//StageText.GetComponent<Localizator.LocalizedText>().OnChangeLanguage();
+		//StageText.text = StageText.text.Replace("%NUMBER%", GameManager.Instance.CurrentStage.ToString());
 		transform.GetChild(0).gameObject.SetActive(true);
 		IsOpen = true;
 		if(GUIManager.Instance != null)
