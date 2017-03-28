@@ -8,7 +8,7 @@ public class NinjaController : PlayerController {
 
 	protected override void SpecialAction()
 	{
-		_animator.SetTrigger("Special");
+		//_animator.SetTrigger("Special");
 		_characterData.SoundList["OnSpecialActivate"].Play(gameObject);
 
 		Vector3 newDirection = Quaternion.AngleAxis(- AngleSpread * 0.5f, Vector3.up) * transform.forward;

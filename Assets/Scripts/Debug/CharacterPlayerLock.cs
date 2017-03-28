@@ -14,9 +14,9 @@ public class CharacterPlayerLock : MonoBehaviour
 		yield return new WaitUntil(()=> ServerManager.Instance != null);
 		yield return new WaitUntil(() => ServerManager.Instance.externalIP != null);
 
+		ServerManager.Instance.IsDebug = true;
 		ServerManager.Instance.StartHostAll("Debug AF", 4, true);
 		//NetworkClient tempClient = ServerManager.Instance.StartHost();
-		ServerManager.Instance.IsDebug = true;
 
 		Player tempPlayer;
 		for (int i = 0; i < Characters.Length; i++)
@@ -39,6 +39,7 @@ public class CharacterPlayerLock : MonoBehaviour
 			Characters[i]._isInDebugMode = true;
 			Characters[i].gameObject.SetActive(true);
 			Characters[i].Init(tempPlayer.gameObject);
+			Characters[i].RpcUnFreeze();
 		}
 
 

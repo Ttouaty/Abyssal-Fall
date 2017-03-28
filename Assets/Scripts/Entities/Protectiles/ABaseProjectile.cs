@@ -14,9 +14,9 @@ public abstract class ABaseProjectile : NetworkBehaviour, IPoolable
 	[SyncVar]
 	protected NetworkInstanceId LauncherNetId;
 
-
 	[SerializeField]
 	protected int _speed = 20;
+
 
 	protected virtual void Awake()
 	{
@@ -66,9 +66,22 @@ public abstract class ABaseProjectile : NetworkBehaviour, IPoolable
 		OnLaunch(Launcher);
 	}
 
+	[ClientRpc]
+	public void RpcSendOnStop()
+	{
+		OnStop();
+	}
+
 	protected virtual void OnLaunch(GameObject Launcher)
 	{
 		Launcher.GetComponent<PlayerController>()._characterData.SoundList["OnSpecialActivate"].Play(gameObject);
+	}
+
+	protected virtual void OnStop()
+	{
+		if (NetworkServer.active)
+			NetworkServer.UnSpawn(gameObject);
+		GameObjectPool.AddObjectIntoPool(gameObject);
 	}
 
 	private IEnumerator DelayStop()
@@ -79,13 +92,10 @@ public abstract class ABaseProjectile : NetworkBehaviour, IPoolable
 
 	protected virtual void Stop()
 	{
+		RpcSendOnStop();
 		_rigidB.velocity = Vector3.zero;
 		//_ownDamageData = null;
 		StopAllCoroutines();
-
-		if (NetworkServer.active)
-			NetworkServer.UnSpawn(gameObject);
-		GameObjectPool.AddObjectIntoPool(gameObject);
 	}
 
 	public virtual void OnGetFromPool()
@@ -104,6 +114,7 @@ public abstract class ABaseProjectile : NetworkBehaviour, IPoolable
 			if(colli.gameObject.GetComponentInParent<NetworkIdentity>().netId != LauncherNetId)
 			{
 				OnHitPlayer(colli.GetComponent<IDamageable>());
+				//RpcOnHitPlayer(colli.GetComponentInParent<PlayerController>().gameObject);
 			}
 		}
 		else if (colli.gameObject.layer == LayerMask.NameToLayer("Wall"))
@@ -112,6 +123,17 @@ public abstract class ABaseProjectile : NetworkBehaviour, IPoolable
 			OnHitEnvironnement();
 		}
 	}
+
+	//[ClientRpc]
+	//public void RpcOnHitPlayer(GameObject target)
+	//{
+	//	OnHitPlayerClient(target);
+	//}
+
+	//public virtual void OnHitPlayerClient(GameObject target)
+	//{
+
+	//}
 
 	public virtual void OnHitPlayer(IDamageable damagedEntity)
 	{

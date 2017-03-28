@@ -5,6 +5,8 @@ using System;
 public class ParryModule : MonoBehaviour, IDamageable
 {
 	private PlayerController _playerRef;
+	private Collider _colliRef;
+
 	private bool _isParrying
 	{
 		get
@@ -16,7 +18,14 @@ public class ParryModule : MonoBehaviour, IDamageable
 	void Start()
 	{
 		_playerRef = GetComponentInParent<PlayerController>();
-		GetComponent<Collider>().isTrigger = true;
+		_colliRef = GetComponent<Collider>();
+		_colliRef.isTrigger = true;
+	}
+
+	void Update()
+	{
+		if(_playerRef._playerRef != null)
+			_colliRef.enabled = _isParrying;
 	}
 
 	public void Damage(Vector3 direction, Vector3 impactPoint, DamageData Sender)

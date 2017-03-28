@@ -35,7 +35,7 @@ public class CharacterModel : MonoBehaviour
 	}
 	private FacialExpresionModule _FEMref;
 
-	private List<Material> MaterialsInUse = new List<Material>();
+	public List<Material> MaterialsInUse = new List<Material>();
 	private Color OutlineColorInUse = Color.red;
 	private int skinIndexInUse = 0;
 	private Texture AmbientRampInUse;
@@ -52,6 +52,7 @@ public class CharacterModel : MonoBehaviour
 
 		MaterialsInUse.Clear();
 
+		Debug.Log("reskin");
 		for (int j = 0; j < _skinArray[skinNumber].TargetMaterials.Length; j++)
 		{
 			List<Material> materialArray = new List<Material>();

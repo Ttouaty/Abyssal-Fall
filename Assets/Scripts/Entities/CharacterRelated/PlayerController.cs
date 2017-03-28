@@ -159,6 +159,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	protected Rigidbody _rigidB;
 	protected FacialExpresionModule _FEMref;
 	protected RaycastHit _hit;
+	protected AnimationToolkit _animToolkit;
 
 	#endregion
 	protected Vector3 _activeSpeed = Vector3.zero; // Activespeed est un vecteur qui est appliqué a chaque frame au rigibody.velocity => permet de modifier librement la vitesse du player.
@@ -299,9 +300,9 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		playerMesh.Reskin(_playerRef.SkinNumber);
 		playerMesh.SetOutlineColor(_playerRef.PlayerColor);
 
-		if(ArenaManager.Instance != null)
+		if (ArenaManager.Instance != null)
 		{
-			if(ArenaManager.Instance.CurrentArenaConfig.AmbientRamp != null)
+			if (ArenaManager.Instance.CurrentArenaConfig.AmbientRamp != null)
 			{
 				playerMesh.SetAmbientRamp(ArenaManager.Instance.CurrentArenaConfig.AmbientRamp);
 			}
@@ -328,6 +329,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_stunTimer = new TimeCooldown(this);
 		_FEMref = playerMesh.GetComponent<CharacterModel>().FEMref;
 		CmdSetExpression(_FEMref.DefaultExpression);
+		_animToolkit = GetComponentInChildren<AnimationToolkit>();
 
 		_stunTimer.onFinish = () => { _isStunned = false; _allowInput = true; /*CmdSetExpression(_FEMref.DefaultExpression);*/ };
 		_stunTimer.onProgress = () =>
@@ -772,6 +774,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		if (_isInvul)
 			return;
 
+		_animToolkit.ActivateParticle("hit");
 		//CmdSetExpression("Pain");
 
 		direction.x += direction.x * ((0.5f - _characterData.CharacterStats.resistance.Percentage(0, Stats.maxValue)) * 0.5f);
@@ -794,7 +797,13 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		CameraManager.Shake(ShakeStrength.Medium);
 		_characterData.SoundList["OnParry"].Play(gameObject);
 		projectileParried.Parry(DmgDealerSelf);
+		CmdParry();
 	}
+
+	[Command]
+	public void CmdParry() { RpcParry(); _animToolkit.ActivateParticle("Parry"); }
+	[ClientRpc]
+	public void RpcParry() { _animToolkit.ActivateParticle("Parry"); }
 
 	public void AddStun(float stunTime) { _stunTimer.Add(stunTime); }
 	public void SetStun(float stunTime) { _stunTimer.Set(stunTime); }
@@ -889,6 +898,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	{
 		if (colli.gameObject.GetComponent<IDamageable>() != null && _dashing)
 		{
+
 			DamageData tempDamageData = _characterData.DashDamageData.Copy();
 			tempDamageData.Dealer = _dmgDealerSelf;
 			colli.gameObject.GetComponent<IDamageable>()
