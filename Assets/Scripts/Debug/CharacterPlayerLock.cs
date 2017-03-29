@@ -23,7 +23,8 @@ public class CharacterPlayerLock : MonoBehaviour
 		{
 			if (Characters[i] == null)
 				continue;
-
+			if (!Characters[i].gameObject.activeInHierarchy)
+				continue;
 
 			int tempPlayerListLength = Player.PlayerList.Length;
 			ServerManager.Instance.TryToAddPlayer();

@@ -38,6 +38,7 @@ protected override bool SpecialActivation()
 			{
 				_fireballIsActive = false;
 				CmdActivateFireBall();
+				_animator.SetBool("SpecialIsActive", false);
 			}
 		}
 
@@ -49,6 +50,7 @@ protected override bool SpecialActivation()
 		//cast fireball
 		_fireballIsActive = true;
 		CmdLaunchFireProjectile(transform.position + transform.forward, transform.forward);
+		_animator.SetBool("SpecialIsActive", true);
 	}
 
 	[Command]
