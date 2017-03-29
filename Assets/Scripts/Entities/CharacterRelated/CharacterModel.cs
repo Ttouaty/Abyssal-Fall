@@ -38,7 +38,7 @@ public class CharacterModel : MonoBehaviour
 	public List<Material> MaterialsInUse = new List<Material>();
 	private Color OutlineColorInUse = Color.red;
 	private int skinIndexInUse = 0;
-	private Texture AmbientRampInUse;
+	public Texture AmbientRampInUse;
 
 	public void Reskin(int skinNumber)
 	{

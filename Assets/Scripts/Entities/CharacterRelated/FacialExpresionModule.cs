@@ -65,6 +65,8 @@ public class FacialExpresionModule : MonoBehaviour
 			if (tempMats[TargetMaterialIndex].mainTexture == _expressionDictionnary[expressionName][skinNumber].mainTexture)
 				return;
 
+			_expressionDictionnary[expressionName][skinNumber].SetTexture("_Ramp", GetComponentInParent<CharacterModel>().AmbientRampInUse);
+
 			tempMats[TargetMaterialIndex] = _expressionDictionnary[expressionName][skinNumber];
 
 			ExpressionTarget.materials = tempMats;

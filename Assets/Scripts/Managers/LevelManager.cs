@@ -146,6 +146,7 @@ public class LevelManager : GenericSingleton<LevelManager>
 		if(_bIsOnMenu)
 		{
 			UnloadScene(SceneMenu);
+			UnloadScene(SceneMenuBg);
 			_bIsOnMenu = false;
 		}
 	}
