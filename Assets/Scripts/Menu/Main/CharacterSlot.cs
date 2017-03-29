@@ -159,6 +159,9 @@ public class CharacterSlot : MonoBehaviour
 		SetTextAlpha(0);
 		GamePadController.gameObject.SetActive(false);
 		KeyboardController.gameObject.SetActive(false);
+		ArrowContainers.SetActive(false);
+		PressAContainer.SetActive(true);
+
 		Debug.Log("SLOT: " + name + " Closed");
 	}
 

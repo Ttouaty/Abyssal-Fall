@@ -244,7 +244,7 @@ public class CharacterSelectWheel : NetworkBehaviour
 	void OnDestroy()
 	{
 		MenuManager.Instance._characterSlotsContainerRef.SlotsAvailable[playerNumber - 1].SelectPedestal(false);
-
+		 
 		if (Player.LocalPlayer == null) // If client Disconnect
 			WheelsRef.Clear();
 	}

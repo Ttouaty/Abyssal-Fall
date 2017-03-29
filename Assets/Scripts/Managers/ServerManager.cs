@@ -133,15 +133,15 @@ public class ServerManager : NATTraversal.NetworkManager
 	public override void OnStopServer()
 	{
 		base.OnStopServer();
-		if(MenuManager.Instance != null)
-		{
-			//Prevent Wheels from being destroyed
-			NetworkIdentity[] tempIdwheels =  MenuManager.Instance.GetComponentsInChildren<NetworkIdentity>(true);
-			for (int i = 0; i < tempIdwheels.Length; i++) 
-			{
-				NetworkServer.UnSpawn(tempIdwheels[i].gameObject);
-			}
-		}
+		//if(MenuManager.Instance != null)
+		//{
+		//	//Prevent Wheels from being destroyed
+		//	NetworkIdentity[] tempIdwheels =  MenuManager.Instance.GetComponentsInChildren<NetworkIdentity>(true);
+		//	for (int i = 0; i < tempIdwheels.Length; i++) 
+		//	{
+		//		NetworkServer.UnSpawn(tempIdwheels[i].gameObject);
+		//	}
+		//}
 	}
 
 	public void TryToAddPlayer()
