@@ -20,6 +20,13 @@ public class GUIRoundCount : MonoBehaviour
 
 	public void Fade()
 	{
+		StartCoroutine(FadeCo());
+	}
+
+	IEnumerator FadeCo()
+	{
+		yield return new WaitUntil(() => gameObject.activeInHierarchy);
 		GetComponent<CanvasGroup>().CrossFadeAlpha(0, 3);
+
 	}
 }

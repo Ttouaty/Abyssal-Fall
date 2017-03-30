@@ -39,6 +39,47 @@ ModelImporter:
     100062: Spine2
     100064: //RootNode
     100066: "VikingNew:T\xEAte1"
+    100068: back
+    100070: bottom
+    100072: Box001
+    100074: CTRL_Barbe
+    100076: CTRL_Head
+    100078: CTRL_Helmet
+    100080: CTRL_Left_Foot
+    100082: CTRL_Left_Handcontrol
+    100084: CTRL_Left_Leg
+    100086: CTRL_Left_Shoulder
+    100088: CTRL_Left_Wrist
+    100090: CTRL_Pelvis
+    100092: CTRL_Right__Leg
+    100094: CTRL_Right_Foot
+    100096: CTRL_Right_Handcontrol
+    100098: CTRL_Right_Shoulder
+    100100: CTRL_Right_Wrist
+    100102: CTRL_Spine1
+    100104: CTRL_Spine3
+    100106: front1
+    100108: grp1Null_Pelvis
+    100110: left
+    100112: Null_Barbe
+    100114: Null_Head
+    100116: Null_Helmet
+    100118: Null_Left_Foot
+    100120: Null_Left_Handcontrol
+    100122: Null_Left_Leg
+    100124: Null_Left_Shoulder
+    100126: Null_Left_Wrist
+    100128: Null_Right_Foot
+    100130: Null_Right_HandControl
+    100132: Null_Right_Leg
+    100134: Null_Right_Shoulder
+    100136: Null_Right_Wrist
+    100138: Null_Spine1
+    100140: Null_Spine2
+    100142: Null_Spine3
+    100144: Null_Spine4
+    100146: pPlane1
+    100148: transform1
     400000: Barbe3
     400002: Barbe_1etdemi
     400004: Barbe_2
@@ -73,7 +114,54 @@ ModelImporter:
     400062: Spine2
     400064: //RootNode
     400066: "VikingNew:T\xEAte1"
+    400068: back
+    400070: bottom
+    400072: Box001
+    400074: CTRL_Barbe
+    400076: CTRL_Head
+    400078: CTRL_Helmet
+    400080: CTRL_Left_Foot
+    400082: CTRL_Left_Handcontrol
+    400084: CTRL_Left_Leg
+    400086: CTRL_Left_Shoulder
+    400088: CTRL_Left_Wrist
+    400090: CTRL_Pelvis
+    400092: CTRL_Right__Leg
+    400094: CTRL_Right_Foot
+    400096: CTRL_Right_Handcontrol
+    400098: CTRL_Right_Shoulder
+    400100: CTRL_Right_Wrist
+    400102: CTRL_Spine1
+    400104: CTRL_Spine3
+    400106: front1
+    400108: grp1Null_Pelvis
+    400110: left
+    400112: Null_Barbe
+    400114: Null_Head
+    400116: Null_Helmet
+    400118: Null_Left_Foot
+    400120: Null_Left_Handcontrol
+    400122: Null_Left_Leg
+    400124: Null_Left_Shoulder
+    400126: Null_Left_Wrist
+    400128: Null_Right_Foot
+    400130: Null_Right_HandControl
+    400132: Null_Right_Leg
+    400134: Null_Right_Shoulder
+    400136: Null_Right_Wrist
+    400138: Null_Spine1
+    400140: Null_Spine2
+    400142: Null_Spine3
+    400144: Null_Spine4
+    400146: pPlane1
+    400148: transform1
+    2300000: Box001
+    2300002: pPlane1
+    3300000: Box001
+    3300002: pPlane1
     4300000: "VikingNew:T\xEAte1"
+    4300002: Box001
+    4300004: pPlane1
     7400000: Special
     9500000: //RootNode
     13700000: "VikingNew:T\xEAte1"
@@ -101,8 +189,8 @@ ModelImporter:
     - serializedVersion: 16
       name: Special
       takeName: Special
-      firstFrame: 153
-      lastFrame: 163
+      firstFrame: 0
+      lastFrame: 60
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -125,10 +213,88 @@ ModelImporter:
       transformMask:
       - path: 
         weight: 1
-      - path: Pelvis
-        weight: 1
-      - path: Pelvis/Hips
+      - path: back
         weight: 0
+      - path: bottom
+        weight: 0
+      - path: front1
+        weight: 0
+      - path: grp1Null_Pelvis
+        weight: 0
+      - path: grp1Null_Pelvis/CTRL_Pelvis
+        weight: 0
+      - path: grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1
+        weight: 0
+      - path: grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1
+        weight: 0
+      - path: grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2
+        weight: 0
+      - path: grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4
+        weight: 0
+      - path: grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3
+        weight: 0
+      - path: grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3/CTRL_Spine3
+        weight: 0
+      - path: grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3/CTRL_Spine3/Null_Head
+        weight: 0
+      - path: grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3/CTRL_Spine3/Null_Head/CTRL_Head
+        weight: 0
+      - path: grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3/CTRL_Spine3/Null_Head/CTRL_Head/Null_Barbe
+        weight: 0
+      - path: grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3/CTRL_Spine3/Null_Head/CTRL_Head/Null_Barbe/CTRL_Barbe
+        weight: 0
+      - path: grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3/CTRL_Spine3/Null_Head/CTRL_Head/Null_Helmet
+        weight: 0
+      - path: grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3/CTRL_Spine3/Null_Head/CTRL_Head/Null_Helmet/CTRL_Helmet
+        weight: 0
+      - path: grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3/CTRL_Spine3/Null_Left_Shoulder
+        weight: 0
+      - path: grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3/CTRL_Spine3/Null_Left_Shoulder/CTRL_Left_Shoulder
+        weight: 0
+      - path: grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3/CTRL_Spine3/Null_Left_Shoulder/CTRL_Left_Shoulder/Null_Left_Wrist
+        weight: 0
+      - path: grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3/CTRL_Spine3/Null_Left_Shoulder/CTRL_Left_Shoulder/Null_Left_Wrist/CTRL_Left_Wrist
+        weight: 0
+      - path: grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3/CTRL_Spine3/Null_Left_Shoulder/CTRL_Left_Shoulder/Null_Left_Wrist/CTRL_Left_Wrist/Null_Left_Handcontrol
+        weight: 0
+      - path: grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3/CTRL_Spine3/Null_Left_Shoulder/CTRL_Left_Shoulder/Null_Left_Wrist/CTRL_Left_Wrist/Null_Left_Handcontrol/CTRL_Left_Handcontrol
+        weight: 0
+      - path: grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3/CTRL_Spine3/Null_Right_Shoulder
+        weight: 0
+      - path: grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3/CTRL_Spine3/Null_Right_Shoulder/CTRL_Right_Shoulder
+        weight: 0
+      - path: grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3/CTRL_Spine3/Null_Right_Shoulder/CTRL_Right_Shoulder/Null_Right_Wrist
+        weight: 0
+      - path: grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3/CTRL_Spine3/Null_Right_Shoulder/CTRL_Right_Shoulder/Null_Right_Wrist/CTRL_Right_Wrist
+        weight: 0
+      - path: grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3/CTRL_Spine3/Null_Right_Shoulder/CTRL_Right_Shoulder/Null_Right_Wrist/CTRL_Right_Wrist/Box001
+        weight: 0
+      - path: grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3/CTRL_Spine3/Null_Right_Shoulder/CTRL_Right_Shoulder/Null_Right_Wrist/CTRL_Right_Wrist/Null_Right_HandControl
+        weight: 0
+      - path: grp1Null_Pelvis/CTRL_Pelvis/Null_Spine1/CTRL_Spine1/Null_Spine2/Null_Spine4/Null_Spine3/CTRL_Spine3/Null_Right_Shoulder/CTRL_Right_Shoulder/Null_Right_Wrist/CTRL_Right_Wrist/Null_Right_HandControl/CTRL_Right_Handcontrol
+        weight: 0
+      - path: grp1Null_Pelvis/Null_Left_Leg
+        weight: 0
+      - path: grp1Null_Pelvis/Null_Left_Leg/CTRL_Left_Leg
+        weight: 0
+      - path: grp1Null_Pelvis/Null_Left_Leg/CTRL_Left_Leg/Null_Left_Foot
+        weight: 0
+      - path: grp1Null_Pelvis/Null_Left_Leg/CTRL_Left_Leg/Null_Left_Foot/CTRL_Left_Foot
+        weight: 0
+      - path: grp1Null_Pelvis/Null_Right_Leg
+        weight: 0
+      - path: grp1Null_Pelvis/Null_Right_Leg/CTRL_Right__Leg
+        weight: 0
+      - path: grp1Null_Pelvis/Null_Right_Leg/CTRL_Right__Leg/Null_Right_Foot
+        weight: 0
+      - path: grp1Null_Pelvis/Null_Right_Leg/CTRL_Right__Leg/Null_Right_Foot/CTRL_Right_Foot
+        weight: 0
+      - path: left
+        weight: 1
+      - path: Pelvis
+        weight: 0
+      - path: Pelvis/Hips
+        weight: 1
       - path: Pelvis/Hips/Spine1
         weight: 1
       - path: Pelvis/Hips/Spine1/Spine2
@@ -189,8 +355,12 @@ ModelImporter:
         weight: 0
       - path: Pelvis/Right_Leg/Right_Foot/Right_Foot_End
         weight: 0
+      - path: pPlane1
+        weight: 0
+      - path: transform1
+        weight: 0
       - path: "VikingNew:T\xEAte1"
-        weight: 1
+        weight: 0
       maskType: 0
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0

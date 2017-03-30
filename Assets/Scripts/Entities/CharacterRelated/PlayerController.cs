@@ -143,7 +143,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	public Spawn Spawn;
 	[HideInInspector]
 	public Animator _animator;
-	private NetworkAnimator _networkAnimator;
+	protected NetworkAnimator _networkAnimator;
 	[HideInInspector]
 	public bool _isDead = false;
 	[HideInInspector]
@@ -303,13 +303,13 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		if (ArenaManager.Instance != null)
 		{
 			if (ArenaManager.Instance.CurrentArenaConfig.AmbientRamp != null)
-			{
 				playerMesh.SetAmbientRamp(ArenaManager.Instance.CurrentArenaConfig.AmbientRamp);
-			}
 		}
 
-		_animator = playerMesh.GetComponentInChildren<Animator>();
 		_characterProp = transform.GetComponentInChildren<CharacterProp>();
+		_characterProp.PropRespawnParticles = GetComponentInChildren<AnimationToolkit>().GetParticleSystem("repop");
+
+		_animator = playerMesh.GetComponentInChildren<Animator>();
 		_networkAnimator = GetComponent<NetworkAnimator>();
 
 		for (int i = 0; i < _animator.parameterCount; i++)

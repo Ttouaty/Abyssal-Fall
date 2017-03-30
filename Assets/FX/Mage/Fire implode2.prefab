@@ -51,10 +51,10 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000011269169032}
-  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 415.5, y: 8.3, z: 29.2}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 19.41, y: 2.3, z: -176.8}
+  m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
   m_Children:
   - {fileID: 4000013819708846}
   m_Father: {fileID: 0}
@@ -118,11 +118,11 @@ ParticleSystem:
   speed: 1
   looping: 1
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   moveWithTransform: 1
   autoRandomSeed: 1
-  scalingMode: 1
-  randomSeed: -1199508964
+  scalingMode: 0
+  randomSeed: 928000823
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -1823,7 +1823,7 @@ ParticleSystem:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000011269169032}
   serializedVersion: 4
-  lengthInSec: 6.49
+  lengthInSec: 1
   startDelay:
     scalar: 0
     maxCurve:
@@ -1862,11 +1862,11 @@ ParticleSystem:
   speed: 1
   looping: 1
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   moveWithTransform: 1
   autoRandomSeed: 1
-  scalingMode: 1
-  randomSeed: -1950162759
+  scalingMode: 0
+  randomSeed: 809369704
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -2032,7 +2032,7 @@ ParticleSystem:
       maxColor: {r: 1, g: 1, b: 1, a: 1}
       minMaxState: 0
     startSize:
-      scalar: 1.3
+      scalar: 3
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2271,7 +2271,7 @@ ParticleSystem:
     serializedVersion: 2
     m_Type: 0
     rate:
-      scalar: 723.1
+      scalar: 500
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -3605,7 +3605,7 @@ ParticleSystemRenderer:
   m_MaxParticleSize: 0.5
   m_CameraVelocityScale: 0
   m_VelocityScale: 0
-  m_LengthScale: 5.5
+  m_LengthScale: 0.5
   m_SortingFudge: 0
   m_NormalDirection: 1
   m_RenderAlignment: 0

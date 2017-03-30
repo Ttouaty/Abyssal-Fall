@@ -9,12 +9,26 @@ public class MageController : PlayerController
 	private float _explosionDelay = 0.7f; // Time before explosion occurs after the special is activated
 	[SerializeField]
 	private float _explosionRadius = 4f;
-	//[SerializeField]
-	//private float _maxChargeTime = 0.7f;
 
 	private GameObject _fireBallObject;
 	private bool _fireballIsActive = false;
 
+	public ParticleSystem[] MoveParticles;
+	public ParticleSystem[] ImplosionParticles;
+	public ParticleSystem[] ExplosionParticles;
+
+	public ParticleSystem MoveParticle
+	{
+		get { return MoveParticles[_playerRef.SkinNumber]; }
+	}
+	public ParticleSystem ImplosionParticle
+	{
+		get { return ImplosionParticles[_playerRef.SkinNumber]; }
+	}
+	public ParticleSystem ExplosionParticle
+	{
+		get { return ExplosionParticles[_playerRef.SkinNumber]; }
+	}
 
 	protected override void CustomStart()
 	{
@@ -28,6 +42,7 @@ protected override bool SpecialActivation()
 		{
 			if(_canSpecial && !_fireballIsActive)
 			{
+				CmdBroadcastFireActive(false);
 				return true;
 			}
 		}
@@ -39,10 +54,32 @@ protected override bool SpecialActivation()
 				_fireballIsActive = false;
 				CmdActivateFireBall();
 				_animator.SetBool("SpecialIsActive", false);
+
 			}
 		}
 
 		return false;
+	}
+
+	protected override void OnSpecialReset()
+	{
+		base.OnSpecialReset();
+		CmdBroadcastFireActive(true);
+	}
+
+	[Command]
+	public void CmdBroadcastFireActive(bool isActive)
+	{
+		RpcBroadcastFireActive(isActive);
+	}
+
+	[ClientRpc]
+	public void RpcBroadcastFireActive(bool isActive)
+	{
+		if (isActive)
+			_animToolkit.GetParticleSystem("Hand fire").Play();
+		else
+			_animToolkit.GetParticleSystem("Hand fire").Stop();
 	}
 
 	protected override void SpecialAction()

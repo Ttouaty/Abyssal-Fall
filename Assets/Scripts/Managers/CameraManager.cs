@@ -43,7 +43,8 @@ public class CameraManager : GenericSingleton<CameraManager>
 
 	private const float _centroidCoefficient = 1f;
 
-	private List<Transform> _targetsTracked = new List<Transform>();
+	[HideInInspector]
+	public List<Transform> TargetsTracked = new List<Transform>();
 	private Vector3 _targetsCentroid = Vector3.zero;
 
 	public static UnityEvent OnCameraChange = new UnityEvent();
@@ -102,7 +103,7 @@ public class CameraManager : GenericSingleton<CameraManager>
 
 		if(!IsManual)
 		{
-			if (_targetsTracked.Count != 0)
+			if (TargetsTracked.Count != 0)
 			{
 				CalculateTargetsDistance();
 
@@ -123,10 +124,10 @@ public class CameraManager : GenericSingleton<CameraManager>
 
 	private void CleanTargets()
 	{
-		for (int i = _targetsTracked.Count - 1; i >= 0; i--)
+		for (int i = TargetsTracked.Count - 1; i >= 0; i--)
 		{
-			if (_targetsTracked[i] == null)
-				_targetsTracked.RemoveAt(i);
+			if (TargetsTracked[i] == null)
+				TargetsTracked.RemoveAt(i);
 		}
 	}
 
@@ -153,21 +154,21 @@ public class CameraManager : GenericSingleton<CameraManager>
 		_targetsCentroid = Vector3.zero;
 
 
-		for (int i = 0; i < _targetsTracked.Count; i++)
+		for (int i = 0; i < TargetsTracked.Count; i++)
 		{
-			for (int j = i + 1; j < _targetsTracked.Count; j++)
+			for (int j = i + 1; j < TargetsTracked.Count; j++)
 			{
-				if (_targetsTracked[i] == null || _targetsTracked[j] == null)
+				if (TargetsTracked[i] == null || TargetsTracked[j] == null)
 					return;
 
 				++nbRays;
-				tempDirection = _targetsTracked[j].position - _targetsTracked[i].position;
+				tempDirection = TargetsTracked[j].position - TargetsTracked[i].position;
 				//Debug.DrawRay(_targetsTracked[i].position, tempDirection);
 
 				_tempPosition = Quaternion.FromToRotation(Vector3.right, transform.right) * (tempDirection.ZeroY());
 				_tempPosition.x /= _camera.aspect;
 
-				_targetsCentroid += (_targetsTracked[i].position + tempDirection * 0.5f);
+				_targetsCentroid += (TargetsTracked[i].position + tempDirection * 0.5f);
 
 				if (_tempPosition.HighestAxis() > _tempDistance)
 				{
@@ -175,8 +176,8 @@ public class CameraManager : GenericSingleton<CameraManager>
 				}
 			}
 		}
-		if (_targetsTracked.Count == 1)
-			_targetsCentroid = _targetsTracked[0].position;
+		if (TargetsTracked.Count == 1)
+			_targetsCentroid = TargetsTracked[0].position;
 		else
 			_targetsCentroid /= nbRays;
 		_targetsCentroid.y = _centerPoint.position.y;
@@ -224,19 +225,19 @@ public class CameraManager : GenericSingleton<CameraManager>
 
 	public void ClearTrackedTargets()
 	{
-		_targetsTracked.Clear();
+		TargetsTracked.Clear();
 	}
 
 	public void AddTargetToTrack(Transform newTarget)
 	{
-		if (!_targetsTracked.Contains(newTarget))
-			_targetsTracked.Add(newTarget);
+		if (!TargetsTracked.Contains(newTarget))
+			TargetsTracked.Add(newTarget);
 	}
 
 	public void RemoveTargetToTrack(Transform newTarget)
 	{
-		if (_targetsTracked.Contains(newTarget))
-			_targetsTracked.Remove(newTarget);
+		if (TargetsTracked.Contains(newTarget))
+			TargetsTracked.Remove(newTarget);
 	}
 
 	public void SetCenterPoint(Transform newCenterPoint, float time, float? distance = null, bool applyRotation = false)
@@ -314,7 +315,7 @@ public class CameraManager : GenericSingleton<CameraManager>
 	public void Reset()
 	{
 		_distance = _baseDistance;
-		_targetsTracked.Clear();
+		TargetsTracked.Clear();
 		_focalPoint.localPosition = Vector3.zero;
 		transform.localPosition = -transform.forward * _distance;
 	}

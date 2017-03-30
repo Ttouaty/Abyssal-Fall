@@ -9,15 +9,33 @@ public class AnimationToolkit : MonoBehaviour
 
 	void Awake()
 	{
-		ParticleSystem[] tempParticles = GetComponentsInChildren<ParticleSystem>();
+		InitParticles();
+	}
+
+	public void InitParticles()
+	{
+		ParticleSystem[] tempParticles = GetComponentsInChildren<ParticleSystem>(false);
 
 		_availableParticleSystems.Clear();
 
 		for (int i = 0; i < tempParticles.Length; i++)
 		{
-			if(tempParticles[i].transform.parent.GetComponent<ParticleSystem>() == null)
+			if (tempParticles[i].transform.parent.GetComponent<ParticleSystem>() == null)
 				_availableParticleSystems[tempParticles[i].name.ToLower()] = tempParticles[i];
 		}
+	}
+
+	public ParticleSystem GetParticleSystem(string particleName)
+	{
+		particleName = particleName.ToLower();
+		if (_availableParticleSystems.ContainsKey(particleName))
+			return _availableParticleSystems[particleName];
+		else
+		{
+			Debug.LogError("No particle with name => " + particleName + " in Go => " + gameObject.name);
+			Debug.Break();
+		}
+		return null;
 	}
 
 	public void PlaySound(string targetSoundKey)

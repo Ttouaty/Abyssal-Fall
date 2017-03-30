@@ -365,7 +365,8 @@ public static class CanvasGroupExtension
 		if (target.GetComponent<MonoBehaviour>() != null)
 			target.GetComponent<MonoBehaviour>().StartCoroutine(CrossFadeAlphaCoroutine(target, alpha, time));
 		else
-			Debug.LogError("No Monobehavior found in object => " + target.name + ". Can't call StartCoroutine CrossFadeAlpha");
+			MainManager.Instance.GetComponent<MonoBehaviour>().StartCoroutine(CrossFadeAlphaCoroutine(target, alpha, time));
+
 	}
 
 	static IEnumerator CrossFadeAlphaCoroutine(CanvasGroup target, float alpha, float time)

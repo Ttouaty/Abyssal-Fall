@@ -4,10 +4,6 @@ using UnityEngine.Networking;
 
 public class FireBall : ABaseProjectile
 {
-	public ParticleSystem MoveParticles;
-	public ParticleSystem ImplosionParticles;
-	public ParticleSystem ExplosionParticles;
-
 	private ParticleSystem _movingParticlesRef;
 
 	private float _explosionDelay;
@@ -16,6 +12,7 @@ public class FireBall : ABaseProjectile
 	private DamageData _explosionDamageData;
 	private bool _activated;
 
+	private MageController _launcherRef;
 
 	public void Launch(Vector3 Position, Vector3 Direction, float explosionDelay, float explosionRadius, Vector3 ejection, DamageData newDamageData, NetworkInstanceId instanceId)
 	{
@@ -49,7 +46,9 @@ public class FireBall : ABaseProjectile
 	{
 		base.OnLaunch(Launcher);
 
-		_movingParticlesRef = Instantiate(MoveParticles, transform, false) as ParticleSystem;
+		_launcherRef = Launcher.GetComponent<MageController>();
+
+		_movingParticlesRef = Instantiate(_launcherRef.MoveParticle, transform, false) as ParticleSystem;
 		_movingParticlesRef.transform.localPosition = Vector3.zero;
 		_movingParticlesRef.Play();
 	}
@@ -74,7 +73,7 @@ public class FireBall : ABaseProjectile
 		if(_movingParticlesRef != null)
 			_movingParticlesRef.Stop();
 
-		ParticleSystem preExploParticles = (ParticleSystem)Instantiate(ImplosionParticles, transform.position, ImplosionParticles.transform.rotation);
+		ParticleSystem preExploParticles = (ParticleSystem)Instantiate(_launcherRef.ImplosionParticle, transform.position, _launcherRef.ImplosionParticle.transform.rotation);
 		preExploParticles.Play();
 		Destroy(preExploParticles.gameObject, _explosionDelay + preExploParticles.startLifetime);
 
@@ -82,7 +81,7 @@ public class FireBall : ABaseProjectile
 		preExploParticles.Stop();
 		yield return new WaitForSeconds(preExploParticles.startLifetime * 0.5f);
 
-		ParticleSystem exploParticles = (ParticleSystem)Instantiate(ExplosionParticles, transform.position, ExplosionParticles.transform.rotation);
+		ParticleSystem exploParticles = (ParticleSystem)Instantiate(_launcherRef.ExplosionParticle, transform.position, _launcherRef.ExplosionParticle.transform.rotation);
 		exploParticles.Play();
 		Destroy(exploParticles.gameObject, exploParticles.startLifetime + exploParticles.duration);
 

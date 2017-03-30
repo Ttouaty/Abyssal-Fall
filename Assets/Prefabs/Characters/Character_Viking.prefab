@@ -508,7 +508,7 @@ GameObject:
   - 4: {fileID: 4000013562884592}
   m_Layer: 14
   m_Name: Effects
-  m_TagString: Untagged
+  m_TagString: EffectDiv
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -757,7 +757,7 @@ GameObject:
   - 198: {fileID: 198000012126495726}
   - 199: {fileID: 199000011064692028}
   m_Layer: 0
-  m_Name: Special repop
+  m_Name: repop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -853,7 +853,6 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 4000011309805358}
-  - {fileID: 4000013122527026}
   - {fileID: 4000010568021874}
   m_Father: {fileID: 4000011275780578}
   m_RootOrder: 1
@@ -912,7 +911,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: -7.09, y: 180.00002, z: 0}
   m_Children: []
   m_Father: {fileID: 4000013562884592}
-  m_RootOrder: 2
+  m_RootOrder: 3
 --- !u!4 &4000010443173910
 Transform:
   m_ObjectHideFlags: 1
@@ -968,7 +967,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: -94.809, y: -0.000015258789, z: -5.3559875}
   m_Children: []
   m_Father: {fileID: 4000010229434832}
-  m_RootOrder: 2
+  m_RootOrder: 1
 --- !u!4 &4000010604697946
 Transform:
   m_ObjectHideFlags: 1
@@ -1149,7 +1148,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 4000013562884592}
-  m_RootOrder: 5
+  m_RootOrder: 6
 --- !u!4 &4000012497870178
 Transform:
   m_ObjectHideFlags: 1
@@ -1218,7 +1217,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 4000013562884592}
-  m_RootOrder: 1
+  m_RootOrder: 2
 --- !u!4 &4000012858881814
 Transform:
   m_ObjectHideFlags: 1
@@ -1246,20 +1245,20 @@ Transform:
   m_LocalEulerAnglesHint: {x: -141.361, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 4000013562884592}
-  m_RootOrder: 3
+  m_RootOrder: 4
 --- !u!4 &4000013122527026
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000013839451400}
-  m_LocalRotation: {x: 0.4784397, y: 0.62497395, z: 0.5090847, w: 0.34833303}
-  m_LocalPosition: {x: 0.792, y: -0.939, z: -0.043}
+  m_LocalRotation: {x: 0.47843966, y: 0.624974, z: 0.5090847, w: 0.34833285}
+  m_LocalPosition: {x: 0.7919998, y: 1.0229998, z: -0.04300944}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 4000013359232484}
-  m_Father: {fileID: 4000010229434832}
+  m_Father: {fileID: 4000013562884592}
   m_RootOrder: 1
 --- !u!4 &4000013227101286
 Transform:
@@ -1312,7 +1311,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: -141.361, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 4000013562884592}
-  m_RootOrder: 4
+  m_RootOrder: 5
 --- !u!4 &4000013562884592
 Transform:
   m_ObjectHideFlags: 1
@@ -1325,6 +1324,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 4000014218134822}
+  - {fileID: 4000013122527026}
   - {fileID: 4000012812450818}
   - {fileID: 4000010442528278}
   - {fileID: 4000012983655226}
@@ -1593,6 +1593,8 @@ MonoBehaviour:
     - {fileID: 2100000, guid: 69a43d5b436f1d44cb94e20f29276b25, type: 2}
     - {fileID: 2100000, guid: 8274517f1726ba44d9c4d08a04a4727c, type: 2}
   MaterialsInUse: []
+  AmbientRampInUse: {fileID: 0}
+  SkinEffectDivs: []
 --- !u!114 &114000011217356138
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5277,7 +5279,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: -1609667369
+  randomSeed: 2077662706
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -7001,7 +7003,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: 959007830
+  randomSeed: 631719408
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -8760,7 +8762,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: -1969494932
+  randomSeed: 990790848
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -10514,7 +10516,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: -751382660
+  randomSeed: 1682038717
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -15736,7 +15738,7 @@ ParticleSystem:
   moveWithTransform: 0
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: -1071838092
+  randomSeed: -840377977
   InitialModule:
     serializedVersion: 2
     enabled: 1

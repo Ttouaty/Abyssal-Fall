@@ -35,10 +35,22 @@ public class CharacterModel : MonoBehaviour
 	}
 	private FacialExpresionModule _FEMref;
 
+	[HideInInspector]
 	public List<Material> MaterialsInUse = new List<Material>();
 	private Color OutlineColorInUse = Color.red;
 	private int skinIndexInUse = 0;
+	[HideInInspector]
 	public Texture AmbientRampInUse;
+	[Space]
+	public GameObject[] SkinEffectDivs;
+
+	void Start()
+	{
+		for (int i = 0; i < SkinEffectDivs.Length; i++)
+		{
+			SkinEffectDivs[i].SetActive(false);
+		}
+	}
 
 	public void Reskin(int skinNumber)
 	{
@@ -46,6 +58,16 @@ public class CharacterModel : MonoBehaviour
 		{
 			Debug.Log("No skinNumber found in CharacterModel => "+gameObject.name);
 			return;
+		}
+
+		if (SkinEffectDivs.Length > skinNumber)
+		{
+			if (SkinEffectDivs[skinNumber] != null)
+			{
+				SkinEffectDivs[skinIndexInUse].SetActive(false);
+				SkinEffectDivs[skinNumber].SetActive(true);
+				GetComponentInChildren<AnimationToolkit>().InitParticles();
+			}
 		}
 
 		skinIndexInUse = skinNumber;
