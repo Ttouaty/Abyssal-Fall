@@ -994,6 +994,11 @@ MonoBehaviour:
   ARENA_MANAGER: {fileID: 0}
   SERVER_MANAGER: {fileID: 0}
   OriginalCameraManager: {fileID: 0}
+  AvailableResolutions:
+  - {x: 1920, y: 1080}
+  - {x: 1600, y: 900}
+  - {x: 1280, y: 720}
+  - {x: 800, y: 450}
 --- !u!1001 &1576437437
 Prefab:
   m_ObjectHideFlags: 0
@@ -1297,6 +1302,7 @@ MonoBehaviour:
   HostingClient: {fileID: 0}
   ForceUnready: 0
   IsDebug: 0
+  FacilitatorStatus: 0
 --- !u!114 &2142853593
 MonoBehaviour:
   m_ObjectHideFlags: 0

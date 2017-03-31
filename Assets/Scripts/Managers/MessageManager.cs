@@ -47,10 +47,6 @@ public class MessageManager : GenericSingleton<MessageManager>
 	void Update()
 	{
 		_messageContainer.localPosition = Vector3.Lerp(_messageContainer.localPosition, Vector3.up * _numberMessagesDestroyed * _messageOffset, 10 * Time.deltaTime);
-		//if (Input.GetKeyDown(KeyCode.F6))
-		//{
-		//	Log("Je suis le message numero: "+_numberMessagesDisplayed);
-		//}
 	}
 
 
@@ -58,7 +54,7 @@ public class MessageManager : GenericSingleton<MessageManager>
 	{
 		GameObject TextMessageGO = (GameObject) Instantiate(Instance._messagePrefab.gameObject, Instance._messageContainer);
 		TextMessage messageRef = TextMessageGO.GetComponent<TextMessage>();
-		TextMessageGO.GetComponent<RectTransform>().sizeDelta = new Vector2(250, TEXT_HEIGHT);
+		//TextMessageGO.GetComponent<RectTransform>().sizeDelta = new Vector2(250, TEXT_HEIGHT);
 		TextMessageGO.transform.localScale = Vector3.one;
 		
 		TextMessageGO.GetComponent<RectTransform>().localPosition = - Vector3.right * Instance._messageContainer.sizeDelta.x - Vector3.up * (Instance._numberMessagesDisplayed * Instance._messageOffset);

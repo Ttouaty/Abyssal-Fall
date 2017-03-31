@@ -14,31 +14,32 @@ MonoBehaviour:
   IngameName: Raghnar The Viking
   Icon: {fileID: 21300000, guid: 16063970acf845247a140ca4f444f6dd, type: 3}
   LightIcon: {fileID: 21300000, guid: 59f698c5bf4d89947934d7003716969b, type: 3}
+  Portrait: {fileID: 21300000, guid: bb020722e121a5f4dad4dd8f739e5954, type: 3}
   CharacterSelectModel: {fileID: 11490236, guid: c4134ab8ae5e15043ab1f2a0e6bc5451,
     type: 2}
   NumberOfSkins: 4
-  SpecialInfoKey: Throw your hammer, passing through walls.
+  SpecialInfoKey: Throw your hammer long range & big damage
   CharacterStats:
     strength: 6
     speed: 5
     resistance: 6
   Dash:
-    endingLag: 0.3
+    endingLag: 0.4
     Forces:
     - {x: 4, y: 4.905}
     - {x: 6, y: 7.3575}
-    Impact: 4
+    Impact: 6
   DashDamageData:
     AttackTypeUsed: 0
-    StunInflicted: 0.3
+    StunInflicted: 0.5
     IsParryable: 0
     Projectile: {fileID: 0}
   SpecialDamageData:
     AttackTypeUsed: 1
-    StunInflicted: 0.5
+    StunInflicted: 0.8
     IsParryable: 1
     Projectile: {fileID: 0}
-  SpecialCoolDown: 2
+  SpecialCoolDown: 1.7
   SpecialLag: 0.3
   SoundList:
     SoundList:

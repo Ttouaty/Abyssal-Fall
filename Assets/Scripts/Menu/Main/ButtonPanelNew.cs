@@ -100,8 +100,7 @@ public class ButtonPanelNew : MonoBehaviour
 	{
 		if (ParentButtonPanel == null)
 			return;
-
-		ParentButtonPanel.FadeIn();
+		ParentButtonPanel.Invoke("FadeIn",0.05f);
 		Close();
 	}
 

@@ -8,6 +8,7 @@ public class SO_Character :  ScriptableObject{
 	public string IngameName;
 	public Sprite Icon;
 	public Sprite LightIcon;
+	public Sprite Portrait;
 	public CharacterModel CharacterSelectModel;
 	public int NumberOfSkins = 4;
 	[Header("Info")]

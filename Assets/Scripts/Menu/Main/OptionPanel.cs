@@ -6,21 +6,19 @@ using System.IO;
 
 public class OptionPanel : ButtonPanelNew
 {
-	public Vector2[] AvailableResolutions;
+	public static string OptionFilePath = @"\StreamingAssets\AbyssalFallOptions.txt";
+
 
 	//public Color AmbiantDarkest;
 	//public Color AmbiantLightest;
 
 	private AbyssalFallOptions _optionsObj;
-	private string optionFilePath = @"\StreamingAssets\AbyssalFallOptions.txt";
 	public override void Open()
 	{
 		base.Open();
 
-		Debug.Log(Application.dataPath);
-
-		if(System.IO.File.Exists(Application.dataPath + optionFilePath))
-			_optionsObj = JsonUtility.FromJson<AbyssalFallOptions>(System.IO.File.ReadAllText(Application.dataPath + optionFilePath));
+		if(System.IO.File.Exists(Application.dataPath + OptionFilePath))
+			_optionsObj = JsonUtility.FromJson<AbyssalFallOptions>(System.IO.File.ReadAllText(Application.dataPath + OptionFilePath));
 
 		if (_optionsObj == null)
 			_optionsObj = new AbyssalFallOptions();
@@ -33,14 +31,18 @@ public class OptionPanel : ButtonPanelNew
 			if (tempOption == null)
 				continue;
 
+			if (!tempOption.isActiveAndEnabled)
+				continue;
+
+
 			tempOption.Init(Convert.ToInt32(_optionsObj.GetType().GetField(tempOption.TargetOptionName).GetValue(_optionsObj)));
 		}
 	}
 
 	void OnDisable()
 	{
-		Debug.Log("Written options in => "+Application.dataPath + optionFilePath);
-		System.IO.File.WriteAllText(Application.dataPath + optionFilePath, JsonUtility.ToJson(_optionsObj));
+		Debug.Log("Written options in => "+Application.dataPath + OptionFilePath);
+		System.IO.File.WriteAllText(Application.dataPath + OptionFilePath, JsonUtility.ToJson(_optionsObj));
 	}
 
 	public override void SelectNewButton(UIDirection newDirection)
@@ -79,15 +81,15 @@ public class OptionPanel : ButtonPanelNew
 
 	public void ChangeScreenResolution(int value)
 	{
-		Screen.SetResolution((int)AvailableResolutions[value].x, (int)AvailableResolutions[value].y, Screen.fullScreen);
+		Screen.SetResolution((int)MainManager.Instance.AvailableResolutions[value].x, (int)MainManager.Instance.AvailableResolutions[value].y, Screen.fullScreen);
 		_optionsObj.ScreenResolution = value;
 	}
 
-	public void ChangeFullScreen(int value)
-	{
-		Screen.SetResolution(Screen.currentResolution.width, Screen.currentResolution.height, Convert.ToBoolean(value));
-		_optionsObj.FullScreen = Convert.ToBoolean(value);
-	}
+	//public void ChangeFullScreen(int value)
+	//{
+	//	Screen.SetResolution(Screen.currentResolution.width, Screen.currentResolution.height, Convert.ToBoolean(value));
+	//	_optionsObj.FullScreen = Convert.ToBoolean(value);
+	//}
 
 	public void ChangeAntiAliasing(int value)
 	{
@@ -130,6 +132,6 @@ public class AbyssalFallOptions
 	public float MasterSoundVolume = 1f;
 	public float SFXVolume = 1f;
 	public float MusicVolume = 1f;
-	public bool FullScreen = true;
+	//public bool FullScreen = true;
 	public int ScreenResolution = 0;
 }

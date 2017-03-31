@@ -29,6 +29,9 @@ public class MainManager : GenericSingleton<MainManager>
 	[HideInInspector]
 	public CameraManager OriginalCameraManager;
 
+	public Vector2[] AvailableResolutions;
+
+
 	protected override void Awake ()
 	{
 		base.Awake();
@@ -67,8 +70,24 @@ public class MainManager : GenericSingleton<MainManager>
 			}
 		}
 
+		LoadOptions();
 		LEVEL_MANAGER.OpenMenu(true,"Title");
 		MenuPanelNew.GlobalInputDelay = 4;
+	}
+	
+	void LoadOptions()
+	{
+		AbyssalFallOptions _optionsObj;
+		if (System.IO.File.Exists(Application.dataPath + OptionPanel.OptionFilePath))
+		{
+			_optionsObj = JsonUtility.FromJson<AbyssalFallOptions>(System.IO.File.ReadAllText(Application.dataPath + OptionPanel.OptionFilePath));
+			QualitySettings.antiAliasing = (int) Mathf.Pow(2, _optionsObj.AntiAliasing);
+			QualitySettings.vSyncCount = _optionsObj.Vsync;
+			QualitySettings.masterTextureLimit = _optionsObj.TextureQuality;
+			Screen.SetResolution((int)AvailableResolutions[_optionsObj.ScreenResolution].x, (int)AvailableResolutions[_optionsObj.ScreenResolution].y, Screen.fullScreen);
+		}
+		else
+			Debug.Log("No option file found.");
 	}
 
 	void Update()

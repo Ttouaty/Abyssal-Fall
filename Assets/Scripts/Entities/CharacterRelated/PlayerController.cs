@@ -213,7 +213,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		get { return _lastDamageDealer; }
 		set
 		{
-			_lastDamageDealerTimeOut.Set(5);
+			_lastDamageDealerTimeOut.Set(2);
 			_lastDamageDealer = value;
 		}
 	}

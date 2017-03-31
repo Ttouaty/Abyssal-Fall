@@ -48,7 +48,7 @@ public class CharacterModel : MonoBehaviour
 	{
 		for (int i = 0; i < SkinEffectDivs.Length; i++)
 		{
-			SkinEffectDivs[i].SetActive(false);
+			SkinEffectDivs[i].SetActive(i == skinIndexInUse);
 		}
 	}
 

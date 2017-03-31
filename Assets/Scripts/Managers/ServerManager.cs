@@ -5,6 +5,13 @@ using System.Collections.Generic;
 using System;
 using UnityEngine.Networking.Match;
 
+public enum FacilitatorConnectionStatus
+{
+	Undefined,
+	Connected,
+	Failed
+}
+
 public class ServerManager : NATTraversal.NetworkManager
 {
 	[Header("Custom Vars")]
@@ -43,6 +50,7 @@ public class ServerManager : NATTraversal.NetworkManager
 	[HideInInspector]
 	public bool IsDebug = false;
 
+	public FacilitatorConnectionStatus FacilitatorStatus = FacilitatorConnectionStatus.Undefined;
 
 	public bool AreAllPlayerReady
 	{
@@ -71,12 +79,17 @@ public class ServerManager : NATTraversal.NetworkManager
 		//#########################
 		//### ADD SPAWN PREFABS ###
 		//#########################
-
 		RegisterPrefabs();
 
 		Instance = FindObjectOfType<ServerManager>();
+		string tempId = "";
+		
+		for (int i = 0; i < 8; i++)
+		{
+			tempId = tempId + (UnityEngine.Random.Range((int)1, (int)9));
+		}
 
-		Instance.GameId = Guid.NewGuid().ToString().Split('-')[0].ToLower();
+		Instance.GameId = tempId;
 		_initialised = true;
 		return Instance;
 	}
@@ -486,5 +499,17 @@ public class ServerManager : NATTraversal.NetworkManager
 		{
 			FindObjectOfType<ConnectionModule>().OnFailedConnection.Invoke("Failed to find target game. (Connection error)");
 		}
+	}
+
+	public override void OnDoneConnectingToFacilitator(ulong guid)
+	{
+		base.OnDoneConnectingToFacilitator(guid);
+		if(guid == 0)
+		{
+			FacilitatorStatus = FacilitatorConnectionStatus.Failed;
+			MessageManager.Log("Could not connect to our facilitator server.\n(you can still play locally)", 10);
+		}
+		else
+			FacilitatorStatus = FacilitatorConnectionStatus.Connected;
 	}
 }

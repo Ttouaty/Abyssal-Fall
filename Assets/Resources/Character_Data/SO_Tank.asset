@@ -14,23 +14,24 @@ MonoBehaviour:
   IngameName: Bellus The Tank
   Icon: {fileID: 21300000, guid: 14e17ec06bec651478f5c30a5dc6c49c, type: 3}
   LightIcon: {fileID: 21300000, guid: 4eda4780cc193da488a8dfc012eefacb, type: 3}
+  Portrait: {fileID: 21300000, guid: 742a99e13ca430947ba09591c5f171ff, type: 3}
   CharacterSelectModel: {fileID: 11455340, guid: adc2308776991c0429825986e99b0c32,
     type: 2}
   NumberOfSkins: 4
   SpecialInfoKey: Charge through opponents
   CharacterStats:
     strength: 8
-    speed: 2
+    speed: 3
     resistance: 8
   Dash:
-    endingLag: 0.3
+    endingLag: 0.4
     Forces:
     - {x: 3.333, y: 4.905}
     - {x: 5.333, y: 7.3575}
-    Impact: 4
+    Impact: 6
   DashDamageData:
     AttackTypeUsed: 0
-    StunInflicted: 0.3
+    StunInflicted: 0.5
     IsParryable: 0
     Projectile: {fileID: 0}
   SpecialDamageData:
@@ -38,7 +39,7 @@ MonoBehaviour:
     StunInflicted: 0.6
     IsParryable: 0
     Projectile: {fileID: 0}
-  SpecialCoolDown: 2
+  SpecialCoolDown: 1.5
   SpecialLag: 0.8
   SoundList:
     SoundList:

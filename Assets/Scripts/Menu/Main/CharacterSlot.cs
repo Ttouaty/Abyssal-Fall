@@ -17,6 +17,8 @@ public class CharacterSlot : MonoBehaviour
 	public Image GamePadController;
 	public Image KeyboardController;
 	public GameObject ArrowContainers;
+	public GameObject PortraitBG;
+	public GameObject PortraitImage;
 
 	[HideInInspector]
 	public bool Open = false;
@@ -68,6 +70,7 @@ public class CharacterSlot : MonoBehaviour
 		if (!_playerRef.isLocalPlayer)
 			return;
 
+		
 		if (InputManager.GetButtonDown(InputEnum.B, _playerRef.JoystickNumber) && Selected)
 			CancelCharacterSelection();
 
@@ -76,6 +79,9 @@ public class CharacterSlot : MonoBehaviour
 		if (Selected)
 			return;
 
+		PortraitImage.GetComponent<Image>().sprite = _wheelRef.GetSelectedElement()._characterData.Portrait;
+		KeyboardController.gameObject.SetActive(_playerRef.JoystickNumber == 0);
+		GamePadController.gameObject.SetActive(_playerRef.JoystickNumber > 0);
 
 		if (Mathf.Abs(InputManager.GetAxis("x", _playerRef.JoystickNumber)) < 0.5f)
 		{
