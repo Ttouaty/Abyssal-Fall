@@ -4,6 +4,24 @@ using System;
 using System.Collections.Generic;
 
 [Serializable]
+public class GoArray
+{
+	[SerializeField]
+	private GameObject[] array;
+
+	public int Length
+	{
+		get { return array.Length; }
+	}
+
+	public GameObject this[int i]
+	{
+		get { return array[i]; }
+		set { array[i] = value; }
+	}
+}
+
+[Serializable]
 struct ReskinPair
 {
 	public Renderer[] TargetMeshes;
@@ -42,13 +60,16 @@ public class CharacterModel : MonoBehaviour
 	[HideInInspector]
 	public Texture AmbientRampInUse;
 	[Space]
-	public GameObject[] SkinEffectDivs;
+	public GoArray[] SkinEffectObjects;
 
 	void Start()
 	{
-		for (int i = 0; i < SkinEffectDivs.Length; i++)
+		for (int i = 0; i < SkinEffectObjects.Length; i++)
 		{
-			SkinEffectDivs[i].SetActive(i == skinIndexInUse);
+			for (int j = 0; j < SkinEffectObjects[i].Length; j++)
+			{
+				SkinEffectObjects[i][j].SetActive(i == skinIndexInUse);
+			}
 		}
 	}
 
@@ -60,14 +81,21 @@ public class CharacterModel : MonoBehaviour
 			return;
 		}
 
-		if (SkinEffectDivs.Length > skinNumber)
+
+
+		if (SkinEffectObjects.Length > skinNumber)
 		{
-			if (SkinEffectDivs[skinNumber] != null)
+			for (int i = 0; i < SkinEffectObjects[skinIndexInUse].Length; i++)
 			{
-				SkinEffectDivs[skinIndexInUse].SetActive(false);
-				SkinEffectDivs[skinNumber].SetActive(true);
-				GetComponentInChildren<AnimationToolkit>().InitParticles();
+				SkinEffectObjects[skinIndexInUse][i].SetActive(false);
 			}
+
+			for (int j = 0; j < SkinEffectObjects[skinNumber].Length; j++)
+			{
+				SkinEffectObjects[skinNumber][j].SetActive(true);
+			}
+
+			GetComponentInChildren<AnimationToolkit>().InitParticles();
 		}
 
 		skinIndexInUse = skinNumber;

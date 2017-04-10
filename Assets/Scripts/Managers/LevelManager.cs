@@ -334,6 +334,8 @@ public class LevelManager : GenericSingleton<LevelManager>
 			}
 		}
 
+		SceneManager.SetActiveScene(SceneManager.GetSceneByName(CurrentArenaConfig.BackgroundLevel.SceneName));
+
 		_loadingProgress = 1.0f;
 		OnLoadProgress.Invoke(_loadingProgress);
 

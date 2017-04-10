@@ -66,7 +66,7 @@ Transform:
   m_GameObject: {fileID: 1000013202370606}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 113.9, y: 9.02, z: -92.99}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 4000013627110128}
@@ -109,9 +109,9 @@ ParticleSystem:
   looping: 0
   prewarm: 0
   playOnAwake: 1
-  moveWithTransform: 0
+  moveWithTransform: 1
   autoRandomSeed: 1
-  scalingMode: 1
+  scalingMode: 0
   randomSeed: -235362547
   InitialModule:
     serializedVersion: 2
@@ -1783,9 +1783,9 @@ ParticleSystem:
   looping: 0
   prewarm: 0
   playOnAwake: 1
-  moveWithTransform: 0
+  moveWithTransform: 1
   autoRandomSeed: 1
-  scalingMode: 1
+  scalingMode: 0
   randomSeed: -1495375857
   InitialModule:
     serializedVersion: 2
@@ -1816,7 +1816,7 @@ ParticleSystem:
         m_RotationOrder: 0
       minMaxState: 3
     startSpeed:
-      scalar: 91.4
+      scalar: 30
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1832,7 +1832,7 @@ ParticleSystem:
         serializedVersion: 2
         m_Curve:
         - time: 0
-          value: 0.7844638
+          value: 0.6666667
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -3499,7 +3499,7 @@ ParticleSystemRenderer:
   m_MaxParticleSize: 0.5
   m_CameraVelocityScale: 0
   m_VelocityScale: 0
-  m_LengthScale: 6.2
+  m_LengthScale: 1
   m_SortingFudge: 0
   m_NormalDirection: 1
   m_RenderAlignment: 0

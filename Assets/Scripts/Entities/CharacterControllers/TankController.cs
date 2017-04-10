@@ -15,6 +15,9 @@ public class TankController : PlayerController
 	[SerializeField]
 	private SphereCollider ChargeHitbox;
 
+	[SerializeField]
+	private ParticleSystem[] HitParticles;
+
 	[SyncVar]
 	private bool _charging = false;
 	protected override void SpecialAction()
@@ -96,8 +99,10 @@ public class TankController : PlayerController
 
 		if (_charging)
 		{
-			if (colli.transform.GetComponent<IDamageable>() != null)
+			if (colli.transform.GetComponent<IDamageable>() != null && !colli.transform.GetComponent<PlayerController>()._isInvul)
 			{
+				Destroy(Instantiate(HitParticles[_playerRef.SkinNumber].gameObject, (colli.transform.position + transform.position) * 0.5f, Quaternion.identity) as GameObject, HitParticles[0].duration + HitParticles[0].startLifetime);
+
 				DamageData tempDamageData = _characterData.SpecialDamageData.Copy();
 				tempDamageData.Dealer = _dmgDealerSelf;
 

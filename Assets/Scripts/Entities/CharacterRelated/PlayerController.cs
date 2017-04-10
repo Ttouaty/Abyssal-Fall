@@ -186,6 +186,12 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	protected Dash _dashCopy;
 	[SyncVar]
 	protected bool _dashing = false;
+	protected float _dashDamagingTime = 0.3f;
+
+	protected bool _isDealingDamage
+	{
+		get { return _damageTimer.TimeLeft > 0; }
+	}
 
 	public bool _isDashing
 	{
@@ -202,7 +208,8 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	protected TimeCooldown _stunTimer; //Seconds of stun on Hit
 	protected TimeCooldown _invulTimer; //Seconds of invulnerability
 	protected TimeCooldown _parryTimer; //Seconds of Parrying
-										//protected TimeCooldown _airborneTimeout; //Time before being considered airborne
+	protected TimeCooldown _damageTimer; //Seconds of DealingDamage
+										 //protected TimeCooldown _airborneTimeout; //Time before being considered airborne
 	protected TimeCooldown _forcedAirbornTimeout;
 
 	protected DamageDealer _dmgDealerSelf;
@@ -349,6 +356,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		};
 
 		_parryTimer = new TimeCooldown(this);
+		_damageTimer = new TimeCooldown(this);
 
 		//_airborneTimeout = new TimeCooldown(this);
 		//_airborneTimeout.onFinish = () => {	if (IsGrounded)	_airborneTimeout.Set(_airborneDelay);};
@@ -496,9 +504,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	{
 		_FEMref.SetExpressionPrecise(expressionName, _playerRef.SkinNumber);
 	}
-
 	#endregion
-
 
 	#region Processes
 	private void ProcessOrientation()
@@ -685,6 +691,8 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	[Command]
 	public virtual void CmdSetIsDashing(bool value)
 	{
+		if(value)
+			_damageTimer.Add(_dashDamagingTime);
 		_dashing = value;
 	}
 
@@ -720,8 +728,16 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		if (_isLocalPlayer)
 		{
 			transform.position = newPos;
-			//_animator.SetTrigger("Reset");
 		}
+
+		_forcedAirbornTimeout.Set(1);
+		_stunTimer.Set(0.5f);
+
+		Freeze();
+		Invoke("UnFreeze", 0.5f);
+
+		_animator.SetTrigger("WaitForEnter");
+		_animator.SetTrigger("Enter");
 
 		//if (NetworkServer.active)
 		//	_animator.ResetTrigger("Reset");
@@ -816,8 +832,9 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 	protected virtual IEnumerator ActivateDash()
 	{
-		_dashing = true;
+		_isDashing = true;
 		_isInvul = true;
+		_invulTimer.Set(_dashDamagingTime);
 		_allowInput = false;
 		_parryTimer.Set(_parryTime);
 
@@ -841,7 +858,6 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 		gameObject.layer = LayerMask.NameToLayer("PlayerDefault");
 
-		_isInvul = false;
 		//_animator.SetTrigger("Dash_End");
 		_networkAnimator.BroadCastTrigger("Dash_End");
 
@@ -850,7 +866,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_characterData.SoundList["OnDashEnd"].Play(gameObject);
 
 		yield return new WaitForSeconds(_dashCopy.endingLag);
-		_dashing = false;
+		_isDashing = false;
 		_allowInput = true;
 
 		_timeHeldDash = 0;
@@ -901,7 +917,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 	protected virtual void PlayerCollisionHandler(Collision colli)
 	{
-		if (colli.gameObject.GetComponent<IDamageable>() != null && _dashing)
+		if (colli.gameObject.GetComponent<IDamageable>() != null && _dashing && _isDealingDamage)
 		{
 
 			DamageData tempDamageData = _characterData.DashDamageData.Copy();

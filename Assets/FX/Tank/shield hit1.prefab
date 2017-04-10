@@ -52,8 +52,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000012689875420}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 113.9, y: 9.02, z: -48.7}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 20.75, y: 2.82, z: -167.02979}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 4000012575472102}
@@ -79,7 +79,7 @@ ParticleSystem:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000012689875420}
   serializedVersion: 4
-  lengthInSec: 2
+  lengthInSec: 1
   startDelay:
     scalar: 0
     maxCurve:
@@ -109,10 +109,10 @@ ParticleSystem:
   looping: 0
   prewarm: 0
   playOnAwake: 1
-  moveWithTransform: 0
+  moveWithTransform: 1
   autoRandomSeed: 1
-  scalingMode: 1
-  randomSeed: 920208907
+  scalingMode: 0
+  randomSeed: -1357349468
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -1753,7 +1753,7 @@ ParticleSystem:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000013045711732}
   serializedVersion: 4
-  lengthInSec: 2
+  lengthInSec: 1
   startDelay:
     scalar: 0
     maxCurve:
@@ -1783,10 +1783,10 @@ ParticleSystem:
   looping: 0
   prewarm: 0
   playOnAwake: 1
-  moveWithTransform: 0
+  moveWithTransform: 1
   autoRandomSeed: 1
-  scalingMode: 1
-  randomSeed: -792202216
+  scalingMode: 0
+  randomSeed: 992619842
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -1816,7 +1816,7 @@ ParticleSystem:
         m_RotationOrder: 0
       minMaxState: 3
     startSpeed:
-      scalar: 91.4
+      scalar: 30
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1832,7 +1832,7 @@ ParticleSystem:
         serializedVersion: 2
         m_Curve:
         - time: 0
-          value: 0.7844638
+          value: 0.6666667
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -2130,7 +2130,7 @@ ParticleSystem:
     serializedVersion: 2
     enabled: 1
     type: 0
-    radius: 1.7
+    radius: 1.69
     angle: 25
     length: 5
     boxX: 1
@@ -3455,7 +3455,7 @@ ParticleSystemRenderer:
   m_MaxParticleSize: 0.5
   m_CameraVelocityScale: 0
   m_VelocityScale: 0
-  m_LengthScale: 6.2
+  m_LengthScale: 1
   m_SortingFudge: 0
   m_NormalDirection: 1
   m_RenderAlignment: 0

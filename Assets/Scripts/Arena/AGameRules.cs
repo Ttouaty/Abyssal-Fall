@@ -125,7 +125,7 @@ public abstract class AGameRules : MonoBehaviour
 		
 
 			if (CanPlayerRespawn && player != null)
-				StartCoroutine(RespawnPlayer_Retry(player, 1));
+				StartCoroutine(RespawnPlayer_Retry(player, 2));
 		}
 	}
 
@@ -145,7 +145,7 @@ public abstract class AGameRules : MonoBehaviour
 			Tile tile = tiles.RandomElement();
 			tile.SetTimeLeft(tile.TimeLeftSave);
 
-			player.Controller.RpcRespawn(tile.transform.position + Vector3.up * tile.transform.localScale.y * 0.5f + Vector3.up * player.GetComponent<CapsuleCollider>().height * 0.5f * player.transform.localScale.y);
+			player.Controller.RpcRespawn(tile.transform.position + Vector3.up * tile.transform.localScale.y * 0.5f + Vector3.up * player.Controller.GetComponentInChildren<CapsuleCollider>().height * 0.5f * player.transform.localScale.y);
 		}
 	}
 
