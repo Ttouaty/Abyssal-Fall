@@ -347,38 +347,48 @@ public class ServerManager : NATTraversal.NetworkManager
 		}
 	}
 
-
 	public override void OnServerDisconnect(NetworkConnection conn)
 	{
+		Player targetPlayer = null;
 
-		if(conn.playerControllers.Count == 0)
+		for (int i = 0; i < RegisteredPlayers.Count; i++)
 		{
-			Debug.Log("empty player");
+			if (RegisteredPlayers[i].connectionToClient == conn)
+			{
+				targetPlayer = RegisteredPlayers[i];
+				break;
+			}
+		}
+
+		if(targetPlayer == null)
+		{
+			Debug.LogWarning("Player disconnected but no player object was found");
 			return;
 		}
-		int playerNumber = conn.playerControllers[0].gameObject.GetComponent<Player>().PlayerNumber;
+
 
 		if (IsInLobby)
 		{
 			for (int i = 0; i < RegisteredPlayers.Count; i++)
 			{
-				RegisteredPlayers[i].RpcCloseTargetSlot(playerNumber - 1);
+				RegisteredPlayers[i].RpcCloseTargetSlot(targetPlayer.PlayerNumber - 1);
 			}
 		}
 
-		RegisteredPlayers.Remove(conn.playerControllers[0].gameObject.GetComponent<Player>());
+		NetworkServer.DestroyPlayersForConnection(targetPlayer.connectionToClient);
+
+		RegisteredPlayers.Remove(targetPlayer);
 		OpenSlots[] tempArray = Enum.GetValues(typeof(OpenSlots)) as OpenSlots[];
-		LobbySlotsOpen &= ~tempArray[conn.playerControllers[0].gameObject.GetComponent<Player>().PlayerNumber];
-		Debug.Log("Removed player " + conn.playerControllers[0].gameObject.GetComponent<Player>().PlayerNumber + " - Open slots are now => " + LobbySlotsOpen.ToString());
+		LobbySlotsOpen &= ~tempArray[targetPlayer.PlayerNumber];
+		Debug.Log("Removed player " + targetPlayer.PlayerNumber + " - Open slots are now => " + LobbySlotsOpen.ToString());
 
 		if (conn.address != "localServer")//external Player decreasing external player count
 			ExternalPlayerNumber--;
 
-		NetworkServer.DestroyPlayersForConnection(conn);
 		
 		if(Player.LocalPlayer != null)
 		{
-			Player.LocalPlayer.RpcOnPlayerDisconnect(playerNumber);
+			Player.LocalPlayer.RpcOnPlayerDisconnect(targetPlayer.PlayerNumber);
 		}
 
 		base.OnServerDisconnect(conn);
@@ -386,9 +396,15 @@ public class ServerManager : NATTraversal.NetworkManager
 
 	public override void OnConnectionReplacedClient(NetworkConnection oldConnection, NetworkConnection newConnection)
 	{
+		base.OnConnectionReplacedClient(oldConnection, newConnection);
 		if(newConnection.isConnected)
 			ClientScene.AddPlayer(newConnection, 0);
-		base.OnConnectionReplacedClient(oldConnection, newConnection);
+	}
+
+	public override void OnConnectionReplacedServer(NetworkConnection oldConnection, NetworkConnection newConnection)
+	{
+		base.OnConnectionReplacedServer(oldConnection, newConnection);
+		NetworkServer.ReplacePlayerForConnection(newConnection, oldConnection.playerControllers[0].gameObject, 0);
 	}
 
 	public void OnGameEnd()
@@ -457,9 +473,21 @@ public class ServerManager : NATTraversal.NetworkManager
 	//{
 	//	for (int i = 0; i < RegisteredPlayers.Count; i++)
 	//	{
-	//		Debug.Log("Player n°=> "+ RegisteredPlayers[i].PlayerNumber +" is ready => "+RegisteredPlayers[i].isReady);
+	//		Debug.Log("Player n°=> " + RegisteredPlayers[i].PlayerNumber + " is ready => " + RegisteredPlayers[i].isReady);
 	//	}
 	//}
+
+	public override void Update()
+	{
+		base.Update();
+		if(NetworkServer.active)
+		{
+			for (int i = 0; i < RegisteredPlayers.Count; i++)
+			{
+				Debug.Log("Player n°=> " + RegisteredPlayers[i].PlayerNumber + " connection obj => " + RegisteredPlayers[i].connectionToClient.playerControllers.Count);
+			}
+		}
+	}
 
 	public void ConnectToMatch(string code)
 	{

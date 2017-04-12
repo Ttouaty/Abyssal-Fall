@@ -154,8 +154,12 @@ public class CharacterSelectWheel : NetworkBehaviour
 		_wheelRadius = Mathf.Abs(transform.parent.localPosition.z * (1 / transform.parent.localScale.z));
 		Internal_Generate(tempGenerationSelectableCharacters, AvailablePlayers);
 
+
 		ScrollToIndex(_playerRef.GetComponent<Player>().CharacterUsedIndex);
 		ChangeCharacterSkin(_playerRef.GetComponent<Player>().SkinNumber);
+
+		_selectedSkinIndex = GetNextAvailableSkin(_selectedSkinIndex);
+
 		SetAnimBool("IsSelected", _playerRef.GetComponent<Player>().isReady);
 		MenuManager.Instance._characterSlotsContainerRef.SlotsAvailable[playerNumber - 1].SelectPedestal(_playerRef.GetComponent<Player>().isReady);
 
@@ -196,6 +200,8 @@ public class CharacterSelectWheel : NetworkBehaviour
 	[Command]
 	public void CmdChangeCharacterSkin(int newIndex)
 	{
+		newIndex = GetNextAvailableSkin(newIndex);
+
 		_selectedSkinIndex = newIndex;
 		if (_playerRef != null)
 			_playerRef.GetComponent<Player>().CmdSetPlayerCharacter(_selectedElementIndex, _selectedSkinIndex);
@@ -207,6 +213,41 @@ public class CharacterSelectWheel : NetworkBehaviour
 		RpcChangeCharacterSkinPrecise(skinIndex, characterIndex);
 	}
 
+	private int GetNextAvailableSkin(int targetSkin)
+	{
+		CharacterSelectWheel[] AllWheelsRef = FindObjectsOfType<CharacterSelectWheel>();
+		int maxNumberOfSkins = Player.AvailablePlayerControllers[_selectedElementIndex]._characterData.CharacterSelectModel.SkinArray.Length;
+
+		List<bool> availableSkinIndex = new List<bool>();
+		for (int i = 0; i < maxNumberOfSkins; i++)
+		{
+			availableSkinIndex.Add(true); //add true for all skins
+		}
+
+		for (int i = 0; i < AllWheelsRef.Length; i++)
+		{
+			if(AllWheelsRef[i].gameObject != gameObject)
+			{
+				if (AllWheelsRef[i]._selectedElementIndex == _selectedElementIndex)
+					availableSkinIndex[AllWheelsRef[i]._selectedSkinIndex] = false;
+			}
+		}
+
+		if (availableSkinIndex[targetSkin]) //si ton skin est libre
+			return targetSkin;
+		else
+		{
+			for (int i = 0; i < availableSkinIndex.Count; i++)
+			{
+				if (availableSkinIndex[(i + targetSkin).LoopAround(0, availableSkinIndex.Count - 1)])
+					return (i + targetSkin).LoopAround(0, availableSkinIndex.Count - 1);
+			}
+		}
+
+		Debug.Log("All skins are taken go nuts!");
+		return targetSkin;
+	}
+
 	public override void OnStartClient()
 	{
 		base.OnStartClient();
@@ -215,7 +256,6 @@ public class CharacterSelectWheel : NetworkBehaviour
 		transform.SetParent(MenuManager.Instance._characterSlotsContainerRef.SlotsAvailable[playerNumber - 1].WheelSlot, false);
 
 		MenuManager.Instance._characterSlotsContainerRef.SlotsAvailable[playerNumber - 1].OpenSlot(this);
-
 		MenuManager.Instance.GetComponent<MonoBehaviour>().StartCoroutine(WaitForActive()); // delayed to prevent setTrigger not firing
 	}
 
@@ -253,6 +293,10 @@ public class CharacterSelectWheel : NetworkBehaviour
 	{
 		if (_displayArray == null || _playerRef == null)
 			return;
+
+		if (_displayArray.Length == 0)
+			return;
+
 		for (int i = 0; i < _displayArray.Length; i++)
 		{
 			_displayArray[i].GetComponentInChildren<Animator>().SetTriggerAfterInit("Selection");

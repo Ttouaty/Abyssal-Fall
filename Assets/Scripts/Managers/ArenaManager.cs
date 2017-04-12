@@ -34,7 +34,9 @@ public class ArenaManager : MonoBehaviour
 	#endregion
 	#region public
 	public float                                    TileScale = 1.50f;
+	[HideInInspector]
 	public ETileType[,]                             Map;
+	[HideInInspector]
 	public Vector3                                  Position;
 
 	[HideInInspector] public Transform              ArenaRoot;
@@ -45,6 +47,7 @@ public class ArenaManager : MonoBehaviour
 	[HideInInspector] public Transform              BehavioursRoot;
 
 	public ArenaMasterManager MasterManagerPrefab;
+	public Transform VictoryPlateformParent;
 
 	#endregion
 	#region getter/setter
@@ -543,26 +546,23 @@ public class ArenaManager : MonoBehaviour
 	IEnumerator DisplayWinnerCoroutine(GameObject winnerGo)
 	{
 		AutoFade.StartFade(0.5f, 0.5f, 0.5f, Color.white);
-		yield return new WaitForSeconds(0.55f);
+		yield return new WaitForSeconds(0.5f);
 
 		UnloadArena();
-		VictoryPlatform victoryPlatform = Instantiate(_currentArenaConfig.VictoryPlatformGo) as VictoryPlatform;
-		victoryPlatform.transform.SetParent(TilesRoot, false);
+
+		VictoryPlatform victoryPlatform = Instantiate(_currentArenaConfig.VictoryPlatformGo, VictoryPlateformParent, false) as VictoryPlatform;
 		victoryPlatform.transform.localPosition = Vector3.zero;
 
-		GameObject characterGo = Instantiate(winnerGo.GetComponent<Player>().CharacterUsed._characterData.CharacterSelectModel.gameObject) as GameObject;
+		GameObject characterGo = Instantiate(winnerGo.GetComponent<Player>().CharacterUsed._characterData.CharacterWinModel.gameObject, victoryPlatform.CharacterPos.transform, false) as GameObject;
 
 		characterGo.GetComponentInChildren<CharacterModel>().Reskin(winnerGo.GetComponent<Player>().SkinNumber);
-		characterGo.GetComponentInChildren<SetRenderQueue>().SetCutOff(1);
-		characterGo.transform.SetParent(victoryPlatform.CharacterPos.transform, false);
+		characterGo.GetComponentInChildren<CharacterModel>().SetOutlineColor(winnerGo.GetComponent<Player>().PlayerColor);
 		characterGo.transform.localPosition = Vector3.zero;
 		characterGo.transform.localRotation = Quaternion.identity;
 
-		yield return new WaitForSeconds(0.4f);
-		victoryPlatform.CameraPos.GetComponentInChildren<Animator>().SetTrigger("Enter");
-		yield return new WaitForSeconds(1.2f);
+		yield return new WaitForSeconds(0.2f);
 		characterGo.GetComponentInChildren<Animator>().SetTrigger("Win");
-		yield return new WaitForSeconds(2);
+		yield return new WaitForSeconds(4);
 
 		EndGameManager.Instance.Open();
 	}

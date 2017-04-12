@@ -4,8 +4,8 @@ using UnityEngine.Networking;
 
 public class Shuriken : ABaseProjectile
 {
-	public ParticleSystem _smokeTrail;
-
+	public GameObject[] _smokeTrails;
+	private int activeSkinNumber = 0;
 	protected override void Awake()
 	{
 		base.Awake();
@@ -14,25 +14,32 @@ public class Shuriken : ABaseProjectile
 
 	public override void Launch(Vector3 Position, Vector3 Direction, DamageData data, NetworkInstanceId newLauncherId)
 	{
-		_smokeTrail.transform.localPosition = Vector3.zero;
-		_smokeTrail.Play();
 		base.Launch(Position, Direction, data, newLauncherId);
 	}
 
 	protected override void Stop()
 	{
-		ParticleSystem OldSmokeTrail = _smokeTrail;
-		_smokeTrail = Instantiate(_smokeTrail, transform, false) as ParticleSystem;
-		_smokeTrail.transform.localPosition = Vector3.zero;
+		GameObject OldSmokeTrail = GetComponentInChildren<TrailRenderer>(false).gameObject;
+		_smokeTrails[activeSkinNumber] = Instantiate(_smokeTrails[activeSkinNumber], transform, false) as GameObject;
+		_smokeTrails[activeSkinNumber].transform.localPosition = Vector3.zero;
 		OldSmokeTrail.transform.parent = null;
-		OldSmokeTrail.Stop();
-		GameObject.Destroy(OldSmokeTrail.gameObject, OldSmokeTrail.startLifetime);
+		OldSmokeTrail.GetComponentInChildren<ParticleSystem>().Stop();
+		Destroy(OldSmokeTrail.gameObject, OldSmokeTrail.GetComponentInChildren<ParticleSystem>().startLifetime);
 		base.Stop();
 	}
 
 	protected override void OnLaunch(GameObject launcher)
 	{
 		base.OnLaunch(launcher);
+		activeSkinNumber = launcher.GetComponent<PlayerController>()._playerRef.SkinNumber;
+
+		for (int i = 0; i < _smokeTrails.Length; i++)
+		{
+			_smokeTrails[i].SetActive(i == activeSkinNumber);
+		}
+
+		_smokeTrails[activeSkinNumber].transform.localPosition = Vector3.zero;
+		_smokeTrails[activeSkinNumber].GetComponentInChildren<ParticleSystem>().Play();
 		GetComponentInChildren<MeshRenderer>().material = launcher.GetComponent<PlayerController>()._characterProp.PropRenderer.material;
 	}
 }

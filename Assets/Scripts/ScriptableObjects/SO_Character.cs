@@ -10,7 +10,14 @@ public class SO_Character :  ScriptableObject{
 	public Sprite LightIcon;
 	public Sprite Portrait;
 	public CharacterModel CharacterSelectModel;
-	public int NumberOfSkins = 4;
+	public CharacterModel CharacterWinModel;
+	public int NumberOfSkins
+	{
+		get
+		{
+			return CharacterSelectModel.SkinArray.Length;
+		}
+	}
 	[Header("Info")]
 	public string SpecialInfoKey;
 

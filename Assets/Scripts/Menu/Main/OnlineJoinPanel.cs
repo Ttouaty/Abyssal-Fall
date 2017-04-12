@@ -15,7 +15,7 @@ public class OnlineJoinPanel : ButtonPanelNew
 
 	protected void Update()
 	{
-		if (_parentMenu.ActiveButtonPanel != this || MenuPanelNew.InputEnabled)
+		if (_parentMenu.ActiveButtonPanel != this || !MenuPanelNew.InputEnabled)
 			return;
 
 		if (ServerManager.Instance.FacilitatorStatus == FacilitatorConnectionStatus.Failed)

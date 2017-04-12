@@ -966,6 +966,34 @@ Transform:
   m_PrefabParentObject: {fileID: 4000010664280694, guid: b606e087a390ffe42a398358642ec1ce,
     type: 2}
   m_PrefabInternal: {fileID: 293582486}
+--- !u!1 &588589061
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 588589062}
+  m_Layer: 0
+  m_Name: VictoryPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &588589062
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 588589061}
+  m_LocalRotation: {x: -0.05771274, y: -0.17450406, z: -0.009926173, w: 0.9829136}
+  m_LocalPosition: {x: -6.22, y: -53.51, z: 16.95}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: -6.6650004, y: -19.855001, z: 0.035}
+  m_Children: []
+  m_Father: {fileID: 1066740542}
+  m_RootOrder: 3
 --- !u!1 &626333771
 GameObject:
   m_ObjectHideFlags: 0
@@ -1527,6 +1555,7 @@ Transform:
   - {fileID: 1359118784}
   - {fileID: 22507853}
   - {fileID: 1103580054}
+  - {fileID: 588589062}
   m_Father: {fileID: 0}
   m_RootOrder: 10
 --- !u!1001 &1097856585
@@ -1640,6 +1669,11 @@ Prefab:
       propertyPath: m_RootOrder
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 114000013356596662, guid: 1c564f22705f4b74fb27d3873a678000,
+        type: 2}
+      propertyPath: VictoryPlateformParent
+      value: 
+      objectReference: {fileID: 588589062}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 1c564f22705f4b74fb27d3873a678000, type: 2}
   m_IsPrefabParent: 0

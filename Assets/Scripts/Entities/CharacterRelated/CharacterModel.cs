@@ -22,7 +22,7 @@ public class GoArray
 }
 
 [Serializable]
-struct ReskinPair
+public struct ReskinPair
 {
 	public Renderer[] TargetMeshes;
 	public Material[] TargetMaterials;
@@ -32,6 +32,13 @@ public class CharacterModel : MonoBehaviour
 {
 	[SerializeField]
 	private ReskinPair[] _skinArray;
+	public ReskinPair[] SkinArray
+	{
+		get
+		{
+			return _skinArray;
+		}
+	}
 
 	[HideInInspector]
 	public FacialExpresionModule FEMref

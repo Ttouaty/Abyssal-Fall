@@ -174,9 +174,9 @@ public class CharacterSlot : MonoBehaviour
 	public void ChangeCharacter(int direction)
 	{
 		_wheelRef.CmdChangeCharacterSkinPrecise(0, _wheelRef._selectedElementIndex);
-		_wheelRef.ChangeCharacterSkin(0);
-		_wheelRef.CmdChangeCharacterSkin(0);
 		_wheelRef.CmdScrollToIndex((_wheelRef._selectedElementIndex + direction).LoopAround(0, _availableCharacters.Length - 1));
+		_wheelRef.CmdChangeCharacterSkin(0);
+
 		_canSwitchCharacter = false;
 		_switchCharacterCooldown.Add(_switchCharacterDelay);
 	}

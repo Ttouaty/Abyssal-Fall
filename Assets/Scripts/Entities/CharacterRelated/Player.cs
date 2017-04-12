@@ -7,11 +7,19 @@ public class Player : NetworkBehaviour
 {
 	public static Player LocalPlayer;
 	private static PlayerController[] _availablePlayerControllers;
+	public static PlayerController[] AvailablePlayerControllers
+	{
+		get
+		{
+			if (_availablePlayerControllers == null)
+				DynamicConfig.Instance.GetConfigs(ref _availablePlayerControllers);
+			return _availablePlayerControllers;
+		}
+	}
 
 	//[SyncVar]
 	//public SyncListGameObject PlayerList = new SyncListGameObject();
 	public static Player[] PlayerList = new Player[0];
-	public Material CharacterAlpha;
 	[HideInInspector]
 	public int JoystickNumber = -1;
 
@@ -117,7 +125,6 @@ public class Player : NetworkBehaviour
 
 	void OnDestroy()
 	{
-		enabled = false;
 		PlayerList = FindObjectsOfType<Player>();
 		if (NetworkServer.active)
 		{

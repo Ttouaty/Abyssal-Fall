@@ -347,10 +347,13 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		};//decrease Stun only if grounded
 
 		_invulTimer = new TimeCooldown(this);
-		_invulTimer.onFinish = () => { _isInvul = false; };
+		_invulTimer.onFinish = () => { gameObject.layer = LayerMask.NameToLayer("PlayerDefault");  _isInvul = false; };
 		_invulTimer.onProgress = () =>
 		{
-			_isInvul = true;
+			if (!_isInvul)
+				_isInvul = true;
+			gameObject.layer = LayerMask.NameToLayer("PlayerInvul");
+			_isInvulInternal = true;
 			if (_stunTimer.TimeLeft > 0)
 				_invulTimer.Add(Time.deltaTime);
 		};
@@ -846,7 +849,6 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		//if (NetworkServer.active)
 		//	_animator.ResetTrigger("Dash_Start");
 		_characterData.SoundList["OnDashStart"].Play(gameObject);
-		gameObject.layer = LayerMask.NameToLayer("PlayerInvul");
 
 		ForceAirborne(0.4f);
 
@@ -856,7 +858,6 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 			yield return null;
 		} //wait for landing
 
-		gameObject.layer = LayerMask.NameToLayer("PlayerDefault");
 
 		//_animator.SetTrigger("Dash_End");
 		_networkAnimator.BroadCastTrigger("Dash_End");

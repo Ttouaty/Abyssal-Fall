@@ -4,5 +4,4 @@ using System.Collections;
 public class VictoryPlatform : MonoBehaviour
 {
 	public Transform CharacterPos;
-	public Transform CameraPos;
 }

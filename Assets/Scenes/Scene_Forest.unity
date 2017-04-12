@@ -1104,6 +1104,11 @@ Prefab:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114000013356596662, guid: 1c564f22705f4b74fb27d3873a678000,
+        type: 2}
+      propertyPath: VictoryPlateformParent
+      value: 
+      objectReference: {fileID: 1894834172}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 1c564f22705f4b74fb27d3873a678000, type: 2}
   m_IsPrefabParent: 0
@@ -2388,69 +2393,6 @@ Transform:
   - {fileID: 1796980030}
   m_Father: {fileID: 0}
   m_RootOrder: 29
---- !u!1 &1156004410
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 1156004412}
-  - 20: {fileID: 1156004411}
-  m_Layer: 0
-  m_Name: Water4SimpleReflectionSceneCamera
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!20 &1156004411
-Camera:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1156004410}
-  m_Enabled: 0
-  serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 1, g: 1, b: 1, a: 1}
-  m_NormalizedViewPortRect:
-    serializedVersion: 2
-    x: 0
-    y: 0
-    width: 1
-    height: 1
-  near clip plane: 0.3
-  far clip plane: 1000
-  field of view: 60
-  orthographic: 0
-  orthographic size: 5
-  m_Depth: 0
-  m_CullingMask:
-    serializedVersion: 2
-    m_Bits: 4294967279
-  m_RenderingPath: 1
-  m_TargetTexture: {fileID: 0}
-  m_TargetDisplay: 0
-  m_TargetEye: 3
-  m_HDR: 0
-  m_OcclusionCulling: 1
-  m_StereoConvergence: 10
-  m_StereoSeparation: 0.022
-  m_StereoMirrorMode: 0
---- !u!4 &1156004412
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1156004410}
-  m_LocalRotation: {x: 0.09494458, y: 0.8814786, z: 0.20091808, w: -0.41666886}
-  m_LocalPosition: {x: 201.32503, y: 9.558389, z: 147.36752}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 49
 --- !u!1 &1198663472
 GameObject:
   m_ObjectHideFlags: 0
@@ -4101,8 +4043,9 @@ Transform:
   m_Children:
   - {fileID: 138295684}
   - {fileID: 458048973}
+  - {fileID: 1894834172}
   m_Father: {fileID: 0}
-  m_RootOrder: 50
+  m_RootOrder: 49
 --- !u!1001 &1826929379
 Prefab:
   m_ObjectHideFlags: 0
@@ -4395,6 +4338,34 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: ba69dd64da114d4469d5b1bbb574cc33, type: 3}
   m_IsPrefabParent: 0
+--- !u!1 &1894834171
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1894834172}
+  m_Layer: 0
+  m_Name: Victory Position
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1894834172
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1894834171}
+  m_LocalRotation: {x: -0.20002921, y: 0.07809974, z: -0.016015222, w: -0.97654104}
+  m_LocalPosition: {x: 9.56, y: -32.32, z: -37.66}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 23.119001, y: -8.906, z: 0.002}
+  m_Children: []
+  m_Father: {fileID: 1810790168}
+  m_RootOrder: 2
 --- !u!1 &1927437787
 GameObject:
   m_ObjectHideFlags: 0
