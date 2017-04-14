@@ -38,9 +38,19 @@ public abstract class AGameRules : MonoBehaviour
 
 	public virtual void InitGameRules()
 	{
-		// On initi game rules common stuff
+		// On init game rules common stuff
 		StopAllCoroutines();
 		CameraManager.IsManual = false;
+
+		for (int i = 0; i < Player.PlayerList.Length; i++)
+		{
+			int playerNumber = Player.PlayerList[i].PlayerNumber;
+
+			GUIManager.Instance.SetPlayerScoreActive(playerNumber, true);
+			GUIManager.Instance.SetPlayerScoreIcon(playerNumber, Player.PlayerList[i].CharacterUsed._characterData.Portrait);
+			//GUIManager.Instance.SetPlayerScore(playerNumber, 0);
+		}
+
 		StartCoroutine(Update_Implementation());
 
 		if (ArenaAutoDestruction)
@@ -198,7 +208,6 @@ public abstract class AGameRules : MonoBehaviour
 	{
 		StopAllCoroutines();
 		EndGameManager.Instance.WinnerId = winner.PlayerNumber;
-		//EndGameManager.Instance.Open();
 		
 		ArenaManager.Instance.DisplayWinner(winner.gameObject);
 	}

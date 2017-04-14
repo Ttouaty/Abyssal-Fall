@@ -7,10 +7,10 @@ using System.Collections.Generic;
 [System.Serializable]
 public enum ETileType : int
 {
-	GROUND      = -1,
-	OBSTACLE    =  0,
-	SPAWN       =  1,
-	HOLE        =  2
+	HOLE        =  0,
+	GROUND      =  1,
+	SPAWN       =  2,
+	OBSTACLE    =  3
 }
 
 public class ArenaManager : MonoBehaviour
@@ -155,15 +155,11 @@ public class ArenaManager : MonoBehaviour
 				for (int j = roots[i].childCount - 1; j >= 0; --j)
 				{
 					child = roots[i].GetChild(j);
-					Poolable poolable = child.GetComponent<Poolable>();
+					Poolable poolable = child.GetComponentInChildren<Poolable>(true);
 					if (poolable != null)
-					{
 						poolable.AddToPool();
-					}
 					else
-					{
 						Destroy(child.gameObject);
-					}
 				}
 			}
 		}

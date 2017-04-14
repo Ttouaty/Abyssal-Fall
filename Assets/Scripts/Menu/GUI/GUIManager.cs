@@ -23,6 +23,17 @@ public class GUIManager : GenericSingleton<GUIManager>
 		}
 	}
 
+	void Update()
+	{
+		for (int i = 0; i < Player.PlayerList.Length; i++)
+		{
+			if (!ScoreFields[Player.PlayerList[i].PlayerNumber - 1].activeInHierarchy)
+				continue;
+
+			ScoreFields[Player.PlayerList[i].PlayerNumber - 1].GetComponentInChildren<Text>().text = Player.PlayerList[i].Score.ToString();
+		}
+	}
+
 	public void RunTimer (float duration)
 	{
 		Timer.gameObject.SetActive(true);
@@ -63,12 +74,12 @@ public class GUIManager : GenericSingleton<GUIManager>
 
 	public void SetPlayerScoreIcon(int playerNumber, Sprite newSprite)
 	{
-		ScoreFields[playerNumber - 1].transform.Find("Player Icon").GetComponent<Image>().sprite = newSprite;
-		ScoreFields[playerNumber - 1].transform.Find("Player Icon").GetComponent<Image>().color = GameManager.Instance.PlayerColors[playerNumber - 1];
+		ScoreFields[playerNumber - 1].transform.Find("BG portrait").GetChild(0).GetComponent<Image>().sprite = newSprite;
+		ScoreFields[playerNumber - 1].transform.Find("BG portrait").GetComponent<Image>().color = GameManager.Instance.PlayerColors[playerNumber - 1];
 	}
 
-	public void SetPlayerScore(int playerNumber, int score)
-	{
-		ScoreFields[playerNumber - 1].GetComponentInChildren<Text>().text = score.ToString();
-	}
+	//public void SetPlayerScore(int playerNumber, int score)
+	//{
+	//	ScoreFields[playerNumber - 1].GetComponentInChildren<Text>().text = score.ToString();
+	//}
 }

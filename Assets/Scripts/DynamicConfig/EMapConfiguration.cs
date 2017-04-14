@@ -1,4 +1,4 @@
 public enum EMapConfiguration
 {
-   TestArena16x16,TestArena20x20,TestArena26x26,TestArena32x32
+   TestArena_2,TestArena_3,TestArena_4
 }

@@ -9,7 +9,7 @@ public class CountdownManager : GenericSingleton<CountdownManager>
 	public GameObject[] Elements = new GameObject[4];
 	public float TotalTimeTaken = 3;
 
-	public float DistanceFromCam = 20;
+	public Vector3 DistanceFromCam;
 
 	public IEnumerator Countdown ()
 	{
@@ -17,8 +17,8 @@ public class CountdownManager : GenericSingleton<CountdownManager>
 
 		Elements[0].transform.parent.SetParent(Camera.main.transform, false);
 		Elements[0].transform.parent.localRotation = Quaternion.identity;
-		Elements[0].transform.parent.localPosition = new Vector3(0,0, 6.5f);
-		Elements[0].transform.parent.localScale = new Vector3(0.25f, 0.25f, 0.25f);
+		Elements[0].transform.parent.localPosition = DistanceFromCam;
+		//Elements[0].transform.parent.localScale = new Vector3(0.25f, 0.25f, 0.25f);
 
 		TimeManager.Pause();
 		StartCoroutine(PlayerFocus());

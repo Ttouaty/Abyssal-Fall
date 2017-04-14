@@ -163,6 +163,8 @@ public class LevelManager : GenericSingleton<LevelManager>
 			MainManager.Instance.DYNAMIC_CONFIG.GetConfig(config.ModeConfiguration, out CurrentModeConfig);
 			MainManager.Instance.DYNAMIC_CONFIG.GetConfig(config.MapConfiguration, out CurrentMapConfig);
 
+			GameManager.Instance.CurrentGameConfiguration.MapFileUsedIndex = config.MapFileUsedIndex;
+
 			AGameRules rules				= Instantiate(CurrentModeConfig);
 			rules.transform.parent			= GameManager.Instance.transform;
 			rules.name						= "Game Rules";

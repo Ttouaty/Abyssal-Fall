@@ -4,12 +4,18 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine.Networking.Match;
+using UnityEngine.Networking.NetworkSystem;
 
 public enum FacilitatorConnectionStatus
 {
 	Undefined,
 	Connected,
 	Failed
+}
+
+public class CustomMsgTypes
+{
+	public const short OnConnReplaced = 100;
 }
 
 public class ServerManager : NATTraversal.NetworkManager
@@ -50,6 +56,7 @@ public class ServerManager : NATTraversal.NetworkManager
 	[HideInInspector]
 	public bool IsDebug = false;
 
+	[HideInInspector]
 	public FacilitatorConnectionStatus FacilitatorStatus = FacilitatorConnectionStatus.Undefined;
 
 	public bool AreAllPlayerReady
@@ -79,6 +86,7 @@ public class ServerManager : NATTraversal.NetworkManager
 		//#########################
 		//### ADD SPAWN PREFABS ###
 		//#########################
+
 		RegisterPrefabs();
 
 		Instance = FindObjectOfType<ServerManager>();
@@ -88,6 +96,7 @@ public class ServerManager : NATTraversal.NetworkManager
 		{
 			tempId = tempId + (UnityEngine.Random.Range((int)1, (int)9));
 		}
+		
 
 		Instance.GameId = tempId;
 		_initialised = true;
@@ -190,11 +199,7 @@ public class ServerManager : NATTraversal.NetworkManager
 
 	public override void OnClientConnect(NetworkConnection conn)
 	{
-		Debug.Log("client connection detected with adress: " + conn.address);
-		if (!NetworkServer.active)
-		{
-			FindObjectOfType<ConnectionModule>().OnSuccess.Invoke(TargetGameId);
-		}
+		
 		//base.OnClientConnect(conn);
 	}
 
@@ -217,13 +222,6 @@ public class ServerManager : NATTraversal.NetworkManager
 
 		base.OnClientDisconnect(conn);
 	}
-
-	//public override void OnServerDisconnect(NetworkConnection conn)
-	//{
-	//	Debug.Log("client disconnected with adress => "+conn.address);
-
-	//	NetworkServer.DestroyPlayersForConnection(conn);
-	//}
 
 	public override void OnServerConnect(NetworkConnection conn)
 	{
@@ -362,7 +360,7 @@ public class ServerManager : NATTraversal.NetworkManager
 
 		if(targetPlayer == null)
 		{
-			Debug.LogWarning("Player disconnected but no player object was found");
+			//Debug.LogWarning("Player disconnected but no player object was found with playercontrollers => "+ conn.playerControllers.Count);
 			return;
 		}
 
@@ -397,14 +395,27 @@ public class ServerManager : NATTraversal.NetworkManager
 	public override void OnConnectionReplacedClient(NetworkConnection oldConnection, NetworkConnection newConnection)
 	{
 		base.OnConnectionReplacedClient(oldConnection, newConnection);
-		if(newConnection.isConnected)
-			ClientScene.AddPlayer(newConnection, 0);
+		newConnection.RegisterHandler(CustomMsgTypes.OnConnReplaced, Instance.OnConnReplaced);	
 	}
 
-	public override void OnConnectionReplacedServer(NetworkConnection oldConnection, NetworkConnection newConnection)
+	//public override void OnConnectionReplacedServer(NetworkConnection oldConnection, NetworkConnection newConnection)
+	//{
+	//	//NetworkServer.ReplacePlayerForConnection(newConnection, oldConnection.playerControllers[0].gameObject, 0);
+	//	base.OnConnectionReplacedServer(oldConnection, newConnection);
+	//}
+
+	public override void replaceConnection(NetworkConnection oldConn, NetworkConnection newConn)
 	{
-		base.OnConnectionReplacedServer(oldConnection, newConnection);
-		NetworkServer.ReplacePlayerForConnection(newConnection, oldConnection.playerControllers[0].gameObject, 0);
+		base.replaceConnection(oldConn, newConn);
+
+		if (NetworkServer.active)
+			newConn.Send(CustomMsgTypes.OnConnReplaced, new EmptyMessage());
+	}
+
+	public void OnConnReplaced(NetworkMessage netMsg)
+	{
+		FindObjectOfType<ConnectionModule>().OnSuccess.Invoke(TargetGameId);
+		ClientScene.AddPlayer(client.connection, 0);
 	}
 
 	public void OnGameEnd()
@@ -469,24 +480,17 @@ public class ServerManager : NATTraversal.NetworkManager
 		}
 
 	}
-	//void Update()
-	//{
-	//	for (int i = 0; i < RegisteredPlayers.Count; i++)
-	//	{
-	//		Debug.Log("Player n°=> " + RegisteredPlayers[i].PlayerNumber + " is ready => " + RegisteredPlayers[i].isReady);
-	//	}
-	//}
 
 	public override void Update()
 	{
 		base.Update();
-		if(NetworkServer.active)
-		{
-			for (int i = 0; i < RegisteredPlayers.Count; i++)
-			{
-				Debug.Log("Player n°=> " + RegisteredPlayers[i].PlayerNumber + " connection obj => " + RegisteredPlayers[i].connectionToClient.playerControllers.Count);
-			}
-		}
+		//if(NetworkServer.active)
+		//{
+		//	for (int i = 0; i < RegisteredPlayers.Count; i++)
+		//	{
+		//		Debug.Log("Player n°=> " + RegisteredPlayers[i].PlayerNumber + " connection obj => " + RegisteredPlayers[i].connectionToClient.playerControllers.Count);
+		//	}
+		//}
 	}
 
 	public void ConnectToMatch(string code)

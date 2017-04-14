@@ -11,7 +11,7 @@ public struct GameConfiguration
 	public EArenaConfiguration ArenaConfiguration;
 	public EModeConfiguration ModeConfiguration;
 	public EMapConfiguration MapConfiguration;
-	public int NumberOfStages;
+	public int MapFileUsedIndex;
 }
 
 [System.Serializable]
@@ -82,15 +82,18 @@ public class GameManager : GenericSingleton<GameManager>
 	{
 		ServerManager.Instance.ResetAlivePlayers();
 		// DEBUG en attendant que la sélection de la map soit dispo
-		switch (ServerManager.Instance.AlivePlayers.Count)
-		{
-			case 2: CurrentGameConfiguration.MapConfiguration = EMapConfiguration.TestArena20x20; break;
-			case 3: CurrentGameConfiguration.MapConfiguration = EMapConfiguration.TestArena26x26; break;
-			case 4: CurrentGameConfiguration.MapConfiguration = EMapConfiguration.TestArena32x32; break;
-		}
+		
 
 		if (NetworkServer.active)
 		{
+			switch (ServerManager.Instance.AlivePlayers.Count)
+			{
+				case 1: CurrentGameConfiguration.MapConfiguration = EMapConfiguration.TestArena_2; break;
+				case 2: CurrentGameConfiguration.MapConfiguration = EMapConfiguration.TestArena_2; break;
+				case 3: CurrentGameConfiguration.MapConfiguration = EMapConfiguration.TestArena_3; break;
+				case 4: CurrentGameConfiguration.MapConfiguration = EMapConfiguration.TestArena_4; break;
+			}
+
 			MenuManager.Instance.GetComponentInChildren<MapSelectWheel>(true).SendSelectionToGameManager();
 			AGameRules tempRules;
 			MainManager.Instance.DYNAMIC_CONFIG.GetConfig(CurrentGameConfiguration.ModeConfiguration, out tempRules);
@@ -99,12 +102,15 @@ public class GameManager : GenericSingleton<GameManager>
 			{
 				ServerManager.Instance.RegisteredPlayers[i].Score = 0;
 			}
+			MainManager.Instance.DYNAMIC_CONFIG.GetConfig(CurrentGameConfiguration.MapConfiguration, out LevelManager.Instance.CurrentMapConfig);
+
+			CurrentGameConfiguration.MapFileUsedIndex = UnityEngine.Random.Range(0, LevelManager.Instance.CurrentMapConfig.MapFiles.Length);
+
 			Player.LocalPlayer.RpcStartGame(CurrentGameConfiguration, tempRules.Serialize());
 		}
 		else
-			Debug.LogError("StartGame(); called from client! This should not be allowed! Aborting");
+			Debug.LogWarning("StartGame(); called from client! This should not be allowed! Aborting");
 	}
-
 
 	public void StartGameWithConfig(GameConfiguration newConfig, int[] customConfig)
 	{
@@ -112,12 +118,10 @@ public class GameManager : GenericSingleton<GameManager>
 		CurrentStage = 1;
 		StartCoroutine(StartLevelCoroutine(customConfig));
 	}
+
 	private IEnumerator StartLevelCoroutine(int[] customConfig)
 	{
 		yield return StartCoroutine(AutoFade.StartFade(1, LevelManager.Instance.StartLevel(CurrentGameConfiguration, customConfig), AutoFade.EndFade(0.5f, 1, Color.black), Color.black));
 		InProgress = true;
 	}
-
-
-
 }

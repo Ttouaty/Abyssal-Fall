@@ -9,7 +9,7 @@ public class Poolable : MonoBehaviour
 	
 	public void AddToPool ()
     {
-		MonoBehaviour[] tempScriptRefs = gameObject.GetComponentsInChildren<MonoBehaviour>();
+		MonoBehaviour[] tempScriptRefs = gameObject.GetComponentsInChildren<MonoBehaviour>(true);
 
 		for (int i = 0; i < tempScriptRefs.Length; i++)
 		{

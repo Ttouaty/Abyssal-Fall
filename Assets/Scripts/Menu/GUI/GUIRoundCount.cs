@@ -20,7 +20,8 @@ public class GUIRoundCount : MonoBehaviour
 
 	public void Fade()
 	{
-		StartCoroutine(FadeCo());
+		if(gameObject.activeInHierarchy)
+			StartCoroutine(FadeCo());
 	}
 
 	IEnumerator FadeCo()
