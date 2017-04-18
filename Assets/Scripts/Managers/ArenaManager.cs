@@ -192,6 +192,12 @@ public class ArenaManager : MonoBehaviour
 		}
 	}
 
+	public void ResetTile(Tile tile)
+	{
+		if (_tiles[tile.TileIndex] == null)
+			_tiles[tile.TileIndex] = tile;
+	}
+	
 	//Don't use this one
 	public void RemoveTile(Tile tile)
 	{
@@ -361,12 +367,12 @@ public class ArenaManager : MonoBehaviour
 					}
 					
 					tileComp.SetTimeLeft(tileComp.TimeLeftSave); // TODO -> Regler dans l'inspecteur
-					_tiles[(int)(y * _currentMapConfig.MapSize.x) + x] = tileComp;
 					tileComp.TileIndex = (int)(y * _currentMapConfig.MapSize.x) + x;
 					tileComp.TileCoordinates = new Vector2(x,y);
 					tileComp.SpawnComponent = null;
 					tileComp.enabled = true;
 					
+					_tiles[tileComp.TileIndex] = tileComp;
 
 					if (type == ETileType.SPAWN)
 					{
@@ -517,7 +523,6 @@ public class ArenaManager : MonoBehaviour
 		//fix truelle
 		mapCenter.x -= TileScale * 0.5f;
 		mapCenter.y -= TileScale * 0.5f;
-
 
 		List<int> selectedTiles = new List<int>();
 

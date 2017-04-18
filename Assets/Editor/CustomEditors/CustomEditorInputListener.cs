@@ -51,6 +51,8 @@ public class CustomEditorInputListener : Editor
 			}
 		}
 
+		_preciseTarget.NeedConfirmation = EditorGUILayout.Toggle("Need Confirmation ?", _preciseTarget.NeedConfirmation);
+
 		//_preciseTarget.ListenToAllJoysticks = EditorGUILayout.Toggle("Listen all joysticks ?", _preciseTarget.ListenToAllJoysticks);
 		//if (!_preciseTarget.ListenToAllJoysticks)
 		//{

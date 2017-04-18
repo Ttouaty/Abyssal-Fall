@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
-using System.Collections.Generic;
 using System;
+using System.Collections;
 
 public enum InputMethod
 {
@@ -26,6 +26,7 @@ public class InputListener : MonoBehaviour
 	public InputMethod InputMethodUsed;
 	public float TimeToHold = 0.5f;
 	public bool CanLoop = false;
+	public bool NeedConfirmation = false;
 
 	//protected int[] JoysticksToListen = new int[12]; 
 
@@ -181,7 +182,27 @@ public class InputListener : MonoBehaviour
 			_waitForRelease[joy] = true;
 		_timeHeld = 0;
 		_JoystickRequestCallback = -1;
+
+		if(NeedConfirmation)
+			Confirm.Instance.Open(WaitForConfirm(joy, FindObjectsOfType<InputListener>()), ReactivateAllSiblings(FindObjectsOfType<InputListener>()));
+		else
+			Callback.Invoke(joy);
+	}
+
+	IEnumerator WaitForConfirm(int joy, InputListener[] siblingsButtons)
+	{
+		StartCoroutine(ReactivateAllSiblings(siblingsButtons));
 		Callback.Invoke(joy);
+		yield return null;
+	}
+
+	IEnumerator ReactivateAllSiblings(InputListener[] siblingsButtons)
+	{
+		for (int i = 0; i < siblingsButtons.Length; i++)
+		{
+			siblingsButtons[i].enabled = true;
+		}
+		yield return null;
 	}
 
 	void OnEnable()
@@ -195,6 +216,7 @@ public class InputListener : MonoBehaviour
 			_waitForRelease[i] = false;
 		}
 	}
+
 
 	public void ClickSelfButton()
 	{

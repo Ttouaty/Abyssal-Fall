@@ -84,7 +84,7 @@ public class MainManager : GenericSingleton<MainManager>
 			QualitySettings.antiAliasing = (int) Mathf.Pow(2, _optionsObj.AntiAliasing);
 			QualitySettings.vSyncCount = _optionsObj.Vsync;
 			QualitySettings.masterTextureLimit = _optionsObj.TextureQuality;
-			Screen.SetResolution((int)AvailableResolutions[_optionsObj.ScreenResolution].x, (int)AvailableResolutions[_optionsObj.ScreenResolution].y, Screen.fullScreen);
+			Screen.SetResolution((int)AvailableResolutions[_optionsObj.ScreenResolution].x, (int)AvailableResolutions[_optionsObj.ScreenResolution].y, true);
 		}
 		else
 			Debug.Log("No option file found.");

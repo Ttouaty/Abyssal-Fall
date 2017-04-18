@@ -83,7 +83,7 @@ public abstract class AGameRules : MonoBehaviour
 
 		while (true)
 		{
-			CameraManager.Shake(ShakeStrength.Low, 0.3f);
+			CameraManager.Shake(ShakeStrength.Low, 0.2f);
 
 			yield return new WaitWhile(() => MenuPauseManager.Instance.IsOpen);
 			yield return new WaitForSeconds(0.5f);
@@ -97,6 +97,12 @@ public abstract class AGameRules : MonoBehaviour
 				ArenaMasterManager.Instance.RpcRemoveTiles(tempTileArray);
 			}
 
+			if (_autoDestroyedTileIndex > ArenaManager.Instance.CurrentMapConfig.MapSize.x * 0.5f)
+			{
+
+				Debug.Log("_autoDestroyedTileIndex is > ArenaManager.Instance.CurrentMapConfig.MapSize.x *0.5f => "+ (ArenaManager.Instance.CurrentMapConfig.MapSize.x * 0.5f)+" reseting to 0");
+				_autoDestroyedTileIndex = 0;
+			}
 			yield return new WaitWhile(() => MenuPauseManager.Instance.IsOpen);
 			yield return new WaitForSeconds(IntervalAutoDestruction - 0.5f);
 		}

@@ -115,6 +115,7 @@ public class Tile : MonoBehaviour, IPoolable
 		_canFall = true;
 		_isTouched = false;
 		_timeLeft = _timeLeftSave;
+		ArenaManager.Instance.ResetTile(this);
 	}
 
 	public void ActivateFall()

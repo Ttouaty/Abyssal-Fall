@@ -19,7 +19,6 @@ MonoBehaviour:
     type: 2}
   CharacterWinModel: {fileID: 114000010181021008, guid: 071d6efab83a2524da0e1db85a0c031b,
     type: 2}
-  NumberOfSkins: 4
   SpecialInfoKey: Shoot 3 Shurikens
   CharacterStats:
     strength: 3
@@ -28,7 +27,7 @@ MonoBehaviour:
   Dash:
     endingLag: 0.35
     Forces:
-    - {x: 4, y: 4.905}
+    - {x: 5, y: 4.905}
     - {x: 6, y: 7.3575}
     Impact: 3
   DashDamageData:
@@ -38,10 +37,10 @@ MonoBehaviour:
     Projectile: {fileID: 0}
   SpecialDamageData:
     AttackTypeUsed: 1
-    StunInflicted: 0.15
+    StunInflicted: 0.1
     IsParryable: 1
     Projectile: {fileID: 0}
-  SpecialCoolDown: 1
+  SpecialCoolDown: 0.7
   SpecialLag: 0.2
   SoundList:
     SoundList:

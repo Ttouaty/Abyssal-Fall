@@ -348,7 +348,7 @@ public class LevelManager : GenericSingleton<LevelManager>
 		MainManager.Instance.ARENA_MANAGER = ArenaManager.Instance;
 
 		// Start Game
-		AutoFade.StartFade(0,0.5f,1);
+		AutoFade.StartFade(0,0.5f,0.5f);
 		MainManager.Instance.ARENA_MANAGER.Init();	
 		_bIsLoading = false;
 	}
