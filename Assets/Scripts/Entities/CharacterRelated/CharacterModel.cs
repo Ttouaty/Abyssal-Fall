@@ -143,7 +143,7 @@ public class CharacterModel : MonoBehaviour
 		SetOutlineColor(newColor, false);
 	}
 
-	public void SetOutlineColor(Color newColor, bool forceMaterialCheck)
+	public void SetOutlineColor(Color newColor, bool forceMaterialCheck, float outlineWidth = 0.004f)
 	{
 		OutlineColorInUse = newColor;
 		if (forceMaterialCheck)
@@ -155,7 +155,7 @@ public class CharacterModel : MonoBehaviour
 		for (int i = 0; i < MaterialsInUse.Count; i++)
 		{
 			MaterialsInUse[i].SetColor("_OutlineColor", newColor);
-			MaterialsInUse[i].SetFloat("_Outline", 0.004f);
+			MaterialsInUse[i].SetFloat("_Outline", outlineWidth);
 		}
 
 	}

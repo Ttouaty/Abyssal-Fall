@@ -79,6 +79,7 @@ ModelImporter:
     400070: Spine2
     4300000: Ninja_Mesh123
     7400000: Camera_Win
+    7400002: win loop
     9500000: //RootNode
     13700000: Ninja_Mesh123
   materials:
@@ -106,7 +107,7 @@ ModelImporter:
       name: Camera_Win
       takeName: Camera_Win
       firstFrame: 920
-      lastFrame: 1300
+      lastFrame: 1040
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -140,6 +141,106 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Ninja_Mesh123
+        weight: 1
+      - path: Pelvis
+        weight: 1
+      - path: Pelvis/Left_Leg
+        weight: 1
+      - path: Pelvis/Left_Leg/Left_Foot
+        weight: 1
+      - path: Pelvis/Left_Leg/Left_Foot/Left_Foot1
+        weight: 1
+      - path: Pelvis/Left_Leg/Left_Foot/Left_Foot1/Left_Foot_End
+        weight: 1
+      - path: Pelvis/Right_Leg
+        weight: 1
+      - path: Pelvis/Right_Leg/Right_Foot
+        weight: 1
+      - path: Pelvis/Right_Leg/Right_Foot/Right_Foot1
+        weight: 1
+      - path: Pelvis/Right_Leg/Right_Foot/Right_Foot1/Right_Foot_End
+        weight: 1
+      - path: Pelvis/Spine0_5
+        weight: 1
+      - path: Pelvis/Spine0_5/Spine1
+        weight: 1
+      - path: Pelvis/Spine0_5/Spine1/Spine2
+        weight: 1
+      - path: Pelvis/Spine0_5/Spine1/Spine2/Head
+        weight: 1
+      - path: Pelvis/Spine0_5/Spine1/Spine2/Head/Head_End
+        weight: 1
+      - path: Pelvis/Spine0_5/Spine1/Spine2/Left_SHoulder
+        weight: 1
+      - path: Pelvis/Spine0_5/Spine1/Spine2/Left_SHoulder/Left_Elbow
+        weight: 1
+      - path: Pelvis/Spine0_5/Spine1/Spine2/Left_SHoulder/Left_Elbow/Left_Wrist
+        weight: 1
+      - path: Pelvis/Spine0_5/Spine1/Spine2/Left_SHoulder/Left_Elbow/Left_Wrist/Left__Thumb
+        weight: 1
+      - path: Pelvis/Spine0_5/Spine1/Spine2/Left_SHoulder/Left_Elbow/Left_Wrist/Left__Thumb/Left_Thumb2
+        weight: 1
+      - path: Pelvis/Spine0_5/Spine1/Spine2/Left_SHoulder/Left_Elbow/Left_Wrist/Left__Thumb/Left_Thumb2/Left_Thumb_End
+        weight: 1
+      - path: Pelvis/Spine0_5/Spine1/Spine2/Left_SHoulder/Left_Elbow/Left_Wrist/Left_Palm
+        weight: 1
+      - path: Pelvis/Spine0_5/Spine1/Spine2/Left_SHoulder/Left_Elbow/Left_Wrist/Left_Palm/Left_Palm2
+        weight: 1
+      - path: Pelvis/Spine0_5/Spine1/Spine2/Left_SHoulder/Left_Elbow/Left_Wrist/Left_Palm/Left_Palm2/Left_Palm_End
+        weight: 1
+      - path: Pelvis/Spine0_5/Spine1/Spine2/Right_SHoulder
+        weight: 1
+      - path: Pelvis/Spine0_5/Spine1/Spine2/Right_SHoulder/Right_Elbow
+        weight: 1
+      - path: Pelvis/Spine0_5/Spine1/Spine2/Right_SHoulder/Right_Elbow/Right_Wrist
+        weight: 1
+      - path: Pelvis/Spine0_5/Spine1/Spine2/Right_SHoulder/Right_Elbow/Right_Wrist/Right__Thumb
+        weight: 1
+      - path: Pelvis/Spine0_5/Spine1/Spine2/Right_SHoulder/Right_Elbow/Right_Wrist/Right__Thumb/Right_Thumb2
+        weight: 1
+      - path: Pelvis/Spine0_5/Spine1/Spine2/Right_SHoulder/Right_Elbow/Right_Wrist/Right__Thumb/Right_Thumb2/Right_Thumb_End
+        weight: 1
+      - path: Pelvis/Spine0_5/Spine1/Spine2/Right_SHoulder/Right_Elbow/Right_Wrist/Right_Palm
+        weight: 1
+      - path: Pelvis/Spine0_5/Spine1/Spine2/Right_SHoulder/Right_Elbow/Right_Wrist/Right_Palm/Right_Palm2
+        weight: 1
+      - path: Pelvis/Spine0_5/Spine1/Spine2/Right_SHoulder/Right_Elbow/Right_Wrist/Right_Palm/Right_Palm2/Right_Palm_End
+        weight: 1
+      - path: repere_cam
+        weight: 1
+      - path: repere_cam/camera1
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 920
+    - serializedVersion: 16
+      name: win loop
+      takeName: Camera_Win
+      firstFrame: 1040
+      lastFrame: 1110
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 1
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
       transformMask:
       - path: 
         weight: 1

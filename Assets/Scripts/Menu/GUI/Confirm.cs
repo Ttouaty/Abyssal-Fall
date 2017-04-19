@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class Confirm : MonoBehaviour
 {
@@ -58,6 +59,7 @@ public class Confirm : MonoBehaviour
 		{
 			_returnButtonChildren[i].enabled = true;
 		}
+		EventSystem.current.enabled = false;
 
 		_animatorRef.SetTrigger("SendIn");
 	}
@@ -70,6 +72,7 @@ public class Confirm : MonoBehaviour
 		{
 			_returnButtonChildren[i].enabled = false;
 		}
+		EventSystem.current.enabled = true;
 	}
 
 	public void OnYes()
