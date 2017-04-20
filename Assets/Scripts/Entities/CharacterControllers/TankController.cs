@@ -54,7 +54,7 @@ public class TankController : PlayerController
 		CmdActiveCharge(false);
 		_isAffectedByFriction = true;
 
-		if(Physics.CheckSphere(ChargeHitbox.transform.position, ChargeHitbox.radius + 0.2f, 1 << LayerMask.NameToLayer("Wall")))
+		if(Physics.CheckSphere(ChargeHitbox.transform.position, ChargeHitbox.radius * ChargeHitbox.transform.lossyScale.x, 1 << LayerMask.NameToLayer("Wall")))
 		{
 			_activeSpeed = Vector3.zero;
 			_rigidB.velocity = _activeSpeed;

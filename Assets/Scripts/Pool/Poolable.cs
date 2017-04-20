@@ -18,10 +18,10 @@ public class Poolable : MonoBehaviour
 
 		if (Pool.IsNull())
 			return;
-
+		
         gameObject.transform.parent = Pool.Root.transform;
-        gameObject.transform.position = Vector3.zero;
-        gameObject.transform.rotation = Quaternion.identity;
+        gameObject.transform.localPosition = Vector3.zero;
+        gameObject.transform.localRotation = Quaternion.identity;
         gameObject.SetActive(false);
         IsInPool = true;
     }

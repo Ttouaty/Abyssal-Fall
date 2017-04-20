@@ -17,11 +17,12 @@ public class Player : NetworkBehaviour
 		}
 	}
 
-	//[SyncVar]
-	//public SyncListGameObject PlayerList = new SyncListGameObject();
 	public static Player[] PlayerList = new Player[0];
 	[HideInInspector]
 	public int JoystickNumber = -1;
+	[SyncVar]
+	[HideInInspector]
+	public bool IsUsingGamePad = false;
 
 	[SyncVar]
 	[HideInInspector]
@@ -166,7 +167,35 @@ public class Player : NetworkBehaviour
 					Debug.Log("player N°"+PlayerNumber+" created with joystick number: " + JoystickNumber);
 				}
 			}
+
+			if (!NetworkServer.active)
+			{
+				string[] tempJoystickNames = InputManager.GetJoystickNames();
+				if (tempJoystickNames.Length > 1)
+				{
+					Debug.Log("InputManager.GetJoystickNames().Length > 1 == true ! Replacing with last connected joystick");
+
+					for (int i = tempJoystickNames.Length - 1; i >= 0; i--)
+					{
+						if(tempJoystickNames[i].Length != 0)
+						{
+							JoystickNumber = i;
+							break;
+						}
+					}
+
+					Debug.Log("new joystick number is => "+JoystickNumber +" / name => "+tempJoystickNames[JoystickNumber]);
+				}
+			}
+
+			CmdSetIsUsingGamePad(JoystickNumber != 0);
 		}
+	}
+
+	[Command]
+	private void CmdSetIsUsingGamePad(bool value)
+	{
+		IsUsingGamePad = value;
 	}
 
 	[Command]

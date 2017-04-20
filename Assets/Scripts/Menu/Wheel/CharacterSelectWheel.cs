@@ -165,7 +165,7 @@ public class CharacterSelectWheel : NetworkBehaviour
 
 		for (int i = 0; i < _displayArray.Length; i++)
 		{
-			_displayArray[i].GetComponentInChildren<CharacterModel>().SetOutlineColor(GameManager.Instance.PlayerColors[playerNumber - 1].SetAlpha(0), true);
+			_displayArray[i].GetComponentInChildren<CharacterModel>().SetOutlineColor(GameManager.Instance.PlayerColors[playerNumber - 1], true, 0.002f);
 			_displayArray[i].GetComponentInChildren<SetRenderQueue>().SetCutOff(0);
 		}
 

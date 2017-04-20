@@ -63,8 +63,8 @@ public class GroundCheck : MonoBehaviour
 
 		if(!_colliderIds.Contains(colli.GetInstanceID()))
 			_colliderIds.Add(colli.GetInstanceID());
-
-		if (colli.gameObject.activeInHierarchy && colli.GetComponent<Tile>() != null)
+	
+		if (colli.gameObject.activeInHierarchy && colli.GetComponent<Tile>() != null && !_playerRef._isDead)
 			colli.GetComponent<Tile>().ActivateFall();
 	}
 
@@ -79,7 +79,7 @@ public class GroundCheck : MonoBehaviour
 	{
 		enabled = true;
 		_colliderRef = GetComponent<SphereCollider>();
-		Collider[] tempCollis = Physics.OverlapSphere(transform.position, _colliderRef.radius + 0.2f, 1 << LayerMask.NameToLayer("Ground"));
+		Collider[] tempCollis = Physics.OverlapSphere(_colliderRef.transform.position, _colliderRef.radius * _colliderRef.transform.lossyScale.x, 1 << LayerMask.NameToLayer("Ground"));
 
 		for (int i = 0; i < tempCollis.Length; i++)
 		{

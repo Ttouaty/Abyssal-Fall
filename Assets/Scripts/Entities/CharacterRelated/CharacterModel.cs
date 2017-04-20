@@ -63,6 +63,7 @@ public class CharacterModel : MonoBehaviour
 	[HideInInspector]
 	public List<Material> MaterialsInUse = new List<Material>();
 	private Color OutlineColorInUse = Color.red;
+	private float OutlineWidthInUse = 0.002f;
 	private int skinIndexInUse = 0;
 	[HideInInspector]
 	public Texture AmbientRampInUse;
@@ -140,12 +141,13 @@ public class CharacterModel : MonoBehaviour
 
 	public void SetOutlineColor(Color newColor)
 	{
-		SetOutlineColor(newColor, false);
+		SetOutlineColor(newColor, false, OutlineWidthInUse);
 	}
 
 	public void SetOutlineColor(Color newColor, bool forceMaterialCheck, float outlineWidth = 0.004f)
 	{
 		OutlineColorInUse = newColor;
+		OutlineWidthInUse = outlineWidth;
 		if (forceMaterialCheck)
 		{
 			Reskin(skinIndexInUse);

@@ -728,9 +728,18 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_isDead = false;
 		CameraManager.Instance.AddTargetToTrack(transform);
 
+
 		if (_isLocalPlayer)
 		{
 			transform.position = newPos;
+		}
+
+
+		TrailRenderer[] tempTrails = GetComponentsInChildren<TrailRenderer>(true);
+
+		for (int i = 0; i < tempTrails.Length; i++)
+		{
+			tempTrails[i].Clear();
 		}
 
 		_forcedAirbornTimeout.Set(1);
@@ -739,8 +748,8 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		Freeze();
 		Invoke("UnFreeze", 0.5f);
 
-		_animator.SetTrigger("WaitForEnter");
-		_animator.SetTrigger("Enter");
+		_networkAnimator.BroadCastTrigger("WaitForEnter");
+		_networkAnimator.BroadCastTrigger("Enter");
 
 		//if (NetworkServer.active)
 		//	_animator.ResetTrigger("Reset");

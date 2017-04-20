@@ -80,8 +80,8 @@ public class CharacterSlot : MonoBehaviour
 			return;
 
 		PortraitImage.GetComponent<Image>().sprite = _wheelRef.GetSelectedElement()._characterData.Portrait;
-		KeyboardController.gameObject.SetActive(_playerRef.JoystickNumber == 0);
-		GamePadController.gameObject.SetActive(_playerRef.JoystickNumber > 0);
+		KeyboardController.gameObject.SetActive(!_playerRef.IsUsingGamePad);
+		GamePadController.gameObject.SetActive(_playerRef.IsUsingGamePad);
 
 		if (Mathf.Abs(InputManager.GetAxis("x", _playerRef.JoystickNumber)) < 0.5f)
 		{

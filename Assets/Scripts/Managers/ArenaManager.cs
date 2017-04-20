@@ -540,12 +540,14 @@ public class ArenaManager : MonoBehaviour
 
 	public void DisplayWinner(GameObject winnerGo)
 	{
-		Debug.Log("Start coroutine DisplayWinnerCoroutine with gameObject => " + winnerGo.name);
 		StartCoroutine(DisplayWinnerCoroutine(winnerGo));
 	}
 
 	IEnumerator DisplayWinnerCoroutine(GameObject winnerGo)
 	{
+		MenuPauseManager.Instance.CanPause = false;
+		MenuPauseManager.Instance.Close();
+
 		AutoFade.StartFade(0.5f, 0.5f, 0.5f, Color.white);
 		yield return new WaitForSeconds(0.5f);
 
@@ -553,6 +555,7 @@ public class ArenaManager : MonoBehaviour
 
 		VictoryPlatform victoryPlatform = Instantiate(_currentArenaConfig.VictoryPlatformGo, VictoryPlateformParent, false) as VictoryPlatform;
 		victoryPlatform.transform.localPosition = Vector3.zero;
+		victoryPlatform.transform.localRotation = Quaternion.identity;
 
 		GameObject characterGo = Instantiate(winnerGo.GetComponent<Player>().CharacterUsed._characterData.CharacterWinModel.gameObject, victoryPlatform.CharacterPos.transform, false) as GameObject;
 

@@ -59,6 +59,7 @@ public class Tile : MonoBehaviour, IPoolable
 		TimeManager.Instance.OnResume.RemoveListener(OnResume);
 		_rigidB.isKinematic = true;
 		StopAllCoroutines();
+		gameObject.SetActive(false);
 	}
 
 	void OnPause(float value)
