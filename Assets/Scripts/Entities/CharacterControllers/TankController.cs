@@ -22,7 +22,7 @@ public class TankController : PlayerController
 	private bool _charging = false;
 	protected override void SpecialAction()
 	{
-		StartCoroutine(SpecialCoroutine());
+		StartCoroutine("SpecialCoroutine");
 	}
 
 	IEnumerator SpecialCoroutine()
@@ -35,7 +35,7 @@ public class TankController : PlayerController
 		_isInvul = true;
 		_allowInput = false;
 		_activeSpeed = _activeDirection.normalized * _specialStartSpeed;
-		GetComponentInChildren<GroundCheck>().Deactivate();
+		_groundCheck.Deactivate();
 
 		while (eT < _specialTime)
 		{
@@ -44,26 +44,24 @@ public class TankController : PlayerController
 			yield return null;
 		}
 
-		GetComponentInChildren<GroundCheck>().Activate();
+		StopCharge();
 
-		yield return null;
-
+		yield return new WaitUntil(() => _groundCheck.HasCheckedForColli);
+		
 		if (IsGrounded)
-			_activeSpeed = Vector3.zero;
-
-		CmdActiveCharge(false);
-		_isAffectedByFriction = true;
-
-		if(Physics.CheckSphere(ChargeHitbox.transform.position, ChargeHitbox.radius * ChargeHitbox.transform.lossyScale.x, 1 << LayerMask.NameToLayer("Wall")))
 		{
 			_activeSpeed = Vector3.zero;
 			_rigidB.velocity = _activeSpeed;
 		}
 
-		_isInvul = false;
+		if (Physics.CheckSphere(ChargeHitbox.transform.position, ChargeHitbox.radius * ChargeHitbox.transform.lossyScale.x, 1 << LayerMask.NameToLayer("Wall")))
+		{
+			_activeSpeed = Vector3.zero;
+			_rigidB.velocity = _activeSpeed;
+		}
 
 		eT = 0;
-		while (eT < _characterData.SpecialLag * 0.7f)
+		while (eT < _characterData.SpecialLag * 0.3f)
 		{
 			_activeSpeed.y = 0;
 			eT += Time.deltaTime;
@@ -93,25 +91,65 @@ public class TankController : PlayerController
 		}
 	}
 
+	void StopCharge()
+	{
+		CmdActiveCharge(false);
+		_isAffectedByFriction = true;
+		_isInvul = false;
+		_groundCheck.Activate();
+		_charging = false;
+	}
+
 	protected override void PlayerCollisionHandler(Collision colli)
 	{
 		base.PlayerCollisionHandler(colli);
 
 		if (_charging)
 		{
-			if (colli.transform.GetComponent<IDamageable>() != null && !colli.transform.GetComponent<PlayerController>()._isInvul)
+		
+			if(colli.transform.GetComponent<TankController>() != null)
 			{
-				Destroy(Instantiate(HitParticles[_playerRef.SkinNumber].gameObject, (colli.transform.position + transform.position) * 0.5f, Quaternion.identity) as GameObject, HitParticles[0].duration + HitParticles[0].startLifetime);
+				if (colli.transform.GetComponent<TankController>()._charging)
+				{
+					Debug.Log("DOUBLE HIT!");
+					StopCharge();
 
-				DamageData tempDamageData = _characterData.SpecialDamageData.Copy();
-				tempDamageData.Dealer = _dmgDealerSelf;
+					_activeSpeed = Vector3.zero;
+					_rigidB.velocity = _activeSpeed;
 
-				colli.transform.GetComponent<IDamageable>()
-					.Damage(Quaternion.FromToRotation(Vector3.right,
-					(colli.transform.position - transform.position).ZeroY().normalized + _rigidB.velocity.normalized * 1.5f) * SO_Character.SpecialEjection.Multiply(Axis.x, _characterData.CharacterStats.strength),
-					colli.contacts[0].point,
-					tempDamageData);
+					colli.transform.GetComponent<TankController>().StopCharge();
+
+					colli.transform.GetComponent<TankController>()._activeSpeed = Vector3.zero;
+					colli.transform.GetComponent<TankController>()._rigidB.velocity = Vector3.zero;
+
+					colli.transform.GetComponent<TankController>().ForceCollisions(GetComponent<Collider>(), Vector3.up);
+					ForceCollisions(colli.collider, Vector3.up);
+				}
+			}
+			else if (colli.transform.GetComponent<IDamageable>() != null)
+			{
+				Debug.Log("HIT");
+				ForceCollisions(colli.collider);
 			}
 		}
+	}
+
+	public void ForceCollisions(Collider colli, Vector3 additionnalDirection = default(Vector3))
+	{
+		if (colli.transform.GetComponent<PlayerController>() != null)
+		{
+			if (colli.transform.GetComponent<PlayerController>()._isInvul)
+				return;
+		}
+		Destroy(Instantiate(HitParticles[_playerRef.SkinNumber].gameObject, (colli.transform.position + transform.position) * 0.5f, Quaternion.identity) as GameObject, HitParticles[0].duration + HitParticles[0].startLifetime);
+
+		DamageData tempDamageData = _characterData.SpecialDamageData.Copy();
+		tempDamageData.Dealer = _dmgDealerSelf;
+
+		colli.transform.GetComponent<IDamageable>()
+			.Damage(Quaternion.FromToRotation(Vector3.right,
+			(colli.transform.position - transform.position).ZeroY().normalized + _rigidB.velocity.normalized * 1.5f) * SO_Character.SpecialEjection.Multiply(Axis.x, _characterData.CharacterStats.strength) + Vector3.up,
+			colli.ClosestPointOnBounds(transform.position),
+			tempDamageData);
 	}
 }

@@ -112,10 +112,16 @@ public class Tile : MonoBehaviour, IPoolable
 			timer -= TimeManager.DeltaTime;
 			yield return null;
 		}
-		transform.localPosition = _initialPoisition;
+		Restore();
+	}
+
+	public void Restore()
+	{
 		_canFall = true;
 		_isTouched = false;
 		_timeLeft = _timeLeftSave;
+		transform.localPosition = _initialPoisition;
+		StopAllCoroutines();
 		ArenaManager.Instance.ResetTile(this);
 	}
 

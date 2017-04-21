@@ -128,7 +128,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 {
 	[HideInInspector]
 	public Player _playerRef;
-	[SyncVar]
+	[SyncVar(hook = "OnSetIsInvul")]
 	private bool _isInvulInternal = false;
 	public bool _isInvul
 	{
@@ -138,6 +138,8 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 			CmdSetIsInvul(value);
 		}
 	}
+	[SyncVar(hook = "OnSetPlayerLayer")]
+	protected int _playerLayer;
 
 	[HideInInspector]
 	public Spawn Spawn;
@@ -145,7 +147,14 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	public Animator _animator;
 	protected NetworkAnimator _networkAnimator;
 	[HideInInspector]
-	public bool _isDead = false;
+	protected bool _isDead = false;
+
+	public bool IsDead
+	{
+		get { return _isDead; }
+		private set { _isDead = value; }
+	}
+
 	[HideInInspector]
 	public bool IsGrounded = false;
 	[HideInInspector]
@@ -160,7 +169,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	protected FacialExpresionModule _FEMref;
 	protected RaycastHit _hit;
 	protected AnimationToolkit _animToolkit;
-
+	protected GroundCheck _groundCheck;
 	#endregion
 	protected Vector3 _activeSpeed = Vector3.zero; // Activespeed est un vecteur qui est appliqué a chaque frame au rigibody.velocity => permet de modifier librement la vitesse du player.
 
@@ -265,7 +274,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_rigidB.velocity = Vector3.zero;
 		_rigidB.isKinematic = true;
 		_activeSpeed = Vector3.zero;
-		GetComponentInChildren<GroundCheck>(true).Deactivate();
+		_groundCheck.Deactivate();
 		//_animator.SetTrigger("Reset");
 	}
 
@@ -274,7 +283,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_isFrozen = false;
 		_allowInput = true;
 		_rigidB.isKinematic = false;
-		GetComponentInChildren<GroundCheck>(true).Activate();
+		_groundCheck.Activate();
 	}
 
 	[ClientRpc]
@@ -293,12 +302,14 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	{
 		_playerRef = player.GetComponent<Player>();
 		_playerRef.Controller = this;
+		_playerLayer = LayerMask.NameToLayer("PlayerDefault");
 
 		if (_characterData == null)
 		{
 			Debug.Log("No SO_Character found for character " + gameObject.name + ". Seriously ?");
 			return;
 		}
+
 
 		CameraManager.Instance.AddTargetToTrack(transform);
 		CharacterModel playerMesh = _transf.GetComponentInChildren<CharacterModel>();
@@ -347,12 +358,12 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		};//decrease Stun only if grounded
 
 		_invulTimer = new TimeCooldown(this);
-		_invulTimer.onFinish = () => { gameObject.layer = LayerMask.NameToLayer("PlayerDefault");  _isInvul = false; };
+		_invulTimer.onFinish = () => { _isInvul = false; };
 		_invulTimer.onProgress = () =>
 		{
 			if (!_isInvul)
 				_isInvul = true;
-			gameObject.layer = LayerMask.NameToLayer("PlayerInvul");
+			
 			_isInvulInternal = true;
 			if (_stunTimer.TimeLeft > 0)
 				_invulTimer.Add(Time.deltaTime);
@@ -380,15 +391,16 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_maxSpeed.x = _maxSpeed.x + _maxSpeed.x * (5 * (_characterData.CharacterStats.speed - Stats.maxValue * 0.5f) / 100);
 
 		_originalMaxSpeed = _maxSpeed;
+		_groundCheck = GetComponentInChildren<GroundCheck>(true);
 
-		if (GetComponentInChildren<GroundCheck>() == null)
+		if (_groundCheck == null)
 		{
 			Debug.LogWarning("no GroundCheck found in player: " + gameObject.name + "\nCreating one.");
 			GameObject tempGo = new GameObject();
 			Instantiate(tempGo);
 			tempGo.transform.parent = transform;
-			tempGo.AddComponent(typeof(GroundCheck));
-			tempGo.transform.position = _transf.position - Vector3.up;
+			_groundCheck = tempGo.AddComponent<GroundCheck>();
+			_groundCheck.transform.position = _transf.position - Vector3.up;
 		}
 
 		_dmgDealerSelf = new DamageDealer();
@@ -409,11 +421,6 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		Freeze();
 
 		CustomStart();
-	}
-
-	public void AddDifferentialAlpha(Material characterAlpha)
-	{
-		Debug.Log("Need to code that laulz!");
 	}
 
 	protected void Update()
@@ -545,6 +552,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	{
 		_animator.SetFloat("StunTime", _stunTimer.TimeLeft);
 	}
+
 
 	private void ProcessInputs()
 	{
@@ -691,6 +699,27 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_isInvulInternal = invulValue;
 	}
 
+	private void OnSetIsInvul(bool value)
+	{
+		_isInvulInternal = value;
+		if(value)
+		{
+			if(_isStunned)
+				_playerLayer = LayerMask.NameToLayer("PlayerGhost");
+			else
+				_playerLayer = LayerMask.NameToLayer("PlayerInvul");
+		}
+		else
+			_playerLayer = LayerMask.NameToLayer("PlayerDefault");
+
+	}
+
+	private void OnSetPlayerLayer(int value)
+	{
+		_playerLayer = value;
+		gameObject.layer = _playerLayer;
+	}
+
 	[Command]
 	public virtual void CmdSetIsDashing(bool value)
 	{
@@ -723,11 +752,12 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	}
 
 	[ClientRpc]
-	public void RpcRespawn(Vector3 newPos)
+	public void RpcRespawn(Vector3 newPos, int respawnTileIndex)
 	{
 		_isDead = false;
 		CameraManager.Instance.AddTargetToTrack(transform);
-
+		ArenaManager.Instance.Tiles[respawnTileIndex].Restore();
+		ArenaManager.Instance.Tiles[respawnTileIndex].SetTimeLeft(ArenaManager.Instance.Tiles[respawnTileIndex].TimeLeftSave * 2, false);
 
 		if (_isLocalPlayer)
 		{
@@ -742,7 +772,6 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 			tempTrails[i].Clear();
 		}
 
-		_forcedAirbornTimeout.Set(1);
 		_stunTimer.Set(0.5f);
 
 		Freeze();
@@ -769,24 +798,15 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	{
 		if (_isLocalPlayer)
 		{
-
-
 			Eject(direction);
 
 			if (newStunTime > 0)
 				_stunTimer.Set(newStunTime);
-			else
-				_isInvul = false;
 			_invulTimer.Set(newStunTime * 1.5f);
 
 			_activeDirection = -direction.ZeroY().normalized;
 			transform.LookAt(transform.position + _activeDirection, Vector3.up);
-
-			//_animator.SetTrigger("Hit");
-
-
-			//if (NetworkServer.active)
-			//	_animator.ResetTrigger("Hit");
+			_networkAnimator.BroadCastTrigger("Hit");
 		}
 
 		if (direction.magnitude > 15)
@@ -798,7 +818,6 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 			CameraManager.Shake(ShakeStrength.Low);
 
 		_characterData.SoundList["OnHit"].Play(gameObject);
-		_networkAnimator.BroadCastTrigger("Hit");
 
 	}
 
@@ -929,7 +948,6 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	{
 		if (colli.gameObject.GetComponent<IDamageable>() != null && _dashing && _isDealingDamage)
 		{
-
 			DamageData tempDamageData = _characterData.DashDamageData.Copy();
 			tempDamageData.Dealer = _dmgDealerSelf;
 			colli.gameObject.GetComponent<IDamageable>()
@@ -938,13 +956,5 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 				colli.contacts[0].point,
 				tempDamageData);
 		}
-		//else if (colli.gameObject.layer == LayerMask.NameToLayer("Wall") && _dashCopy.inProgress)
-		//{
-		//	if (Vector3.Dot((colli.transform.position - transform.position), _activeSpeed) > 0) // if you are going towards a wall
-		//	{
-		//		_activeSpeed = _activeSpeed.ZeroX().ZeroZ(); // blocks you
-		//		_rigidB.velocity = _activeSpeed;
-		//	}
-		//}
 	}
 }

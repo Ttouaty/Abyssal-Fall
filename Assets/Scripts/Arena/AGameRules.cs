@@ -159,9 +159,11 @@ public abstract class AGameRules : MonoBehaviour
 		else
 		{
 			Tile tile = tiles.RandomElement();
-			tile.SetTimeLeft(tile.TimeLeftSave);
+			tile.SetTimeLeft(tile.TimeLeftSave * 2);
 
-			player.Controller.RpcRespawn(tile.transform.position + Vector3.up * tile.transform.localScale.y * 0.5f + Vector3.up * player.Controller.GetComponentInChildren<CapsuleCollider>().height * 0.5f * player.transform.localScale.y);
+			player.Controller.RpcRespawn(
+				tile.transform.position + Vector3.up * tile.transform.localScale.y * 0.5f + Vector3.up * player.Controller.GetComponentInChildren<CapsuleCollider>().height * 0.5f * player.transform.localScale.y,
+				tile.TileIndex);
 		}
 	}
 

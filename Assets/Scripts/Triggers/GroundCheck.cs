@@ -11,6 +11,9 @@ public class GroundCheck : MonoBehaviour
 	private PlayerController _playerRef;
 	private SphereCollider _colliderRef;
 	private Rigidbody _rigidBRef;
+
+	[HideInInspector]
+	public bool HasCheckedForColli = false;
 	//private float _ownSize;
 
 	//private RaycastHit _hit;
@@ -53,6 +56,11 @@ public class GroundCheck : MonoBehaviour
 			_playerRef.IsGrounded = true;
 	}
 
+	void FixedUpdate()
+	{
+		HasCheckedForColli = true;
+	}
+
 	void OnTriggerEnter(Collider colli)
 	{
 		if (!enabled)
@@ -64,7 +72,7 @@ public class GroundCheck : MonoBehaviour
 		if(!_colliderIds.Contains(colli.GetInstanceID()))
 			_colliderIds.Add(colli.GetInstanceID());
 	
-		if (colli.gameObject.activeInHierarchy && colli.GetComponent<Tile>() != null && !_playerRef._isDead)
+		if (colli.gameObject.activeInHierarchy && colli.GetComponent<Tile>() != null && !_playerRef.IsDead && _playerRef._isLocalPlayer)
 			colli.GetComponent<Tile>().ActivateFall();
 	}
 
@@ -79,17 +87,15 @@ public class GroundCheck : MonoBehaviour
 	{
 		enabled = true;
 		_colliderRef = GetComponent<SphereCollider>();
-		Collider[] tempCollis = Physics.OverlapSphere(_colliderRef.transform.position, _colliderRef.radius * _colliderRef.transform.lossyScale.x, 1 << LayerMask.NameToLayer("Ground"));
-
-		for (int i = 0; i < tempCollis.Length; i++)
-		{
-			OnTriggerEnter(tempCollis[i]);
-		}
+		_colliderRef.enabled = false; // force switch between true & false
+		_colliderRef.enabled = true;
+		HasCheckedForColli = false;
 	}
 
 	public void Deactivate()
 	{
 		enabled = false;
 		_colliderIds.Clear();
+		_colliderRef.enabled = false;
 	}
 }

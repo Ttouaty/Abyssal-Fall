@@ -40,8 +40,12 @@ public class CameraManager : GenericSingleton<CameraManager>
 	public float Margin = 5;
 	//public float Growth = 0.1f;
 	public float VerticalOffsetCoef = 2;
+	[Header("Follow Speeds")]
+	public float DistanceLerpSpeed = 3;
+	public float CentroidLerpSpeed = 3;
 
 	private const float _centroidCoefficient = 1f;
+
 
 	[HideInInspector]
 	public List<Transform> TargetsTracked = new List<Transform>();
@@ -182,7 +186,7 @@ public class CameraManager : GenericSingleton<CameraManager>
 			_targetsCentroid /= nbRays;
 		_targetsCentroid.y = _centerPoint.position.y;
 
-		_distance = Mathf.Lerp(_distance, _tempDistance * 0.5f / Mathf.Tan(_camera.fieldOfView * 0.5f * Mathf.Deg2Rad)/* * (1 + Growth) */+ Margin, 5 * Time.deltaTime);
+		_distance = Mathf.Lerp(_distance, _tempDistance * 0.5f / Mathf.Tan(_camera.fieldOfView * 0.5f * Mathf.Deg2Rad)/* * (1 + Growth) */+ Margin, DistanceLerpSpeed * Time.deltaTime);
 
 		if (_distance < MinDistance)
 			_distance = MinDistance;
@@ -195,7 +199,7 @@ public class CameraManager : GenericSingleton<CameraManager>
 	private void FollowCentroid()
 	{
 		//double lerp FTW !
-		_focalPoint.position = Vector3.Lerp(_focalPoint.position, Vector3.Lerp(_centerPoint.position, _targetsCentroid, _centroidCoefficient) - transform.forward.ZeroY().normalized * _verticalOffset, 3 * Time.deltaTime);
+		_focalPoint.position = Vector3.Lerp(_focalPoint.position, Vector3.Lerp(_centerPoint.position, _targetsCentroid, _centroidCoefficient) - transform.forward.ZeroY().normalized * _verticalOffset, CentroidLerpSpeed * Time.deltaTime);
 	}
 
 	public void SetCamAngle(float newAngle, Vector3 axis)

@@ -418,6 +418,13 @@ public class ServerManager : NATTraversal.NetworkManager
 		ClientScene.AddPlayer(client.connection, 0);
 	}
 
+	public override void OnClientError(NetworkConnection conn, int errorCode)
+	{
+		base.OnClientError(conn, errorCode);
+		ResetNetwork();
+		MessageManager.Log("An networking error occured => "+ Enum.GetNames(typeof(NetworkError))[errorCode]);
+	}
+	
 	public void OnGameEnd()
 	{
 		_isInGame = false;
@@ -523,6 +530,7 @@ public class ServerManager : NATTraversal.NetworkManager
 			if(matchList.Count != 0)
 			{
 				StartClientAll(matchList[0]);
+				StartCoroutine(MatchListTimeOut());
 			}
 			else
 				FindObjectOfType<ConnectionModule>().OnFailedConnection.Invoke("Failed to find target game. (No Match found)");
@@ -531,6 +539,19 @@ public class ServerManager : NATTraversal.NetworkManager
 		{
 			FindObjectOfType<ConnectionModule>().OnFailedConnection.Invoke("Failed to find target game. (Connection error)");
 		}
+	}
+
+	IEnumerator MatchListTimeOut()
+	{
+		float timeoutTime = 10;
+		yield return new WaitForSeconds(timeoutTime);
+		if (Player.LocalPlayer == null)
+		{
+			FindObjectOfType<ConnectionModule>().OnFailedConnection.Invoke("Connection attempt failed after " + timeoutTime + "s, aborting connection.");
+			ResetNetwork();
+		}
+		else
+			Debug.Log("TimeOut not activated, ok");
 	}
 
 	public override void OnDoneConnectingToFacilitator(ulong guid)
