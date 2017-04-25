@@ -7,10 +7,10 @@ using System.Collections.Generic;
 [System.Serializable]
 public enum ETileType : int
 {
-	HOLE        =  0,
-	GROUND      =  1,
-	SPAWN       =  2,
-	OBSTACLE    =  3
+	HOLE        =  -1,
+	GROUND      =  0,
+	SPAWN       =  1,
+	OBSTACLE    =  2
 }
 
 public class ArenaManager : MonoBehaviour
@@ -48,7 +48,7 @@ public class ArenaManager : MonoBehaviour
 
 	public ArenaMasterManager MasterManagerPrefab;
 	public Transform VictoryPlateformParent;
-
+	public bool victoryAnimationIsFinished;
 	#endregion
 	#region getter/setter
 	public Tile[]									Tiles				{ get { return _tiles;				} }
@@ -242,6 +242,7 @@ public class ArenaManager : MonoBehaviour
 	private IEnumerator Initialization (bool animate = true)
 	{
 		MenuPauseManager.Instance.CanPause = false;
+		MenuPauseManager.Instance.Close();
 
 		List<BehaviourConfiguration> list = new List<BehaviourConfiguration>();
 		list.Add(_currentArenaConfig.Behaviours);
@@ -259,7 +260,10 @@ public class ArenaManager : MonoBehaviour
 		if(NetworkServer.active)
 			PlaceCharacters();
 
+		MenuPauseManager.Instance.CanPause = false;
 		yield return StartCoroutine(CountdownManager.Instance.Countdown());
+		MenuPauseManager.Instance.CanPause = true;
+
 		GameManager.Instance.GameRules.InitGameRules();
 
 		EnableBehaviours();
@@ -371,7 +375,8 @@ public class ArenaManager : MonoBehaviour
 					tileComp.TileCoordinates = new Vector2(x,y);
 					tileComp.SpawnComponent = null;
 					tileComp.enabled = true;
-					
+
+
 					_tiles[tileComp.TileIndex] = tileComp;
 
 					if (type == ETileType.SPAWN)
@@ -424,6 +429,8 @@ public class ArenaManager : MonoBehaviour
 					Vector3 targetPosition = _tiles[i].transform.localPosition;
 					targetPosition.y = 0;
 					_tiles[i].transform.localPosition = targetPosition;
+					_tiles[i].Place(_tiles[i].transform.localPosition);
+
 					++_tilesDropped;
 				}
 			}
@@ -481,6 +488,9 @@ public class ArenaManager : MonoBehaviour
 			yield return null;
 		}
 		element.transform.localPosition = new Vector3(element.transform.localPosition.x, 0, element.transform.localPosition.z);
+		element.GetComponentInChildren<Tile>().Place(element.transform.localPosition);
+
+
 		++_tilesDropped;
 
 		yield return null;
@@ -545,8 +555,10 @@ public class ArenaManager : MonoBehaviour
 
 	IEnumerator DisplayWinnerCoroutine(GameObject winnerGo)
 	{
+		victoryAnimationIsFinished = false;
 		MenuPauseManager.Instance.CanPause = false;
 		MenuPauseManager.Instance.Close();
+		InputManager.SetInputLockTime(100);
 
 		AutoFade.StartFade(0.5f, 0.5f, 0.5f, Color.white);
 		yield return new WaitForSeconds(0.5f);
@@ -566,7 +578,10 @@ public class ArenaManager : MonoBehaviour
 
 		yield return new WaitForSeconds(0.2f);
 		characterGo.GetComponentInChildren<Animator>().SetTrigger("Win");
-		yield return new WaitForSeconds(4);
+		yield return new WaitUntil(() => victoryAnimationIsFinished);
+
+		yield return new WaitForSeconds(1);
+		InputManager.SetInputLockTime(0);
 
 		EndGameManager.Instance.Open();
 	}

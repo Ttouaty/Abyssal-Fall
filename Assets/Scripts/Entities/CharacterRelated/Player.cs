@@ -289,18 +289,6 @@ public class Player : NetworkBehaviour
 	public void RpcInitController(GameObject targetObject)
 	{
 		targetObject.GetComponent<PlayerController>().Init(gameObject);
-
-		//for (int i = 0; i < PlayerList.Length; i++)
-		//{
-		//	if(PlayerList[i].PlayerNumber != PlayerNumber)
-		//	{
-		//		if (PlayerList[i].SkinNumber == SkinNumber && PlayerList[i].CharacterUsedIndex == CharacterUsedIndex)
-		//		{
-		//			Debug.Log("Player N°=> "+PlayerNumber+" is adding differentialAlpha to player => "+targetObject.GetComponent<PlayerController>()._characterData.IngameName);
-		//			targetObject.GetComponent<PlayerController>().AddDifferentialAlpha(CharacterAlpha);
-		//		}
-		//	}
-		//}
 	}
 
 	[ClientRpc]
@@ -327,8 +315,9 @@ public class Player : NetworkBehaviour
 	}
 
 	[ClientRpc]
-	public void RpcResetmap(bool animate)
+	public void RpcResetmap(bool animate, int targetMapIndex)
 	{
+		GameManager.Instance.CurrentGameConfiguration.MapFileUsedIndex = targetMapIndex;
 		ArenaManager.Instance.ResetMap(animate);
 		EndStageManager.Instance.Close();
 	}

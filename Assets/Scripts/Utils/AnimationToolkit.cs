@@ -57,4 +57,9 @@ public class AnimationToolkit : MonoBehaviour
 		else
 			Debug.LogError("ParticleSystemName => \""+ particleSystemName+"\" was not found in object => "+gameObject.name);
 	}
+
+	public void EndVictory()
+	{
+		ArenaManager.Instance.victoryAnimationIsFinished = true;
+	}
 }

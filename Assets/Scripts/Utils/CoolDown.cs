@@ -35,7 +35,7 @@ public abstract class CoolDown {
 	{
 		if (parent == null)
 		{
-			Debug.Log("parent is null, removing cooldown");
+			//Debug.Log("parent is null, removing cooldown");
 			CoolDownManager.Instance.RemoveCoolDown(this);
 		}
 		else if (parent.enabled || isCoolDownAbsolute)

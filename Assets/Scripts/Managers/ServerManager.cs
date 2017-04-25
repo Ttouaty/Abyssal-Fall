@@ -421,8 +421,13 @@ public class ServerManager : NATTraversal.NetworkManager
 	public override void OnClientError(NetworkConnection conn, int errorCode)
 	{
 		base.OnClientError(conn, errorCode);
+
+		if (FindObjectOfType<ConnectionModule>() != null)
+			FindObjectOfType<ConnectionModule>().OnFailedConnection.Invoke("A networking error occurred => " + Enum.GetNames(typeof(NetworkError))[errorCode]);
+		else
+			MessageManager.Log("A networking error occurred => " + Enum.GetNames(typeof(NetworkError))[errorCode]);
+
 		ResetNetwork();
-		MessageManager.Log("An networking error occured => "+ Enum.GetNames(typeof(NetworkError))[errorCode]);
 	}
 	
 	public void OnGameEnd()

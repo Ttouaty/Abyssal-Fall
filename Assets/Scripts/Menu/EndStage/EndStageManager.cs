@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using UnityEngine.Networking;
 
 public class EndStageManager : GenericSingleton<EndStageManager>
 {
@@ -11,7 +12,13 @@ public class EndStageManager : GenericSingleton<EndStageManager>
 	{
 		if (!checkIfOpen || IsOpen)
 		{
-			Player.LocalPlayer.RpcResetmap(false);
+			if(NetworkServer.active)
+			{
+				if(GameManager.Instance.GameRules.RandomArena)
+					Player.LocalPlayer.RpcResetmap(false, UnityEngine.Random.Range(0, LevelManager.Instance.CurrentMapConfig.MapFiles.Length));
+				else
+					Player.LocalPlayer.RpcResetmap(false, GameManager.Instance.CurrentGameConfiguration.MapFileUsedIndex);
+			}
 		}
 	}
 

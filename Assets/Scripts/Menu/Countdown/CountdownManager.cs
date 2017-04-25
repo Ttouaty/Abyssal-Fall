@@ -33,7 +33,6 @@ public class CountdownManager : GenericSingleton<CountdownManager>
 		}
 
 		TimeManager.Resume();
-		MenuPauseManager.Instance.CanPause = true;
 	}
 
 	IEnumerator PlayerFocus(float TimeBeforeLaunch = 1)

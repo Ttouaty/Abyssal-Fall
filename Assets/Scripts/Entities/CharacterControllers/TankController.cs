@@ -125,10 +125,12 @@ public class TankController : PlayerController
 					colli.transform.GetComponent<TankController>().ForceCollisions(GetComponent<Collider>(), Vector3.up);
 					ForceCollisions(colli.collider, Vector3.up);
 				}
+				else
+					ForceCollisions(colli.collider);
+
 			}
 			else if (colli.transform.GetComponent<IDamageable>() != null)
 			{
-				Debug.Log("HIT");
 				ForceCollisions(colli.collider);
 			}
 		}
@@ -141,6 +143,8 @@ public class TankController : PlayerController
 			if (colli.transform.GetComponent<PlayerController>()._isInvul)
 				return;
 		}
+		Debug.Log("HIT");
+
 		Destroy(Instantiate(HitParticles[_playerRef.SkinNumber].gameObject, (colli.transform.position + transform.position) * 0.5f, Quaternion.identity) as GameObject, HitParticles[0].duration + HitParticles[0].startLifetime);
 
 		DamageData tempDamageData = _characterData.SpecialDamageData.Copy();
@@ -148,7 +152,7 @@ public class TankController : PlayerController
 
 		colli.transform.GetComponent<IDamageable>()
 			.Damage(Quaternion.FromToRotation(Vector3.right,
-			(colli.transform.position - transform.position).ZeroY().normalized + _rigidB.velocity.normalized * 1.5f) * SO_Character.SpecialEjection.Multiply(Axis.x, _characterData.CharacterStats.strength) + Vector3.up,
+			(colli.transform.position - transform.position).ZeroY().normalized + _rigidB.velocity.normalized * 1.5f) * SO_Character.SpecialEjection.Multiply(Axis.x, _characterData.CharacterStats.strength) + additionnalDirection,
 			colli.ClosestPointOnBounds(transform.position),
 			tempDamageData);
 	}

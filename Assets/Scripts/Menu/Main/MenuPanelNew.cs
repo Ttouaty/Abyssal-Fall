@@ -27,7 +27,7 @@ public class MenuPanelNew : MonoBehaviour
 	private Vector2 _previousStickDirection;
 	private Vector2 stickDirection;
 
-	private float _defaultInputDelay = 0.1f;
+	private float _defaultInputDelay = 0.2f;
 	private float _repeatDelay = 0.5f;
 	private float _activeInputDelay = 0;
 	private string _lastTrigger = "";

@@ -96,6 +96,8 @@ public class GroundCheck : MonoBehaviour
 	{
 		enabled = false;
 		_colliderIds.Clear();
+
+		_colliderRef = GetComponent<SphereCollider>();
 		_colliderRef.enabled = false;
 	}
 }

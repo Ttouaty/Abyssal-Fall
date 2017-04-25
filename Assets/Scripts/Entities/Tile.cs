@@ -141,9 +141,14 @@ public class Tile : MonoBehaviour, IPoolable
 		MakeFall();
 	}
 
+	public void Place(Vector3 newLocalPos)
+	{
+		transform.localPosition = newLocalPos;
+	   _initialPoisition = transform.localPosition;
+	}
+
 	public void MakeFall()
 	{
-		_initialPoisition = transform.localPosition;
 		_isTouched = true;
 		StartCoroutine(ActivateFall_Implementation());
 	}

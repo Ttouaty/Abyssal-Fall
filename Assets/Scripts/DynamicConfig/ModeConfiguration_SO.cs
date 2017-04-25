@@ -22,6 +22,7 @@ public class ModeConfiguration_SO : ScriptableObject
 	public BoolRule IsMatchRoundBased;
 	public BoolRule CanPlayerRespawn;
 	public BoolRule ArenaAutoDestruction;
+	public BoolRule RandomArena;
 	//Defined in the gameObject
 	//public List<GameObject> RespawnZones = new List<GameObject>();
 

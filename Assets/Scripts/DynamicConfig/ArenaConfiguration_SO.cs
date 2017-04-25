@@ -12,7 +12,6 @@ public class ArenaConfiguration_SO : ScriptableObject
     public BehaviourConfiguration[] Behaviours;
 	public Sprite Artwork;
 	public EArenaConfiguration TargetMapEnum;
-	public MapConfiguration_SO[] MapConfigs;
 	[Space]
 	public VictoryPlatform VictoryPlatformGo;
 	public Texture AmbientRamp;

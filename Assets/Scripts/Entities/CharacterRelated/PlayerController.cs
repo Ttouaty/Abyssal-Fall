@@ -8,6 +8,7 @@ using System;
 public struct Dash
 {
 	public float endingLag;
+	public float rechargeTime;
 	public Vector2[] Forces;
 	public float Impact;
 }
@@ -128,7 +129,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 {
 	[HideInInspector]
 	public Player _playerRef;
-	[SyncVar(hook = "OnSetIsInvul")]
+	[SyncVar]
 	private bool _isInvulInternal = false;
 	public bool _isInvul
 	{
@@ -218,8 +219,9 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	protected TimeCooldown _invulTimer; //Seconds of invulnerability
 	protected TimeCooldown _parryTimer; //Seconds of Parrying
 	protected TimeCooldown _damageTimer; //Seconds of DealingDamage
-										 //protected TimeCooldown _airborneTimeout; //Time before being considered airborne
-	protected TimeCooldown _forcedAirbornTimeout;
+	protected TimeCooldown _dashRechargeTimer; //Seconds of dash cooldown
+	//protected TimeCooldown _airborneTimeout; //Time before being considered airborne
+	protected TimeCooldown _forcedAirborneTimeout;
 
 	protected DamageDealer _dmgDealerSelf;
 	public DamageDealer DmgDealerSelf { get { return _dmgDealerSelf; } }
@@ -263,7 +265,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	{
 		get
 		{
-			return AllowDash && !_isDead && !_dashMaxed && (_dashing || _allowInput);
+			return AllowDash && !_isDead && !_dashMaxed && (_dashing || _allowInput) && _dashRechargeTimer.TimeLeft == 0;
 		}
 	}
 
@@ -341,6 +343,9 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_dashCopy = _characterData.Dash;
 		_dashActivationSteps = _dashCopy.Forces.Length;
 
+		_dashRechargeTimer = new TimeCooldown(this);
+
+
 		_specialCooldown = new TimeCooldown(this);
 		_specialCooldown.onFinish = OnSpecialReset;
 
@@ -364,7 +369,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 			if (!_isInvul)
 				_isInvul = true;
 			
-			_isInvulInternal = true;
+			//_isInvulInternal = true;
 			if (_stunTimer.TimeLeft > 0)
 				_invulTimer.Add(Time.deltaTime);
 		};
@@ -382,7 +387,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		//	IsGrounded = true;
 		//};
 
-		_forcedAirbornTimeout = new TimeCooldown(this);
+		_forcedAirborneTimeout = new TimeCooldown(this);
 
 		_lastDamageDealerTimeOut = new TimeCooldown(this);
 		_lastDamageDealerTimeOut.onFinish = OnLastDamageDealerTimeOut;
@@ -432,7 +437,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 			return;
 
 		//had to do that :p
-		if (_forcedAirbornTimeout.TimeLeft > 0)
+		if (_forcedAirborneTimeout.TimeLeft > 0)
 			IsGrounded = false;
 
 		ProcessCoolDowns();
@@ -697,14 +702,10 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	public virtual void CmdSetIsInvul(bool invulValue)
 	{
 		_isInvulInternal = invulValue;
-	}
 
-	private void OnSetIsInvul(bool value)
-	{
-		_isInvulInternal = value;
-		if(value)
+		if (invulValue)
 		{
-			if(_isStunned)
+			if (_isStunned)
 				_playerLayer = LayerMask.NameToLayer("PlayerGhost");
 			else
 				_playerLayer = LayerMask.NameToLayer("PlayerInvul");
@@ -718,6 +719,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	{
 		_playerLayer = value;
 		gameObject.layer = _playerLayer;
+		Debug.Log("Set playerLayer to => " + LayerMask.LayerToName(gameObject.layer));
 	}
 
 	[Command]
@@ -864,12 +866,10 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	protected virtual IEnumerator ActivateDash()
 	{
 		_isDashing = true;
-		_isInvul = true;
 		_invulTimer.Set(_dashDamagingTime);
 		_allowInput = false;
 		_parryTimer.Set(_parryTime);
 
-		_stunTimer.Add(_dashCopy.endingLag);
 
 		//_animator.SetTrigger("Dash_Start");
 		_networkAnimator.BroadCastTrigger("Dash_Start");
@@ -894,7 +894,10 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		//	_animator.ResetTrigger("Dash_End");
 		_characterData.SoundList["OnDashEnd"].Play(gameObject);
 
+		_stunTimer.Add(_dashCopy.endingLag);
 		yield return new WaitForSeconds(_dashCopy.endingLag);
+
+		_dashRechargeTimer.Set(_dashCopy.rechargeTime);
 		_isDashing = false;
 		_allowInput = true;
 
@@ -926,9 +929,9 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		//_airborneTimeout.Set(0);
 		IsGrounded = false;
 		if (timeForced == 0)
-			_forcedAirbornTimeout.Set(10000000);
+			_forcedAirborneTimeout.Set(10000000);
 		else
-			_forcedAirbornTimeout.Set(timeForced);
+			_forcedAirborneTimeout.Set(timeForced);
 	}
 
 

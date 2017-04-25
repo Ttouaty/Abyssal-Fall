@@ -27,6 +27,7 @@ public abstract class AGameRules : MonoBehaviour
 	public BoolRule CanPlayerRespawn			{ get { return RuleObject.CanPlayerRespawn; } }
 	public BoolRule CanFallenTilesRespawn		{ get { return RuleObject.CanFallenTilesRespawn; } }
 	public BoolRule ArenaAutoDestruction		{ get { return RuleObject.ArenaAutoDestruction; } }
+	public BoolRule RandomArena					{ get { return RuleObject.RandomArena; } }
 
 	protected int _autoDestroyedTileIndex = 0;
 
@@ -105,6 +106,7 @@ public abstract class AGameRules : MonoBehaviour
 			}
 			yield return new WaitWhile(() => MenuPauseManager.Instance.IsOpen);
 			yield return new WaitForSeconds(IntervalAutoDestruction - 0.5f);
+			yield return new WaitWhile(() => MenuPauseManager.Instance.IsOpen);
 		}
 	}
 

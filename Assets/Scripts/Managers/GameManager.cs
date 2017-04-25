@@ -102,6 +102,7 @@ public class GameManager : GenericSingleton<GameManager>
 			{
 				ServerManager.Instance.RegisteredPlayers[i].Score = 0;
 			}
+
 			MainManager.Instance.DYNAMIC_CONFIG.GetConfig(CurrentGameConfiguration.MapConfiguration, out LevelManager.Instance.CurrentMapConfig);
 
 			CurrentGameConfiguration.MapFileUsedIndex = UnityEngine.Random.Range(0, LevelManager.Instance.CurrentMapConfig.MapFiles.Length);
@@ -111,6 +112,12 @@ public class GameManager : GenericSingleton<GameManager>
 		else
 			Debug.LogWarning("StartGame(); called from client! This should not be allowed! Aborting");
 	}
+
+	public void RpcChangeCurrentMapFileUsedIndex(int newIndex)
+	{
+		CurrentGameConfiguration.MapFileUsedIndex = newIndex;
+	}
+
 
 	public void StartGameWithConfig(GameConfiguration newConfig, int[] customConfig)
 	{
