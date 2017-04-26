@@ -111,7 +111,11 @@ public abstract class ABaseProjectile : NetworkBehaviour, IPoolable
 	{
 		if (colli.GetComponent<IDamageable>() != null)
 		{
-			if(colli.gameObject.GetComponentInParent<NetworkIdentity>().netId != LauncherNetId)
+			if(colli.gameObject.GetComponentInParent<NetworkIdentity>() == null) //hit environnement
+			{
+				OnHitPlayer(colli.GetComponent<IDamageable>());
+			}
+			else if(colli.gameObject.GetComponentInParent<NetworkIdentity>().netId != LauncherNetId)
 			{
 				OnHitPlayer(colli.GetComponent<IDamageable>());
 				//RpcOnHitPlayer(colli.GetComponentInParent<PlayerController>().gameObject);
@@ -123,17 +127,6 @@ public abstract class ABaseProjectile : NetworkBehaviour, IPoolable
 			OnHitEnvironnement();
 		}
 	}
-
-	//[ClientRpc]
-	//public void RpcOnHitPlayer(GameObject target)
-	//{
-	//	OnHitPlayerClient(target);
-	//}
-
-	//public virtual void OnHitPlayerClient(GameObject target)
-	//{
-
-	//}
 
 	public virtual void OnHitPlayer(IDamageable damagedEntity)
 	{

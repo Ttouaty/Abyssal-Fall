@@ -466,6 +466,7 @@ public class ServerManager : NATTraversal.NetworkManager
 		ExternalPlayerNumber = 0;
 		HostingClient = null;
 		ResetRegisteredPlayers();
+		IsDebug = false;
 
 		if (NetworkServer.active)
 		{

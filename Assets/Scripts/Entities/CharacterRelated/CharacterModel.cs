@@ -166,12 +166,7 @@ public class CharacterModel : MonoBehaviour
 	{
 		if (newTexture == null)
 			return;
-		AmbientRampInUse = newTexture;
-
-		for (int i = 0; i < MaterialsInUse.Count; i++)
-		{
-			MaterialsInUse[i].SetTexture("_Ramp", newTexture);
-		}
+		SetAmbientRampForced(newTexture);
 	}
 
 	public void SetAmbientRampForced(Texture newTexture)

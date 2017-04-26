@@ -54,6 +54,9 @@ public class DialogBox : MonoBehaviour
 	private int _displayedTextOffset;
 	private bool skipMessage;
 	private int _characterSoundjump;
+
+	//dialogue.Substring(0, index) + "<color=#0000>"+dialogue.Substring(index)+"</color>"
+
 	private IEnumerator DisplayTextOverTime(Message message)
 	{
 		//ControlDiv.gameObject.SetActive(false);
@@ -64,6 +67,7 @@ public class DialogBox : MonoBehaviour
 
 		TextDiv.text = "";
 		string textToAdd = "";
+		string textAddedSoFar = "";
 		int nextIndexToWrite = 0;
 		int nextTextOffset = 0;
 		_messageProgressionIndex = 0;
@@ -74,6 +78,8 @@ public class DialogBox : MonoBehaviour
 		skipMessage = false;
 		tagMatches = Regex.Matches(message.TranslatedText, @"<(.*?)>");
 
+		string targetTagLessText = message.TaglessText;
+
 		yield return null;
 
 		while (_messageProgressionIndex < message.TranslatedText.Length)
@@ -83,10 +89,16 @@ public class DialogBox : MonoBehaviour
 			nextTextOffset = _displayedTextOffset;
 			textToAdd = FilterTag(message);
 
-			TextDiv.text = TextDiv.text.Insert(nextIndexToWrite - nextTextOffset, textToAdd);
+			textAddedSoFar = textAddedSoFar.Insert(nextIndexToWrite - nextTextOffset, textToAdd);
+
+			TextDiv.text = textAddedSoFar;
+
+			if(TextDiv.text.Length < targetTagLessText.Length)
+				TextDiv.text = TextDiv.text + "<color=#0000>"+ targetTagLessText.Substring(TextDiv.text.Length) + "</color>";
+
 			if (!skipMessage)
 			{
-				if(_characterSoundjump % 2 == 0)
+				if (_characterSoundjump % 2 == 0)
 					_typingSound.Play();
 
 				_characterSoundjump++;

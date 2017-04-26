@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 [Serializable]
 public class Message
@@ -16,6 +17,14 @@ public class Message
 	public bool IsSkippable = true;
 	[Tooltip("How fast the text is displayed (character per second)")]
 	public float TextSpeed = 30;
+
+	public string TaglessText
+	{
+		get
+		{
+			return Regex.Replace(TranslatedText, "<[^>]*>", ""); ;
+		}
+	}
 }
 
 public class MessageManager : GenericSingleton<MessageManager>

@@ -2,6 +2,7 @@
 using System.Collections;
 using System;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 
 [Serializable]
 public class TutorialSequence
@@ -29,12 +30,14 @@ public class TutorialManager : GenericSingleton<TutorialManager>
 	public override void Init()
 	{
 		Debug.Log("Le tutoriel est initialisé ici.");
+		SceneManager.SetActiveScene(gameObject.scene);
+
 		ServerManager.ResetRegisteredPlayers();
-		ServerManager.Instance.IsInLobby = true;
-		ServerManager.Instance.StartHostAll("AbyssalFall-Tutorial", 1);
+		ServerManager.Instance.IsDebug = true;
+		ServerManager.Instance.StartHostAll("AbyssalFall-Tutorial", 2);
 		CameraManager.Instance.Reset();
 		CameraManager.Instance.SetCenterPoint(_respawnPoint);
-		CameraManager.Instance.SetCamAngle(30, Vector3.right);
+		CameraManager.Instance.SetCamAngle(60, Vector3.right);
 	}
 
 	public void SpawnPlayer(int joyStick)
@@ -59,6 +62,15 @@ public class TutorialManager : GenericSingleton<TutorialManager>
 		//TempPlayer.Controller = TutorialCharacterInstance;
 		TutorialCharacterInstance.Init(Player.LocalPlayer.gameObject);
 		TutorialCharacterInstance.AddStun(1f);
+		TutorialCharacterInstance.RpcUnFreeze();
+
+		TutorialCharacter.GetComponentInChildren<CharacterModel>(true).SetAmbientRamp(GameManager.Instance.DefaultToonRamp);
+		TutorialCharacter.GetComponentInChildren<CharacterModel>(true).Reskin(0);
+
+
+		TutorialCharacterInstance._animator.SetTriggerAfterInit("WaitForEnter");
+		TutorialCharacterInstance._animator.SetTriggerAfterInit("Enter");
+		TutorialCharacterInstance.GetComponentInChildren<TrailRenderer>(true).Clear();
 	}
 
 	public void SetNewRespawnPoint(RespawnPoint newRespawn)
@@ -73,7 +85,7 @@ public class TutorialManager : GenericSingleton<TutorialManager>
 	public void OnplayerFall()
 	{
 		CancelInvoke("RespawnPlayer");
-
+		TutorialCharacterInstance._animator.SetTrigger("Death");
 		CameraManager.Instance.ClearTrackedTargets();
 
 		Invoke("RespawnPlayer", 1);
@@ -84,6 +96,9 @@ public class TutorialManager : GenericSingleton<TutorialManager>
 		TutorialCharacterInstance.transform.position = _respawnPoint.position;
 		TutorialCharacterInstance.Freeze();
 		TutorialCharacterInstance.UnFreeze();
+		TutorialCharacterInstance._animator.SetTriggerAfterInit("WaitForEnter");
+		TutorialCharacterInstance._animator.SetTriggerAfterInit("Enter");
+		TutorialCharacterInstance.GetComponentInChildren<TrailRenderer>(true).Clear();
 		CameraManager.Instance.AddTargetToTrack(TutorialCharacterInstance.transform);
 	}
 
@@ -110,7 +125,6 @@ public class TutorialManager : GenericSingleton<TutorialManager>
 	{
 		PlayerPrefs.SetInt("FTUEDone", 1);
 		PlayerPrefs.Save();
-		ServerManager.Instance.ResetNetwork();
 		StartCoroutine(ReopenMenu());
 	}
 
@@ -125,6 +139,7 @@ public class TutorialManager : GenericSingleton<TutorialManager>
 
 	IEnumerator DoigtDansLeCul()
 	{
+		ServerManager.Instance.ResetNetwork();
 		yield return LevelManager.Instance.OpenMenu(false, "Main");
 	}
 

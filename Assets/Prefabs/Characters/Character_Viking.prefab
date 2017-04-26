@@ -127,7 +127,6 @@ MonoBehaviour:
   _playerRef: {fileID: 0}
   Spawn: {fileID: 0}
   _animator: {fileID: 0}
-  _isDead: 0
   IsGrounded: 0
   _isInDebugMode: 0
   _characterProp: {fileID: 0}
@@ -146,6 +145,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d2ae97db3f2bfb498d69a02d0afb60a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HasCheckedForColli: 0
 --- !u!136 &13641748
 CapsuleCollider:
   m_ObjectHideFlags: 1
@@ -1592,8 +1592,12 @@ MonoBehaviour:
     - {fileID: 2100000, guid: efaac75a0e437e648b9c1d578b2d59b0, type: 2}
     - {fileID: 2100000, guid: 69a43d5b436f1d44cb94e20f29276b25, type: 2}
     - {fileID: 2100000, guid: 8274517f1726ba44d9c4d08a04a4727c, type: 2}
-  MaterialsInUse: []
-  AmbientRampInUse: {fileID: 0}
+  MaterialsInUse:
+  - {fileID: 2100000, guid: 004e59ff9638e4246bc7156b4fda1887, type: 2}
+  - {fileID: 2100000, guid: 40f765708a94d104fbf816a7bedca6b7, type: 2}
+  - {fileID: 2100000, guid: dab3211458b193146862899c4b32bebf, type: 2}
+  - {fileID: 2100000, guid: 8db85627fc5bb104fb5503bf3b3c9dcc, type: 2}
+  AmbientRampInUse: {fileID: 2800000, guid: e1a726d5f34ea3e4892acbde770025c3, type: 3}
   SkinEffectObjects: []
 --- !u!114 &114000011217356138
 MonoBehaviour:

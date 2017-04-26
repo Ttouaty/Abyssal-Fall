@@ -13,7 +13,7 @@ public class Tile : MonoBehaviour, IPoolable
 	private Rigidbody       _rigidB;
 	private MeshRenderer    _renderer;
 	private Color			_defaultColor;
-	private Vector3			_initialPoisition;
+	private Vector3			_initialPosition;
 	[HideInInspector]
 	public Obstacle			Obstacle;
 	[HideInInspector]
@@ -32,8 +32,11 @@ public class Tile : MonoBehaviour, IPoolable
 	{
 		_rigidB         = GetComponent<Rigidbody>();
 		_renderer       = GetComponentInChildren<MeshRenderer>();
-		_defaultColor = _renderer.material.color;
+		_defaultColor   = _renderer.material.color;
 		_timeLeftSave   = _timeLeft;
+
+		if (_initialPosition.magnitude == 0)
+			Place(transform.localPosition);
 	}
 
 	void Update ()
@@ -107,7 +110,7 @@ public class Tile : MonoBehaviour, IPoolable
 
 		while (timer > 0.0f)
 		{
-			transform.localPosition = Vector3.Lerp(initialPosition, _initialPoisition, 1.0f - timer);
+			transform.localPosition = Vector3.Lerp(initialPosition, _initialPosition, 1.0f - timer);
 			transform.rotation = Quaternion.Lerp(initialRotation, Quaternion.identity, 1.0f - timer);
 			timer -= TimeManager.DeltaTime;
 			yield return null;
@@ -120,9 +123,10 @@ public class Tile : MonoBehaviour, IPoolable
 		_canFall = true;
 		_isTouched = false;
 		_timeLeft = _timeLeftSave;
-		transform.localPosition = _initialPoisition;
+		transform.localPosition = _initialPosition;
 		StopAllCoroutines();
-		ArenaManager.Instance.ResetTile(this);
+		if(ArenaManager.Instance != null)
+			ArenaManager.Instance.ResetTile(this);
 	}
 
 	public void ActivateFall()
@@ -144,7 +148,7 @@ public class Tile : MonoBehaviour, IPoolable
 	public void Place(Vector3 newLocalPos)
 	{
 		transform.localPosition = newLocalPos;
-	   _initialPoisition = transform.localPosition;
+	   _initialPosition = transform.localPosition;
 	}
 
 	public void MakeFall()
