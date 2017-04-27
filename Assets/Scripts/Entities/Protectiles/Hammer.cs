@@ -4,6 +4,8 @@ using UnityEngine.Networking;
 
 public class Hammer : ABaseProjectile
 {
+	public Material[] TrailMaterials;
+
 	public ParticleSystem ImpactParticle;
 	public override void Launch(Vector3 Position, Vector3 Direction, DamageData Shooter, NetworkInstanceId instanceId)
 	{
@@ -14,8 +16,7 @@ public class Hammer : ABaseProjectile
 	{
 		base.OnLaunch(launcher);
 		GetComponentInChildren<MeshRenderer>().material = launcher.GetComponent<PlayerController>()._characterProp.PropRenderer.material;
-
-		GetComponentInChildren<TrailRenderer>().material = launcher.GetComponentInChildren<CharacterModel>().MaterialsInUse[2];
+		GetComponentInChildren<TrailRenderer>().material = TrailMaterials[launcher.GetComponent<PlayerController>()._playerRef.SkinNumber];
 	}
 
 	public override void OnHitPlayer(IDamageable damagedEntity)
@@ -26,6 +27,7 @@ public class Hammer : ABaseProjectile
 
 	public override void OnHitEnvironnement()
 	{
+		CameraManager.Shake(ShakeStrength.Low);
 		base.OnHitEnvironnement();
 	}
 

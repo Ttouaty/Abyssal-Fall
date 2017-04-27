@@ -48,6 +48,12 @@ public class AnimationToolkit : MonoBehaviour
 		CameraManager.Shake(force);
 	}
 
+
+	public void CameraShake(int force)
+	{
+		CameraManager.Shake(force);
+	}
+
 	public void ActivateParticle(string particleSystemName)
 	{
 		particleSystemName = particleSystemName.ToLower();

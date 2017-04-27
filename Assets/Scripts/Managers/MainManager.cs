@@ -114,7 +114,19 @@ public class MainManager : GenericSingleton<MainManager>
 				MessageManager.Log("No Local Player can't toggle noclip");
 		}
 
-		if(Input.GetKeyDown(KeyCode.F8))
+		if (Input.GetKeyDown(KeyCode.Keypad1))
+			CameraManager.Shake(ShakeStrength.Low);
+
+		if (Input.GetKeyDown(KeyCode.Keypad2))
+			CameraManager.Shake(ShakeStrength.Medium);
+
+		if (Input.GetKeyDown(KeyCode.Keypad3))
+			CameraManager.Shake(ShakeStrength.High);
+
+		if (Input.GetKeyDown(KeyCode.Keypad4))
+			CameraManager.Shake(ShakeStrength.Veryhigh);
+
+		if (Input.GetKeyDown(KeyCode.F8))
 			Cursor.visible = !Cursor.visible;
 	}
 }

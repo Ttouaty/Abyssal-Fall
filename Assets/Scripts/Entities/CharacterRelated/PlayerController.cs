@@ -171,6 +171,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	protected RaycastHit _hit;
 	protected AnimationToolkit _animToolkit;
 	protected GroundCheck _groundCheck;
+	protected ParticleSystem _RespawnFlash;
 	#endregion
 	protected Vector3 _activeSpeed = Vector3.zero; // Activespeed est un vecteur qui est appliqué a chaque frame au rigibody.velocity => permet de modifier librement la vitesse du player.
 
@@ -326,8 +327,19 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 				playerMesh.SetAmbientRamp(ArenaManager.Instance.CurrentArenaConfig.AmbientRamp);
 		}
 
+
+		_animToolkit = GetComponentInChildren<AnimationToolkit>();
+
 		_characterProp = transform.GetComponentInChildren<CharacterProp>();
-		_characterProp.PropRespawnParticles = GetComponentInChildren<AnimationToolkit>().GetParticleSystem("repop");
+		_characterProp.PropRespawnParticles = _animToolkit.GetParticleSystem("repop");
+
+		_RespawnFlash = _animToolkit.GetParticleSystem("death flash");
+		ParticleSystem[] tempParticles = _RespawnFlash.GetComponentsInChildren<ParticleSystem>();
+
+		for (int i = 0; i < tempParticles.Length; i++)
+		{
+			tempParticles[i].startColor = _playerRef.PlayerColor;
+		}
 
 		_animator = playerMesh.GetComponentInChildren<Animator>();
 		_networkAnimator = GetComponent<NetworkAnimator>();
@@ -352,7 +364,6 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_stunTimer = new TimeCooldown(this);
 		_FEMref = playerMesh.GetComponent<CharacterModel>().FEMref;
 		CmdSetExpression(_FEMref.DefaultExpression);
-		_animToolkit = GetComponentInChildren<AnimationToolkit>();
 
 		_stunTimer.onFinish = () => { _isStunned = false; _allowInput = true; /*CmdSetExpression(_FEMref.DefaultExpression);*/ };
 		_stunTimer.onProgress = () =>
@@ -782,6 +793,8 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_networkAnimator.BroadCastTrigger("WaitForEnter");
 		_networkAnimator.BroadCastTrigger("Enter");
 
+		_RespawnFlash.Clear();
+		_RespawnFlash.Play();
 		//if (NetworkServer.active)
 		//	_animator.ResetTrigger("Reset");
 	}
@@ -813,7 +826,6 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 		if (direction.magnitude > 15)
 		{
-			Debug.Log("strong push detected");
 			CameraManager.Shake(ShakeStrength.Medium);
 		}
 		else

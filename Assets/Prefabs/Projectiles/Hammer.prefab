@@ -60,7 +60,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 143516}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 21.373062, y: 2.37, z: -163.06784}
+  m_LocalPosition: {x: -3.85, y: 1.66, z: -163.06784}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
@@ -148,7 +148,7 @@ TrailRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 9d68ba60932076b4bb96d199d89d2bac, type: 2}
+  - {fileID: 2100000, guid: dab3211458b193146862899c4b32bebf, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_ProbeAnchor: {fileID: 0}
@@ -197,6 +197,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speed: 20
+  TrailMaterials:
+  - {fileID: 2100000, guid: dab3211458b193146862899c4b32bebf, type: 2}
+  - {fileID: 2100000, guid: 168f57488b3de7f4c8d0df5f70b0a34e, type: 2}
+  - {fileID: 2100000, guid: 463b98adda7dad14ea7840ad28545f37, type: 2}
+  - {fileID: 2100000, guid: 2278d08df53fdd840bc7f0746407b9ec, type: 2}
   ImpactParticle: {fileID: 198000014058070818, guid: ee786487dc88a27478f434655ddd03a6,
     type: 2}
 --- !u!114 &11469670

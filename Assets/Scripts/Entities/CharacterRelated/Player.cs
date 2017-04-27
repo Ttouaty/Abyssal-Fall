@@ -341,4 +341,10 @@ public class Player : NetworkBehaviour
 		GroundCheck.noclip = !GroundCheck.noclip;
 		MessageManager.Log("Toggled Noclip to => "+ GroundCheck.noclip);
 	}
+
+	[ClientRpc]
+	public void RpcShakeCam(ShakeStrength force)
+	{
+		CameraManager.Shake(force);
+	}
 }

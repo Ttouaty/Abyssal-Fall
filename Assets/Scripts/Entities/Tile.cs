@@ -61,6 +61,7 @@ public class Tile : MonoBehaviour, IPoolable
 		TimeManager.Instance.OnPause.RemoveListener(OnPause);
 		TimeManager.Instance.OnResume.RemoveListener(OnResume);
 		_rigidB.isKinematic = true;
+		GetComponent<Collider>().isTrigger = false;
 		StopAllCoroutines();
 		gameObject.SetActive(false);
 	}
@@ -124,6 +125,7 @@ public class Tile : MonoBehaviour, IPoolable
 		_isTouched = false;
 		_timeLeft = _timeLeftSave;
 		transform.localPosition = _initialPosition;
+		GetComponent<Collider>().isTrigger = false;
 		StopAllCoroutines();
 		if(ArenaManager.Instance != null)
 			ArenaManager.Instance.ResetTile(this);
@@ -153,6 +155,7 @@ public class Tile : MonoBehaviour, IPoolable
 
 	public void MakeFall()
 	{
+		GetComponent<Collider>().isTrigger = true;
 		_isTouched = true;
 		StartCoroutine(ActivateFall_Implementation());
 	}

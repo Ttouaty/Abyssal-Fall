@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using UnityEngine.Events;
+using System;
 
 public enum ShakeStrength
 {
@@ -137,14 +138,19 @@ public class CameraManager : GenericSingleton<CameraManager>
 
 	private void ProcessScreenShake()
 	{
+		transform.localRotation = Quaternion.identity;
 		if (_shakeTimeLeft > 0)
 		{
-			Vector3 ShakeVector = Random.insideUnitSphere * (int)_activeShakeStrength;
-			ShakeVector *= 0.05f;
+			Vector3 ShakeVector = UnityEngine.Random.insideUnitCircle * (int)_activeShakeStrength;
+			ShakeVector = transform.rotation * ShakeVector;
+			ShakeVector *= 0.03f;
 			transform.localPosition += ShakeVector;
+			transform.localRotation = Quaternion.Euler(10 * ShakeVector.x, 10 * ShakeVector.y, 5 * ShakeVector.x); // small rotation for juiciness (may remove later :p )
+
 
 			_shakeTimeLeft = Mathf.Clamp(_shakeTimeLeft - Time.deltaTime, 0, 10); // Screenshake Capped at 10 secs (stupid long)
 		}
+
 	}
 
 
@@ -303,14 +309,18 @@ public class CameraManager : GenericSingleton<CameraManager>
 
 	public static void Shake(ShakeStrength force)
 	{
-		Shake(force, ((int)force) * 0.01f);
+		Shake(force, 0.05f);
 	}
 
-	/// <summary>
-	/// Use of regular Shake(ShakeStrengh) is Suggested (time is calculated automatically)
-	/// </summary>
+	public static void Shake(int force)
+	{
+		Shake((ShakeStrength) ((ShakeStrength[])Enum.GetValues(typeof(ShakeStrength)))[force], 0.05f);
+	}
+
 	public static void Shake(ShakeStrength force, float customTime)
 	{
+		if (force == 0)
+			return;
 		_instance._shakeTimeLeft = customTime;
 		_instance._activeShakeStrength = force;
 	}
