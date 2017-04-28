@@ -23,6 +23,8 @@ public class ModeConfiguration_SO : ScriptableObject
 	public BoolRule CanPlayerRespawn;
 	public BoolRule ArenaAutoDestruction;
 	public BoolRule RandomArena;
+	public BoolRule AreTilesFrozen;
+
 	//Defined in the gameObject
 	//public List<GameObject> RespawnZones = new List<GameObject>();
 

@@ -26,6 +26,7 @@ public abstract class AGameRules : MonoBehaviour
 
 	public BoolRule CanPlayerRespawn			{ get { return RuleObject.CanPlayerRespawn; } }
 	public BoolRule CanFallenTilesRespawn		{ get { return RuleObject.CanFallenTilesRespawn; } }
+	public BoolRule AreTilesFrozen				{ get { return RuleObject.AreTilesFrozen; } }
 	public BoolRule ArenaAutoDestruction		{ get { return RuleObject.ArenaAutoDestruction; } }
 	public BoolRule RandomArena					{ get { return RuleObject.RandomArena; } }
 

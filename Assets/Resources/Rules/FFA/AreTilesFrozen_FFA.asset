@@ -8,18 +8,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 254f158f9cbcb3a4188036378265ee3c, type: 3}
-  m_Name: MatchDurationRule_DM
+  m_Script: {fileID: 11500000, guid: 5db81f9c3fc6387479700c450b32bdd6, type: 3}
+  m_Name: AreTilesFrozen_FFA
   m_EditorClassIdentifier: 
   Values:
-  - 30
-  - 60
-  - 90
-  - 120
-  - 240
-  - 320
-  _valueIndex: 3
-  _defaultValue: 3
-  Label: How long does a match takes?
+  - false
+  - true
+  _valueIndex: 0
+  _defaultValue: 0
+  Label: Freeze Tiles  ?
   UserCanModify: 1
   ParentRules: []

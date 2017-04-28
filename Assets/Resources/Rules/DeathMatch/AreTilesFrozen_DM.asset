@@ -8,17 +8,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 254f158f9cbcb3a4188036378265ee3c, type: 3}
-  m_Name: TileRegerationTimeRule_DM
+  m_Script: {fileID: 11500000, guid: 5db81f9c3fc6387479700c450b32bdd6, type: 3}
+  m_Name: AreTilesFrozen_DM
   m_EditorClassIdentifier: 
   Values:
-  - 3
-  - 5
-  - 10
+  - false
+  - true
   _valueIndex: 1
-  _defaultValue: 1
-  Label: Time for a block to come back
+  _defaultValue: 0
+  Label: Freeze Tiles  ?
   UserCanModify: 1
-  ParentRules:
-  - Rule: {fileID: 11400000, guid: 0671d32f6cb3e3c478628dbab1aaed23, type: 2}
-    TargetValue: 0

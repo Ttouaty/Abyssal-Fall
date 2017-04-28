@@ -19,16 +19,16 @@ public class OptionSelector : MonoBehaviour
 	public Transform ButtonContainer;
 	public int ButtonScrollMargin = 3;
 
-	private Vector3			_nextButtonPosition = Vector3.zero;
+	//private Vector3			_nextButtonPosition = Vector3.zero;
 	private AGameRules		_targetRuleSet;
 
 	private int _selectedFieldIndex;
+	private int _selectedChildIndex;
 	private BaseOptionField _selectedField;
 	private List<BaseOptionField> _allFields = new List<BaseOptionField>();
-
 	void Update()
 	{
-		int Yoffset = Mathf.Clamp(_selectedFieldIndex, ButtonScrollMargin, ((ButtonScrollMargin * 2) > _allFields.Count ? ButtonScrollMargin : (_allFields.Count - ButtonScrollMargin))) - ButtonScrollMargin;
+		int Yoffset = Mathf.Clamp(_selectedChildIndex, ButtonScrollMargin, ((ButtonScrollMargin * 2) > _allFields.Count ? ButtonScrollMargin : (_allFields.Count - ButtonScrollMargin))) - ButtonScrollMargin;
 
 		ButtonContainer.transform.localPosition = Vector3.Lerp(ButtonContainer.transform.localPosition, 
 																new Vector3(0, Yoffset * BoolOptionPrefab.GetComponent<RectTransform>().sizeDelta.y), 
@@ -39,6 +39,7 @@ public class OptionSelector : MonoBehaviour
 	{
 		DynamicConfig.Instance.GetConfig(GameManager.Instance.CurrentGameConfiguration.ModeConfiguration, out _targetRuleSet);
 		BaseOptionField.TargetRuleSet = _targetRuleSet;
+		_selectedChildIndex = 0;
 		GenerateOptionFields();
 	}
 
@@ -46,7 +47,7 @@ public class OptionSelector : MonoBehaviour
 	{
 		ButtonContainer.DestroyAllChildren();
 		_allFields.Clear();
-		_nextButtonPosition.y = 0;
+		//_nextButtonPosition.y = 0;
 
 		foreach (var prop in _targetRuleSet.RuleObject.GetType().GetFields())
 		{
@@ -70,7 +71,24 @@ public class OptionSelector : MonoBehaviour
 			}
 		}
 
-		SelectField(_allFields[0]);
+		SortFields();
+		UpdateRuleCanBeDisplayed();
+		SelectFirst();
+	}
+
+	public void SortFields()
+	{
+		List<BaseOptionField> children = new List<BaseOptionField>();
+		foreach (Transform child in ButtonContainer) { children.Add(child.GetComponentInChildren<BaseOptionField>(true)); }
+
+		children.Sort((BaseOptionField a, BaseOptionField b) => {
+			return a.GetTargetRule().ParentRules.Length - b.GetTargetRule().ParentRules.Length;
+		});
+
+		for (int i = 0; i < children.Count; i++)
+		{
+			children[i].transform.SetSiblingIndex(i);
+		}
 	}
 
 	public void CreateOptionIntField(string ruleName)
@@ -95,15 +113,36 @@ public class OptionSelector : MonoBehaviour
 	{
 		GameObject newFieldGO = (GameObject)Instantiate(newField, ButtonContainer, false);
 		_allFields.Add(newFieldGO.GetComponent<BaseOptionField>());
-		newFieldGO.transform.localPosition = _nextButtonPosition;
+		//newFieldGO.transform.localPosition = _nextButtonPosition;
 
-		_nextButtonPosition.y -= newFieldGO.GetComponent<RectTransform>().sizeDelta.y;
+		//_nextButtonPosition.y -= newFieldGO.GetComponent<RectTransform>().sizeDelta.y;
 
 		return newFieldGO;
 	}
 
-	public void SelectNext() { SelectField(_allFields[(_allFields.IndexOf(_selectedField) + 1).LoopAround(0, _allFields.Count - 1)]); }
-	public void SelectPrevious() { SelectField(_allFields[(_allFields.IndexOf(_selectedField) - 1).LoopAround(0, _allFields.Count - 1)]); }
+	public void SelectFirst()
+	{
+		_selectedChildIndex = -1;
+		SelectField(GetActiveChild(1));
+	}
+	public void SelectNext() { SelectField(GetActiveChild(1)); }
+	public void SelectPrevious() { SelectField(GetActiveChild(-1)); }
+
+	private BaseOptionField GetActiveChild(int direction = 1)
+	{
+		for (int i = 0; i < ButtonContainer.childCount; i++)
+		{
+			_selectedChildIndex = (_selectedChildIndex + direction).LoopAround(0, ButtonContainer.childCount - 1);
+			if (ButtonContainer.GetChild(_selectedChildIndex).gameObject.activeInHierarchy)
+			{
+				return ButtonContainer.GetChild(_selectedChildIndex).GetComponentInChildren<BaseOptionField>();
+			}
+		}
+
+
+		Debug.LogError("No active Option field found to select");
+		return ButtonContainer.GetChild(0).GetComponentInChildren<BaseOptionField>(true);
+	}
 
 	public void IncreaseRule()
 	{
@@ -111,6 +150,8 @@ public class OptionSelector : MonoBehaviour
 		{
 			_selectedField.GetTargetRule().SetToNextValue();
 			_selectedField.OnIncrease();
+
+			UpdateRuleCanBeDisplayed();
 		}
 	}
 
@@ -120,6 +161,16 @@ public class OptionSelector : MonoBehaviour
 		{
 			_selectedField.GetTargetRule().SetToPreviousValue();
 			_selectedField.OnDecrease();
+
+			UpdateRuleCanBeDisplayed();
+		}
+	}
+
+	private void UpdateRuleCanBeDisplayed()
+	{
+		for (int i = 0; i < _allFields.Count; i++)
+		{
+			_allFields[i].gameObject.SetActive(_allFields[i].GetTargetRule().CanBeDisplayed);
 		}
 	}
 

@@ -2,6 +2,13 @@
 using System.Collections;
 using System;
 
+[Serializable]
+public struct RuleValuePair
+{
+	public BoolRule Rule;
+	public bool TargetValue;
+}
+
 public class BaseRule : ScriptableObject
 {
 	[SerializeField]
@@ -15,6 +22,22 @@ public class BaseRule : ScriptableObject
 	public string Label; // will be used with key translation
 	public bool UserCanModify = true; // is the rule displayed in optionSelector
 
+
+	public RuleValuePair[] ParentRules;
+
+	public bool CanBeDisplayed
+	{
+		get
+		{
+			for (int i = 0; i < ParentRules.Length; i++)
+			{
+				if (ParentRules[i].Rule != ParentRules[i].TargetValue || !ParentRules[i].Rule.CanBeDisplayed)
+					return false; // If any ParentRule is not right return false;
+			}
+
+			return true;
+		}
+	}
 
 	protected void OnEnable() { _valueIndex = _defaultValue; }
 	public virtual string Value
