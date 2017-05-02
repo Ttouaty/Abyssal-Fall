@@ -113,17 +113,17 @@ RectTransform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 11355788}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 573759435}
   m_RootOrder: 0
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -80, y: -10}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: 0, y: 56.222397}
+  m_SizeDelta: {x: 400, y: 102.44476}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &11355790
 MonoBehaviour:
@@ -4541,6 +4541,7 @@ GameObject:
   - 225: {fileID: 287182262}
   - 222: {fileID: 287182261}
   - 114: {fileID: 287182259}
+  - 95: {fileID: 287182260}
   m_Layer: 5
   m_Name: Dialog Box
   m_TagString: Untagged
@@ -4582,6 +4583,23 @@ MonoBehaviour:
   TextDiv: {fileID: 11355790}
   _typingSound:
     FmodEvent: event:/Sfx/Menu/Typing
+--- !u!95 &287182260
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 287182257}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: d674a1e1b89ab6b499dbeda17bbf1b18, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!222 &287182261
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -7422,17 +7440,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 573759434}
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
       - m_Target: {fileID: 1146996328}
         m_MethodName: SetActive
         m_Mode: 6
@@ -8993,7 +9000,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &573759435
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9013,7 +9020,7 @@ RectTransform:
   m_AnchorMax: {x: 0.8, y: 0.3}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &573759436
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14404,7 +14411,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 941801210}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 120.73, y: 1.7, z: 19.89}
+  m_LocalPosition: {x: 121.87, y: 1.7, z: 19.89}
   m_LocalScale: {x: 12.834658, y: 2.1646059, z: 2.1646059}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []

@@ -113,9 +113,6 @@ public class OptionSelector : MonoBehaviour
 	{
 		GameObject newFieldGO = (GameObject)Instantiate(newField, ButtonContainer, false);
 		_allFields.Add(newFieldGO.GetComponent<BaseOptionField>());
-		//newFieldGO.transform.localPosition = _nextButtonPosition;
-
-		//_nextButtonPosition.y -= newFieldGO.GetComponent<RectTransform>().sizeDelta.y;
 
 		return newFieldGO;
 	}

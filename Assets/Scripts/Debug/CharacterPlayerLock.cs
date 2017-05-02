@@ -27,15 +27,17 @@ public class CharacterPlayerLock : MonoBehaviour
 				continue;
 
 			int tempPlayerListLength = Player.PlayerList.Length;
-			ServerManager.Instance.TryToAddPlayer();
-			yield return new WaitUntil(() => Player.PlayerList.Length > tempPlayerListLength);
+
+			if (i != 0)
+			{
+				ServerManager.Instance.TryToAddPlayer();
+				yield return new WaitUntil(() => Player.PlayerList.Length > tempPlayerListLength);
+			}
+
 			tempPlayer = Player.PlayerList[0];
-			//tempPlayer = Instantiate(playerPrefab.gameObject).GetComponent<Player>();
-			//tempPlayer.SkinNumber = 0;
+
 			tempPlayer.JoystickNumber = JoystickListening[i];
-			//ClientScene.AddPlayer(tempClient.connection, (short)i, );
-			//NetworkServer.AddPlayerForConnection(tempClient.connection, tempPlayer.gameObject, (short)i);
-			//NetworkServer.Spawn(tempPlayer.gameObject);
+
 			NetworkServer.SpawnWithClientAuthority(Characters[i].gameObject, tempPlayer.gameObject);
 			Characters[i]._isInDebugMode = true;
 			Characters[i].gameObject.SetActive(true);

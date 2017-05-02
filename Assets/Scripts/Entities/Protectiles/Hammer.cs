@@ -7,8 +7,10 @@ public class Hammer : ABaseProjectile
 	public Material[] TrailMaterials;
 
 	public ParticleSystem ImpactParticle;
+	public ParticleSystem ImpactWallParticle;
 	public override void Launch(Vector3 Position, Vector3 Direction, DamageData Shooter, NetworkInstanceId instanceId)
 	{
+		_maxLifeSpan = 2;
 		base.Launch(Position, Direction, Shooter, instanceId);
 	}
 
@@ -27,6 +29,7 @@ public class Hammer : ABaseProjectile
 
 	public override void OnHitEnvironnement()
 	{
+		Destroy(Instantiate(ImpactWallParticle.gameObject, transform.position, Quaternion.identity) as GameObject, ImpactParticle.startLifetime + ImpactParticle.duration);
 		CameraManager.Shake(ShakeStrength.Low);
 		base.OnHitEnvironnement();
 	}
@@ -38,7 +41,7 @@ public class Hammer : ABaseProjectile
 
 	protected override void OnStop()
 	{
-		Destroy(Instantiate(ImpactParticle.gameObject, transform.position, Quaternion.identity) as GameObject, ImpactParticle.startLifetime + ImpactParticle.duration);
+		//Destroy(Instantiate(ImpactParticle.gameObject, transform.position, Quaternion.identity) as GameObject, ImpactParticle.startLifetime + ImpactParticle.duration);
 		base.OnStop();
 	}
 }

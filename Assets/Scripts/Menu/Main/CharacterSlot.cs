@@ -30,6 +30,8 @@ public class CharacterSlot : MonoBehaviour
 	[Space]
 	public UnityEvent OnSlotOpen;
 	public UnityEvent OnSlotClose;
+	public UnityEvent OnCharacterSelect;
+	public UnityEvent OnCharacterChangeSkin;
 
 	private bool _canSwitchCharacter = true;
 	private float _switchCharacterDelay = 0.15f;
@@ -97,7 +99,10 @@ public class CharacterSlot : MonoBehaviour
 		//if (InputManager.GetButtonDown(InputEnum.X, _playerRef.JoystickNumber))
 		//	_wheelRef.CmdChangeCharacterSkin((_wheelRef._selectedSkinIndex - 1).LoopAround(0, _availableCharacters[_wheelRef._selectedElementIndex]._characterData.NumberOfSkins -1));
 		if (InputManager.GetButtonDown(InputEnum.Y, _playerRef.JoystickNumber))
+		{
+			OnCharacterChangeSkin.Invoke();
 			_wheelRef.CmdChangeCharacterSkin((_wheelRef._selectedSkinIndex + 1).LoopAround(0, _availableCharacters[_wheelRef._selectedElementIndex]._characterData.NumberOfSkins -1));
+		}
 
 		if (InputManager.GetButtonDown(InputEnum.A, _playerRef.JoystickNumber))
 			SelectCharacter();
@@ -107,6 +112,8 @@ public class CharacterSlot : MonoBehaviour
 	public void SelectPedestal(bool ready)
 	{
 		TargetPedestal.SetSelect(ready);
+		if (ready)
+			OnCharacterSelect.Invoke();
 	}
 
 	void SelectCharacter()

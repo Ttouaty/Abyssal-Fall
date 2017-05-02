@@ -16,6 +16,12 @@ public class DialogBox : MonoBehaviour
 	[SerializeField]
 	private FmodOneShotSound _typingSound;
 
+	void Awake()
+	{
+		TextDiv.transform.parent.localScale = Vector3.zero;
+		TextDiv.transform.parent.gameObject.SetActive(false);
+	}
+
 	public IEnumerator LaunchDialog(Message[] messagesSequence)
 	{
 		Restart();
@@ -34,6 +40,10 @@ public class DialogBox : MonoBehaviour
 
 	private IEnumerator DialogCoroutine()
 	{
+		GetComponentInChildren<Animator>().SetTriggerAfterInit("Open");
+		yield return new WaitWhile(() => WaitForEnter);
+
+		TextDiv.transform.parent.localScale = Vector3.one;
 		while (_activeSequenceIndex < _activeMessageSequence.Length)
 		{
 			yield return StartCoroutine(DisplayTextOverTime(_activeMessageSequence[_activeSequenceIndex]));
@@ -46,6 +56,9 @@ public class DialogBox : MonoBehaviour
 			_activeSequenceIndex++;
 			_advance = false;
 		}
+
+		GetComponentInChildren<Animator>().SetTriggerAfterInit("Close");
+		yield return new WaitWhile(() => WaitForClose);
 	}
 
 
@@ -212,6 +225,15 @@ public class DialogBox : MonoBehaviour
 			Debug.LogError("NO TEXT LINKED TO THE TEXTDIV => "+gameObject.name);
 
 		gameObject.SetActive(true);
+
+		TextDiv.text = "";
+		TextDiv.transform.parent.localScale = Vector3.zero;
+		TextDiv.transform.parent.gameObject.SetActive(true);
+
+
+		WaitForEnter = true;
+		WaitForClose = true;
+
 		DeactivateControls();
 		_activeSequenceIndex = 0;
 
@@ -230,5 +252,23 @@ public class DialogBox : MonoBehaviour
 	{
 		ControlDiv.GetComponent<CanvasGroup>().alpha = 0.1f;
 		ControlDiv.GetComponent<InputListener>().enabled = false;
+	}
+
+	bool WaitForEnter = true;
+	bool WaitForClose = true;
+
+	IEnumerator OnFinishedOpeningCo()
+	{
+		WaitForEnter = false;
+		yield return null;
+		WaitForEnter = true;
+		yield return null;
+	}
+
+	IEnumerator OnFinishedClosingCo()
+	{
+		WaitForClose = false;
+		yield return null;
+		WaitForClose = true;
 	}
 }

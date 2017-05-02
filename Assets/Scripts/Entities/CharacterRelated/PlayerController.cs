@@ -197,7 +197,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	protected Dash _dashCopy;
 	[SyncVar]
 	protected bool _dashing = false;
-	protected float _dashDamagingTime = 0.3f;
+	protected float _dashDamagingTime = 0.5f;
 
 	protected bool _isDealingDamage
 	{
@@ -813,6 +813,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	{
 		if (_isLocalPlayer)
 		{
+			_forcedAirborneTimeout.Add(((direction.y / _acceleration.y) / 9.81f) * 0.7f);
 			Eject(direction);
 
 			if (newStunTime > 0)

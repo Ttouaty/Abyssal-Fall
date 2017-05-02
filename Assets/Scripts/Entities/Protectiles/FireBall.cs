@@ -85,7 +85,6 @@ public class FireBall : ABaseProjectile
 		exploParticles.Play();
 		Destroy(exploParticles.gameObject, exploParticles.startLifetime + exploParticles.duration);
 
-
 		if(NetworkServer.active)
 		{
 			Collider[] foundElements = Physics.OverlapSphere(transform.position, _explosionRadius);
