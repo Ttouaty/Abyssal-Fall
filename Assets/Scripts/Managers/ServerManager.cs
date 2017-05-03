@@ -535,8 +535,8 @@ public class ServerManager : NATTraversal.NetworkManager
 		{
 			if(matchList.Count != 0)
 			{
-				StartClientAll(matchList[0]);
 				StartCoroutine(MatchListTimeOut());
+				StartClientAll(matchList[0]);
 			}
 			else
 				FindObjectOfType<ConnectionModule>().OnFailedConnection.Invoke("Failed to find target game. (No Match found)");

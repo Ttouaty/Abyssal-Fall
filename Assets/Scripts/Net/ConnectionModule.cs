@@ -12,9 +12,13 @@ public class ConnectionModule : MonoBehaviour
 	public UnityEventString OnFailedConnection;
 	public UnityEventString OnSuccess;
 
+	[HideInInspector]
+	public bool IsConnecting = false;
+
 	void Start()
 	{
 		OnSuccess.AddListener(OnSuccessCallBack);
+		OnFailedConnection.AddListener(OnFailedConnectionCallBack);
 	}
 
 	public void Connect()
@@ -32,12 +36,13 @@ public class ConnectionModule : MonoBehaviour
 	public void Connect(string Code)
 	{
 		Debug.Log("looking for games with gameType: AbyssalFall-" + Code.ToLower());
-
+		IsConnecting = true;
 		ServerManager.Instance.ConnectToMatch(Code.ToLower());
 	}
 
 	void OnSuccessCallBack(string Code)
 	{
+		IsConnecting = false;
 		MenuManager.Instance.GetComponentInChildren<TextIP>(true).SetText(Code.ToLower());
 		MainManager.Instance.GetComponent<MonoBehaviour>().StartCoroutine(ShowCharacterSelectCoroutine());
 	}
@@ -46,6 +51,11 @@ public class ConnectionModule : MonoBehaviour
 	{
 		yield return new WaitUntil(() => Player.LocalPlayer != null);
 		MenuPanelNew.PanelRefs["CharacterSelect"].Open();
+	}
+
+	void OnFailedConnectionCallBack(string Code)
+	{
+		IsConnecting = false;
 	}
 
 	void OnFailedToConnect(NetworkConnectionError error)
