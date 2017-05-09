@@ -60,11 +60,36 @@ public class AnimationToolkit : MonoBehaviour
 		if (_availableParticleSystems.ContainsKey(particleSystemName))
 			_availableParticleSystems[particleSystemName].Play();
 		else
-			Debug.LogError("ParticleSystemName => \""+ particleSystemName+"\" was not found in object => "+gameObject.name);
+			Debug.LogError("ParticleSystemName => \"" + particleSystemName + "\" was not found in object => " + gameObject.name);
+	}
+
+	public void ActivateParticleDetached(string particleSystemName)
+	{
+		particleSystemName = particleSystemName.ToLower();
+
+		if (_availableParticleSystems.ContainsKey(particleSystemName))
+		{
+			GameObject tempParticle = Instantiate(_availableParticleSystems[particleSystemName].gameObject, MainManager.Instance.transform, true) as GameObject;
+			tempParticle.GetComponent<ParticleSystem>().Play();
+			Destroy(tempParticle, tempParticle.GetComponent<ParticleSystem>().duration + tempParticle.GetComponent<ParticleSystem>().startLifetime);
+		}
+		else
+			Debug.LogError("ParticleSystemName => \"" + particleSystemName + "\" was not found in object => " + gameObject.name);
 	}
 
 	public void EndVictory()
 	{
 		ArenaManager.Instance.victoryAnimationIsFinished = true;
+	}
+
+	public void SendMessageToPlayerController(string messageContent)
+	{
+		PlayerController targetController = GetComponentInParent<PlayerController>();
+		if(targetController != null)
+		{
+			targetController.Invoke(messageContent,0);
+		}
+		else
+			Debug.LogWarning("No playercontroller found to call \"SendMessageToPlayerController()\" in object => " + name);
 	}
 }

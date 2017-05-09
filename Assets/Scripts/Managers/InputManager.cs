@@ -19,7 +19,7 @@ public enum InputEnum
 public class InputManager : GenericSingleton<InputManager>
 {
 	//  Buttons							0		1		  2		  3		4	  5		  6			7
-	private string[] InputNames = { "Dash", "Cancel", "Special", null, null, null, "Select", "Start" };
+	private string[] InputNames = { "Dash", "Cancel", "Special", "Taunt", null, null, "Select", "Start" };
 	private KeyCode[][] KeyboardControls = { new KeyCode[] { KeyCode.R, KeyCode.Space }, new KeyCode[] { KeyCode.E }, new KeyCode[] { KeyCode.Z, KeyCode.W, KeyCode.S }, new KeyCode[] { KeyCode.A, KeyCode.Q }, new KeyCode[] { KeyCode.None }, new KeyCode[] { KeyCode.None }, new KeyCode[] { KeyCode.LeftShift, KeyCode.RightShift }, new KeyCode[] { KeyCode.Escape, KeyCode.Return } };
 	private static float _inputLockTime = 0;
 

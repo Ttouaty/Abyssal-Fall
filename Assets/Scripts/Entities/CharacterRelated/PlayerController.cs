@@ -607,6 +607,26 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 			SpecialAction();
 			_stunTimer.Add(_characterData.SpecialLag);
 		}
+
+		if(AllowInput)
+		{
+			if(InputManager.GetButtonDown("Taunt", _playerRef.JoystickNumber) && IsGrounded)
+			{
+				Taunt();
+			}
+		}
+
+	}
+
+	public void Taunt()
+	{
+		_allowInput = false;
+		_networkAnimator.BroadCastTrigger("Taunt");
+	}
+
+	public void FinishTaunt()
+	{
+		_allowInput = true;
 	}
 
 	protected virtual bool SpecialActivation()
