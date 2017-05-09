@@ -22,7 +22,7 @@ public class OptionSelector : MonoBehaviour
 	//private Vector3			_nextButtonPosition = Vector3.zero;
 	private AGameRules		_targetRuleSet;
 
-	private int _selectedFieldIndex;
+	//private int _selectedFieldIndex;
 	private int _selectedChildIndex;
 	private BaseOptionField _selectedField;
 	private List<BaseOptionField> _allFields = new List<BaseOptionField>();
@@ -180,6 +180,6 @@ public class OptionSelector : MonoBehaviour
 			targetField.GetComponent<Animator>().SetTrigger("Highlighted");
 		}
 		_selectedField = targetField;
-		_selectedFieldIndex = _allFields.IndexOf(_selectedField);
+		//_selectedFieldIndex = _allFields.IndexOf(_selectedField);
 	}
 }

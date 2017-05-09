@@ -100,6 +100,9 @@ public class ButtonPanelNew : MonoBehaviour
 	{
 		if (ParentButtonPanel == null)
 			return;
+
+		SoundManager.Instance.PlayOS("UI button Cancel");
+
 		ParentButtonPanel.Invoke("FadeIn",0.05f);
 		Close();
 	}
@@ -151,6 +154,7 @@ public class ButtonPanelNew : MonoBehaviour
 			return;
 		
 		ActiveElement = newButton;
+		SoundManager.Instance.PlayOS("UI button Change 1");
 		_parentMenu.AddInputDelay();
 	}
 
@@ -158,7 +162,10 @@ public class ButtonPanelNew : MonoBehaviour
 	{
 		if(ActiveElement.isActiveAndEnabled)
 			if(ActiveElement.GetComponent<Button>() != null)
+			{
+				SoundManager.Instance.PlayOS("UI button Select 2");
 				ActiveElement.GetComponent<Button>().onClick.Invoke();
+			}
 	}
 
 	public IEnumerator AnimCoroutine(string triggerName)

@@ -25,9 +25,14 @@ MonoBehaviour:
   - {fileID: 114000013387001980}
   - {fileID: 114000012551152914}
   - {fileID: 114000011182252258}
+  - {fileID: 114000010757084448}
+  - {fileID: 114000011445128854}
+  - {fileID: 114000013766564078}
+  - {fileID: 114000012146062924}
+  - {fileID: 114000011091685656}
   MasterBankRef: {fileID: 114000011044085714}
   StringsBankRef: {fileID: 114000010971631458}
-  stringsBankWriteTime: 636197570493537452
+  stringsBankWriteTime: 636299548253585354
   cacheVersion: 2
 --- !u!114 &114000010291554924
 MonoBehaviour:
@@ -110,6 +115,27 @@ MonoBehaviour:
   - Name: 
     Value: 1038
   Exists: 1
+--- !u!114 &114000010757084448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Path: event:/Sfx/Temp/Magic Charge
+  guid: 01f4191806fae4419808ed32dccda02f
+  Banks:
+  - {fileID: 114000011044085714}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 5
+  MaxDistance: 100
 --- !u!114 &114000010823924730
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -162,11 +188,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Path: Assets\Sounds\Fmod\Desktop\Master Bank.strings.bank
-  lastModified: 636197570493537452
+  lastModified: 636299548253585354
   LoadResult: 0
   FileSizes:
   - Name: 
-    Value: 1148
+    Value: 1404
   Exists: 1
 --- !u!114 &114000011023948390
 MonoBehaviour:
@@ -202,12 +228,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Path: C:\Users\T0T0S\Desktop\Isart 2016\Abyssal Fall\Assets\Sounds\Fmod\Desktop\Master
     Bank.bank
-  lastModified: 636197570493527451
+  lastModified: 636299548253435345
   LoadResult: 0
   FileSizes:
   - Name: 
-    Value: 119328
+    Value: 228160
   Exists: 1
+--- !u!114 &114000011091685656
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Path: event:/Sfx/Temp/Mediumpain1
+  guid: e6cc5671b5df0440b999a28154bf18dd
+  Banks:
+  - {fileID: 114000011044085714}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 50
+  MaxDistance: 300
 --- !u!114 &114000011097726154
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -286,6 +333,27 @@ MonoBehaviour:
   guid: d212a7d1960fbc4590208b6cb5619c7e
   Banks:
   - {fileID: 114000010823924730}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+--- !u!114 &114000011445128854
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Path: event:/Sfx/Temp/Mega shotgun 2
+  guid: 2102ca96ef43bc4d8f58fac78c9942d2
+  Banks:
+  - {fileID: 114000011044085714}
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
@@ -436,6 +504,27 @@ MonoBehaviour:
   Parameters: []
   MinDistance: 5
   MaxDistance: 50
+--- !u!114 &114000012146062924
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Path: event:/Sfx/Temp/gun noise 1
+  guid: 75f29e89a7a0c14cb856aed2a134f004
+  Banks:
+  - {fileID: 114000011044085714}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
 --- !u!114 &114000012157686242
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -783,6 +872,27 @@ MonoBehaviour:
   Parameters: []
   MinDistance: 5
   MaxDistance: 50
+--- !u!114 &114000013766564078
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Path: event:/Sfx/Temp/Explo_Medium_09
+  guid: 6b7f56a9b51aa04598c486869bb8d314
+  Banks:
+  - {fileID: 114000011044085714}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
 --- !u!114 &114000013799404934
 MonoBehaviour:
   m_ObjectHideFlags: 0

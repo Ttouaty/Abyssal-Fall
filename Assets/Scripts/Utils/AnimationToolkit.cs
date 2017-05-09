@@ -40,7 +40,7 @@ public class AnimationToolkit : MonoBehaviour
 
 	public void PlaySound(string targetSoundKey)
 	{
-		Debug.Log("need to make sound => "+targetSoundKey);
+		SoundManager.Instance.PlayOS(targetSoundKey);
 	}
 
 	public void CameraShakeEnum(ShakeStrength force)
