@@ -46,19 +46,17 @@ MonoBehaviour:
   SoundList:
     SoundList:
     - Key: OnDashStart
-      FmodEvent: 
+      FmodEvent: event:/Sfx/Temp/Sword whoosh3
     - Key: OnDashEnd
-      FmodEvent: 
+      FmodEvent: event:/Sfx/viking/sfx_viking_dash_end
     - Key: OnDeath
-      FmodEvent: 
+      FmodEvent: event:/Sfx/viking/sfx_viking_death
     - Key: OnHit
-      FmodEvent: 
+      FmodEvent: event:/Sfx/Temp/Mediumpain1
     - Key: OnSpecialActivate
-      FmodEvent: 
+      FmodEvent: event:/Sfx/viking/sfx_viking_hammer_throw
     - Key: OnSpecialRestored
-      FmodEvent: 
-    - Key: OnParry
-      FmodEvent: 
+      FmodEvent: event:/Sfx/Temp/Magic Chest Close
   OtherAssetsToLoad:
   - Name: Shuriken
     Prefab: {fileID: 1000011368359532, guid: f1d3700a7eb68df419c0199ca68bf167, type: 2}

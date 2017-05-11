@@ -578,7 +578,8 @@ public class ArenaManager : MonoBehaviour
 
 		yield return new WaitForSeconds(0.2f);
 		characterGo.GetComponentInChildren<Animator>().SetTrigger("Win");
-		yield return new WaitUntil(() => victoryAnimationIsFinished);
+		float TimeTrigger = Time.time;
+		yield return new WaitUntil(() => victoryAnimationIsFinished ||( Time.time - TimeTrigger > 5));
 
 		yield return new WaitForSeconds(1);
 		InputManager.SetInputLockTime(0);

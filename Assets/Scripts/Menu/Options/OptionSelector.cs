@@ -147,7 +147,7 @@ public class OptionSelector : MonoBehaviour
 		{
 			_selectedField.GetTargetRule().SetToNextValue();
 			_selectedField.OnIncrease();
-
+			SoundManager.Instance.PlayOS("UI button Select 2");
 			UpdateRuleCanBeDisplayed();
 		}
 	}
@@ -158,7 +158,7 @@ public class OptionSelector : MonoBehaviour
 		{
 			_selectedField.GetTargetRule().SetToPreviousValue();
 			_selectedField.OnDecrease();
-
+			SoundManager.Instance.PlayOS("UI button Select 2");
 			UpdateRuleCanBeDisplayed();
 		}
 	}
@@ -178,6 +178,7 @@ public class OptionSelector : MonoBehaviour
 			if(_selectedField != null)
 				_selectedField.GetComponent<Animator>().SetTrigger("Normal");
 			targetField.GetComponent<Animator>().SetTrigger("Highlighted");
+			SoundManager.Instance.PlayOS("UI button Change 1");
 		}
 		_selectedField = targetField;
 		//_selectedFieldIndex = _allFields.IndexOf(_selectedField);

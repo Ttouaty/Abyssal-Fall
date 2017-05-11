@@ -41,7 +41,7 @@ MonoBehaviour:
     StunInflicted: 0.5
     IsParryable: 0
     Projectile: {fileID: 0}
-  SpecialCoolDown: 3
+  SpecialCoolDown: 2.5
   SpecialLag: 0.8
   SoundList:
     SoundList:
@@ -54,9 +54,9 @@ MonoBehaviour:
     - Key: OnHit
       FmodEvent: event:/Sfx/viking/sfx_viking_hammer_hit_player
     - Key: OnSpecialActivate
-      FmodEvent: event:/Sfx/viking/sfx_viking_hammer_throw
+      FmodEvent: event:/Sfx/Tank/tank_startSpecial
     - Key: OnSpecialRestored
-      FmodEvent: event:/Sfx/Menu/Menu Small Validate
-    - Key: OnParry
-      FmodEvent: event:/Sfx/viking/sfx_viking_hammer_hit_wall
+      FmodEvent: event:/Sfx/Temp/Magic Chest Close
+    - Key: OnSpecialEnd
+      FmodEvent: event:/Sfx/Tank/tank_endSpecial
   OtherAssetsToLoad: []

@@ -82,11 +82,13 @@ public class TankController : PlayerController
 
 		if (active)
 		{
+			_characterData.SoundList["OnSpecialActivate"].Play(gameObject);
 			_specialParticles.Clear();
 			_specialParticles.Play();
 		}
 		else
 		{
+			_characterData.SoundList["OnSpecialEnd"].Play(gameObject);
 			_specialParticles.Stop();
 		}
 	}

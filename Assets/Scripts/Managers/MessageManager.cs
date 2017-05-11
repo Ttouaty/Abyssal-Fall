@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using UnityEngine.UI;
 
 [Serializable]
 public class Message
@@ -38,13 +39,13 @@ public class MessageManager : GenericSingleton<MessageManager>
 	private int _numberMessagesDisplayed = 0;
 	private int _numberMessagesDestroyed = 0;
 
-	public const int TEXT_HEIGHT = 60;
+	private float _messageMargin = 5;
 
-	private float _messageOffset;
-
+	private float TargetHeight = 0;
+	[HideInInspector]
+	public float AppendHeight = 0;
 	void Start()
 	{
-		_messageOffset = TEXT_HEIGHT * 1.05f;
 		_canvas = GetComponentInChildren<Canvas>();
 
 		if (_canvas.transform.childCount != 0)
@@ -55,25 +56,44 @@ public class MessageManager : GenericSingleton<MessageManager>
 
 	void Update()
 	{
-		_messageContainer.localPosition = Vector3.Lerp(_messageContainer.localPosition, Vector3.up * _numberMessagesDestroyed * _messageOffset, 10 * Time.deltaTime);
+		_messageContainer.localPosition = Vector3.Lerp(_messageContainer.localPosition, Vector3.up * TargetHeight, 10 * Time.deltaTime);
+
+		if(_numberMessagesDisplayed != 0)
+		{
+			if (_numberMessagesDestroyed == _numberMessagesDisplayed)
+			{
+				CleanUp();
+			}
+		}
 	}
 
 
 	public static void Log(string message, float timeout, bool translated)
 	{
-		GameObject TextMessageGO = (GameObject) Instantiate(Instance._messagePrefab.gameObject, Instance._messageContainer);
+		Instance.StartCoroutine(Instance.LogCo(message, timeout, translated)); 
+	}
+	
+	IEnumerator LogCo(string message, float timeout, bool translated)
+	{
+		GameObject TextMessageGO = (GameObject)Instantiate(Instance._messagePrefab.gameObject, Instance._messageContainer);
 		TextMessage messageRef = TextMessageGO.GetComponent<TextMessage>();
 		//TextMessageGO.GetComponent<RectTransform>().sizeDelta = new Vector2(250, TEXT_HEIGHT);
 		TextMessageGO.transform.localScale = Vector3.one;
-		
-		TextMessageGO.GetComponent<RectTransform>().localPosition = - Vector3.right * Instance._messageContainer.sizeDelta.x - Vector3.up * (Instance._numberMessagesDisplayed * Instance._messageOffset);
 
-		messageRef.MoveTo(- Vector3.up * (Instance._numberMessagesDisplayed * Instance._messageOffset), 0.5f, true);
+		yield return null;
+
+		TextMessageGO.GetComponent<RectTransform>().localPosition = -Vector3.right * Instance._messageContainer.sizeDelta.x - Vector3.up * Instance.AppendHeight;
+
+		messageRef.MoveTo(-Vector3.up * Instance.AppendHeight, 0.5f, true);
+
+		Instance.AddAppendHeight(TextMessageGO.GetComponent<RectTransform>().sizeDelta.y);
 
 		if (translated)
 			message = Localizator.LanguageManager.Instance.GetText(message);
-		messageRef.Activate(message, timeout);
+
 		Instance._numberMessagesDisplayed++;
+		messageRef.Activate(message, timeout);
+
 	}
 
 	public static void Log(string message, bool translated){ Log(message, 5, translated); }
@@ -107,9 +127,27 @@ public class MessageManager : GenericSingleton<MessageManager>
 	public static void LogCustom(string message, float timeout, Vector3 startLocalPos) { LogCustom(message, timeout, startLocalPos, default(Vector3), default(Vector2), Vector2.one * 0.5f); }
 	public static void LogCustom(string message, float timeout, Vector3 startLocalPos, Vector2 newSizeDelta) { LogCustom(message, timeout, startLocalPos, default(Vector3), newSizeDelta, Vector2.one * 0.5f); }
 */
-	public void OnMessageDestroyed()
+	public void OnMessageDestroyed(TextMessage targetMessage)
 	{
 		_numberMessagesDestroyed++;
+		TargetHeight += targetMessage.GetComponent<RectTransform>().sizeDelta.y + _messageMargin;
+	}
+
+	public void CleanUp()
+	{
+		_numberMessagesDisplayed = 0;
+		_numberMessagesDestroyed = 0;
+
+		TargetHeight = 0;
+		AppendHeight = 0;
+
+
+		_messageContainer.localPosition = Vector3.zero;
+	}
+
+	public void AddAppendHeight(float newHeight)
+	{
+		AppendHeight += newHeight + _messageMargin;
 	}
 
 }

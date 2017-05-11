@@ -16,12 +16,12 @@ public class CustomEditorFmodSoundEvent : PropertyDrawer
 		Rect keyRect = new Rect(position);
 		Rect fmodEventRect = new Rect(position);
 
-		keyRect.width *= 0.2f;
+		keyRect.width *= 0.4f;
 		keyRect.height = 16;
 
-		fmodEventRect.width *= 0.8f;
+		fmodEventRect.width *= 0.6f;
 		fmodEventRect.width -= 5;
-		fmodEventRect.x = keyRect.width + 5;
+		fmodEventRect.x = keyRect.width;
 
 		EditorGUI.PropertyField(keyRect, key, GUIContent.none);
 		EditorGUI.PropertyField(fmodEventRect, fmodEvent, GUIContent.none);

@@ -8,7 +8,6 @@ public class SoundManager : GenericSingleton<SoundManager>
 	private FmodSoundEvent[] AvailableEvents;
 
 	private Dictionary<string, string> EventDico = new Dictionary<string, string>();
-
 	protected override void Awake()
 	{
 		base.Awake();
@@ -23,9 +22,9 @@ public class SoundManager : GenericSingleton<SoundManager>
 	{
 		eventKey = eventKey.ToLower();
 		if (EventDico.ContainsKey(eventKey))
-			FMODUnity.RuntimeManager.PlayOneShot(EventDico[eventKey]);
+			FMODUnity.RuntimeManager.PlayOneShot(EventDico[eventKey], Camera.main.transform.position + Camera.main.transform.forward);
 		else if (EventDico.ContainsValue(eventKey))
-			FMODUnity.RuntimeManager.PlayOneShot(eventKey);
+			FMODUnity.RuntimeManager.PlayOneShot(eventKey, Camera.main.transform.position + Camera.main.transform.forward);
 	}
 
 	public void PlayOSAttached(string eventKey, GameObject target)
@@ -36,7 +35,6 @@ public class SoundManager : GenericSingleton<SoundManager>
 		else if (EventDico.ContainsValue(eventKey))
 			FMODUnity.RuntimeManager.PlayOneShotAttached(eventKey, target);
 	}
-
 }
 
 

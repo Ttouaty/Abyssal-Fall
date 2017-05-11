@@ -18,13 +18,13 @@ public class SetRenderQueue : MonoBehaviour
 		targetMat = GetComponent<Renderer>().material;
 		targetMat.renderQueue = 3020;
 		targetRenderers = transform.parent.GetComponentsInChildren<Renderer>();
-		
+
 		SetCutOff(0);
 	}
 
 	public void SetCutOff(float newCutOff)
 	{
-		if(targetMat != null)
+		if (targetMat != null)
 			targetMat.SetFloat("_Cutoff", newCutOff);
 
 		for (int i = 0; i < targetRenderers.Length; i++)
@@ -36,6 +36,8 @@ public class SetRenderQueue : MonoBehaviour
 			}
 		}
 	}
+
+	public float GetCutOff { get { return targetMat.GetFloat("_Cutoff"); } }
 
 	//private List<Material> _materials = new List<Material>();
 	//protected void Awake()

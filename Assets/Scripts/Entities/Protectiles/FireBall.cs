@@ -47,7 +47,7 @@ public class FireBall : ABaseProjectile
 		base.OnLaunch(Launcher);
 
 		_launcherRef = Launcher.GetComponent<MageController>();
-
+		SoundManager.Instance.PlayOSAttached("MagicCharge", gameObject);
 		_movingParticlesRef = Instantiate(_launcherRef.MoveParticle, transform, false) as ParticleSystem;
 		_movingParticlesRef.transform.localPosition = Vector3.zero;
 		_movingParticlesRef.Play();
@@ -72,7 +72,7 @@ public class FireBall : ABaseProjectile
 	{
 		if(_movingParticlesRef != null)
 			_movingParticlesRef.Stop();
-
+		
 		ParticleSystem preExploParticles = (ParticleSystem)Instantiate(_launcherRef.ImplosionParticle, transform.position, _launcherRef.ImplosionParticle.transform.rotation);
 		preExploParticles.Play();
 		Destroy(preExploParticles.gameObject, _explosionDelay + preExploParticles.startLifetime);
@@ -84,6 +84,7 @@ public class FireBall : ABaseProjectile
 		ParticleSystem exploParticles = (ParticleSystem)Instantiate(_launcherRef.ExplosionParticle, transform.position, _launcherRef.ExplosionParticle.transform.rotation);
 		exploParticles.Play();
 		Destroy(exploParticles.gameObject, exploParticles.startLifetime + exploParticles.duration);
+		SoundManager.Instance.PlayOSAttached("Explosion", exploParticles.gameObject);
 
 		if(NetworkServer.active)
 		{

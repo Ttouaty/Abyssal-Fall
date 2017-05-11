@@ -30,9 +30,13 @@ MonoBehaviour:
   - {fileID: 114000013766564078}
   - {fileID: 114000012146062924}
   - {fileID: 114000011091685656}
+  - {fileID: 114000011587303758}
+  - {fileID: 114000012256624394}
+  - {fileID: 114000012174154418}
+  - {fileID: 114000013288295068}
   MasterBankRef: {fileID: 114000011044085714}
   StringsBankRef: {fileID: 114000010971631458}
-  stringsBankWriteTime: 636299548253585354
+  stringsBankWriteTime: 636300309385126964
   cacheVersion: 2
 --- !u!114 &114000010291554924
 MonoBehaviour:
@@ -188,11 +192,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Path: Assets\Sounds\Fmod\Desktop\Master Bank.strings.bank
-  lastModified: 636299548253585354
+  lastModified: 636300309385126964
   LoadResult: 0
   FileSizes:
   - Name: 
-    Value: 1404
+    Value: 1618
   Exists: 1
 --- !u!114 &114000011023948390
 MonoBehaviour:
@@ -228,11 +232,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Path: C:\Users\T0T0S\Desktop\Isart 2016\Abyssal Fall\Assets\Sounds\Fmod\Desktop\Master
     Bank.bank
-  lastModified: 636299548253435345
+  lastModified: 636300309385056960
   LoadResult: 0
   FileSizes:
   - Name: 
-    Value: 228160
+    Value: 263616
   Exists: 1
 --- !u!114 &114000011091685656
 MonoBehaviour:
@@ -420,6 +424,27 @@ MonoBehaviour:
   Parameters: []
   MinDistance: 1
   MaxDistance: 20
+--- !u!114 &114000011587303758
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Path: event:/Sfx/Temp/Magic Chest Close
+  guid: 35b1bc5048c8f94db744deaac71952e3
+  Banks:
+  - {fileID: 114000011044085714}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 5.4
+  MaxDistance: 100
 --- !u!114 &114000011680343516
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -544,6 +569,27 @@ MonoBehaviour:
   - Name: Desktop
     Value: 109792
   Exists: 1
+--- !u!114 &114000012174154418
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Path: event:/Sfx/Tank/tank_startSpecial
+  guid: 1575fb17bf3e59449abaeeed7879cc5e
+  Banks:
+  - {fileID: 114000011044085714}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 5.0499997
+  MaxDistance: 69.99999
 --- !u!114 &114000012195177644
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -562,6 +608,27 @@ MonoBehaviour:
   - Name: Desktop
     Value: 730
   Exists: 1
+--- !u!114 &114000012256624394
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Path: event:/Sfx/Temp/Sword whoosh3
+  guid: ca949784adfb4f40bdbb3516d98cde77
+  Banks:
+  - {fileID: 114000011044085714}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 5
+  MaxDistance: 100
 --- !u!114 &114000012339045824
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -747,6 +814,27 @@ MonoBehaviour:
   Parameters: []
   MinDistance: 5
   MaxDistance: 50
+--- !u!114 &114000013288295068
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Path: event:/Sfx/Tank/tank_endSpecial
+  guid: 661285273aa6a04c8b37562f61b20645
+  Banks:
+  - {fileID: 114000011044085714}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 5.0499997
+  MaxDistance: 70
 --- !u!114 &114000013296051070
 MonoBehaviour:
   m_ObjectHideFlags: 0

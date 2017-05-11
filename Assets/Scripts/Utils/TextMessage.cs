@@ -14,11 +14,6 @@ public class TextMessage : MonoBehaviour
 		_canvasGroup = GetComponent<CanvasGroup>();
 	}
 
-	void Start()
-	{
-
-	}
-
 	public void Activate(string newText, float timeLeft)
 	{
 		_text.text = newText;
@@ -42,7 +37,7 @@ public class TextMessage : MonoBehaviour
 			yield return null;
 		}
 		_canvasGroup.alpha = 0;
-		MessageManager.Instance.OnMessageDestroyed();
+		MessageManager.Instance.OnMessageDestroyed(this);
 		Destroy(gameObject);
 	}
 }

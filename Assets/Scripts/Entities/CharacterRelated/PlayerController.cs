@@ -23,8 +23,7 @@ public class PlayerSoundList
 		new FmodSoundEvent("OnDeath"),
 		new FmodSoundEvent("OnHit"),
 		new FmodSoundEvent("OnSpecialActivate"),
-		new FmodSoundEvent("OnSpecialRestored"),
-		new FmodSoundEvent("OnParry")
+		new FmodSoundEvent("OnSpecialRestored")
 	};
 	private Dictionary<string, FmodSoundEvent> _soundDico = new Dictionary<string, FmodSoundEvent>();
 
@@ -45,8 +44,8 @@ public class PlayerSoundList
 	public void Generate()
 	{
 		FmodSoundEvent[] tempArray = SoundList.ToArray();
-		if (tempArray.Length < 7)
-			Debug.LogWarning("PlayerSoundList doesn't seem to have all base sounds.\n\"OnDashStart\",\"OnDashEnd\",\"OnDeath\",\"OnHit\",\"OnSpecialActivate\",\"OnSpecialRestored\",\"OnParry\".");
+		//if (tempArray.Length < 7)
+			//Debug.LogWarning("PlayerSoundList doesn't seem to have all base sounds.\n\"OnDashStart\",\"OnDashEnd\",\"OnDeath\",\"OnHit\",\"OnSpecialActivate\",\"OnSpecialRestored\",\"OnParry\".");
 		for (int i = 0; i < tempArray.Length; i++)
 		{
 			_soundDico[tempArray[i].Key] = tempArray[i];
@@ -503,6 +502,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 	protected virtual void OnSpecialReset()
 	{
+		_characterData.SoundList["OnSpecialRestored"].Play(gameObject);
 		if (_characterProp.PropRenderer != null)
 			_characterProp.PropRenderer.gameObject.SetActive(true);
 		if (_characterProp.PropRespawnParticles != null)
@@ -882,7 +882,8 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 			return;
 
 		CameraManager.Shake(ShakeStrength.Medium);
-		_characterData.SoundList["OnParry"].Play(gameObject);
+		SoundManager.Instance.PlayOSAttached("OnParry", gameObject);
+		//_characterData.SoundList["OnParry"].Play(gameObject);
 		projectileParried.Parry(DmgDealerSelf);
 		CmdParry();
 	}

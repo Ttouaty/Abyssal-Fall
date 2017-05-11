@@ -41,24 +41,22 @@ MonoBehaviour:
     StunInflicted: 0.7
     IsParryable: 0
     Projectile: {fileID: 0}
-  SpecialCoolDown: 4
+  SpecialCoolDown: 3
   SpecialLag: 0.1
   SoundList:
     SoundList:
     - Key: OnDashStart
-      FmodEvent: 
+      FmodEvent: event:/Sfx/Temp/Sword whoosh3
     - Key: OnDashEnd
       FmodEvent: 
     - Key: OnDeath
       FmodEvent: 
     - Key: OnHit
-      FmodEvent: 
+      FmodEvent: event:/Sfx/Temp/Mediumpain1
     - Key: OnSpecialActivate
-      FmodEvent: 
+      FmodEvent: event:/Sfx/Temp/Magic Charge
     - Key: OnSpecialRestored
-      FmodEvent: 
-    - Key: OnParry
-      FmodEvent: 
+      FmodEvent: event:/Sfx/Temp/Magic Chest Close
   OtherAssetsToLoad:
   - Name: FireBall
     Prefab: {fileID: 1000013642960176, guid: b9726eb2174e1e84b86696efd453ac87, type: 2}

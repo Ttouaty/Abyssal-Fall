@@ -9,7 +9,7 @@ public class NinjaController : PlayerController {
 	protected override void SpecialAction()
 	{
 		//_animator.SetTrigger("Special");
-		_characterData.SoundList["OnSpecialActivate"].Play(gameObject);
+		_characterData.SoundList["OnSpecialActivate"].Play(gameObject); // need trigger across players
 
 		Vector3 newDirection = Quaternion.AngleAxis(- AngleSpread * 0.5f, Vector3.up) * transform.forward;
 		for (int i = 0; i < ShurikenNumber; i++)

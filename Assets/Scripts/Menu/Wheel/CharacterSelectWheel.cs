@@ -93,7 +93,10 @@ public class CharacterSelectWheel : NetworkBehaviour
 			Debug.DrawLine(transform.position, _displayArray[i].transform.position, Color.green);
 
 			if (_tempElementAngle < _alphaThresholdAngleMin)
-				_displayArray[i].GetComponentInChildren<SetRenderQueue>().SetCutOff(1);
+			{
+				if(_displayArray[i].GetComponentInChildren<SetRenderQueue>().GetCutOff != 1)
+					_displayArray[i].GetComponentInChildren<SetRenderQueue>().SetCutOff(1);
+			}
 			else
 				_displayArray[i].GetComponentInChildren<SetRenderQueue>().SetCutOff((_alphaThresholdAngleMax - _tempElementAngle) / _alphaThresholdAngleMax);
 		}

@@ -1226,6 +1226,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _messagePrefab: {fileID: 114000013004886638, guid: ea8de9c9311119848a36a2cd008b39de,
     type: 2}
+  AppendHeight: 0
 --- !u!114 &1059133659
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1540,10 +1541,10 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1238131358}
-  m_LocalRotation: {x: 0, y: -0.34202173, z: 0, w: 0.9396921}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 5000, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 5000, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 1511463442}
   m_RootOrder: 8
@@ -2007,6 +2008,8 @@ MonoBehaviour:
     FmodEvent: event:/Sfx/Menu/Menu Small Validate
   - Key: UI button Cancel
     FmodEvent: event:/Sfx/Menu/Menu Cancel
+  - Key: Special Repop
+    FmodEvent: event:/Sfx/Temp/Magic Chest Close
 --- !u!1 &1691368869
 GameObject:
   m_ObjectHideFlags: 0
