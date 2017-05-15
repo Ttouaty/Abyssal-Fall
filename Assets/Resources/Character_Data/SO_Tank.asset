@@ -23,10 +23,10 @@ MonoBehaviour:
   CharacterStats:
     strength: 7
     speed: 2
-    resistance: 7
+    resistance: 6
   Dash:
-    endingLag: 0.4
-    rechargeTime: 0.7
+    endingLag: 0.5
+    rechargeTime: 0.5
     Forces:
     - {x: 4, y: 4.905}
     - {x: 5, y: 7.3575}
@@ -38,11 +38,11 @@ MonoBehaviour:
     Projectile: {fileID: 0}
   SpecialDamageData:
     AttackTypeUsed: 1
-    StunInflicted: 0.5
+    StunInflicted: 1.3
     IsParryable: 0
     Projectile: {fileID: 0}
   SpecialCoolDown: 2.5
-  SpecialLag: 0.8
+  SpecialLag: 1.1
   SoundList:
     SoundList:
     - Key: OnDashStart

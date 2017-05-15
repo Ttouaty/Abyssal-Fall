@@ -573,6 +573,7 @@ public class ArenaManager : MonoBehaviour
 
 		characterGo.GetComponentInChildren<CharacterModel>().Reskin(winnerGo.GetComponent<Player>().SkinNumber);
 		characterGo.GetComponentInChildren<CharacterModel>().SetOutlineColor(winnerGo.GetComponent<Player>().PlayerColor);
+		characterGo.GetComponentInChildren<CharacterModel>().SetAmbientRamp(CurrentArenaConfig.AmbientRamp);
 		characterGo.transform.localPosition = Vector3.zero;
 		characterGo.transform.localRotation = Quaternion.identity;
 

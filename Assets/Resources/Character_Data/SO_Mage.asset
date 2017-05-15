@@ -21,12 +21,12 @@ MonoBehaviour:
     type: 2}
   SpecialInfoKey: Charge (Hold) & release a FireBall with X.
   CharacterStats:
-    strength: 7
+    strength: 6
     speed: 5
     resistance: 3
   Dash:
-    endingLag: 0.4
-    rechargeTime: 0.5
+    endingLag: 0.3
+    rechargeTime: 0.3
     Forces:
     - {x: 5, y: 4.905}
     - {x: 6, y: 7.3575}
@@ -38,7 +38,7 @@ MonoBehaviour:
     Projectile: {fileID: 0}
   SpecialDamageData:
     AttackTypeUsed: 1
-    StunInflicted: 0.7
+    StunInflicted: 1
     IsParryable: 0
     Projectile: {fileID: 0}
   SpecialCoolDown: 3

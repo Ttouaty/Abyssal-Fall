@@ -197,6 +197,19 @@ public class MenuPanelNew : MonoBehaviour
 			addDelay = _defaultInputDelay;
 
 		_activeInputDelay += addDelay;
+
+		Debug.Log("add input lock to => " + _activeInputDelay);
+		InputManager.SetInputLockTime(_activeInputDelay);
+	}
+
+	public void SetInputDelay(float addDelay = -1)
+	{
+		if (addDelay == -1)
+			addDelay = _defaultInputDelay;
+
+		_activeInputDelay = addDelay;
+
+		Debug.Log("set input lock to => " + _activeInputDelay);
 		InputManager.SetInputLockTime(_activeInputDelay);
 	}
 

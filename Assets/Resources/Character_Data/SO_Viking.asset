@@ -25,8 +25,8 @@ MonoBehaviour:
     speed: 5
     resistance: 5
   Dash:
-    endingLag: 0.4
-    rechargeTime: 0.5
+    endingLag: 0.25
+    rechargeTime: 0.25
     Forces:
     - {x: 5, y: 4.905}
     - {x: 6, y: 7.3575}
@@ -38,11 +38,11 @@ MonoBehaviour:
     Projectile: {fileID: 0}
   SpecialDamageData:
     AttackTypeUsed: 1
-    StunInflicted: 0.8
+    StunInflicted: 2
     IsParryable: 1
     Projectile: {fileID: 0}
   SpecialCoolDown: 1.5
-  SpecialLag: 0.3
+  SpecialLag: 0.2
   SoundList:
     SoundList:
     - Key: OnDashStart

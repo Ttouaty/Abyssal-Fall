@@ -242,7 +242,16 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	protected bool _internalAllowInput = true;
 	protected bool _allowInput { get { return _internalAllowInput && !_isFrozen; } set { _internalAllowInput = value; } }
 	public bool AllowInput { get { return _allowInput; } }
-	protected bool _isStunned = false;
+	protected bool _isStunned
+	{
+		get { return _isStunnedInternal; }
+		set
+		{
+			CmdSetIsStunnedInternal(value);
+		}
+	}
+	[SyncVar]
+	protected bool _isStunnedInternal = false;
 	public bool _isParrying { get { return _parryTimer.TimeLeft != 0; } }
 	/// <summary>
 	/// WARNING, use this instead of isLocalPlayer on PlayerControllers as they are not directly a player object
@@ -367,10 +376,10 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_stunTimer.onFinish = () => { _isStunned = false; _allowInput = true; /*CmdSetExpression(_FEMref.DefaultExpression);*/ };
 		_stunTimer.onProgress = () =>
 		{
-			if (!IsGrounded) { _stunTimer.Add(TimeManager.DeltaTime); }
+			//if (!IsGrounded) { _stunTimer.Add(TimeManager.DeltaTime); }
 			_allowInput = false;
 			_isStunned = true;
-		};//decrease Stun only if grounded
+		};
 
 		_invulTimer = new TimeCooldown(this);
 		_invulTimer.onFinish = () => { _isInvul = false; };
@@ -670,6 +679,8 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		{
 			_activeSpeed.y += _acceleration.y * TimeManager.DeltaTime * Physics.gravity.magnitude;
 			_activeSpeed.y = Mathf.Clamp(_activeSpeed.y, -_maxSpeed.y, _maxSpeed.y * 10f);
+
+			AirControl();
 		}
 	}
 
@@ -735,12 +746,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_isInvulInternal = invulValue;
 
 		if (invulValue)
-		{
-			if (_isStunned)
-				_playerLayer = LayerMask.NameToLayer("PlayerGhost");
-			else
-				_playerLayer = LayerMask.NameToLayer("PlayerInvul");
-		}
+			_playerLayer = LayerMask.NameToLayer("PlayerInvul");
 		else
 			_playerLayer = LayerMask.NameToLayer("PlayerDefault");
 
@@ -759,6 +765,12 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		if(value)
 			_damageTimer.Add(_dashDamagingTime);
 		_dashing = value;
+	}
+
+	[Command]
+	public virtual void CmdSetIsStunnedInternal(bool value)
+	{
+		_isStunnedInternal = value;
 	}
 
 	public void Kill()
@@ -806,6 +818,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		}
 
 		_stunTimer.Set(0.5f);
+		_invulTimer.Set(1.5f);
 
 		Freeze();
 		Invoke("UnFreeze", 0.5f);
@@ -822,7 +835,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	public void Eject(Vector3 direction)
 	{
 		if (direction.y > 0)
-			ForceAirborne(0.1f);
+			ForceAirborne(direction.y.GravityTime(9.81f * _acceleration.y * -1));
 
 		_activeSpeed = direction;
 		_rigidB.velocity = _activeSpeed;
@@ -838,7 +851,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 			if (newStunTime > 0)
 				_stunTimer.Set(newStunTime);
-			_invulTimer.Set(newStunTime * 1.5f);
+			_invulTimer.Set(0.3f);
 
 			_activeDirection = -direction.ZeroY().normalized;
 			transform.LookAt(transform.position + _activeDirection, Vector3.up);
@@ -846,9 +859,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		}
 
 		if (direction.magnitude > 15)
-		{
 			CameraManager.Shake(ShakeStrength.Medium);
-		}
 		else
 			CameraManager.Shake(ShakeStrength.Low);
 
@@ -864,8 +875,8 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_animToolkit.ActivateParticle("hit");
 		//CmdSetExpression("Pain");
 
-		direction.x += direction.x * ((0.5f - _characterData.CharacterStats.resistance.Percentage(0, Stats.maxValue)) * 0.5f);
-		direction.z += direction.z * ((0.5f - _characterData.CharacterStats.resistance.Percentage(0, Stats.maxValue)) * 0.5f);
+		direction.x = direction.x * 0.5f + direction.x * ((1f - _characterData.CharacterStats.resistance.Percentage(0, Stats.maxValue)));
+		direction.z = direction.z * 0.5f + direction.z * ((1f - _characterData.CharacterStats.resistance.Percentage(0, Stats.maxValue)));
 		_isInvul = true;
 
 		if (NetworkServer.active)
@@ -904,32 +915,24 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_allowInput = false;
 		_parryTimer.Set(_parryTime);
 
-
-		//_animator.SetTrigger("Dash_Start");
 		_networkAnimator.BroadCastTrigger("Dash_Start");
-
-		//if (NetworkServer.active)
-		//	_animator.ResetTrigger("Dash_Start");
 		_characterData.SoundList["OnDashStart"].Play(gameObject);
 
 		ForceAirborne(0.4f);
 
-		while (!IsGrounded)
+		while (!IsGrounded && !_isStunned)
 		{
-			AirControl();
 			yield return null;
-		} //wait for landing
+		} //wait for landing || hit
 
-
-		//_animator.SetTrigger("Dash_End");
 		_networkAnimator.BroadCastTrigger("Dash_End");
-
-		//if (NetworkServer.active)
-		//	_animator.ResetTrigger("Dash_End");
 		_characterData.SoundList["OnDashEnd"].Play(gameObject);
 
-		_stunTimer.Add(_dashCopy.endingLag);
-		yield return new WaitForSeconds(_dashCopy.endingLag);
+		if (!_isStunned)
+		{
+			_stunTimer.Add(_dashCopy.endingLag);
+			yield return new WaitForSeconds(_dashCopy.endingLag);
+		}
 
 		_dashRechargeTimer.Set(_dashCopy.rechargeTime);
 		_isDashing = false;

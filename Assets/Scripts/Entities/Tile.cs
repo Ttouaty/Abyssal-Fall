@@ -136,6 +136,12 @@ public class Tile : MonoBehaviour, IPoolable
 		if (_isTouched)
 			return;
 
+		if(GameManager.Instance.GameRules != null)
+		{
+			if (GameManager.Instance.GameRules.AreTilesFrozen)
+				return;
+		}
+
 		if (ArenaManager.Instance != null)
 		{
 			Player.LocalPlayer.CmdRemoveTile(TileIndex);

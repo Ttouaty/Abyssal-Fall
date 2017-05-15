@@ -10,6 +10,9 @@ public class TankController : PlayerController
 	private float _specialStartSpeed = 20;
 	[SerializeField]
 	private float _specialTime = 0.3f;
+
+	[SerializeField]
+	private float _invulTime = 0.2f;
 	[SerializeField]
 	private ParticleSystem _specialParticles;
 	[SerializeField]
@@ -32,7 +35,7 @@ public class TankController : PlayerController
 		CmdActiveCharge(true);
 
 		_isAffectedByFriction = false;
-		_isInvul = true;
+		_invulTimer.Set(_invulTime);
 		_allowInput = false;
 		_activeSpeed = _activeDirection.normalized * _specialStartSpeed;
 		_groundCheck.Deactivate();
@@ -55,7 +58,8 @@ public class TankController : PlayerController
 		}
 
 		if (Physics.CheckSphere(ChargeHitbox.transform.position, ChargeHitbox.radius * ChargeHitbox.transform.lossyScale.x, 1 << LayerMask.NameToLayer("Wall")))
-		{
+		{ //impact wall
+
 			_activeSpeed = Vector3.zero;
 			_rigidB.velocity = _activeSpeed;
 		}
@@ -97,7 +101,6 @@ public class TankController : PlayerController
 	{
 		CmdActiveCharge(false);
 		_isAffectedByFriction = true;
-		_isInvul = false;
 		_groundCheck.Activate();
 		_charging = false;
 	}
@@ -124,8 +127,8 @@ public class TankController : PlayerController
 					colli.transform.GetComponent<TankController>()._activeSpeed = Vector3.zero;
 					colli.transform.GetComponent<TankController>()._rigidB.velocity = Vector3.zero;
 
-					colli.transform.GetComponent<TankController>().ForceCollisions(GetComponent<Collider>(), Vector3.up);
-					ForceCollisions(colli.collider, Vector3.up);
+					colli.transform.GetComponent<TankController>().ForceCollisions(GetComponent<Collider>(), Vector3.up + transform.forward * 2);
+					ForceCollisions(colli.collider, Vector3.up + colli.transform.forward * 2);
 				}
 				else
 					ForceCollisions(colli.collider);
@@ -145,8 +148,10 @@ public class TankController : PlayerController
 			if (colli.transform.GetComponent<PlayerController>()._isInvul)
 				return;
 		}
+		else
+			return;
 		Debug.Log("HIT");
-
+		
 		Destroy(Instantiate(HitParticles[_playerRef.SkinNumber].gameObject, (colli.transform.position + transform.position) * 0.5f, Quaternion.identity) as GameObject, HitParticles[0].duration + HitParticles[0].startLifetime);
 
 		DamageData tempDamageData = _characterData.SpecialDamageData.Copy();
@@ -154,7 +159,7 @@ public class TankController : PlayerController
 
 		colli.transform.GetComponent<IDamageable>()
 			.Damage(Quaternion.FromToRotation(Vector3.right,
-			(colli.transform.position - transform.position).ZeroY().normalized + _rigidB.velocity.normalized * 1.5f) * SO_Character.SpecialEjection.Multiply(Axis.x, _characterData.CharacterStats.strength) + additionnalDirection,
+			(colli.transform.position - transform.position).ZeroY().normalized + _rigidB.velocity.normalized) * SO_Character.SpecialEjection.Multiply(Axis.x, _characterData.CharacterStats.strength) + additionnalDirection,
 			colli.ClosestPointOnBounds(transform.position),
 			tempDamageData);
 	}

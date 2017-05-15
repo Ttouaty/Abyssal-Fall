@@ -43,8 +43,8 @@ public struct Pool
 	{
 		Reserve.Add(go);
 		go.transform.parent = Root.transform;
-		go.transform.position = Vector3.zero;
-		go.transform.rotation = Quaternion.identity;
+		go.transform.localPosition = Vector3.zero;
+		go.transform.localRotation = Quaternion.identity;
 		go.SetActive(false);
 	}
 
@@ -61,6 +61,7 @@ public struct Pool
 			QuantityLoaded = 0;
 			Root = new GameObject(Name);
 			Root.transform.parent = GameObjectPool.Instance.transform;
+			Root.transform.ResetPosNRot();
 			Reserve = new List<GameObject>();
 		}
 		else

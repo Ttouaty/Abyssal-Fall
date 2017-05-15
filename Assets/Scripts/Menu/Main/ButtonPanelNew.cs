@@ -105,6 +105,7 @@ public class ButtonPanelNew : MonoBehaviour
 
 		ParentButtonPanel.Invoke("FadeIn",0.05f);
 		Close();
+		_parentMenu.SetInputDelay();
 	}
 
 	public virtual void SelectNewButton(UIDirection newDirection)
@@ -155,7 +156,7 @@ public class ButtonPanelNew : MonoBehaviour
 		
 		ActiveElement = newButton;
 		SoundManager.Instance.PlayOS("UI button Change 1");
-		_parentMenu.AddInputDelay();
+		_parentMenu.SetInputDelay();
 	}
 
 	public virtual void Activate()
@@ -165,6 +166,7 @@ public class ButtonPanelNew : MonoBehaviour
 			{
 				SoundManager.Instance.PlayOS("UI button Select 2");
 				ActiveElement.GetComponent<Button>().onClick.Invoke();
+				_parentMenu.SetInputDelay();
 			}
 	}
 

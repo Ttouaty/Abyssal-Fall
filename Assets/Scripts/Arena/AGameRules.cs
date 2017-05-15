@@ -55,7 +55,7 @@ public abstract class AGameRules : MonoBehaviour
 
 		StartCoroutine(Update_Implementation());
 
-		if (ArenaAutoDestruction)
+		if (ArenaAutoDestruction && !AreTilesFrozen)
 			StartCoroutine(ArenaAutoDestruction_Implementation());
 	}
 

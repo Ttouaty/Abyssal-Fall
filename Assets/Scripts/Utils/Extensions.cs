@@ -65,6 +65,11 @@ public static class Vector3Extensions
 		return Mathf.Max(Mathf.Abs(vect.x), Mathf.Abs(vect.y), Mathf.Abs(vect.z));
 	}
 
+	public static float GravityTime(this float targetSpeed, float gravityModifier = 9.81f)
+	{
+		return targetSpeed / gravityModifier;
+	}
+
 	public static float AnglePercent(this Vector3 vect, Vector3 target)
 	{
 		float angle = Vector3.Angle(vect, target);
@@ -246,6 +251,22 @@ public static class MonoBehaviourExtensions
 		{
 			GameObject.Destroy(child.gameObject);
 		}
+		return transform;
+	}
+
+	public static Transform ResetPosNRot(this Transform transform, bool local = true)
+	{
+		if(local)
+		{
+			transform.localRotation = Quaternion.identity;
+			transform.localPosition = Vector3.zero;
+		}
+		else
+		{
+			transform.rotation = Quaternion.identity;
+			transform.position = Vector3.zero;
+		}
+
 		return transform;
 	}
 
