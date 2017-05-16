@@ -66,6 +66,8 @@ public abstract class AGameRules : MonoBehaviour
 
 	public virtual void RespawnFallenTiles(Tile tile)
 	{
+		if (!CanFallenTilesRespawn)
+			return;
 		tile.PrepareRespawn();
 		StartCoroutine(RespawnFallenTiles_Implementation(tile));
 	}

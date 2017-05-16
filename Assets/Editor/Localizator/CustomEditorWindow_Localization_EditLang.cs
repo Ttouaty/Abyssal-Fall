@@ -14,7 +14,7 @@ namespace Localizator
 			_currentLang = fileName;
 			CustomEditorWindow_Localizator_EditLang window = EditorWindow.GetWindow<CustomEditorWindow_Localizator_EditLang>("", false, typeof(CustomEditorWindow_Localizator));
 			window.titleContent = new GUIContent("Edit " + fileName);
-            window.minSize = new Vector2(640, 640);
+            window.minSize = new Vector2(320, 640);
             window.Focus();
 		}
 
@@ -93,7 +93,7 @@ namespace Localizator
 
 				EditorGUILayout.BeginHorizontal();
 				{
-					EditorGUILayout.BeginVertical("box", GUILayout.Width(position.width * 0.5f - 5), GUILayout.ExpandHeight(true));
+					EditorGUILayout.BeginVertical("box", GUILayout.Width(position.width * 0.9f - 20), GUILayout.ExpandHeight(true));
 					{
 						GUILayout.Label("Traductions", centeredMediumStyle);
 						_scrollPositionLanguages = EditorGUILayout.BeginScrollView(_scrollPositionLanguages);
@@ -106,10 +106,10 @@ namespace Localizator
 							{
 								for (int i = 0; i < _rootLines.Count; ++i)
 								{
-									GUILayout.Space(10);
+									GUILayout.Space(5);
 									EditorGUILayout.BeginHorizontal();
 									{
-										EditorGUILayout.LabelField(_rootLines[i], EditorStyles.boldLabel);
+										EditorGUILayout.LabelField(_rootLines[i], EditorStyles.label, GUILayout.ExpandWidth(false));
 
 										string testFrag;
 										if (!_languageLines.TryGetValue(_rootLines[i], out testFrag))
@@ -131,7 +131,7 @@ namespace Localizator
 					}
 					EditorGUILayout.EndVertical();
 
-					EditorGUILayout.BeginVertical("box", GUILayout.Width(position.width * 0.5f - 5), GUILayout.ExpandHeight(true));
+					EditorGUILayout.BeginVertical("box", GUILayout.Width(position.width * 0.1f), GUILayout.ExpandHeight(true), GUILayout.MinWidth(100));
 					{
 						GUILayout.Label("Options", centeredMediumStyle);
 						if (GUILayout.Button("Export"))

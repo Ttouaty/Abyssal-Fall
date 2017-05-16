@@ -19,30 +19,30 @@ MonoBehaviour:
     type: 2}
   CharacterWinModel: {fileID: 114000010432461024, guid: 21f736d86df41424aa317d493121c937,
     type: 2}
-  SpecialInfoKey: Charge (Hold) & release a FireBall with X.
+  SpecialInfoKey: Hold X to shoot a fireball and release to make it explode
   CharacterStats:
     strength: 6
     speed: 5
     resistance: 3
   Dash:
     endingLag: 0.3
-    rechargeTime: 0.3
+    rechargeTime: 0.4
     Forces:
     - {x: 5, y: 4.905}
     - {x: 6, y: 7.3575}
-    Impact: 3
+    Impact: 4
   DashDamageData:
     AttackTypeUsed: 0
-    StunInflicted: 0.5
+    StunInflicted: 0.9
     IsParryable: 0
     Projectile: {fileID: 0}
   SpecialDamageData:
     AttackTypeUsed: 1
-    StunInflicted: 1
+    StunInflicted: 1.2
     IsParryable: 0
     Projectile: {fileID: 0}
-  SpecialCoolDown: 3
-  SpecialLag: 0.1
+  SpecialCoolDown: 3.3
+  SpecialLag: 0.3
   SoundList:
     SoundList:
     - Key: OnDashStart

@@ -11,23 +11,29 @@ public class GroundFalling_Behaviour : ABaseBehaviour
 
 	protected override IEnumerator Run_Implementation()
 	{
-		if (!NetworkServer.active)
-			yield break;
-		_availableGrounds = ArenaManager.Instance.Tiles.Where(x => x != null).ToList();
-		if(_availableGrounds.Count > 0)
-		{
-			_availableGrounds.Shuffle();
+		/*
+		#####################################
+			Deactivated due to player rage
+		#####################################
+		*/
 
-			int nbTilesToFall = Mathf.Min(_availableGrounds.Count, NumberOfTiles);
-			for (int i = 0; i < nbTilesToFall; ++i)
-			{
-				Tile tempTile = _availableGrounds.ShiftRandomElement();
-				if(tempTile != null)
-					tempTile.ActivateFall();
-				else
-					Debug.Log("tile was null");
-			}
-		}
+		//if (!NetworkServer.active)
+		//	yield break;
+		//_availableGrounds = ArenaManager.Instance.Tiles.Where(x => x != null).ToList();
+		//if(_availableGrounds.Count > 0)
+		//{
+		//	_availableGrounds.Shuffle();
+
+		//	int nbTilesToFall = Mathf.Min(_availableGrounds.Count, NumberOfTiles);
+		//	for (int i = 0; i < nbTilesToFall; ++i)
+		//	{
+		//		Tile tempTile = _availableGrounds.ShiftRandomElement();
+		//		if(tempTile != null)
+		//			tempTile.ActivateFall();
+		//		else
+		//			Debug.Log("tile was null");
+		//	}
+		//}
 
 		yield return null;
 	}

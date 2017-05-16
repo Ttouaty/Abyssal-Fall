@@ -54,7 +54,8 @@ namespace Localizator
 		public void OnChangeLanguage()
 		{
 			_fragmentTextRef = LanguageManager.Instance.GetText(Fragment);
-			_text.text = _fragmentTextRef;
+			if(_fragmentTextRef != null)
+				_text.text = _fragmentTextRef;
 		}
 	}
 

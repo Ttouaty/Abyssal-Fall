@@ -389,8 +389,8 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 				_isInvul = true;
 			
 			//_isInvulInternal = true;
-			if (_stunTimer.TimeLeft > 0)
-				_invulTimer.Add(Time.deltaTime);
+			//if (_stunTimer.TimeLeft > 0)
+				//_invulTimer.Add(Time.deltaTime);
 		};
 
 		_parryTimer = new TimeCooldown(this);
@@ -412,7 +412,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_lastDamageDealerTimeOut.onFinish = OnLastDamageDealerTimeOut;
 		GameManager.Instance.OnPlayerWin.AddListener(OnPlayerWin);
 
-		_maxSpeed.x = _maxSpeed.x + _maxSpeed.x * (5 * (_characterData.CharacterStats.speed - Stats.maxValue * 0.5f) / 100);
+		_maxSpeed.x = _maxSpeed.x * 0.9f + _maxSpeed.x * _characterData.CharacterStats.speed.Percentage(0, Stats.maxValue,0.2f);
 
 		_originalMaxSpeed = _maxSpeed;
 		_groundCheck = GetComponentInChildren<GroundCheck>(true);
@@ -470,10 +470,10 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 		_animator.SetBool("IsGrounded", IsGrounded);
 
-		if (IsGrounded)
-			_rigidB.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionY;
-		else
-			_rigidB.constraints = RigidbodyConstraints.FreezeRotation;
+		//if (IsGrounded)
+		//	_rigidB.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionY;
+		//else
+		//	_rigidB.constraints = RigidbodyConstraints.FreezeRotation;
 
 		CustomUpdate();
 	}
@@ -805,10 +805,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		ArenaManager.Instance.Tiles[respawnTileIndex].SetTimeLeft(ArenaManager.Instance.Tiles[respawnTileIndex].TimeLeftSave * 2, false);
 
 		if (_isLocalPlayer)
-		{
 			transform.position = newPos;
-		}
-
 
 		TrailRenderer[] tempTrails = GetComponentsInChildren<TrailRenderer>(true);
 
@@ -818,7 +815,16 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		}
 
 		_stunTimer.Set(0.5f);
-		_invulTimer.Set(1.5f);
+		_invulTimer.Set(1);
+
+		_dashRechargeTimer.Set(0);
+		_isDashing = false;
+		_allowInput = true;
+
+		_timeHeldDash = 0;
+		_dashStepActivated = 1;
+		_dashMaxed = false;
+		WaitForDashRelease = false;
 
 		Freeze();
 		Invoke("UnFreeze", 0.5f);
@@ -828,8 +834,6 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 		_RespawnFlash.Clear();
 		_RespawnFlash.Play();
-		//if (NetworkServer.active)
-		//	_animator.ResetTrigger("Reset");
 	}
 
 	public void Eject(Vector3 direction)
@@ -851,7 +855,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 			if (newStunTime > 0)
 				_stunTimer.Set(newStunTime);
-			_invulTimer.Set(0.3f);
+			_invulTimer.Set(0.4f);
 
 			_activeDirection = -direction.ZeroY().normalized;
 			transform.LookAt(transform.position + _activeDirection, Vector3.up);
@@ -920,18 +924,21 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 		ForceAirborne(0.4f);
 
-		while (!IsGrounded && !_isStunned)
+		while (!IsGrounded && !_isStunned && !IsDead)
 		{
 			yield return null;
 		} //wait for landing || hit
 
-		_networkAnimator.BroadCastTrigger("Dash_End");
-		_characterData.SoundList["OnDashEnd"].Play(gameObject);
-
-		if (!_isStunned)
+		if(!IsDead)
 		{
-			_stunTimer.Add(_dashCopy.endingLag);
-			yield return new WaitForSeconds(_dashCopy.endingLag);
+			_networkAnimator.BroadCastTrigger("Dash_End");
+			_characterData.SoundList["OnDashEnd"].Play(gameObject);
+
+			if (!_isStunned)
+			{
+				_stunTimer.Add(_dashCopy.endingLag);
+				yield return new WaitForSeconds(_dashCopy.endingLag);
+			}
 		}
 
 		_dashRechargeTimer.Set(_dashCopy.rechargeTime);
@@ -992,7 +999,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 			tempDamageData.Dealer = _dmgDealerSelf;
 			colli.gameObject.GetComponent<IDamageable>()
 				.Damage(Quaternion.FromToRotation(Vector3.right,
-				(colli.transform.position - transform.position).ZeroY().normalized) * (SO_Character.SpecialEjection.Multiply(Axis.x, _dashCopy.Impact)),
+				(colli.transform.position - transform.position).ZeroY().normalized + _rigidB.velocity.ZeroY().normalized) * (SO_Character.SpecialEjection.Multiply(Axis.x, _dashCopy.Impact)),
 				colli.contacts[0].point,
 				tempDamageData);
 		}

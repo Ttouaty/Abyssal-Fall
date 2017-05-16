@@ -144,7 +144,7 @@ namespace Localizator
 			{
 				return target;
 			}
-			return "Not_Found_" + id;
+			return null;
 		}
 
 		IEnumerator LoadLangAsset_Implementation (string fileName)

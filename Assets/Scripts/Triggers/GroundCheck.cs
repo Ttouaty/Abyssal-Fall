@@ -3,13 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Networking;
 
-[RequireComponent(typeof(SphereCollider))]
+[RequireComponent(typeof(Collider))]
 public class GroundCheck : MonoBehaviour
 {
 	public static bool noclip = false;
 
 	private PlayerController _playerRef;
-	private SphereCollider _colliderRef;
+	private Collider _colliderRef;
 	private Rigidbody _rigidBRef;
 
 	[HideInInspector]
@@ -24,7 +24,7 @@ public class GroundCheck : MonoBehaviour
 	{
 		//_ownSize = GetComponent<SphereCollider>().radius;
 		_playerRef = GetComponentInParent<PlayerController>();
-		_colliderRef = GetComponent<SphereCollider>();
+		_colliderRef = GetComponent<Collider>();
 		_rigidBRef = _playerRef.GetComponent<Rigidbody>();
 		gameObject.layer = LayerMask.NameToLayer("GroundCheck");
 	}
@@ -86,7 +86,7 @@ public class GroundCheck : MonoBehaviour
 	public void Activate()
 	{
 		enabled = true;
-		_colliderRef = GetComponent<SphereCollider>();
+		_colliderRef = GetComponent<Collider>();
 		_colliderRef.enabled = false; // force switch between true & false
 		_colliderRef.enabled = true;
 		HasCheckedForColli = false;
@@ -97,7 +97,7 @@ public class GroundCheck : MonoBehaviour
 		enabled = false;
 		_colliderIds.Clear();
 
-		_colliderRef = GetComponent<SphereCollider>();
+		_colliderRef = GetComponent<Collider>();
 		_colliderRef.enabled = false;
 	}
 }

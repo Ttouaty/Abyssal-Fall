@@ -797,6 +797,7 @@ GameObject:
   - 224: {fileID: 985574837}
   - 222: {fileID: 985574836}
   - 114: {fileID: 985574835}
+  - 114: {fileID: 985574838}
   m_Layer: 5
   m_Name: Wait for Host
   m_TagString: Untagged
@@ -862,6 +863,18 @@ RectTransform:
   m_AnchoredPosition: {x: -15, y: 92.2}
   m_SizeDelta: {x: 300, y: 50}
   m_Pivot: {x: 0.5, y: 0}
+--- !u!114 &985574838
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 985574834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b90b5ba724e4a7049835e91d6cea6134, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Fragment: waiting_for_host
 --- !u!1 &1786495093
 GameObject:
   m_ObjectHideFlags: 0
@@ -897,6 +910,7 @@ MonoBehaviour:
   InputMethodUsed: 0
   TimeToHold: 0.5
   CanLoop: 0
+  NeedConfirmation: 0
   Callback:
     m_PersistentCalls:
       m_Calls:
@@ -937,6 +951,7 @@ GameObject:
   - 224: {fileID: 1840886695}
   - 222: {fileID: 1840886698}
   - 114: {fileID: 1840886697}
+  - 114: {fileID: 1840886696}
   m_Layer: 5
   m_Name: Continue
   m_TagString: Untagged
@@ -962,6 +977,18 @@ RectTransform:
   m_AnchoredPosition: {x: 12.5, y: 0}
   m_SizeDelta: {x: -25, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1840886696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1840886694}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b90b5ba724e4a7049835e91d6cea6134, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Fragment: press_to_continue
 --- !u!114 &1840886697
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -82,6 +82,9 @@ public class OptionSelector : MonoBehaviour
 		foreach (Transform child in ButtonContainer) { children.Add(child.GetComponentInChildren<BaseOptionField>(true)); }
 
 		children.Sort((BaseOptionField a, BaseOptionField b) => {
+			if(a.GetTargetRule().ParentRules.Length - b.GetTargetRule().ParentRules.Length == 0)
+				return a.name.CompareTo(b.name);
+
 			return a.GetTargetRule().ParentRules.Length - b.GetTargetRule().ParentRules.Length;
 		});
 

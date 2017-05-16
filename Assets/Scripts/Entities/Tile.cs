@@ -41,9 +41,12 @@ public class Tile : MonoBehaviour, IPoolable
 
 	void Update ()
 	{
-		if(_isFalling && transform.position.y < -200)
+		if(_isFalling)
 		{
-			GameObjectPool.AddObjectIntoPool(gameObject);
+			if(transform.position.y < -200)
+				GameObjectPool.AddObjectIntoPool(gameObject);
+
+			_rigidB.velocity += Vector3.up * -9.806f * Time.deltaTime *1.1f; // Double fall speed +10%
 		}
 	}
 
@@ -61,7 +64,7 @@ public class Tile : MonoBehaviour, IPoolable
 		TimeManager.Instance.OnPause.RemoveListener(OnPause);
 		TimeManager.Instance.OnResume.RemoveListener(OnResume);
 		_rigidB.isKinematic = true;
-		GetComponent<Collider>().isTrigger = false;
+		gameObject.layer = LayerMask.NameToLayer("Ground");
 		StopAllCoroutines();
 		gameObject.SetActive(false);
 	}
@@ -106,14 +109,19 @@ public class Tile : MonoBehaviour, IPoolable
 	IEnumerator ActivateRespawn_Implementation ()
 	{
 		float timer = 1.0f;
-		Vector3 initialPosition = new Vector3(transform.localPosition.x, -20f, transform.localPosition.z);
+		Vector3 initialPosition = new Vector3(transform.localPosition.x, -50f, transform.localPosition.z);
 		Quaternion initialRotation = transform.rotation;
+		gameObject.layer = LayerMask.NameToLayer("NoColli");
 
 		while (timer > 0.0f)
 		{
 			transform.localPosition = Vector3.Lerp(initialPosition, _initialPosition, 1.0f - timer);
 			transform.rotation = Quaternion.Lerp(initialRotation, Quaternion.identity, 1.0f - timer);
 			timer -= TimeManager.DeltaTime;
+
+			if(timer < 0.1f && gameObject.layer != LayerMask.NameToLayer("Ground"))
+				gameObject.layer = LayerMask.NameToLayer("Ground"); // Set To Ground a bit before comming back
+
 			yield return null;
 		}
 		Restore();
@@ -125,7 +133,7 @@ public class Tile : MonoBehaviour, IPoolable
 		_isTouched = false;
 		_timeLeft = _timeLeftSave;
 		transform.localPosition = _initialPosition;
-		GetComponent<Collider>().isTrigger = false;
+		gameObject.layer = LayerMask.NameToLayer("Ground");
 		StopAllCoroutines();
 		if(ArenaManager.Instance != null)
 			ArenaManager.Instance.ResetTile(this);
@@ -161,7 +169,6 @@ public class Tile : MonoBehaviour, IPoolable
 
 	public void MakeFall()
 	{
-		GetComponent<Collider>().isTrigger = true;
 		_isTouched = true;
 		StartCoroutine(ActivateFall_Implementation());
 	}
@@ -187,6 +194,7 @@ public class Tile : MonoBehaviour, IPoolable
 	{
 		_isFalling = true;
 		_rigidB.isKinematic = false;
+		gameObject.layer = LayerMask.NameToLayer("NoColli");
 
 		// If the tile has an obstacle up, this obstacle will fall
 		if (Obstacle != null)

@@ -47,6 +47,7 @@ public class FireBall : ABaseProjectile
 		base.OnLaunch(Launcher);
 
 		_launcherRef = Launcher.GetComponent<MageController>();
+
 		SoundManager.Instance.PlayOSAttached("MagicCharge", gameObject);
 		_movingParticlesRef = Instantiate(_launcherRef.MoveParticle, transform, false) as ParticleSystem;
 		_movingParticlesRef.transform.localPosition = Vector3.zero;

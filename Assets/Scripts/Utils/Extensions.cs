@@ -135,9 +135,9 @@ public static class IntExtensions
 		return number;
 	}
 
-	public static float Percentage(this int number, float min, float max, float decimalValue = 1f)
+	public static float Percentage(this int number, float min, float max, float maxPercent = 1f)
 	{
-		return Mathf.InverseLerp(min, max, number) * decimalValue;
+		return Mathf.InverseLerp(min, max, number) * maxPercent;
 	}
 
 

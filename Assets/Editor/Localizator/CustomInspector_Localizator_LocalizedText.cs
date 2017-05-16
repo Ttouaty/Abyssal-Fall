@@ -55,7 +55,7 @@ namespace Localizator
 					}
 					else
 					{
-						_target.GetComponent<Text>().text = "<" + _target.Fragment + ">";
+						//_target.GetComponent<Text>().text = "<" + _target.Fragment + ">";
 						_target.gameObject.SetActive(false);
 						_target.gameObject.SetActive(true);
 					}

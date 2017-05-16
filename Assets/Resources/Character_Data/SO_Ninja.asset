@@ -26,22 +26,22 @@ MonoBehaviour:
     resistance: 2
   Dash:
     endingLag: 0.2
-    rechargeTime: 0.2
+    rechargeTime: 0.3
     Forces:
     - {x: 5, y: 4.905}
     - {x: 6, y: 7.3575}
-    Impact: 3
+    Impact: 4
   DashDamageData:
     AttackTypeUsed: 0
-    StunInflicted: 0.5
+    StunInflicted: 0.3
     IsParryable: 0
     Projectile: {fileID: 0}
   SpecialDamageData:
     AttackTypeUsed: 1
-    StunInflicted: 0.5
+    StunInflicted: 0.7
     IsParryable: 1
     Projectile: {fileID: 0}
-  SpecialCoolDown: 1
+  SpecialCoolDown: 1.2
   SpecialLag: 0.15
   SoundList:
     SoundList:

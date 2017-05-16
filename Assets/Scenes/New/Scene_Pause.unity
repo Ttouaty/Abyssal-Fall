@@ -137,6 +137,7 @@ GameObject:
   - 224: {fileID: 122721426}
   - 222: {fileID: 122721428}
   - 114: {fileID: 122721427}
+  - 114: {fileID: 122721429}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -201,6 +202,18 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 122721425}
+--- !u!114 &122721429
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 122721425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b90b5ba724e4a7049835e91d6cea6134, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Fragment: select
 --- !u!1 &125766491
 GameObject:
   m_ObjectHideFlags: 0
@@ -875,6 +888,18 @@ MonoBehaviour:
   m_EffectColor: {r: 1, g: 1, b: 1, a: 0.19607843}
   m_EffectDistance: {x: 0.5, y: -0.5}
   m_UseGraphicAlpha: 1
+--- !u!114 &575308763
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 575308761}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b90b5ba724e4a7049835e91d6cea6134, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Fragment: resume
 --- !u!1 &670847276
 GameObject:
   m_ObjectHideFlags: 0
@@ -885,6 +910,7 @@ GameObject:
   - 224: {fileID: 670847277}
   - 222: {fileID: 670847279}
   - 114: {fileID: 670847278}
+  - 114: {fileID: 670847280}
   m_Layer: 5
   m_Name: Title
   m_TagString: Untagged
@@ -949,6 +975,18 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 670847276}
+--- !u!114 &670847280
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 670847276}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b90b5ba724e4a7049835e91d6cea6134, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Fragment: pause
 --- !u!1001 &783069445
 Prefab:
   m_ObjectHideFlags: 0
@@ -1032,14 +1070,6 @@ Prefab:
       propertyPath: m_Name
       value: Player 2
       objectReference: {fileID: 0}
-    - target: {fileID: 22471712, guid: bce34dcc2df501446863ae16aac2dad7, type: 2}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 22471712, guid: bce34dcc2df501446863ae16aac2dad7, type: 2}
-      propertyPath: m_LocalScale.y
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: bce34dcc2df501446863ae16aac2dad7, type: 2}
   m_IsPrefabParent: 0
@@ -1058,6 +1088,7 @@ GameObject:
   - 224: {fileID: 848402747}
   - 222: {fileID: 848402749}
   - 114: {fileID: 848402748}
+  - 114: {fileID: 848402750}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -1122,6 +1153,18 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 848402746}
+--- !u!114 &848402750
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 848402746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b90b5ba724e4a7049835e91d6cea6134, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Fragment: return_button
 --- !u!1 &871929036
 GameObject:
   m_ObjectHideFlags: 0
@@ -1283,14 +1326,6 @@ Prefab:
     - target: {fileID: 124174, guid: bce34dcc2df501446863ae16aac2dad7, type: 2}
       propertyPath: m_Name
       value: Player 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 22471712, guid: bce34dcc2df501446863ae16aac2dad7, type: 2}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 22471712, guid: bce34dcc2df501446863ae16aac2dad7, type: 2}
-      propertyPath: m_LocalScale.y
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: bce34dcc2df501446863ae16aac2dad7, type: 2}
@@ -1906,6 +1941,18 @@ GameObject:
   m_PrefabParentObject: {fileID: 1000014037550438, guid: 2994e9a43aa032744b68300b047eeab9,
     type: 2}
   m_PrefabInternal: {fileID: 1319010687}
+--- !u!114 &1319010693
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1319010690}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b90b5ba724e4a7049835e91d6cea6134, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Fragment: character_select
 --- !u!1 &1370174968
 GameObject:
   m_ObjectHideFlags: 0
@@ -2224,14 +2271,6 @@ Prefab:
     - target: {fileID: 124174, guid: bce34dcc2df501446863ae16aac2dad7, type: 2}
       propertyPath: m_Name
       value: Player 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 22471712, guid: bce34dcc2df501446863ae16aac2dad7, type: 2}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 22471712, guid: bce34dcc2df501446863ae16aac2dad7, type: 2}
-      propertyPath: m_LocalScale.y
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: bce34dcc2df501446863ae16aac2dad7, type: 2}
@@ -2552,6 +2591,18 @@ MonoBehaviour:
   m_EffectColor: {r: 1, g: 1, b: 1, a: 0.19607843}
   m_EffectDistance: {x: 0.5, y: -0.5}
   m_UseGraphicAlpha: 1
+--- !u!114 &1819387546
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1819387544}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b90b5ba724e4a7049835e91d6cea6134, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Fragment: main_menu
 --- !u!1 &1867327842
 GameObject:
   m_ObjectHideFlags: 0
