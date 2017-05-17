@@ -103,6 +103,12 @@ public class OptionPanel : ButtonPanelNew
 		//_optionsObj.GammaValue = transform.Find("Gamma").GetComponent<Slider>().value;
 	}
 
+	public void ChangeLanguage(int value)
+	{
+		_optionsObj.Language = value;
+		Localizator.LanguageManager.Instance.CurrentLanguage = (SystemLanguage) value;
+	}
+
 	public void ChangeMasterSoundVolume(float value)
 	{
 		Debug.Log("Master sound volume set to => " + value);
@@ -128,6 +134,7 @@ public class AbyssalFallOptions
 	public int TextureQuality = 0;
 	public int Vsync = 0;
 	public int AntiAliasing = 0;
+	public int Language = 10;
 	public float GammaValue = 0.5f;
 	public float MasterSoundVolume = 1f;
 	public float SFXVolume = 1f;

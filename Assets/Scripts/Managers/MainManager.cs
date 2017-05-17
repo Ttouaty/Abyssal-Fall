@@ -84,10 +84,17 @@ public class MainManager : GenericSingleton<MainManager>
 			QualitySettings.antiAliasing = (int) Mathf.Pow(2, _optionsObj.AntiAliasing);
 			QualitySettings.vSyncCount = _optionsObj.Vsync;
 			QualitySettings.masterTextureLimit = _optionsObj.TextureQuality;
+			StartCoroutine(DelayLoadLanguage((SystemLanguage)_optionsObj.Language));
 			Screen.SetResolution((int)AvailableResolutions[_optionsObj.ScreenResolution].x, (int)AvailableResolutions[_optionsObj.ScreenResolution].y, true);
 		}
 		else
 			Debug.Log("No option file found.");
+	}
+
+	IEnumerator DelayLoadLanguage(SystemLanguage targetLang)
+	{
+		yield return new WaitForSeconds(2);
+		Localizator.LanguageManager.Instance.CurrentLanguage = targetLang;
 	}
 
 	void Update()

@@ -9,13 +9,5 @@ public class KillPlane : MonoBehaviour
 		{
 			col.GetComponent<PlayerController>().Kill();
 		}
-		else if(col.gameObject.layer == LayerMask.NameToLayer("Ground")) 
-		{
-			Tile tileComp = col.transform.GetComponent<Tile>();
-			if(tileComp != null && tileComp.CanFall)
-			{
-				GameManager.Instance.GameRules.RespawnFallenTiles(tileComp);
-			}
-		}
 	}
 }

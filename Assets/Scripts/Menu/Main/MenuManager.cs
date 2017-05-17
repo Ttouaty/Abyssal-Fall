@@ -139,9 +139,10 @@ public class MenuManager : GenericSingleton<MenuManager>
 	private IEnumerator StartTutorial()
 	{
 		yield return StartCoroutine(AutoFade.StartFade(1,
-			LevelManager.Instance.LoadSceneAlone(LevelManager.Instance.SceneTutorial),
+			LevelManager.Instance.LoadSceneAlone(LevelManager.Instance.SceneTutorial, true),
 			AutoFade.EndFade(0.5f, 1, Color.white),
 			Color.white));
+
 	}
 
 	public void Exit()
@@ -258,8 +259,8 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	public void CheckIfNeedFTUE()
 	{
-		//if (_needFTUE)
-		//	MenuPanelNew.PanelRefs["FTUE"].Open();
-		Debug.LogWarning("Tuto has been disabled");
+		if (_needFTUE)
+			MenuPanelNew.PanelRefs["FTUE"].Open();
+		//Debug.LogWarning("Tuto has been disabled");
 	}
 }

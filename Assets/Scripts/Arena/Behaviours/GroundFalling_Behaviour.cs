@@ -6,8 +6,8 @@ using System.Linq;
 
 public class GroundFalling_Behaviour : ABaseBehaviour
 {
-	private List<Tile>			_availableGrounds   = new List<Tile>();
-	public int                  NumberOfTiles       = 0;
+	//private List<Tile>			_availableGrounds   = new List<Tile>();
+	//public int                  NumberOfTiles       = 0;
 
 	protected override IEnumerator Run_Implementation()
 	{

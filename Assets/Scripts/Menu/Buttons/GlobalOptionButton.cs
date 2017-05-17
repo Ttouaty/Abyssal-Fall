@@ -34,7 +34,7 @@ public class GlobalOptionButton : Selectable
 			activeValueIndex = Mathf.Clamp(activeValueIndex + valueToAdd, 0, Values.Length - 1);
 
 		UpdateText();
-		OnValueChange.Invoke(activeValueIndex);
+		OnValueChange.Invoke(Values[activeValueIndex]);
 	}
 
 	private void UpdateText()

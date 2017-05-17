@@ -256,10 +256,11 @@ public class LevelManager : GenericSingleton<LevelManager>
 		_bIsOnMenu = false;
 	}
 
-	public IEnumerator LoadSceneAlone (SceneField scene)
+	public IEnumerator LoadSceneAlone (SceneField scene, bool isActiveScene = false)
 	{
 		UnloadAllScenes();
 		yield return StartCoroutine(LoadScene(scene));
+		SceneManager.SetActiveScene(SceneManager.GetSceneByName(scene.SceneName));
 	}
 
 	private Dictionary<SceneField, Action> _defaultScenesToLoad = new Dictionary<SceneField, Action>();

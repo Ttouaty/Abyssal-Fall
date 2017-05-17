@@ -196,6 +196,8 @@ public class Tile : MonoBehaviour, IPoolable
 		_rigidB.isKinematic = false;
 		gameObject.layer = LayerMask.NameToLayer("NoColli");
 
+		GameManager.Instance.GameRules.RespawnFallenTiles(this);
+
 		// If the tile has an obstacle up, this obstacle will fall
 		if (Obstacle != null)
 		{

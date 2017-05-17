@@ -92,6 +92,7 @@ namespace Localizator
 		IEnumerator LoadLanguage_Implementation ()
 		{
 			Dictionary<string, string> target;
+
 			if (!_languagesDictionaries.TryGetValue(_currentLanguage, out target))
 			{
 				Debug.LogWarning("Localizator.LanguageManager -> Try to load language <" + _currentLanguage.ToString() + ">");
@@ -115,7 +116,7 @@ namespace Localizator
 				}
 				else
 				{
-					Debug.LogError("Localizator.LanguageManager -> Language <" + _currentLanguage + "> not translated. Lanugage <" + DefaultLanguage.ToString() + "> used instead");
+					Debug.LogError("Localizator.LanguageManager -> Language <" + _currentLanguage + "> not translated. Language <" + DefaultLanguage.ToString() + "> used instead");
 					_currentDictionary = _languagesDictionaries[DefaultLanguage];
 				}
 			}
@@ -144,6 +145,8 @@ namespace Localizator
 			{
 				return target;
 			}
+
+			Debug.LogWarning("No translation found for Id String => "+id);
 			return null;
 		}
 
