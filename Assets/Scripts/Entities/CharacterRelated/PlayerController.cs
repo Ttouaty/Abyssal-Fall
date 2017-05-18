@@ -231,7 +231,10 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		get { return _lastDamageDealer; }
 		set
 		{
-			_lastDamageDealerTimeOut.Set(2);
+			if(_isInDebugMode)
+				_lastDamageDealerTimeOut.Set(2);
+			else
+				_lastDamageDealerTimeOut.Set(GameManager.Instance.GameRules.TimeBeforeSuicide);
 			_lastDamageDealer = value;
 		}
 	}
@@ -462,7 +465,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		ProcessCoolDowns();
 
 		ProcessActiveSpeed();
-		if (_allowInput)
+		//if (_allowInput)
 			ProcessOrientation();
 
 		ProcessInputs();
@@ -545,19 +548,22 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	private void ProcessOrientation()
 	{
 		Vector3 oldDirection = _activeDirection;
-		if (!InputManager.StickIsNeutral(_playerRef.JoystickNumber) && !_isStunned)
+		if(IsGrounded)
 		{
-			_activeDirection.x = InputManager.GetAxis("x", _playerRef.JoystickNumber);
-			_activeDirection.z = InputManager.GetAxis("y", _playerRef.JoystickNumber);
-			_activeDirection = Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized) * _activeDirection;
+			if (!InputManager.StickIsNeutral(_playerRef.JoystickNumber) && !_isStunned && AllowInput)
+			{
+				_activeDirection.x = InputManager.GetAxis("x", _playerRef.JoystickNumber);
+				_activeDirection.z = InputManager.GetAxis("y", _playerRef.JoystickNumber);
+				_activeDirection = Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized) * _activeDirection;
 
-			if (oldDirection.AnglePercent(_activeDirection) < -0.8f)
-				OnFlip();
-		}
-		else
-		{
-			_activeDirection = transform.rotation * Vector3.forward;
-			_activeDirection = Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized) * _activeDirection;
+				if (oldDirection.AnglePercent(_activeDirection) < -0.8f)
+					OnFlip();
+			}
+			else
+			{
+				_activeDirection = transform.rotation * Vector3.forward;
+				_activeDirection = Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized) * _activeDirection;
+			}
 		}
 
 		transform.LookAt(transform.position + _activeDirection, Vector3.up);
@@ -850,6 +856,12 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	{
 		if (_isLocalPlayer)
 		{
+			if (!IsGrounded)
+			{
+				Debug.LogWarning("Air shot !");
+				direction *= 1.2f;
+			}
+
 			_forcedAirborneTimeout.Add(((direction.y / _acceleration.y) / 9.81f) * 0.7f);
 			Eject(direction);
 
@@ -961,9 +973,10 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		directionHeld.z = directionHeld.y;
 		directionHeld = Quaternion.FromToRotation(Vector3.right, Camera.main.transform.right.ZeroY().normalized) * directionHeld.ZeroY().normalized;
 
-		// angle = speed * 12 ( == 120° with 10 speed) * (Time.deltaTime * 2f) (per 0.5f second) * 1 - dot() (base on anle )
-		float angleGiven = _characterData.CharacterStats.speed * 12 * (Time.deltaTime * 2f) * Vector3.Dot(directionHeld.normalized, Quaternion.AngleAxis(90, Vector3.up) * _activeSpeed.ZeroY().normalized);
 
+		// angle = speed * 12 ( == 120° with 10 speed) * (Time.deltaTime * 2f) (per 0.5f second) * 1 - dot() (base on anle )
+		float angleGiven = _characterData.CharacterStats.speed * 12 * (Time.deltaTime * 2f) * Vector3.Dot(directionHeld.normalized, Quaternion.AngleAxis(90, Vector3.up) * _activeDirection.ZeroY().normalized);
+		_activeDirection = Quaternion.AngleAxis(angleGiven, Vector3.up) * _activeDirection;
 		_activeSpeed = Quaternion.AngleAxis(angleGiven, Vector3.up) * _activeSpeed;
 		//_activeSpeed += (directionHeld * (0.10f + 0.005f * _characterData.CharacterStats.speed)) * (1 - Mathf.Abs(Vector3.Dot(_activeSpeed.normalized, directionHeld.normalized)));
 	}

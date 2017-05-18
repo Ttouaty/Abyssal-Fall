@@ -31,6 +31,7 @@ public class BaseOptionField : MonoBehaviour
 	{
 		RuleFieldName = newFieldName;
 		Description.text = GetTargetRule().Label;
+		Description.GetComponent<Localizator.LocalizedText>().Fragment = GetTargetRule().Label;
 		CheckButtonsMatching();
 
 	}

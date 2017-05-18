@@ -18,30 +18,40 @@ namespace Localizator
 			}
 		}
 
-		public string Fragment = "none";
+		public string Fragment
+		{
+			get { return _fragmentInternal; }
+			set
+			{
+				_fragmentInternal = value;
+				OnChangeLanguage();
+			}
+		}
+		[HideInInspector]
+		public string _fragmentInternal = "none";
 
 		void Awake()
 		{
 			_text = GetComponent<Text>();
 		}
 
-		void Start ()
+		void Start()
 		{
 			LanguageManager.Instance.OnChangeLanguage.AddListener(OnChangeLanguage);
-			if(LanguageManager.Instance.bIsLoaded)
+			if (LanguageManager.Instance.bIsLoaded)
 			{
 				OnChangeLanguage();
 			}
 		}
 
-		public void SetText (string fragment, params KeyValuePair<string, string>[] replace)
+		public void SetText(string fragment, params KeyValuePair<string, string>[] replace)
 		{
 			Fragment = fragment;
 			OnChangeLanguage();
 			SetText(replace);
 		}
 
-		public void SetText (params KeyValuePair<string, string>[] replace)
+		public void SetText(params KeyValuePair<string, string>[] replace)
 		{
 			string frag = _fragmentTextRef;
 			for (int i = 0; i < replace.Length; ++i)
@@ -54,7 +64,7 @@ namespace Localizator
 		public void OnChangeLanguage()
 		{
 			_fragmentTextRef = LanguageManager.Instance.GetText(Fragment);
-			if(_fragmentTextRef != null)
+			if (_fragmentTextRef != null)
 				_text.text = _fragmentTextRef;
 		}
 	}

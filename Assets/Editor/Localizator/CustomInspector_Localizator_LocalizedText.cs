@@ -24,7 +24,7 @@ namespace Localizator
 
 			for(int i = 0; i < _rootLines.Length; ++i)
 			{
-				if(_rootLines[i].Equals(_target.Fragment))
+				if(_rootLines[i].Equals(_target._fragmentInternal))
 				{
 					//_selectedIndex = i;
 					break;
@@ -44,10 +44,10 @@ namespace Localizator
 			}
 			else
 			{
-				string value = EditorGUILayout.TextField("Current Fragment :", _target.Fragment);
-				if(!_target.Fragment.Equals(value))
+				string value = EditorGUILayout.TextField("Current Fragment :", _target._fragmentInternal);
+				if(!_target._fragmentInternal.Equals(value))
 				{
-					_target.Fragment = value;
+					_target._fragmentInternal = value;
 
 					if(Application.isPlaying)
 					{
