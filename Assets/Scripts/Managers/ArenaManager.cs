@@ -512,10 +512,10 @@ public class ArenaManager : MonoBehaviour
 		}
 		element.transform.localPosition = new Vector3(element.transform.localPosition.x, TileScale, element.transform.localPosition.z);
 
-		if (bIsSounded)
-		{
-			GameManager.Instance.AudioSource.PlayOneShot(GameManager.Instance.OnObstacleDrop);
-		}
+		//if (bIsSounded)
+		//{
+		//	GameManager.Instance.AudioSource.PlayOneShot(GameManager.Instance.OnObstacleDrop);
+		//}
 
 		element.GetComponent<Obstacle>().OnDropped();
 		CameraManager.Shake(ShakeStrength.Medium);

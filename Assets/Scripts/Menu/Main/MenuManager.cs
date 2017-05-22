@@ -106,21 +106,27 @@ public class MenuManager : GenericSingleton<MenuManager>
 	{
 		if (!NetworkServer.active)
 			return;
-
 		for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; i++)
 		{
-			Debug.Log("Spawning wheel for player => " + ServerManager.Instance.RegisteredPlayers[i].name);
-			ServerManager.Instance.SpawnCharacterWheel(ServerManager.Instance.RegisteredPlayers[i].gameObject);
 			ServerManager.Instance.RegisteredPlayers[i].UnReady();
 
 			if (ServerManager.Instance.RegisteredPlayers[i].isLocalPlayer)
 				_controllerAlreadyInUse[ServerManager.Instance.RegisteredPlayers[i].JoystickNumber] = true;
-
 		}
+		StartCoroutine(SpawnWheelOvertime());
+
 		GetComponentInChildren<TextIP>(true).ReGenerate();
 		ServerManager.Instance.ForceUnready = false;
 	}
 
+	IEnumerator SpawnWheelOvertime()
+	{
+		for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; i++)
+		{
+			ServerManager.Instance.SpawnCharacterWheel(ServerManager.Instance.RegisteredPlayers[i].gameObject);
+			yield return new WaitForSeconds(0.1f);
+		}
+	}
 
 	public void StartGame()
 	{

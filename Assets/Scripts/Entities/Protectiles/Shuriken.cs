@@ -9,7 +9,7 @@ public class Shuriken : ABaseProjectile
 	protected override void Awake()
 	{
 		base.Awake();
-		_maxLifeSpan = 0.5f;
+		_maxLifeSpan = 0.6f;
 	}
 
 	public override void Launch(Vector3 Position, Vector3 Direction, DamageData data, NetworkInstanceId newLauncherId)

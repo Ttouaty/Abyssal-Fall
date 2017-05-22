@@ -45,7 +45,7 @@ public class PlayerSoundList
 	{
 		FmodSoundEvent[] tempArray = SoundList.ToArray();
 		//if (tempArray.Length < 7)
-			//Debug.LogWarning("PlayerSoundList doesn't seem to have all base sounds.\n\"OnDashStart\",\"OnDashEnd\",\"OnDeath\",\"OnHit\",\"OnSpecialActivate\",\"OnSpecialRestored\",\"OnParry\".");
+		//Debug.LogWarning("PlayerSoundList doesn't seem to have all base sounds.\n\"OnDashStart\",\"OnDashEnd\",\"OnDeath\",\"OnHit\",\"OnSpecialActivate\",\"OnSpecialRestored\",\"OnParry\".");
 		for (int i = 0; i < tempArray.Length; i++)
 		{
 			_soundDico[tempArray[i].Key] = tempArray[i];
@@ -220,7 +220,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	protected TimeCooldown _parryTimer; //Seconds of Parrying
 	protected TimeCooldown _damageTimer; //Seconds of DealingDamage
 	protected TimeCooldown _dashRechargeTimer; //Seconds of dash cooldown
-	//protected TimeCooldown _airborneTimeout; //Time before being considered airborne
+											   //protected TimeCooldown _airborneTimeout; //Time before being considered airborne
 	protected TimeCooldown _forcedAirborneTimeout;
 
 	protected DamageDealer _dmgDealerSelf;
@@ -231,7 +231,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		get { return _lastDamageDealer; }
 		set
 		{
-			if(_isInDebugMode)
+			if (_isInDebugMode)
 				_lastDamageDealerTimeOut.Set(2);
 			else
 				_lastDamageDealerTimeOut.Set(GameManager.Instance.GameRules.TimeBeforeSuicide);
@@ -390,24 +390,14 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		{
 			if (!_isInvul)
 				_isInvul = true;
-			
+
 			//_isInvulInternal = true;
 			//if (_stunTimer.TimeLeft > 0)
-				//_invulTimer.Add(Time.deltaTime);
+			//_invulTimer.Add(Time.deltaTime);
 		};
 
 		_parryTimer = new TimeCooldown(this);
 		_damageTimer = new TimeCooldown(this);
-
-		//_airborneTimeout = new TimeCooldown(this);
-		//_airborneTimeout.onFinish = () => {	if (IsGrounded)	_airborneTimeout.Set(_airborneDelay);};
-		//_airborneTimeout.onProgress = () => {
-		//	if (_dashCopy.inProgress)
-		//		return;
-		//	if (IsGrounded)
-		//		_airborneTimeout.Set(_airborneDelay);
-		//	IsGrounded = true;
-		//};
 
 		_forcedAirborneTimeout = new TimeCooldown(this);
 
@@ -415,7 +405,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_lastDamageDealerTimeOut.onFinish = OnLastDamageDealerTimeOut;
 		GameManager.Instance.OnPlayerWin.AddListener(OnPlayerWin);
 
-		_maxSpeed.x = _maxSpeed.x * 0.9f + _maxSpeed.x * _characterData.CharacterStats.speed.Percentage(0, Stats.maxValue,0.2f);
+		_maxSpeed.x = _maxSpeed.x * 0.6f + _maxSpeed.x * _characterData.CharacterStats.speed.Percentage(0, Stats.maxValue, 0.8f);
 
 		_originalMaxSpeed = _maxSpeed;
 		_groundCheck = GetComponentInChildren<GroundCheck>(true);
@@ -466,7 +456,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 		ProcessActiveSpeed();
 		//if (_allowInput)
-			ProcessOrientation();
+		ProcessOrientation();
 
 		ProcessInputs();
 		ApplyCharacterFinalVelocity();
@@ -548,9 +538,9 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	private void ProcessOrientation()
 	{
 		Vector3 oldDirection = _activeDirection;
-		if(IsGrounded)
+		if (AllowInput)
 		{
-			if (!InputManager.StickIsNeutral(_playerRef.JoystickNumber) && !_isStunned && AllowInput)
+			if (!InputManager.StickIsNeutral(_playerRef.JoystickNumber) && !_isStunned)
 			{
 				_activeDirection.x = InputManager.GetAxis("x", _playerRef.JoystickNumber);
 				_activeDirection.z = InputManager.GetAxis("y", _playerRef.JoystickNumber);
@@ -623,9 +613,9 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 			_stunTimer.Add(_characterData.SpecialLag);
 		}
 
-		if(AllowInput)
+		if (AllowInput)
 		{
-			if(InputManager.GetButtonDown("Taunt", _playerRef.JoystickNumber) && IsGrounded)
+			if (InputManager.GetButtonDown("Taunt", _playerRef.JoystickNumber) && IsGrounded)
 			{
 				Taunt();
 			}
@@ -762,13 +752,13 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	{
 		_playerLayer = value;
 		gameObject.layer = _playerLayer;
-		Debug.Log("Set playerLayer to => " + LayerMask.LayerToName(gameObject.layer));
+		//Debug.Log("Set playerLayer to => " + LayerMask.LayerToName(gameObject.layer));
 	}
 
 	[Command]
 	public virtual void CmdSetIsDashing(bool value)
 	{
-		if(value)
+		if (value)
 			_damageTimer.Add(_dashDamagingTime);
 		_dashing = value;
 	}
@@ -856,18 +846,11 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	{
 		if (_isLocalPlayer)
 		{
-			if (!IsGrounded)
-			{
-				Debug.LogWarning("Air shot !");
-				direction *= 1.2f;
-			}
-
 			_forcedAirborneTimeout.Add(((direction.y / _acceleration.y) / 9.81f) * 0.7f);
 			Eject(direction);
 
-			if (newStunTime > 0)
-				_stunTimer.Set(newStunTime);
-			_invulTimer.Set(0.4f);
+			_stunTimer.Set(newStunTime);
+			_invulTimer.Set(0.3f);
 
 			_activeDirection = -direction.ZeroY().normalized;
 			transform.LookAt(transform.position + _activeDirection, Vector3.up);
@@ -880,12 +863,18 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 			CameraManager.Shake(ShakeStrength.Low);
 
 		_characterData.SoundList["OnHit"].Play(gameObject);
+	}
 
+	[ClientRpc]
+	public void RpcDisplayAirshotPopup()
+	{
+		Debug.LogError("Airshot");
+		Instantiate(GameManager.Instance.Popups["AirShot"], transform.position + Vector3.up, Camera.main.transform.rotation);
 	}
 
 	public void Damage(Vector3 direction, Vector3 impactPoint, DamageData data)
 	{
-		if (_isInvul)
+		if (_isInvul || _parryTimer.TimeLeft != 0)
 			return;
 
 		_animToolkit.ActivateParticle("hit");
@@ -894,12 +883,21 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		direction.x = direction.x * 0.5f + direction.x * ((1f - _characterData.CharacterStats.resistance.Percentage(0, Stats.maxValue)));
 		direction.z = direction.z * 0.5f + direction.z * ((1f - _characterData.CharacterStats.resistance.Percentage(0, Stats.maxValue)));
 		_isInvul = true;
+		_allowInput = false;
 
 		if (NetworkServer.active)
 		{
 			Debug.Log("Character \"" + _characterData.IngameName + "\" was damaged by: \"" + data.Dealer.InGameName + "\"");
+			float stunInflicted = data.StunInflicted;
+			if (!IsGrounded && (_isStunned || _isDashing))
+			{
+				direction *= 1.2f;
+				stunInflicted *= 1.3f;
+
+				RpcDisplayAirshotPopup();
+			}
 			LastDamageDealer = data.Dealer;
-			RpcDamage(direction, data.StunInflicted);
+			RpcDamage(direction, stunInflicted);
 		}
 	}
 
@@ -918,7 +916,13 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	[Command]
 	public void CmdParry() { RpcParry(); _animToolkit.ActivateParticle("Parry"); }
 	[ClientRpc]
-	public void RpcParry() { _animToolkit.ActivateParticle("Parry"); }
+
+	public void RpcParry()
+	{
+		Instantiate(GameManager.Instance.Popups["Parry"], transform.position + Vector3.up, Camera.main.transform.rotation);
+		Debug.LogError("Parry");
+		_animToolkit.ActivateParticle("Parry");
+	}
 
 	public void AddStun(float stunTime) { _stunTimer.Add(stunTime); }
 	public void SetStun(float stunTime) { _stunTimer.Set(stunTime); }
@@ -927,6 +931,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	protected virtual IEnumerator ActivateDash()
 	{
 		_isDashing = true;
+		_isInvul = true;
 		_invulTimer.Set(_dashDamagingTime);
 		_allowInput = false;
 		_parryTimer.Set(_parryTime);
@@ -941,7 +946,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 			yield return null;
 		} //wait for landing || hit
 
-		if(!IsDead)
+		if (!IsDead)
 		{
 			_networkAnimator.BroadCastTrigger("Dash_End");
 			_characterData.SoundList["OnDashEnd"].Play(gameObject);
@@ -975,7 +980,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 
 		// angle = speed * 12 ( == 120° with 10 speed) * (Time.deltaTime * 2f) (per 0.5f second) * 1 - dot() (base on anle )
-		float angleGiven = _characterData.CharacterStats.speed * 12 * (Time.deltaTime * 2f) * Vector3.Dot(directionHeld.normalized, Quaternion.AngleAxis(90, Vector3.up) * _activeDirection.ZeroY().normalized);
+		float angleGiven = _characterData.CharacterStats.speed * 12 * (Time.deltaTime * 2f) * Vector3.Dot(directionHeld.normalized, Quaternion.AngleAxis(90, Vector3.up) * _activeSpeed.ZeroY().normalized);
 		_activeDirection = Quaternion.AngleAxis(angleGiven, Vector3.up) * _activeDirection;
 		_activeSpeed = Quaternion.AngleAxis(angleGiven, Vector3.up) * _activeSpeed;
 		//_activeSpeed += (directionHeld * (0.10f + 0.005f * _characterData.CharacterStats.speed)) * (1 - Mathf.Abs(Vector3.Dot(_activeSpeed.normalized, directionHeld.normalized)));

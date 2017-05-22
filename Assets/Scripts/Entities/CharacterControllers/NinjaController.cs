@@ -21,6 +21,6 @@ public class NinjaController : PlayerController {
 
 	private void ThrowShuriken(Vector3 direction)
 	{
-		CmdLaunchProjectile("Shuriken", transform.position + transform.forward, direction);
+		CmdLaunchProjectile("Shuriken", transform.position + transform.forward + transform.up * 0.5f, direction);
 	}
 }

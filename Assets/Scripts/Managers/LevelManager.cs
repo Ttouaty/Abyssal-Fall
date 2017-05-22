@@ -115,7 +115,7 @@ public class LevelManager : GenericSingleton<LevelManager>
 		}
 	}
 
-	private IEnumerator OpenMenu_Implementation(bool showSplashScreens, string targetMenu, bool openCharacterSlots = false)
+	public IEnumerator OpenMenu_Implementation(bool showSplashScreens, string targetMenu, bool openCharacterSlots = false)
 	{
 		if (!_bIsOnMenu)
 		{
@@ -125,7 +125,7 @@ public class LevelManager : GenericSingleton<LevelManager>
 			_bIsOnMenu = true;
 			MenuManager.Instance.FadeSplashscreens(showSplashScreens);
 
-			yield return new WaitForSeconds(0.5f); // wait for panel awake & transition
+			yield return new WaitForSeconds(0.7f); // wait for panel awake & transition
 
 			if(!showSplashScreens)
 				yield return new WaitForSeconds(1f); // wait for panel awake & transition
@@ -134,8 +134,8 @@ public class LevelManager : GenericSingleton<LevelManager>
 
 			if (openCharacterSlots)
 			{
-				InputManager.SetInputLockTime(1.2f);
-				yield return new WaitForSeconds(1);
+				InputManager.SetInputLockTime(1f); // Important for reseting locktime (previously set to 100)
+				yield return new WaitForSeconds(0.8f);
 				MenuManager.Instance.OpenSlotsForPreselectedPlayers();
 			}
 		}

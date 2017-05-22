@@ -14,6 +14,35 @@ public struct GameConfiguration
 	public int MapFileUsedIndex;
 }
 
+[Serializable]
+public struct StringPopup
+{
+	public string key;
+	public GameObject value;
+}
+[Serializable]
+public struct PopupDico
+{
+	[SerializeField]
+	private StringPopup[] _popupArray;
+
+	public GameObject this[string key]
+	{
+		get
+		{
+			for (int i = 0; i < _popupArray.Length; i++)
+			{
+				if (_popupArray[i].key == key)
+					return _popupArray[i].value;
+			}
+
+
+			Debug.LogError("GameManager: no popup found for key => "+key);
+			return null;
+		}
+	}
+}
+
 [System.Serializable]
 public class GameEventDeath : UnityEvent<Player, Player> { }
 [System.Serializable]
@@ -49,34 +78,29 @@ public class GameManager : GenericSingleton<GameManager>
 		}
 	}
 
-	public AudioClip OnGroundDrop; //TODO Switch to FmodOneShotSound
-	public AudioClip OnObstacleDrop;
-	public AudioClip OnThree;
-	public AudioClip OnTwo;
-	public AudioClip OnOne;
-	public AudioClip OnGo;
-	public AudioSource AudioSource;
-	public AudioSource GameLoop;
-
-	[Space]
+	public Texture DefaultToonRamp;
 	public Color[] PlayerColors;
 	public GameObject[] PlayerNumberImages;
-	public Texture DefaultToonRamp;
-	[Space]
+	public PopupDico Popups;
 
 	//[HideInInspector]
 	//public Player[] RegisteredPlayers = new Player[4];
 	//// [HideInInspector]
 	//public int nbPlayers = -1;
 
+	[HideInInspector]
 	public GameEventDeath OnLocalPlayerDeath;
+	[HideInInspector]
 	public GameEventWin OnRoundEndServer;
+	[HideInInspector]
 	public GameEventWin OnRoundEnd;
+	[HideInInspector]
 	public GameEventWin OnPlayerWin;
 
-	[Space()]
+	[HideInInspector]
 	public GameConfiguration CurrentGameConfiguration;
 
+	[HideInInspector]
 	public int CurrentStage = 0;
 
 	public void StartGame()

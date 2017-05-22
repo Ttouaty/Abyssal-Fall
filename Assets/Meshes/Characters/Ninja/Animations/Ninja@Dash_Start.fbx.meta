@@ -221,9 +221,16 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.23026285
+      - time: 0.17161182
         functionName: ActivateParticle
         data: dash dust
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.9538651
+        functionName: ActivateParticle
+        data: DashSmoke
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0

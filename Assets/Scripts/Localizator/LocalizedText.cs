@@ -47,7 +47,6 @@ namespace Localizator
 		public void SetText(string fragment, params KeyValuePair<string, string>[] replace)
 		{
 			Fragment = fragment;
-			OnChangeLanguage();
 			SetText(replace);
 		}
 

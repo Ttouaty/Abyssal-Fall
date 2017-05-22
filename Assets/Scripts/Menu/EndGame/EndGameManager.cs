@@ -26,12 +26,21 @@ public class EndGameManager : GenericSingleton<EndGameManager>
 
 	public void BackToCharacterSelect()
 	{
+		StartCoroutine(BackToCharacterSelectCO());	
+	}
+
+	IEnumerator BackToCharacterSelectCO()
+	{
+		InputManager.AddInputLockTime(100);
+
+		StartCoroutine(AutoFade.StartFade(0.5f, WaitUntilCharacterScreenIsLoaded(), 0.5f, Color.black));
+		yield return new WaitForSeconds(0.55f);
+
 		Destroy(GameManager.Instance.GameRules.gameObject);
 		MainManager.Instance.LEVEL_MANAGER.UnloadScene(LevelManager.Instance.CurrentArenaConfig.BackgroundLevel);
-
 		CameraManager.Instance.Reset();
 		ServerManager.Instance.OnGameEnd();
-		if(NetworkServer.active)
+		if (NetworkServer.active)
 		{
 			for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; i++)
 			{
@@ -48,6 +57,11 @@ public class EndGameManager : GenericSingleton<EndGameManager>
 			Player.LocalPlayer.RpcOpenMenu(false, "CharacterSelect", false);
 
 		MenuPanelNew.GlobalInputDelay = 4;
+	}
+
+	IEnumerator WaitUntilCharacterScreenIsLoaded()
+	{
+		yield return new WaitUntil(() => MenuManager.Instance != null);
 	}
 
 	public override void Init()

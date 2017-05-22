@@ -87,7 +87,9 @@ public class MenuPanelNew : MonoBehaviour
 		ActiveMenupanel = this;
 		InputEnabled = false;
 		LaunchAnimation("SendIn");
-		if(send)
+		SetInputDelay(0.5f);
+
+		if (send)
 			SendOpen();
 	}
 
@@ -145,6 +147,7 @@ public class MenuPanelNew : MonoBehaviour
 		}
 
 		ActiveMenupanel.LaunchAnimation("Return");
+		ActiveMenupanel.SetInputDelay(0.5f);
 		InputEnabled = false;
 		if (NetworkServer.active)
 			Player.LocalPlayer.RpcMenuTransition(PanelName, false);

@@ -772,7 +772,6 @@ GameObject:
   m_Component:
   - 4: {fileID: 664798912}
   - 114: {fileID: 664798915}
-  - 82: {fileID: 664798914}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -793,80 +792,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1511463442}
   m_RootOrder: 1
---- !u!82 &664798914
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 664798911}
-  m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 0
-  m_Volume: 1
-  m_Pitch: 1
-  Loop: 1
-  Mute: 0
-  Spatialize: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    - time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 0
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 0
 --- !u!114 &664798915
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -878,14 +803,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef2e0cb63a492a54f80877755c53e31b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OnGroundDrop: {fileID: 8300000, guid: a5e0aacf1fb3c994ba6d4fd5c9af7a1d, type: 3}
-  OnObstacleDrop: {fileID: 8300000, guid: d05465f2e1c26454d9e730102f99e657, type: 3}
-  OnThree: {fileID: 8300000, guid: 9871689d8bbe1e841b3856c5f91c4d5c, type: 3}
-  OnTwo: {fileID: 8300000, guid: 2b723845e31407a4eaadce619dff9e7e, type: 3}
-  OnOne: {fileID: 8300000, guid: 76b95c286108e104e8d0942bc4d4bcda, type: 3}
-  OnGo: {fileID: 8300000, guid: da994bf18daa348478aca40b01533d79, type: 3}
-  AudioSource: {fileID: 664798914}
-  GameLoop: {fileID: 0}
+  DefaultToonRamp: {fileID: 2800000, guid: e1a726d5f34ea3e4892acbde770025c3, type: 3}
   PlayerColors:
   - {r: 0.791, g: 0.13130601, b: 0.13130601, a: 1}
   - {r: 0.06423012, g: 0.28851876, b: 0.72794116, a: 1}
@@ -896,7 +814,12 @@ MonoBehaviour:
   - {fileID: 1000010864734348, guid: e277b821977cfec4286f8a92fb94243c, type: 2}
   - {fileID: 1000010704769198, guid: 9fa6005caea785044b9612b0a07b31a3, type: 2}
   - {fileID: 1000010836923218, guid: 92afc49f4715e2c419a281327eca1fe3, type: 2}
-  DefaultToonRamp: {fileID: 2800000, guid: e1a726d5f34ea3e4892acbde770025c3, type: 3}
+  Popups:
+    _popupArray:
+    - key: AirShot
+      value: {fileID: 1000012649786546, guid: 4e3607fce19c6f140930eccac62abba5, type: 2}
+    - key: Parry
+      value: {fileID: 1000014120436364, guid: 55777d5c87d322e4fa140bdb02eb7494, type: 2}
   OnLocalPlayerDeath:
     m_PersistentCalls:
       m_Calls: []
@@ -1322,8 +1245,8 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
-    m_Font: {fileID: 12800000, guid: fdc26d7b8bd994542bf14a91f2d241ac, type: 3}
-    m_FontSize: 8
+    m_Font: {fileID: 12800000, guid: e8928da75aa93ed4ea625a44a33997a9, type: 3}
+    m_FontSize: 10
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 1
@@ -1334,7 +1257,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Abyssal Fall Beta: v0.2'
+  m_Text: 'Abyssal Fall Beta: v0.3'
 --- !u!222 &1071578260
 CanvasRenderer:
   m_ObjectHideFlags: 0

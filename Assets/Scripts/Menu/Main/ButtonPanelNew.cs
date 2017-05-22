@@ -104,8 +104,8 @@ public class ButtonPanelNew : MonoBehaviour
 		SoundManager.Instance.PlayOS("UI button Cancel");
 
 		ParentButtonPanel.Invoke("FadeIn",0.05f);
-		Close();
 		_parentMenu.SetInputDelay();
+		Close();
 	}
 
 	public virtual void SelectNewButton(UIDirection newDirection)

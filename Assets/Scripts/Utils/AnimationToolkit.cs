@@ -85,11 +85,14 @@ public class AnimationToolkit : MonoBehaviour
 	public void SendMessageToPlayerController(string messageContent)
 	{
 		PlayerController targetController = GetComponentInParent<PlayerController>();
-		if(targetController != null)
+		if (targetController != null)
 		{
-			targetController.Invoke(messageContent,0);
+			targetController.Invoke(messageContent, 0);
 		}
 		else
 			Debug.LogWarning("No playercontroller found to call \"SendMessageToPlayerController()\" in object => " + name);
 	}
+
+	public void DestroyParent() { Destroy(transform.parent.gameObject); }
+	public void DestroySelf() { Destroy(transform.gameObject); }
 }

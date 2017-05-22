@@ -18,6 +18,10 @@ public class DynamicConfig : GenericSingleton<DynamicConfig>
 	public List<CharacterConfiguration>					CharacterConfigurations;
 	public Dictionary<string, PlayerController>			CharacterConfigurationsDic;
 
+
+	private bool[] AvailableCharacters = new bool[] { true, true, false, false };
+	private bool[] AvailableMaps = new bool[] { true, false, false };
+
 	protected override void Awake ()
 	{
 		base.Awake();
@@ -55,8 +59,19 @@ public class DynamicConfig : GenericSingleton<DynamicConfig>
 	public void GetConfig(string configName, out ArenaConfiguration_SO config)				{ config = ArenaConfigurationsDic[configName]; }
 	public void GetConfigs(ref ArenaConfiguration_SO[] config)								
 	{
-		config = new ArenaConfiguration_SO[ArenaConfigurationsDic.Values.Count];
-		ArenaConfigurationsDic.Values.CopyTo(config, 0); 
+		List<ArenaConfiguration_SO> list = new List<ArenaConfiguration_SO>();
+		int i = 0;
+		foreach (KeyValuePair<string, ArenaConfiguration_SO> keyAndVal in ArenaConfigurationsDic)
+		{
+			if (AvailableMaps.Length > i)
+			{
+				if (AvailableMaps[i])
+					list.Add(keyAndVal.Value);
+			}
+			i++;
+		}
+
+		config = list.ToArray();
 	}
 
 	public void GetConfig(EModeConfiguration configName, out AGameRules config)				{ config = ModeConfigurationsDic[configName.ToString()]; }
@@ -78,7 +93,7 @@ public class DynamicConfig : GenericSingleton<DynamicConfig>
 		List<MapConfiguration_SO> list = new List<MapConfiguration_SO>();
 		foreach (KeyValuePair<string, MapConfiguration_SO> keyAndVal in MapsConfigurationsDic)
 		{
-			list.Add(keyAndVal.Value);
+				list.Add(keyAndVal.Value);
 		}
 		config = list.ToArray();
 	}
@@ -88,9 +103,12 @@ public class DynamicConfig : GenericSingleton<DynamicConfig>
 	public void GetConfigs(ref PlayerController[] config)
 	{
 		List<PlayerController> list = new List<PlayerController>();
+		int i = 0;
 		foreach (KeyValuePair<string, PlayerController> keyAndVal in CharacterConfigurationsDic)
 		{
-			list.Add(keyAndVal.Value);
+			if(AvailableCharacters[i])
+				list.Add(keyAndVal.Value);
+			i++;
 		}
 		config = list.ToArray();
 	}

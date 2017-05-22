@@ -7,6 +7,9 @@ public class MapSelectWheel : MenuWheel<EArenaConfiguration>
 {
 	private ArenaConfiguration_SO[] _configRefs;
 
+	[SerializeField]
+	private GameObject[] _arrows;
+
 	protected override void Start()
 	{
 		base.Start();
@@ -41,6 +44,11 @@ public class MapSelectWheel : MenuWheel<EArenaConfiguration>
 		}
 
 		base.Generate(elementsToProcess, returnArray);
+
+		for (int i = 0; i < _arrows.Length; i++)
+		{
+			_arrows[i].SetActive(NetworkServer.active && _configRefs.Length > 1);
+		}
 	}
 
 	protected override void Update()

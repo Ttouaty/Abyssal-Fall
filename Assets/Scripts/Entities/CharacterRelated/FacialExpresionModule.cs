@@ -62,7 +62,9 @@ public class FacialExpresionModule : MonoBehaviour
 			Material[] tempMats = ExpressionTarget.materials;
 
 			//Debug.Log("switching to expression => "+expressionName +" with skin number => "+skinNumber);
-			if (tempMats[TargetMaterialIndex].mainTexture == _expressionDictionnary[expressionName][skinNumber].mainTexture)
+			if (tempMats[TargetMaterialIndex].mainTexture 
+				== 
+				_expressionDictionnary[expressionName][skinNumber].mainTexture)
 				return;
 
 			_expressionDictionnary[expressionName][skinNumber].SetTexture("_Ramp", GetComponentInParent<CharacterModel>().AmbientRampInUse);

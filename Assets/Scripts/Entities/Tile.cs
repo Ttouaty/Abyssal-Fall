@@ -52,6 +52,7 @@ public class Tile : MonoBehaviour, IPoolable
 
 	public void OnGetFromPool()
 	{
+		gameObject.layer = LayerMask.NameToLayer("Ground");
 		_rigidB.isKinematic = true;
 		_renderer.material.color = _defaultColor; // Debug to see falling ground feedback
 		_isTouched = false;
@@ -163,6 +164,7 @@ public class Tile : MonoBehaviour, IPoolable
 
 	public void Place(Vector3 newLocalPos)
 	{
+		gameObject.layer = LayerMask.NameToLayer("Ground");
 		transform.localPosition = newLocalPos;
 	   _initialPosition = transform.localPosition;
 	}
@@ -196,6 +198,7 @@ public class Tile : MonoBehaviour, IPoolable
 		_rigidB.isKinematic = false;
 		gameObject.layer = LayerMask.NameToLayer("NoColli");
 
+		if(GameManager.Instance.GameRules != null)
 		GameManager.Instance.GameRules.RespawnFallenTiles(this);
 
 		// If the tile has an obstacle up, this obstacle will fall

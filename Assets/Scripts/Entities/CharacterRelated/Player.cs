@@ -328,6 +328,7 @@ public class Player : NetworkBehaviour
 		MainManager.Instance.LEVEL_MANAGER.OpenMenu(showSplashScreens, targetMenuName, openCharacterSelect);
 	}
 
+
 	[ClientRpc]
 	public void RpcOnPlayerDisconnect(int playerNumber)
 	{

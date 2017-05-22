@@ -85,6 +85,19 @@ public class CharacterSlot : MonoBehaviour
 		KeyboardController.gameObject.SetActive(!_playerRef.IsUsingGamePad);
 		GamePadController.gameObject.SetActive(_playerRef.IsUsingGamePad);
 
+
+		if (InputManager.GetButtonDown(InputEnum.Y, _playerRef.JoystickNumber))
+		{
+			OnCharacterChangeSkin.Invoke();
+			_wheelRef.CmdChangeCharacterSkin((_wheelRef._selectedSkinIndex + 1).LoopAround(0, _availableCharacters[_wheelRef._selectedElementIndex]._characterData.NumberOfSkins - 1));
+		}
+
+		if (InputManager.GetButtonDown(InputEnum.A, _playerRef.JoystickNumber))
+			SelectCharacter();
+
+		if (_availableCharacters.Length <= 1)
+			return;
+
 		if (Mathf.Abs(InputManager.GetAxis("x", _playerRef.JoystickNumber)) < 0.5f)
 		{
 			_switchCharacterCooldown.Set(0);
@@ -98,14 +111,7 @@ public class CharacterSlot : MonoBehaviour
 
 		//if (InputManager.GetButtonDown(InputEnum.X, _playerRef.JoystickNumber))
 		//	_wheelRef.CmdChangeCharacterSkin((_wheelRef._selectedSkinIndex - 1).LoopAround(0, _availableCharacters[_wheelRef._selectedElementIndex]._characterData.NumberOfSkins -1));
-		if (InputManager.GetButtonDown(InputEnum.Y, _playerRef.JoystickNumber))
-		{
-			OnCharacterChangeSkin.Invoke();
-			_wheelRef.CmdChangeCharacterSkin((_wheelRef._selectedSkinIndex + 1).LoopAround(0, _availableCharacters[_wheelRef._selectedElementIndex]._characterData.NumberOfSkins -1));
-		}
-
-		if (InputManager.GetButtonDown(InputEnum.A, _playerRef.JoystickNumber))
-			SelectCharacter();
+		
 
 	}
 
@@ -132,7 +138,7 @@ public class CharacterSlot : MonoBehaviour
 		if(_playerRef != null)
 			_playerRef.UnReady();
 
-		ArrowContainers.SetActive(_playerRef.isLocalPlayer);
+		ArrowContainers.SetActive(_playerRef.isLocalPlayer && _availableCharacters.Length > 1);
 	}
 
 
@@ -161,7 +167,7 @@ public class CharacterSlot : MonoBehaviour
 
 		TargetPedestal.transform.rotation = Quaternion.LookRotation((Camera.main.transform.position - TargetPedestal.transform.position).normalized, transform.up);
 
-		ArrowContainers.SetActive(_playerRef.isLocalPlayer);
+		ArrowContainers.SetActive(_playerRef.isLocalPlayer && _availableCharacters.Length > 1);
 	}
 
 	public void CloseSlot()
