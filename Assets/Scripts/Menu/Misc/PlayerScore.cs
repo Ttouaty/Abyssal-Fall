@@ -10,13 +10,13 @@ public class PlayerScore : MonoBehaviour
     public Image SpriteFill;
     public Text ScoreText;
     public Text PlayerText;
-	private int startingScore = 0;
+	private float startingScore = 0;
     public bool Active
     {
         get { return CurrentPlayer != null; }
     }
 
-    public int Score
+    public float Score
     {
         get { return Active ? CurrentPlayer.Score : 0; }
     }

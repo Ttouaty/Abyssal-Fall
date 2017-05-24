@@ -26,7 +26,7 @@ public class Player : NetworkBehaviour
 
 	[SyncVar]
 	[HideInInspector]
-	public int Score = 0;
+	public float Score = 0;
 
 	public bool isReady
 	{

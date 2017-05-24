@@ -182,7 +182,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	protected Vector2 _acceleration = new Vector2(0.1f, -2f); // X => time needed to reach max speed, Y => Gravity multiplier
 	protected float _friction = 140; //friction applied to the player when it slides (pushed or end dash) (units/s)
 	protected float _parryTime = 0.08f; //time at the beginning of a Dash when the player is in countering attacks
-
+	protected float _relicInterval = 0.2f;
 	//protected float _airborneDelay = 0.02f;
 
 	protected float _fullDashActivationTime = 0.1f;
@@ -222,6 +222,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	protected TimeCooldown _dashRechargeTimer; //Seconds of dash cooldown
 											   //protected TimeCooldown _airborneTimeout; //Time before being considered airborne
 	protected TimeCooldown _forcedAirborneTimeout;
+	protected TimeCooldown _relicTimer;
 
 	protected DamageDealer _dmgDealerSelf;
 	public DamageDealer DmgDealerSelf { get { return _dmgDealerSelf; } }
@@ -240,6 +241,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	}
 	private TimeCooldown _lastDamageDealerTimeOut;
 
+	protected bool _isHoldingRelic = false;
 	protected bool _isAffectedByFriction = true;
 	protected bool _isFrozen = false;
 	protected bool _internalAllowInput = true;
@@ -269,7 +271,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	{
 		get
 		{
-			return AllowSpecial && !_dashing && !_isDead && _specialCooldown.TimeLeft <= 0;
+			return AllowSpecial && !_dashing && !_isDead && _specialCooldown.TimeLeft <= 0 && !_isHoldingRelic;
 		}
 	}
 
@@ -379,7 +381,6 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_stunTimer.onFinish = () => { _isStunned = false; _allowInput = true; /*CmdSetExpression(_FEMref.DefaultExpression);*/ };
 		_stunTimer.onProgress = () =>
 		{
-			//if (!IsGrounded) { _stunTimer.Add(TimeManager.DeltaTime); }
 			_allowInput = false;
 			_isStunned = true;
 		};
@@ -390,17 +391,24 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		{
 			if (!_isInvul)
 				_isInvul = true;
-
-			//_isInvulInternal = true;
-			//if (_stunTimer.TimeLeft > 0)
-			//_invulTimer.Add(Time.deltaTime);
 		};
 
 		_parryTimer = new TimeCooldown(this);
 		_damageTimer = new TimeCooldown(this);
 
 		_forcedAirborneTimeout = new TimeCooldown(this);
-
+		_relicTimer = new TimeCooldown(this);
+		_relicTimer.onFinish = () => {
+			if (!NetworkServer.active)
+				return;
+			if(_isHoldingRelic)
+			{
+				if(GameManager.Instance.GameRules != null)
+					((Relic_GameRules)GameManager.Instance.GameRules).UpdatePlayerScore(_playerRef.gameObject, _relicInterval);
+				Debug.Log("+ score");
+				_relicTimer.Set(_relicInterval);
+			}
+		};
 		_lastDamageDealerTimeOut = new TimeCooldown(this);
 		_lastDamageDealerTimeOut.onFinish = OnLastDamageDealerTimeOut;
 		GameManager.Instance.OnPlayerWin.AddListener(OnPlayerWin);
@@ -790,6 +798,12 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		Player killer = LastDamageDealer != null ? LastDamageDealer.PlayerRef : null;
 		GameManager.Instance.OnLocalPlayerDeath.Invoke(_playerRef, killer);
 		CameraManager.Instance.RemoveTargetToTrack(transform);
+
+		if (NetworkServer.active)
+		{
+			if (_isHoldingRelic)
+				OnReleaseRelic();
+		}
 	}
 
 	[ClientRpc]
@@ -863,6 +877,12 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 			CameraManager.Shake(ShakeStrength.Low);
 
 		_characterData.SoundList["OnHit"].Play(gameObject);
+
+		if(NetworkServer.active)
+		{
+			if(_isHoldingRelic)
+				OnReleaseRelic();
+		}
 	}
 
 	[ClientRpc]
@@ -991,9 +1011,31 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		//_airborneTimeout.Set(0);
 		IsGrounded = false;
 		if (timeForced == 0)
-			_forcedAirborneTimeout.Set(10000000);
+			_forcedAirborneTimeout.Set(100);
 		else
 			_forcedAirborneTimeout.Set(timeForced);
+	}
+
+	void OnGrabRelic(GameObject targetRelic)
+	{
+		_isHoldingRelic = true;
+		targetRelic.transform.parent = transform;
+		targetRelic.transform.localPosition = Vector3.up * 2;
+		targetRelic.GetComponent<Rigidbody>().isKinematic = true;
+		_relicTimer.Set(_relicInterval);
+	}
+
+	void OnReleaseRelic()
+	{
+		_isHoldingRelic = false;
+		Relic targetRelic = GetComponentInChildren<Relic>();
+		targetRelic.GetComponent<Rigidbody>().isKinematic = false;
+
+		if (!IsDead)
+			targetRelic.Eject(Quaternion.Euler(0,UnityEngine.Random.Range(0,360), 0) * Vector3.one * 3);
+
+		targetRelic.transform.parent = null;
+		_relicTimer.Set(_relicInterval);
 	}
 
 
@@ -1020,6 +1062,17 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 				(colli.transform.position - transform.position).ZeroY().normalized + _rigidB.velocity.ZeroY().normalized) * (SO_Character.SpecialEjection.Multiply(Axis.x, _dashCopy.Impact)),
 				colli.contacts[0].point,
 				tempDamageData);
+		}
+
+		
+	}
+
+	protected void OnTriggerEnter(Collider colli)
+	{
+		if (colli.gameObject.tag == "Relic")
+		{
+			if (!_isHoldingRelic && _relicTimer.TimeLeft == 0)
+				OnGrabRelic(colli.gameObject);
 		}
 	}
 }

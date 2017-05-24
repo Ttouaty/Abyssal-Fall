@@ -345,6 +345,29 @@ public class ServerManager : NATTraversal.NetworkManager
 		}
 	}
 
+	public GameObject SpawnObjectOfType<T>(GameObject authorityHolder)
+	{
+		for (int j = 0; j < spawnPrefabs.Count; j++)
+		{
+			if (spawnPrefabs[j].GetComponent<T>() != null)
+			{
+				GameObject newObject = Instantiate(spawnPrefabs[j]);
+				if(newObject.GetComponentInChildren<NetworkIdentity>().localPlayerAuthority)
+					NetworkServer.SpawnWithClientAuthority(newObject, authorityHolder);
+				else
+					NetworkServer.Spawn(newObject);
+
+				return newObject;
+			}
+			else if (j == spawnPrefabs.Count - 1)
+			{
+				Debug.LogError("No object of type "+typeof(T)+" found in spawnPrefabs");
+				return null;
+			}
+		}
+		return null;
+	}
+
 	public override void OnServerDisconnect(NetworkConnection conn)
 	{
 		Player targetPlayer = null;

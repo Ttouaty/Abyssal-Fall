@@ -30,7 +30,11 @@ public class GUIManager : GenericSingleton<GUIManager>
 			if (!ScoreFields[Player.PlayerList[i].PlayerNumber - 1].activeInHierarchy)
 				continue;
 
-			ScoreFields[Player.PlayerList[i].PlayerNumber - 1].GetComponentInChildren<Text>().text = Player.PlayerList[i].Score.ToString();
+			if (Player.PlayerList[i].Score != Mathf.Floor(Player.PlayerList[i].Score))
+				ScoreFields[Player.PlayerList[i].PlayerNumber - 1].GetComponentInChildren<Text>().text =  Player.PlayerList[i].Score.ToString("0.0");
+			else
+				ScoreFields[Player.PlayerList[i].PlayerNumber - 1].GetComponentInChildren<Text>().text = Player.PlayerList[i].Score.ToString("0");
+
 		}
 	}
 

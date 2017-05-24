@@ -32,8 +32,6 @@ public abstract class AGameRules : MonoBehaviour
 
 	protected int _autoDestroyedTileIndex = 0;
 
-	public List<Tile> RespawnZones = new List<Tile>();
-
 	public BehaviourConfiguration[] Behaviours;
 
 	public List<PoolConfiguration> AdditionalPoolsToLoad = new List<PoolConfiguration>();
@@ -227,6 +225,7 @@ public abstract class AGameRules : MonoBehaviour
 
 	public virtual void OnPlayerDisconnect(int playerNumber)
 	{
+		GUIManager.Instance.SetPlayerScoreActive(playerNumber, false);
 		GameManager.Instance.OnLocalPlayerDeath.Invoke(null, null);
 	}
 

@@ -9,5 +9,9 @@ public class KillPlane : MonoBehaviour
 		{
 			col.GetComponent<PlayerController>().Kill();
 		}
+		if (col.tag == "Relic")
+		{
+			col.GetComponent<Relic>().Respawn();
+		}
 	}
 }
