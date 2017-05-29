@@ -19,8 +19,8 @@ public class DynamicConfig : GenericSingleton<DynamicConfig>
 	public Dictionary<string, PlayerController>			CharacterConfigurationsDic;
 
 
-	private bool[] AvailableCharacters = new bool[] { true, true, false, false };
-	private bool[] AvailableMaps = new bool[] { true, false, false };
+	private bool[] AvailableCharacters = new bool[] { true, true, true, true };
+	private bool[] AvailableMaps = new bool[] { true, true, true };
 
 	protected override void Awake ()
 	{

@@ -320,7 +320,7 @@ public class ArenaManager : MonoBehaviour
 
 		Position = new Vector3(
 			transform.position.x - _currentMapConfig.MapSize.x * 0.5f * TileScale + 0.5f * TileScale,
-			transform.position.y + 50,
+			transform.position.y + 100,
 			transform.position.z - _currentMapConfig.MapSize.y * 0.5f * TileScale + 0.5f * TileScale
 		);
 

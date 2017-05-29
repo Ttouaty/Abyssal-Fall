@@ -307,6 +307,7 @@ GameObject:
   - 222: {fileID: 222000012315430342}
   - 114: {fileID: 114000010830857400}
   - 114: {fileID: 114000013685224452}
+  - 114: {fileID: 114000010193340814}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -755,6 +756,18 @@ MonoBehaviour:
     FmodEvent: event:/Sfx/Menu/Menu Validate
   AutoActivate: 0
   Spatialized: 0
+--- !u!114 &114000010193340814
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000012402278158}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b90b5ba724e4a7049835e91d6cea6134, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _fragmentInternal: press
 --- !u!114 &114000010206235688
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1148,7 +1161,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   RotatePerSec: 90
-  TimeToScaleUp: 0.05
+  TimeToScaleUp: 0.1
 --- !u!114 &114000013685224452
 MonoBehaviour:
   m_ObjectHideFlags: 1

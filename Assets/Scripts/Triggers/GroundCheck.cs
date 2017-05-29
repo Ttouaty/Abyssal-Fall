@@ -72,7 +72,11 @@ public class GroundCheck : MonoBehaviour
 		if(!_colliderIds.Contains(colli.GetInstanceID()))
 			_colliderIds.Add(colli.GetInstanceID());
 	
-		if (colli.gameObject.activeInHierarchy && colli.GetComponent<Tile>() != null && !_playerRef.IsDead && _playerRef._isLocalPlayer)
+
+		if(colli.gameObject.activeInHierarchy && colli.GetComponent<Tile>() != null && !_playerRef.IsDead && _playerRef._isLocalPlayer && !_playerRef.IsInitiated)
+			MessageManager.Log("NON INIT !!!! AAAAAAAAAAAAAAAAAH");
+
+		if (colli.gameObject.activeInHierarchy && colli.GetComponent<Tile>() != null && !_playerRef.IsDead && _playerRef._isLocalPlayer && _playerRef.IsInitiated)
 			colli.GetComponent<Tile>().ActivateFall();
 	}
 

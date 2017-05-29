@@ -32,6 +32,8 @@ public class CharacterSelectWheel : NetworkBehaviour
 	[SyncVar]
 	public GameObject _playerRef;
 	private int playerNumber = 0;
+	[HideInInspector]
+	public bool IsGenerated = false;
 
 	#region baseClass
 	private void Internal_Generate(GameObject[] elementsToDisplay, PlayerController[] elementsToReturn)
@@ -60,7 +62,7 @@ public class CharacterSelectWheel : NetworkBehaviour
 			ElementGenerate(elementsToDisplay[i], Quaternion.AngleAxis(-_rotationBetweenElements * i, Vector3.up) * Vector3.back * _wheelRadius);
 			//elementsToDisplay[i].transform.RotateAround(transform.position, transform.up, -_rotationBetweenElements * i);
 		}
-
+		IsGenerated = true;
 		Update();
 	}
 

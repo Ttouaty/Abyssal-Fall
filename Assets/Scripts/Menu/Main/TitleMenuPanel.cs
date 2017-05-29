@@ -19,10 +19,11 @@ public class TitleMenuPanel : MenuPanelNew
 			child.localPosition = Vector3.zero;
 		}
 		PanelRefs["Main"].Open();
-		GlobalInputDelay = 100000000; // deactivated by inputlistener
+
+		SetGlobalDelay(100000000);// deactivated by inputlistener
 		yield return new WaitUntil(() => PanelRefs["Main"].transform.Find("Title").GetComponentInChildren<Animator>());
 		PanelRefs["Main"].transform.Find("Title").GetComponentInChildren<Animator>().SetTrigger("wait");
 
-		GlobalInputDelay = 100000000; // deactivated by inputlistener
+		SetGlobalDelay(100000000);// deactivated by inputlistener
 	}
 }

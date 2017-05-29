@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.Networking;
+using System.Collections.Generic;
 
 public class MapSelectWheel : MenuWheel<EArenaConfiguration>
 {
@@ -44,6 +45,18 @@ public class MapSelectWheel : MenuWheel<EArenaConfiguration>
 		}
 
 		base.Generate(elementsToProcess, returnArray);
+
+		//OOOOUUUH que c'est dégueulasse et que j'ai la flemme de bien faire :]
+		List<GameObject> tempList = new List<GameObject>();
+		GrowAndFade[] tempsGrowAndFade = transform.parent.GetComponentsInChildren<GrowAndFade>(true);
+		for (int i = 0; i < tempsGrowAndFade.Length; i++)
+		{
+			if (tempsGrowAndFade[i].name == "Right Arrow" || tempsGrowAndFade[i].name == "Left Arrow")
+				tempList.Add(tempsGrowAndFade[i].gameObject);
+		}
+
+		tempList.Add(_arrows[0]);
+		_arrows = tempList.ToArray();
 
 		for (int i = 0; i < _arrows.Length; i++)
 		{

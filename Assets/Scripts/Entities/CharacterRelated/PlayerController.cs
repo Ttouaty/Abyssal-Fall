@@ -145,7 +145,8 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	public Spawn Spawn;
 	[HideInInspector]
 	public Animator _animator;
-	protected NetworkAnimator _networkAnimator;
+	[HideInInspector]
+	public NetworkAnimator _networkAnimator;
 	[HideInInspector]
 	protected bool _isDead = false;
 
@@ -262,6 +263,8 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	/// WARNING, use this instead of isLocalPlayer on PlayerControllers as they are not directly a player object
 	/// </summary>
 	public bool _isLocalPlayer { get { return _playerRef.isLocalPlayer || _isInDebugMode; } }
+	[HideInInspector]
+	public bool IsInitiated = false;
 	[HideInInspector]
 	public bool AllowDash = true;
 	[HideInInspector]
@@ -405,7 +408,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 			{
 				if(GameManager.Instance.GameRules != null)
 					((Relic_GameRules)GameManager.Instance.GameRules).UpdatePlayerScore(_playerRef.gameObject, _relicInterval);
-				Debug.Log("+ score");
+				//Debug.Log("+ score");
 				_relicTimer.Set(_relicInterval);
 			}
 		};
@@ -445,6 +448,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		//DEFAULT FREEZE TO PREVENT LAG INPUT DETECTION
 		Freeze();
 
+		IsInitiated = true;
 		CustomStart();
 	}
 
@@ -839,8 +843,11 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		Freeze();
 		Invoke("UnFreeze", 0.5f);
 
-		_networkAnimator.BroadCastTrigger("WaitForEnter");
-		_networkAnimator.BroadCastTrigger("Enter");
+		if(_isLocalPlayer)
+		{
+			_networkAnimator.BroadCastTrigger("WaitForEnter");
+			_networkAnimator.BroadCastTrigger("Enter");
+		}
 
 		_RespawnFlash.Clear();
 		_RespawnFlash.Play();
@@ -1019,22 +1026,17 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	void OnGrabRelic(GameObject targetRelic)
 	{
 		_isHoldingRelic = true;
-		targetRelic.transform.parent = transform;
-		targetRelic.transform.localPosition = Vector3.up * 2;
-		targetRelic.GetComponent<Rigidbody>().isKinematic = true;
+		targetRelic.GetComponent<Relic>().Grab(transform);
 		_relicTimer.Set(_relicInterval);
 	}
 
 	void OnReleaseRelic()
 	{
 		_isHoldingRelic = false;
-		Relic targetRelic = GetComponentInChildren<Relic>();
-		targetRelic.GetComponent<Rigidbody>().isKinematic = false;
 
 		if (!IsDead)
-			targetRelic.Eject(Quaternion.Euler(0,UnityEngine.Random.Range(0,360), 0) * Vector3.one * 3);
+			GetComponentInChildren<Relic>().Eject(Quaternion.Euler(0,UnityEngine.Random.Range(0,360), 0) * Vector3.one * 3);
 
-		targetRelic.transform.parent = null;
 		_relicTimer.Set(_relicInterval);
 	}
 

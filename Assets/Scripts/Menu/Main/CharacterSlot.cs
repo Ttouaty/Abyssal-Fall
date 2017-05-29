@@ -81,7 +81,9 @@ public class CharacterSlot : MonoBehaviour
 		if (Selected)
 			return;
 
-		PortraitImage.GetComponent<Image>().sprite = _wheelRef.GetSelectedElement()._characterData.Portrait;
+		if (_wheelRef.IsGenerated)
+			PortraitImage.GetComponent<Image>().sprite = _wheelRef.GetSelectedElement()._characterData.Portrait;
+
 		KeyboardController.gameObject.SetActive(!_playerRef.IsUsingGamePad);
 		GamePadController.gameObject.SetActive(_playerRef.IsUsingGamePad);
 
@@ -150,6 +152,12 @@ public class CharacterSlot : MonoBehaviour
 	public void OpenSlot(CharacterSelectWheel newWheel)
 	{
 		_wheelRef = newWheel;
+
+		if (_availableCharacters == null)
+		{
+			_selectorRef = MenuManager.Instance._characterSlotsContainerRef;
+			_availableCharacters = _selectorRef._availableCharacters;
+		}
 
 		if (!Open)
 		{

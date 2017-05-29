@@ -5,9 +5,12 @@ using System.Collections.Generic;
 
 public class Relic : MonoBehaviour
 {
-	
+	[SerializeField]
+	private GameObject NoSpecialDiv;
+
 	private Rigidbody _rigidBRef;
 	private Vector3 _startPosition;
+	private bool Grabbed = false;
 
 	void Start()
 	{
@@ -16,9 +19,27 @@ public class Relic : MonoBehaviour
 		CameraManager.Instance.AddTargetToTrack(transform);
 	}
 
+	void Update()
+	{
+		NoSpecialDiv.SetActive(Grabbed);
+	}
+
+	public void Grab(Transform grabberTransform)
+	{
+		transform.parent = grabberTransform;
+		transform.localPosition = Vector3.up * 3;
+		_rigidBRef.isKinematic = true;
+		Grabbed = true;
+	}
+
 	public void Eject(Vector3 targetVelocity)
 	{
+		transform.parent = null;
+
+		_rigidBRef.isKinematic = false;
 		_rigidBRef.velocity = targetVelocity;
+
+		Grabbed = false;
 	}
 
 	public void Respawn()

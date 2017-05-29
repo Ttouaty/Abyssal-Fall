@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine.Networking.Match;
 using UnityEngine.Networking.NetworkSystem;
+using NATTraversal;
 
 public enum FacilitatorConnectionStatus
 {
@@ -421,6 +422,12 @@ public class ServerManager : NATTraversal.NetworkManager
 		newConnection.RegisterHandler(CustomMsgTypes.OnConnReplaced, Instance.OnConnReplaced);	
 	}
 
+	public override NetworkConnection checkForAnotherConnectionFromTheSameClient(NetworkConnection con, ConnectionType otherConnectionType = ConnectionType.ANY)
+	{
+		//Debug.LogError("Other connection type => "+ otherConnectionType+" / other adress ? => " + con.address);
+		return base.checkForAnotherConnectionFromTheSameClient(con, otherConnectionType);
+	}
+
 	//public override void OnConnectionReplacedServer(NetworkConnection oldConnection, NetworkConnection newConnection)
 	//{
 	//	//NetworkServer.ReplacePlayerForConnection(newConnection, oldConnection.playerControllers[0].gameObject, 0);
@@ -491,36 +498,36 @@ public class ServerManager : NATTraversal.NetworkManager
 		ResetRegisteredPlayers();
 		IsDebug = false;
 
+		if(matchMaker != null)
+		{
+			if (NetworkServer.active)
+				matchMaker.DestroyMatch(matchID, 0, OnMatchDropped);
+			else
+				matchMaker.DropConnection(matchID, matchmakingNodeID, 0, OnMatchDropped);
+		}
+
 		if (NetworkServer.active)
 		{
 			MasterServer.UnregisterHost();
-			StopHost();
+			NetworkServer.DisconnectAll();
+			StopHost();	
+			StopClient();
 		}
 		else
 			StopClient();
 
-		NetworkServer.Reset();
 		NetworkClient.ShutdownAll();
+		NetworkServer.Reset();
+
+
 		RegisterPrefabs();
-		//Network.Disconnect();
-
-		if (matchMaker == null)
-			return;
-		if (NetworkServer.active)
-		{
-			matchMaker.DestroyMatch(matchID, 0, OnMatchDropped);
-		}
-		else
-		{
-			matchMaker.DropConnection(matchID, matchmakingNodeID, 0, OnMatchDropped);
-		}
-
 	}
 
 	public override void Update()
 	{
 		base.Update();
-		//if(NetworkServer.active)
+
+		//if (NetworkServer.active)
 		//{
 		//	for (int i = 0; i < RegisteredPlayers.Count; i++)
 		//	{

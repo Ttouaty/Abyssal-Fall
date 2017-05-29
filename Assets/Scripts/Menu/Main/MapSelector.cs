@@ -19,8 +19,10 @@ public class MapSelector : MenuPanelNew
 		if (NetworkServer.active)
 		{
 			if(MapWheelTarget != null)
-				if(MapWheelTarget.childCount != 0)
-					Destroy(MapWheelTarget.GetChild(0).gameObject);
+			{
+				if (MapWheelTarget.GetComponentInChildren<MapSelectWheel>(true))
+					Destroy(MapWheelTarget.GetComponentInChildren<MapSelectWheel>(true));
+			}
 		}
 	}
 }
