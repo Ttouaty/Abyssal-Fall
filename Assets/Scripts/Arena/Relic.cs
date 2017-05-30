@@ -10,7 +10,8 @@ public class Relic : MonoBehaviour
 
 	private Rigidbody _rigidBRef;
 	private Vector3 _startPosition;
-	private bool Grabbed = false;
+	[HideInInspector]
+	public bool Grabbed = false;
 
 	void Start()
 	{

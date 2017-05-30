@@ -24,7 +24,7 @@ public class Player : NetworkBehaviour
 	[HideInInspector]
 	public bool IsUsingGamePad = false;
 
-	[SyncVar]
+	[SyncVar(hook = "OnScoreUpdate")]
 	[HideInInspector]
 	public float Score = 0;
 
@@ -83,6 +83,18 @@ public class Player : NetworkBehaviour
 		_ready = ready;
 
 		ChangeWheelState(ready);
+	}
+
+	public void OnScoreUpdate(float newScore)
+	{
+		if (newScore - Score == 1)
+			Instantiate(GameManager.Instance.Popups["+1"], Controller.transform.position + Vector3.up * 2, Camera.main.transform.rotation);
+		if (newScore - Score == 2)
+			Instantiate(GameManager.Instance.Popups["+2"], Controller.transform.position + Vector3.up * 2, Camera.main.transform.rotation);
+		if (newScore - Score == 3)
+			Instantiate(GameManager.Instance.Popups["+3"], Controller.transform.position + Vector3.up * 2, Camera.main.transform.rotation);
+
+		Score = newScore;
 	}
 
 	public void ChangeWheelState(bool ready)

@@ -574,6 +574,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	protected void OnFlip()
 	{
 		//IMPORTANT, will need an flip animation
+		// l'oseferie d'une vie !
 
 		//_stunTime.Add(0.1f);
 		//_activeSpeed = Vector3.zero;
@@ -815,8 +816,12 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	{
 		_isDead = false;
 		CameraManager.Instance.AddTargetToTrack(transform);
-		ArenaManager.Instance.Tiles[respawnTileIndex].Restore();
-		ArenaManager.Instance.Tiles[respawnTileIndex].SetTimeLeft(ArenaManager.Instance.Tiles[respawnTileIndex].TimeLeftSave * 2, false);
+
+		if(ArenaManager.Instance.Tiles[respawnTileIndex] != null)
+		{
+			ArenaManager.Instance.Tiles[respawnTileIndex].Restore();
+			ArenaManager.Instance.Tiles[respawnTileIndex].SetTimeLeft(ArenaManager.Instance.Tiles[respawnTileIndex].TimeLeftSave * 2, false);
+		}
 
 		if (_isLocalPlayer)
 			transform.position = newPos;
@@ -1073,7 +1078,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	{
 		if (colli.gameObject.tag == "Relic")
 		{
-			if (!_isHoldingRelic && _relicTimer.TimeLeft == 0)
+			if (!_isHoldingRelic && _relicTimer.TimeLeft == 0 && !colli.GetComponent<Relic>().Grabbed)
 				OnGrabRelic(colli.gameObject);
 		}
 	}

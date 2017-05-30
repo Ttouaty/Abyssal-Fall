@@ -214,7 +214,7 @@ public class ArenaManager : MonoBehaviour
 		}
 		else
 		{
-			//Debug.Log("Tile n°=> "+index+" was null in Arenamanager");
+			//Debug.LogError("Tile n°=> " + index + " was null in Arenamanager");
 		}
 	}
 

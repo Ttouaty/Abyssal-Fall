@@ -154,7 +154,6 @@ public class Tile : MonoBehaviour, IPoolable
 		if (ArenaManager.Instance != null)
 		{
 			Player.LocalPlayer.CmdRemoveTile(TileIndex);
-
 			TimeManager.Instance.OnPause.AddListener(OnPause);
 			TimeManager.Instance.OnResume.AddListener(OnResume);
 		}
