@@ -9,8 +9,14 @@ public class DeathMatch_GameRules : AGameRules
 	public override void InitGameRules ()
 	{
 		base.InitGameRules();
-		GUIManager.Instance.RunTimer(MatchDuration);
-		GUIManager.Instance.Timer.OnCompleteCallback.AddListener(OnTimeOut);
+
+		if (!_isInSuddenDeath)
+		{
+			GUIManager.Instance.RunTimer(MatchDuration);
+			GUIManager.Instance.Timer.OnCompleteCallback.AddListener(OnTimeOut);
+		}
+		else
+			GUIManager.Instance.StopTimer();
 	}
 
 	private void OnTimeOut()
@@ -33,17 +39,15 @@ public class DeathMatch_GameRules : AGameRules
 					}
 				}
 			}
+			GameManager.Instance.OnRoundEndServer.Invoke(winnerPlayer);
 
-			Player.LocalPlayer.RpcOnPlayerWin(winnerPlayer.gameObject);
+			//Player.LocalPlayer.RpcOnPlayerWin(winnerPlayer.gameObject);
 		}
 	}
 
 	public override void OnPlayerWin_Listener (Player winner)
 	{
 		base.OnPlayerWin_Listener(winner);
-
-		// TODO : Gérer les égalités
-	
 
 		GUIManager.Instance.Timer.OnCompleteCallback.RemoveListener(OnTimeOut);
 	}

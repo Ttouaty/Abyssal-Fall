@@ -13,7 +13,7 @@ public class CountdownManager : GenericSingleton<CountdownManager>
 
 	public IEnumerator Countdown ()
 	{
-		yield return new WaitUntil(() => Player.LocalPlayer.Controller != null);
+		yield return new WaitUntil(() => FindObjectOfType<PlayerController>() != null);
 
 		Elements[0].transform.parent.SetParent(Camera.main.transform, false);
 		Elements[0].transform.parent.localRotation = Quaternion.identity;
@@ -38,11 +38,12 @@ public class CountdownManager : GenericSingleton<CountdownManager>
 
 	IEnumerator PlayerFocus(float TimeBeforeLaunch = 1)
 	{
-		for (int i = 0; i < Player.PlayerList.Length; i++)
+		PlayerController[] ActiveControllers = FindObjectsOfType<PlayerController>();
+		for (int i = 0; i < ActiveControllers.Length; i++)
 		{
-			Player.PlayerList[i].Controller._animator.speed = 1;
-			if(Player.PlayerList[i].isLocalPlayer)
-				Player.PlayerList[i].Controller._networkAnimator.BroadCastTrigger("WaitForEnter");
+			ActiveControllers[i]._animator.speed = 1;
+			if(ActiveControllers[i]._isLocalPlayer)
+				ActiveControllers[i]._networkAnimator.BroadCastTrigger("WaitForEnter");
 		}
 
 		yield return new WaitForSeconds(0.2f);
@@ -52,13 +53,13 @@ public class CountdownManager : GenericSingleton<CountdownManager>
 		CameraManager.Instance.TargetsTracked.Clear();
 		CameraManager.Instance.AddTargetToTrack(ArenaManager.Instance.ArenaRoot);
 
-		for (int i = 0; i < Player.PlayerList.Length; i++)
+		for (int i = 0; i < ActiveControllers.Length; i++)
 		{
-			CameraManager.Instance.AddTargetToTrack(Player.PlayerList[i].Controller.transform);
-			if(Player.PlayerList[i].isLocalPlayer)
-				Player.PlayerList[i].Controller._networkAnimator.BroadCastTrigger("Enter");
+			CameraManager.Instance.AddTargetToTrack(ActiveControllers[i].transform);
+			if(ActiveControllers[i]._isLocalPlayer)
+				ActiveControllers[i]._networkAnimator.BroadCastTrigger("Enter");
 			yield return new WaitForSeconds((TotalTimeTaken - TimeBeforeLaunch) / Player.PlayerList.Length);
-			CameraManager.Instance.RemoveTargetToTrack(Player.PlayerList[i].Controller.transform);
+			CameraManager.Instance.RemoveTargetToTrack(ActiveControllers[i].transform);
 		}
 
 		CameraManager.Instance.TargetsTracked = PreviousCamInterestPoint.ToList();

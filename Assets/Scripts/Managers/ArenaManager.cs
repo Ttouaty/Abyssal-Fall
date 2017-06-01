@@ -19,9 +19,12 @@ public class ArenaManager : MonoBehaviour
 	#region private
 	private bool                                    _initialInit = false;
 
-	private ArenaConfiguration_SO                   _currentArenaConfig;
-	private AGameRules								_currentModeConfig;
-	private MapConfiguration_SO                     _currentMapConfig;
+	[HideInInspector]
+	public ArenaConfiguration_SO                   _currentArenaConfig;
+	[HideInInspector]
+	public AGameRules _currentModeConfig;
+	[HideInInspector]
+	public MapConfiguration_SO _currentMapConfig;
 
 	private int                                     _tilesDropped;
 	private int                                     _obstaclesDropped;
@@ -133,11 +136,16 @@ public class ArenaManager : MonoBehaviour
 
 	public void ResetMap(bool animate = true)
 	{
+		StartCoroutine(ResetMapCo(animate));
+	}
+
+	public IEnumerator ResetMapCo(bool animate = true, GameObject[] targetPlayers = null)
+	{
 		gameObject.SetActive(true);
 
 		UnloadArena();
 		//ArenaMasterManager.Instance.GameInProgress = false;
-		StartCoroutine(Initialization(animate));
+		yield return StartCoroutine(Initialization(animate, targetPlayers));
 	}
 
 	public void UnloadArena()
@@ -194,8 +202,11 @@ public class ArenaManager : MonoBehaviour
 
 	public void ResetTile(Tile tile)
 	{
-		if (_tiles[tile.TileIndex] == null)
-			_tiles[tile.TileIndex] = tile;
+		if(_tiles.Length < tile.TileIndex)
+		{
+			if (_tiles[tile.TileIndex] == null)
+				_tiles[tile.TileIndex] = tile;
+		}
 	}
 	
 	//Don't use this one
@@ -239,7 +250,7 @@ public class ArenaManager : MonoBehaviour
 		}
 	}
 
-	private IEnumerator Initialization (bool animate = true)
+	private IEnumerator Initialization (bool animate = true, GameObject[] targetPlayers = null)
 	{
 		MenuPauseManager.Instance.CanPause = false;
 		MenuPauseManager.Instance.Close();
@@ -258,7 +269,7 @@ public class ArenaManager : MonoBehaviour
 		yield return StartCoroutine(LoadArena(animate));
 
 		if(NetworkServer.active)
-			PlaceCharacters();
+			PlaceCharacters(targetPlayers);
 
 		MenuPauseManager.Instance.CanPause = false;
 		yield return StartCoroutine(CountdownManager.Instance.Countdown());
@@ -267,16 +278,45 @@ public class ArenaManager : MonoBehaviour
 		GameManager.Instance.GameRules.InitGameRules();
 
 		EnableBehaviours();
-
-		for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; i++)
+		if (NetworkServer.active)
 		{
-			ServerManager.Instance.RegisteredPlayers[i].Controller.RpcUnFreeze();
+			if (targetPlayers != null)
+			{
+				ServerManager.Instance._alivePlayers.Clear();
+				for (int i = 0; i < targetPlayers.Length; i++)
+				{
+					ServerManager.Instance._alivePlayers.Add(targetPlayers[i].GetComponent<Player>());
+					targetPlayers[i].GetComponent<Player>().Controller.RpcUnFreeze();
+				}
+			}
+			else
+			{
+				ServerManager.Instance._alivePlayers.Clear();
+				for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; i++)
+				{
+					ServerManager.Instance._alivePlayers.Add(ServerManager.Instance.RegisteredPlayers[i]);
+					ServerManager.Instance.RegisteredPlayers[i].Controller.RpcUnFreeze();
+				}
+			}
 		}
 		//ArenaMasterManager.Instance.GameInProgress = true;
 	}
 
-	public void PlaceCharacters()
+	public void PlaceCharacters(GameObject[] targetPlayers = null)
 	{
+		Player[] TargetPlayers;
+
+		if (targetPlayers != null)
+		{
+			TargetPlayers = new Player[targetPlayers.Length];
+			for (int i = 0; i < targetPlayers.Length; i++)
+			{
+				TargetPlayers[i] = targetPlayers[i].GetComponent<Player>();
+			}
+		}
+		else
+			TargetPlayers = ServerManager.Instance.RegisteredPlayers.ToArray();
+
 		_players = new GameObject[ServerManager.Instance.RegisteredPlayers.Count];
 
 		//Clean up remaining characters
@@ -290,14 +330,14 @@ public class ArenaManager : MonoBehaviour
 		//}
 
 		List<int> unUsedSpawnIndexes = new List<int>();
-		for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; i++)
+		for (int i = 0; i < TargetPlayers.Length; i++)
 		{
 			unUsedSpawnIndexes.Add(i);
 		}
 
-		for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; ++i)
+		for (int i = 0; i < TargetPlayers.Length; ++i)
 		{
-			Player player = ServerManager.Instance.RegisteredPlayers[i];
+			Player player = TargetPlayers[i];
 			if (player != null)
 			{
 				_players[i] = Instantiate(player.CharacterUsed.gameObject) as GameObject;
@@ -314,7 +354,7 @@ public class ArenaManager : MonoBehaviour
 		}
 	}
 
-	private IEnumerator LoadArena (bool animate = true)
+	public IEnumerator LoadArena (bool animate = true)
 	{
 		Map = ParseMapFile();
 

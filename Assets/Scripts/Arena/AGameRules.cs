@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Networking;
 using System.Linq;
+using System;
 
 public abstract class AGameRules : MonoBehaviour
 {
@@ -29,12 +30,15 @@ public abstract class AGameRules : MonoBehaviour
 	public BoolRule AreTilesFrozen				{ get { return RuleObject.AreTilesFrozen; } }
 	public BoolRule ArenaAutoDestruction		{ get { return RuleObject.ArenaAutoDestruction; } }
 	public BoolRule RandomArena					{ get { return RuleObject.RandomArena; } }
+	public BoolRule CanSuddenDeath				{ get { return RuleObject.CanSuddenDeath; } }
 
 	protected int _autoDestroyedTileIndex = 0;
 
 	public BehaviourConfiguration[] Behaviours;
 
 	public List<PoolConfiguration> AdditionalPoolsToLoad = new List<PoolConfiguration>();
+
+	protected bool _isInSuddenDeath = false;
 
 	public virtual void InitGameRules()
 	{
@@ -75,7 +79,8 @@ public abstract class AGameRules : MonoBehaviour
 		if (!CanFallenTilesRespawn)
 			yield break;
 		yield return new WaitForSeconds(TileRegerationTime);
-		tile.ActivateRespawn();
+		if(Array.IndexOf(ArenaManager.Instance.Tiles, tile) != -1)
+			tile.ActivateRespawn();
 	}
 
 	protected virtual IEnumerator ArenaAutoDestruction_Implementation()
@@ -115,37 +120,54 @@ public abstract class AGameRules : MonoBehaviour
 	{
 		CameraManager.Instance.RemoveTargetToTrack(player.Controller.transform);
 
-		if (killer != null)
+		if(_isInSuddenDeath)
 		{
-			if (player != null)
-				MessageManager.Log("Player " + killer.PlayerNumber+" killed => Player " + player.PlayerNumber);
+			if (NetworkServer.active)
+			{
+				if (ServerManager.Instance.AlivePlayers.IndexOf(player) >= 0)
+				{
+					ServerManager.Instance.AlivePlayers.Remove(player);
+					// Round won
+					if (ServerManager.Instance.AlivePlayers.Count == 1)
+					{
+						Player.LocalPlayer.RpcOnPlayerWin(ServerManager.Instance.AlivePlayers[0].gameObject);
+					}
+				}
+			}
 		}
 		else
-			MessageManager.Log("Player " + player.PlayerNumber + " killed himself!");
-
-		if (NetworkServer.active)
 		{
 			if (killer != null)
 			{
-				killer.Score += PointsGainPerKill;
-
-				if (killer.Score >= ScoreToWin)
-				{
-					GameManager.Instance.OnRoundEndServer.Invoke(killer);
-					return;
-				}
+				if (player != null)
+					MessageManager.Log("Player " + killer.PlayerNumber+" killed => Player " + player.PlayerNumber);
 			}
 			else
+				MessageManager.Log("Player " + player.PlayerNumber + " killed himself!");
+
+			if (NetworkServer.active)
 			{
-				if(player != null)
-					player.Score += PointsLoosePerSuicide; // (added because IntRule is negative for display)
+				if (killer != null)
+				{
+					killer.Score += PointsGainPerKill;
+
+					if (killer.Score >= ScoreToWin && ScoreToWin != -1)
+					{
+						GameManager.Instance.OnRoundEndServer.Invoke(killer);
+						return;
+					}
+				}
+				else
+				{
+					if(player != null)
+						player.Score += PointsLoosePerSuicide; // (added because IntRule is negative for display)
+				}
+
+				if (CanPlayerRespawn && player != null)
+					StartCoroutine(RespawnPlayer_Retry(player, 2));
 			}
-
-		
-
-			if (CanPlayerRespawn && player != null)
-				StartCoroutine(RespawnPlayer_Retry(player, 2));
 		}
+
 	}
 
 	private void RespawnPlayer(Player player)
@@ -164,7 +186,8 @@ public abstract class AGameRules : MonoBehaviour
 			Tile tile = tiles.RandomElement();
 			tile.SetTimeLeft(tile.TimeLeftSave * 2);
 
-			player.Controller.RpcRespawn(
+			if(player.Controller != null)
+				player.Controller.RpcRespawn(
 				tile.transform.position + Vector3.up * tile.transform.localScale.y * 0.5f + Vector3.up * player.Controller.GetComponentInChildren<CapsuleCollider>().height * 0.5f * player.transform.localScale.y,
 				tile.TileIndex);
 		}
@@ -200,13 +223,63 @@ public abstract class AGameRules : MonoBehaviour
 		ServerManager.Instance.ResetAlivePlayers();
 		ServerManager.Instance.FreezeAllPlayers();
 
-		for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; i++)
+		List<GameObject> HightestScorePlayers = new List<GameObject>();
+
+		if(IsMatchRoundBased)
 		{
-			if (ServerManager.Instance.RegisteredPlayers[i].Score >= ScoreToWin)
+			for (int i = 0; i < ServerManager.Instance.RegisteredPlayers.Count; i++)
 			{
-				Player.LocalPlayer.RpcOnPlayerWin(winner.gameObject);
+				if (ServerManager.Instance.RegisteredPlayers[i].Score >= ScoreToWin)
+				{
+					HightestScorePlayers.Add(ServerManager.Instance.RegisteredPlayers[i].gameObject);
+				}
+			}
+		}
+		else
+		{
+			HightestScorePlayers.Add(ServerManager.Instance.RegisteredPlayers[0].gameObject);
+
+			for (int i = 1; i < ServerManager.Instance.RegisteredPlayers.Count; i++)
+			{
+				if(HightestScorePlayers[0].GetComponent<Player>().Score < ServerManager.Instance.RegisteredPlayers[i].Score)
+				{
+					HightestScorePlayers.Clear();
+					HightestScorePlayers.Add(ServerManager.Instance.RegisteredPlayers[i].gameObject);
+				}
+				else if(HightestScorePlayers[0].GetComponent<Player>().Score == ServerManager.Instance.RegisteredPlayers[i].Score)
+				{
+					HightestScorePlayers.Add(ServerManager.Instance.RegisteredPlayers[i].gameObject);
+				}
+			}
+		}
+
+		if(HightestScorePlayers.Count > 1)
+		{
+			if(CanSuddenDeath)
+			{
+				GameConfiguration newConfig = GameManager.Instance.CurrentGameConfiguration;
+
+				switch (HightestScorePlayers.Count)
+				{
+					case 1: newConfig.MapConfiguration = EMapConfiguration.TestArena_2; break;
+					case 2: newConfig.MapConfiguration = EMapConfiguration.TestArena_2; break;
+					case 3: newConfig.MapConfiguration = EMapConfiguration.TestArena_3; break;
+					case 4: newConfig.MapConfiguration = EMapConfiguration.TestArena_4; break;
+				}
+
+				newConfig.ModeConfiguration = EModeConfiguration.FreeForAll;
+				MainManager.Instance.DYNAMIC_CONFIG.GetConfig(newConfig.MapConfiguration, out LevelManager.Instance.CurrentMapConfig);
+				newConfig.MapFileUsedIndex = UnityEngine.Random.Range(0, LevelManager.Instance.CurrentMapConfig.MapFiles.Length);
+
+
+				Player.LocalPlayer.RpcSuddenDeath(HightestScorePlayers.ToArray(), newConfig);
 				return;
 			}
+		}
+		else if(HightestScorePlayers.Count == 1)
+		{
+			Player.LocalPlayer.RpcOnPlayerWin(HightestScorePlayers[0]);
+			return;
 		}
 
 		if (winner != null)
@@ -214,6 +287,26 @@ public abstract class AGameRules : MonoBehaviour
 		else
 			Player.LocalPlayer.RpcOnRoundEnd(null);
 	}
+
+	public IEnumerator SuddenDeath(params GameObject[] sdPlayers)
+	{
+		_isInSuddenDeath = true;
+		MenuPauseManager.Instance.CanPause = false;
+		MenuPauseManager.Instance.Close();
+		InputManager.SetInputLockTime(2);
+
+		AutoFade.StartFade(0.5f, 0.5f, 0.5f, Color.white);
+		yield return new WaitForSeconds(0.5f);
+
+		ArenaManager.Instance._currentArenaConfig = MainManager.Instance.LEVEL_MANAGER.CurrentArenaConfig;
+		ArenaManager.Instance._currentModeConfig = MainManager.Instance.LEVEL_MANAGER.CurrentModeConfig;
+		ArenaManager.Instance._currentMapConfig = MainManager.Instance.LEVEL_MANAGER.CurrentMapConfig;
+		yield return ArenaManager.Instance.ResetMapCo(false, sdPlayers);
+
+		Debug.LogError("SUDDEN DEATH");
+		// Display popup Sudden Death
+	}
+
 
 	public virtual void OnPlayerWin_Listener(Player winner)
 	{

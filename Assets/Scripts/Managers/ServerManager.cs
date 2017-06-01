@@ -26,11 +26,9 @@ public class ServerManager : NATTraversal.NetworkManager
 	private static bool _initialised = false;
 
 	private List<Player> _activePlayers = new List<Player>();
-	[HideInInspector]
 	public List<Player> RegisteredPlayers { get { return _activePlayers; } }
-
-	private List<Player> _alivePlayers;
 	[HideInInspector]
+	public List<Player> _alivePlayers;
 	public List<Player> AlivePlayers { get { return _alivePlayers; } }
 
 	[HideInInspector]
@@ -251,6 +249,7 @@ public class ServerManager : NATTraversal.NetworkManager
 			_alivePlayers.Add(_activePlayers[i]);
 		}
 	}
+
 
 	public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
 	{

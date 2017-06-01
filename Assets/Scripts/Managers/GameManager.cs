@@ -99,6 +99,8 @@ public class GameManager : GenericSingleton<GameManager>
 
 	[HideInInspector]
 	public GameConfiguration CurrentGameConfiguration;
+	[HideInInspector]
+	public GameConfiguration PreviousGameConfig;
 
 	[HideInInspector]
 	public int CurrentStage = 0;

@@ -21,6 +21,7 @@ public class BaseRule : ScriptableObject
 	[Space]
 	public string Label; // will be used with key translation
 	public bool UserCanModify = true; // is the rule displayed in optionSelector
+	public string StringFormat = "0";
 
 
 	public RuleValuePair[] ParentRules;
@@ -85,5 +86,10 @@ public class BaseRule : ScriptableObject
 			return;
 		}
 		_valueIndex = newValue;
+	}
+
+	public override string ToString()
+	{
+		return (int.Parse(Value)).ToString(StringFormat);
 	}
 }

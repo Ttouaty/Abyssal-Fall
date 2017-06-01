@@ -31,7 +31,7 @@ public class FreeForAll_GameRules : AGameRules
 			}
 			else
 			{
-				Debug.LogError("DRAW DETECTED !");
+				//Debug.LogError("DRAW DETECTED !");
 				StopCoroutine(roundEndCoroutine);
 				GameManager.Instance.OnRoundEndServer.Invoke(null);
 			}

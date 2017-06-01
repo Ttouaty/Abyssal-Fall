@@ -8,19 +8,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 254f158f9cbcb3a4188036378265ee3c, type: 3}
-  m_Name: MatchDurationRule_DM
+  m_Script: {fileID: 11500000, guid: 5db81f9c3fc6387479700c450b32bdd6, type: 3}
+  m_Name: CanSuddenDeath_DM
   m_EditorClassIdentifier: 
   Values:
-  - 30
-  - 60
-  - 90
-  - 120
-  - 240
-  - 320
-  _valueIndex: 3
-  _defaultValue: 3
-  Label: rule_match_duration
-  UserCanModify: 1
-  StringFormat: 0:00
+  - true
+  - false
+  _valueIndex: 0
+  _defaultValue: 0
+  Label: none
+  UserCanModify: 0
   ParentRules: []

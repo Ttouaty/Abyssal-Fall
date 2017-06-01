@@ -7,14 +7,19 @@ public class Relic_GameRules : AGameRules
 	public override void InitGameRules()
 	{
 		base.InitGameRules();
-		GUIManager.Instance.RunTimer(MatchDuration);
-		GUIManager.Instance.Timer.OnCompleteCallback.AddListener(OnTimeOut);
-		if(NetworkServer.active)
+		if (!_isInSuddenDeath)
 		{
-			//Spawn Relic
-			GameObject newRelic = ServerManager.Instance.SpawnObjectOfType<Relic>(null);
-			newRelic.transform.position = ArenaManager.Instance.TilesRoot.position + (Vector3)ArenaManager.Instance.CurrentMapConfig.MapSize * 0.5f + Vector3.up;
+			GUIManager.Instance.RunTimer(MatchDuration);
+			GUIManager.Instance.Timer.OnCompleteCallback.AddListener(OnTimeOut);
+			if (NetworkServer.active)
+			{
+				//Spawn Relic
+				GameObject newRelic = ServerManager.Instance.SpawnObjectOfType<Relic>(null);
+				newRelic.transform.position = ArenaManager.Instance.TilesRoot.position + (Vector3)ArenaManager.Instance.CurrentMapConfig.MapSize * 0.5f + Vector3.up;
+			}
 		}
+		else
+			GUIManager.Instance.StopTimer();
 	}
 
 	private void OnTimeOut()
@@ -37,8 +42,9 @@ public class Relic_GameRules : AGameRules
 					}
 				}
 			}
+			GameManager.Instance.OnRoundEndServer.Invoke(winnerPlayer);
 
-			Player.LocalPlayer.RpcOnPlayerWin(winnerPlayer.gameObject);
+			//Player.LocalPlayer.RpcOnPlayerWin(winnerPlayer.gameObject);
 		}
 	}
 

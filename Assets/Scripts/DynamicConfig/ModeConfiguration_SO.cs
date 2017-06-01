@@ -24,6 +24,7 @@ public class ModeConfiguration_SO : ScriptableObject
 	public BoolRule ArenaAutoDestruction;
 	public BoolRule RandomArena;
 	public BoolRule AreTilesFrozen;
+	public BoolRule CanSuddenDeath;
 
 	//Defined in the gameObject
 	//public List<GameObject> RespawnZones = new List<GameObject>();

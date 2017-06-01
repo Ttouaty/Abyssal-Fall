@@ -87,12 +87,15 @@ public class Player : NetworkBehaviour
 
 	public void OnScoreUpdate(float newScore)
 	{
-		if (newScore - Score == 1)
-			Instantiate(GameManager.Instance.Popups["+1"], Controller.transform.position + Vector3.up * 2, Camera.main.transform.rotation);
-		if (newScore - Score == 2)
-			Instantiate(GameManager.Instance.Popups["+2"], Controller.transform.position + Vector3.up * 2, Camera.main.transform.rotation);
-		if (newScore - Score == 3)
-			Instantiate(GameManager.Instance.Popups["+3"], Controller.transform.position + Vector3.up * 2, Camera.main.transform.rotation);
+		if(newScore > Score && Controller != null)
+		{
+			if (newScore - Score == 1)
+				Instantiate(GameManager.Instance.Popups["+1"], Controller.transform.position + Vector3.up * 2, Camera.main.transform.rotation);
+			if (newScore - Score == 2)
+				Instantiate(GameManager.Instance.Popups["+2"], Controller.transform.position + Vector3.up * 2, Camera.main.transform.rotation);
+			if (newScore - Score == 3)
+				Instantiate(GameManager.Instance.Popups["+3"], Controller.transform.position + Vector3.up * 2, Camera.main.transform.rotation);
+		}
 
 		Score = newScore;
 	}
@@ -359,5 +362,21 @@ public class Player : NetworkBehaviour
 	public void RpcShakeCam(ShakeStrength force)
 	{
 		CameraManager.Shake(force);
+	}
+
+	[ClientRpc]
+	public void RpcSuddenDeath(GameObject[] playersSuddenDeath, GameConfiguration newConfig)
+	{
+		GameManager.Instance.PreviousGameConfig = GameManager.Instance.CurrentGameConfiguration;
+
+		GameManager.Instance.CurrentGameConfiguration = newConfig;
+
+		MainManager.Instance.DYNAMIC_CONFIG.GetConfig(newConfig.ArenaConfiguration, out LevelManager.Instance.CurrentArenaConfig);
+		MainManager.Instance.DYNAMIC_CONFIG.GetConfig(newConfig.ModeConfiguration, out LevelManager.Instance.CurrentModeConfig);
+		MainManager.Instance.DYNAMIC_CONFIG.GetConfig(newConfig.MapConfiguration, out LevelManager.Instance.CurrentMapConfig);
+
+
+		StartCoroutine(GameManager.Instance.GameRules.SuddenDeath(playersSuddenDeath));
+		GameManager.Instance.CurrentGameConfiguration= GameManager.Instance.PreviousGameConfig;
 	}
 }

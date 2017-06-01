@@ -8,7 +8,7 @@ public class OptionFieldInt : BaseOptionField
 		if (GetTargetRule() != null)
 		{
 			//Debug.Log("Option with label => " + TargetRule.Label + " has value => " + TargetRule.Value);
-			DisplayedValue.text = GetTargetRule().Value.ToString();
+			DisplayedValue.text = GetTargetRule().ToString();
 		}
 	}
 }
