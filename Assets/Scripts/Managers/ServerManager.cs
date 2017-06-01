@@ -500,14 +500,16 @@ public class ServerManager : NATTraversal.NetworkManager
 		if(matchMaker != null)
 		{
 			if (NetworkServer.active)
+			{
+				MasterServer.UnregisterHost();
 				matchMaker.DestroyMatch(matchID, 0, OnMatchDropped);
+			}
 			else
 				matchMaker.DropConnection(matchID, matchmakingNodeID, 0, OnMatchDropped);
 		}
 
 		if (NetworkServer.active)
 		{
-			MasterServer.UnregisterHost();
 			NetworkServer.DisconnectAll();
 			StopHost();	
 			StopClient();
@@ -578,7 +580,7 @@ public class ServerManager : NATTraversal.NetworkManager
 
 	IEnumerator MatchListTimeOut()
 	{
-		float timeoutTime = 10;
+		float timeoutTime = 20;
 		yield return new WaitForSeconds(timeoutTime);
 		if (Player.LocalPlayer == null)
 		{
