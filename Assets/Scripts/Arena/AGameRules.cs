@@ -303,7 +303,10 @@ public abstract class AGameRules : MonoBehaviour
 		ArenaManager.Instance._currentMapConfig = MainManager.Instance.LEVEL_MANAGER.CurrentMapConfig;
 		yield return ArenaManager.Instance.ResetMapCo(false, sdPlayers);
 
-		Debug.LogError("SUDDEN DEATH");
+		GameObject tempPopup = Instantiate(GameManager.Instance.Popups["SuddenDeath"], Camera.main.transform, false) as GameObject;
+		tempPopup.transform.localPosition = new Vector3(0,-2,10);
+		tempPopup.transform.localRotation = Quaternion.identity;
+		//Debug.LogError("SUDDEN DEATH");
 		// Display popup Sudden Death
 	}
 

@@ -826,6 +826,8 @@ MonoBehaviour:
       value: {fileID: 1000011513269542, guid: 2c3c6c4b4adb71241b5cee25241f3f80, type: 2}
     - key: +3
       value: {fileID: 1000011513269542, guid: f99a774025223b940884f1e75f65cbac, type: 2}
+    - key: SuddenDeath
+      value: {fileID: 1000010368885838, guid: 2dae335822b79bf42a28ca7311cc2369, type: 2}
   OnLocalPlayerDeath:
     m_PersistentCalls:
       m_Calls: []
@@ -847,6 +849,11 @@ MonoBehaviour:
     ArenaConfiguration: 0
     ModeConfiguration: 0
     MapConfiguration: 1
+    MapFileUsedIndex: 0
+  PreviousGameConfig:
+    ArenaConfiguration: 0
+    ModeConfiguration: 0
+    MapConfiguration: 0
     MapFileUsedIndex: 0
   CurrentStage: 0
 --- !u!4 &675986556 stripped
@@ -2572,6 +2579,7 @@ MonoBehaviour:
   externalIPTimeout: 10
   clientPort: 0
   delayDirectConnection: 1
+  _alivePlayers: []
   IsInLobby: 0
   _isInGame: 0
   ExternalIp: 

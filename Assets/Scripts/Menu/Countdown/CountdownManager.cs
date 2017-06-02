@@ -47,6 +47,7 @@ public class CountdownManager : GenericSingleton<CountdownManager>
 		}
 
 		yield return new WaitForSeconds(0.2f);
+		ActiveControllers = FindObjectsOfType<PlayerController>(); //dégueux mais nike !
 
 		Transform[] PreviousCamInterestPoint = CameraManager.Instance.TargetsTracked.ToArray();
 

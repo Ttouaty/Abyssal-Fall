@@ -497,29 +497,24 @@ public class ServerManager : NATTraversal.NetworkManager
 		ResetRegisteredPlayers();
 		IsDebug = false;
 
-		if(matchMaker != null)
-		{
-			if (NetworkServer.active)
-			{
-				MasterServer.UnregisterHost();
-				matchMaker.DestroyMatch(matchID, 0, OnMatchDropped);
-			}
-			else
-				matchMaker.DropConnection(matchID, matchmakingNodeID, 0, OnMatchDropped);
-		}
+		//if(matchMaker != null)
+		//{
+		//	if (NetworkServer.active)
+		//	{
+		//		MasterServer.UnregisterHost();
+		//		matchMaker.DestroyMatch(matchID, 0, OnMatchDropped);
+		//	}
+		//	else
+		//		matchMaker.DropConnection(matchID, matchmakingNodeID, 0, OnMatchDropped);
+		//}
 
 		if (NetworkServer.active)
 		{
-			NetworkServer.DisconnectAll();
-			StopHost();	
-			StopClient();
+			StopHost();
+			client.Shutdown();
 		}
 		else
 			StopClient();
-
-		NetworkClient.ShutdownAll();
-		NetworkServer.Reset();
-
 
 		RegisterPrefabs();
 	}

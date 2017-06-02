@@ -900,7 +900,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	[ClientRpc]
 	public void RpcDisplayAirshotPopup()
 	{
-		Debug.LogError("Airshot");
+		//Debug.LogError("Airshot");
 		Instantiate(GameManager.Instance.Popups["AirShot"], transform.position + Vector3.up, Camera.main.transform.rotation);
 	}
 
@@ -952,7 +952,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	public void RpcParry()
 	{
 		Instantiate(GameManager.Instance.Popups["Parry"], transform.position + Vector3.up, Camera.main.transform.rotation);
-		Debug.LogError("Parry");
+		//Debug.LogError("Parry");
 		_animToolkit.ActivateParticle("Parry");
 	}
 

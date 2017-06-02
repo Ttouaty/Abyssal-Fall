@@ -243,11 +243,6 @@ public class MenuManager : GenericSingleton<MenuManager>
 		ServerManager.Instance.StartHostAll("AbyssalFall-"+ServerManager.Instance.GameId, 4, true);
 	}
 
-	void OnFailedToConnect(NetworkConnectionError error)
-	{
-		Debug.Log("Could not connect to server: " + error);
-	}
-
 	public void DisconnectFromServer()
 	{
 		ServerManager.Instance.ResetNetwork();
