@@ -378,7 +378,7 @@ namespace FMODUnity
                             paramRef.Name = param.name;
                             paramRef.Min = param.minimum;
                             paramRef.Max = param.maximum;
-                            paramRef.Default = param.defaultValue;
+                            paramRef.Default = param.defaultvalue;
                             eventRef.Parameters.Add(paramRef);
                         }
                     }
@@ -464,8 +464,10 @@ namespace FMODUnity
                         sourceInfo.LastWriteTime != targetInfo.LastWriteTime)
                     {
                         File.Copy(sourcePath, targetPath, true);
-                        File.SetLastWriteTime(targetPath, sourceInfo.LastWriteTime);
-
+                        targetInfo = new FileInfo(targetPath);
+                        targetInfo.IsReadOnly = false;
+                        targetInfo.LastWriteTime = sourceInfo.LastWriteTime;
+                        
                         madeChanges = true;
                     }
                 }
@@ -527,6 +529,7 @@ namespace FMODUnity
             if (firstUpdate)
             {
                 UpdateCache();
+				OnCacheChange();
                 CopyToStreamingAssets();
                 bool isValid;
                 string validateMessage;

@@ -1,6 +1,6 @@
 /* ========================================================================================== */
 /*                                                                                            */
-/* FMOD Studio - C# Wrapper . Copyright (c), Firelight Technologies Pty, Ltd. 2004-2016.          */
+/* FMOD Studio - C# Wrapper . Copyright (c), Firelight Technologies Pty, Ltd. 2004-2017.          */
 /*                                                                                            */
 /* ========================================================================================== */
 
@@ -22,21 +22,23 @@ namespace FMOD
     */
     public class VERSION
     {
-        public const int    number = 0x00010814;
-#if (UNITY_IPHONE || UNITY_TVOS) && !UNITY_EDITOR
+        public const int    number = 0x00010904;
+#if (UNITY_IPHONE || UNITY_TVOS || UNITY_SWITCH) && !UNITY_EDITOR
         public const string dll    = "__Internal";
 #elif (UNITY_PS4) && !UNITY_EDITOR
         public const string dll    = "libfmod";
-#elif (UNITY_PSP2) && !UNITY_EDITOR
-        public const string dll    = "libfmodstudio";
-#elif (UNITY_WIIU) && !UNITY_EDITOR
+#elif (UNITY_PS4) && DEVELOPMENT_BUILD
+        public const string dll    = "libfmodL";
+#elif (UNITY_PSP2 || UNITY_WIIU) && !UNITY_EDITOR
         public const string dll    = "libfmodstudio";
 #elif (UNITY_EDITOR_WIN) || (UNITY_STANDALONE_WIN && DEVELOPMENT_BUILD)
         public const string dll    = "fmodstudiol";
-#elif (UNITY_STANDALONE_WIN)
+#elif (UNITY_EDITOR_OSX) || (UNITY_STANDALONE_OSX && DEVELOPMENT_BUILD)
+        public const string dll    = "fmodstudioL";
+#elif (UNITY_STANDALONE_OSX || UNITY_STANDALONE_WIN)
         public const string dll    = "fmodstudio";
-#elif UNITY_EDITOR_OSX || (UNITY_STANDALONE_OSX && DEVELOPMENT_BUILD)
-        public const string dll    = "fmodl";
+#elif (UNITY_EDITOR_LINUX) || ((UNITY_STANDALONE_LINUX || UNITY_ANDROID || UNITY_XBOXONE) && DEVELOPMENT_BUILD)
+		public const string dll    = "fmodL";
 #else
         public const string dll    = "fmod";
 #endif
@@ -46,6 +48,7 @@ namespace FMOD
     {
         public const int MAX_CHANNEL_WIDTH = 32;
         public const int MAX_LISTENERS = 8;
+        public const int REVERB_MAXINSTANCES = 4;
     }
 
     /*
@@ -326,6 +329,8 @@ namespace FMOD
         AUDIOOUT,        /* PS4/PSVita           - Audio Out.                           (Default on PS4 and PS Vita) */
         AUDIO3D,         /* PS4                  - Audio3D. */
         ATMOS,           /* Win                  - Dolby Atmos (WASAPI). */
+        WEBAUDIO,        /* Web Browser          - JavaScript webaudio output.          (Default on JavaScript) */
+        NNAUDIO,         /* NX                   - NX nn::audio.                        (Default on NX)*/
 
         MAX,             /* Maximum number of output types supported. */
     }
@@ -687,18 +692,19 @@ namespace FMOD
     [Flags]
     public enum INITFLAGS : uint
     {
-        NORMAL                    = 0x00000000, /* Initialize normally */
-        STREAM_FROM_UPDATE        = 0x00000001, /* No stream thread is created internally.  Streams are driven from System::update.  Mainly used with non-realtime outputs. */
-        MIX_FROM_UPDATE           = 0x00000002, /* Win/Wii/PS3/Xbox/Xbox 360 Only - FMOD Mixer thread is woken up to do a mix when System::update is called rather than waking periodically on its own timer. */
-        _3D_RIGHTHANDED           = 0x00000004, /* FMOD will treat +X as right, +Y as up and +Z as backwards (towards you). */
-        CHANNEL_LOWPASS           = 0x00000100, /* All FMOD_3D based voices will add a software lowpass filter effect into the DSP chain which is automatically used when Channel::set3DOcclusion is used or the geometry API.   This also causes sounds to sound duller when the sound goes behind the listener, as a fake HRTF style effect.  Use System::setAdvancedSettings to disable or adjust cutoff frequency for this feature. */
-        CHANNEL_DISTANCEFILTER    = 0x00000200, /* All FMOD_3D based voices will add a software lowpass and highpass filter effect into the DSP chain which will act as a distance-automated bandpass filter. Use System::setAdvancedSettings to adjust the center frequency. */
-        PROFILE_ENABLE            = 0x00010000, /* Enable TCP/IP based host which allows FMOD Designer or FMOD Profiler to connect to it, and view memory, CPU and the DSP network graph in real-time. */
-        VOL0_BECOMES_VIRTUAL      = 0x00020000, /* Any sounds that are 0 volume will go virtual and not be processed except for having their positions updated virtually.  Use System::setAdvancedSettings to adjust what volume besides zero to switch to virtual at. */
-        GEOMETRY_USECLOSEST       = 0x00040000, /* With the geometry engine, only process the closest polygon rather than accumulating all polygons the sound to listener line intersects. */
-        PREFER_DOLBY_DOWNMIX      = 0x00080000, /* When using FMOD_SPEAKERMODE_5POINT1 with a stereo output device, use the Dolby Pro Logic II downmix algorithm instead of the SRS Circle Surround algorithm. */
-        THREAD_UNSAFE             = 0x00100000, /* Disables thread safety for API calls. Only use this if FMOD low level is being called from a single thread, and if Studio API is not being used! */
-        PROFILE_METER_ALL         = 0x00200000  /* Slower, but adds level metering for every single DSP unit in the graph.  Use DSP::setMeteringEnabled to turn meters off individually. */
+        NORMAL                     = 0x00000000, /* Initialize normally */
+        STREAM_FROM_UPDATE         = 0x00000001, /* No stream thread is created internally.  Streams are driven from System::update.  Mainly used with non-realtime outputs. */
+        MIX_FROM_UPDATE            = 0x00000002, /* Win/Wii/PS3/Xbox/Xbox 360 Only - FMOD Mixer thread is woken up to do a mix when System::update is called rather than waking periodically on its own timer. */
+        _3D_RIGHTHANDED            = 0x00000004, /* FMOD will treat +X as right, +Y as up and +Z as backwards (towards you). */
+        CHANNEL_LOWPASS            = 0x00000100, /* All FMOD_3D based voices will add a software lowpass filter effect into the DSP chain which is automatically used when Channel::set3DOcclusion is used or the geometry API.   This also causes sounds to sound duller when the sound goes behind the listener, as a fake HRTF style effect.  Use System::setAdvancedSettings to disable or adjust cutoff frequency for this feature. */
+        CHANNEL_DISTANCEFILTER     = 0x00000200, /* All FMOD_3D based voices will add a software lowpass and highpass filter effect into the DSP chain which will act as a distance-automated bandpass filter. Use System::setAdvancedSettings to adjust the center frequency. */
+        PROFILE_ENABLE             = 0x00010000, /* Enable TCP/IP based host which allows FMOD Designer or FMOD Profiler to connect to it, and view memory, CPU and the DSP network graph in real-time. */
+        VOL0_BECOMES_VIRTUAL       = 0x00020000, /* Any sounds that are 0 volume will go virtual and not be processed except for having their positions updated virtually.  Use System::setAdvancedSettings to adjust what volume besides zero to switch to virtual at. */
+        GEOMETRY_USECLOSEST        = 0x00040000, /* With the geometry engine, only process the closest polygon rather than accumulating all polygons the sound to listener line intersects. */
+        PREFER_DOLBY_DOWNMIX       = 0x00080000, /* When using FMOD_SPEAKERMODE_5POINT1 with a stereo output device, use the Dolby Pro Logic II downmix algorithm instead of the SRS Circle Surround algorithm. */
+        THREAD_UNSAFE              = 0x00100000, /* Disables thread safety for API calls. Only use this if FMOD low level is being called from a single thread, and if Studio API is not being used! */
+        PROFILE_METER_ALL          = 0x00200000, /* Slower, but adds level metering for every single DSP unit in the graph.  Use DSP::setMeteringEnabled to turn meters off individually. */
+        DISABLE_SRS_HIGHPASSFILTER = 0x00400000  /* Using FMOD_SPEAKERMODE_5POINT1 with a stereo output device will enable the SRS Circle Surround downmixer. By default the SRS downmixer applies a high pass filter with a cutoff frequency of 80Hz. Use this flag to diable the high pass fitler, or use FMOD_INIT_PREFER_DOLBY_DOWNMIX to use the Dolby Pro Logic II downmix algorithm instead. */
     }
 
 
@@ -941,18 +947,20 @@ namespace FMOD
         These enums denote special types of node within a DSP chain.
 
         [REMARKS]
+        By default there is 1 fader for a ChannelGroup or Channel, and it is the head.
 
         [SEE_ALSO]
         Channel::getDSP
         ChannelGroup::getDSP
+        ChannelControl::getNumDSPs
+        ChannelControl::setDSPIndex
     ]
     */
     public struct CHANNELCONTROL_DSP_INDEX
     {
-        public const int HEAD    = -1;         /* Head of the DSP chain. */
+        public const int HEAD    = -1;         /* Head of the DSP chain.   Equivalent of index 0. */
         public const int FADER   = -2;         /* Built in fader DSP. */
-        public const int PANNER  = -3;         /* Built in panner DSP. */
-        public const int TAIL    = -4;         /* Tail of the DSP chain. */
+        public const int TAIL    = -3;         /* Tail of the DSP chain.  Equivalent of the number of dsps minus 1. */
     }
 
     /*
@@ -3196,10 +3204,6 @@ namespace FMOD
         {
             return FMOD5_ChannelGroup_GetDSPIndex(rawPtr, dsp.getRaw(), out index);
         }
-        public RESULT overridePanDSP(DSP pan)
-        {
-            return FMOD5_ChannelGroup_OverridePanDSP(rawPtr, pan.getRaw());
-        }
 
         // 3D functionality.
         public RESULT set3DAttributes(ref VECTOR pos, ref VECTOR vel, ref VECTOR alt_pan_pos)
@@ -3413,8 +3417,6 @@ namespace FMOD
         private static extern RESULT FMOD5_ChannelGroup_SetDSPIndex(IntPtr channelgroup, IntPtr dsp, int index);
         [DllImport(VERSION.dll)]
         private static extern RESULT FMOD5_ChannelGroup_GetDSPIndex(IntPtr channelgroup, IntPtr dsp, out int index);
-        [DllImport(VERSION.dll)]
-        private static extern RESULT FMOD5_ChannelGroup_OverridePanDSP(IntPtr channelgroup, IntPtr pan);
         [DllImport(VERSION.dll)]
         private static extern RESULT FMOD5_ChannelGroup_SetUserData(IntPtr channelgroup, IntPtr userdata);
         [DllImport(VERSION.dll)]

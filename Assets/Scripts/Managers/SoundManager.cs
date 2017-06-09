@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using FMOD.Studio;
 
 public class SoundManager : GenericSingleton<SoundManager>
 {
@@ -8,6 +9,7 @@ public class SoundManager : GenericSingleton<SoundManager>
 	private FmodSoundEvent[] AvailableEvents;
 
 	private Dictionary<string, string> EventDico = new Dictionary<string, string>();
+	private Dictionary<string, EventInstance> InstanceDico = new Dictionary<string, EventInstance>();
 	protected override void Awake()
 	{
 		base.Awake();
@@ -21,8 +23,14 @@ public class SoundManager : GenericSingleton<SoundManager>
 	public void PlayOS(string eventKey)
 	{
 		eventKey = eventKey.ToLower();
+
 		if (EventDico.ContainsKey(eventKey))
-			FMODUnity.RuntimeManager.PlayOneShot(EventDico[eventKey], Camera.main.transform.position + Camera.main.transform.forward);
+		{
+			if(EventDico[eventKey].Length != 0)
+				FMODUnity.RuntimeManager.PlayOneShot(EventDico[eventKey], Camera.main.transform.position + Camera.main.transform.forward);
+			else
+				Debug.LogWarning("No key given for => "+eventKey);
+		}
 		else if (EventDico.ContainsValue(eventKey))
 			FMODUnity.RuntimeManager.PlayOneShot(eventKey, Camera.main.transform.position + Camera.main.transform.forward);
 	}
@@ -31,9 +39,49 @@ public class SoundManager : GenericSingleton<SoundManager>
 	{
 		eventKey = eventKey.ToLower();
 		if (EventDico.ContainsKey(eventKey))
-			FMODUnity.RuntimeManager.PlayOneShotAttached(EventDico[eventKey], target);
+		{
+			if (EventDico[eventKey].Length != 0)
+				FMODUnity.RuntimeManager.PlayOneShotAttached(EventDico[eventKey], target);
+			else
+				Debug.LogWarning("No key given for => " + eventKey);
+		}
 		else if (EventDico.ContainsValue(eventKey))
 			FMODUnity.RuntimeManager.PlayOneShotAttached(eventKey, target);
+	}
+
+	public EventInstance CreateInstance(string eventKey)
+	{
+		eventKey = eventKey.ToLower();
+		if (InstanceDico.ContainsKey(eventKey))
+		{
+			Debug.Log("instanceDico is not null for new instance with key => "+eventKey+"\nRemoving old instance.");
+			PLAYBACK_STATE newPlaybackState;
+			InstanceDico[eventKey].getPlaybackState(out newPlaybackState);
+			if (newPlaybackState == PLAYBACK_STATE.PLAYING || newPlaybackState == PLAYBACK_STATE.STARTING)
+				Debug.LogWarning("Instance was playing and will be stopped.");
+			DestroyInstance(eventKey, STOP_MODE.IMMEDIATE);
+		}
+
+		if (EventDico.ContainsKey(eventKey))
+		{
+			if (EventDico[eventKey].Length != 0)
+			{
+				InstanceDico[eventKey] = FMODUnity.RuntimeManager.CreateInstance(EventDico[eventKey]);
+			}
+			else
+				Debug.LogWarning("No key given for => " + eventKey);
+		}
+		else if (EventDico.ContainsValue(eventKey))
+			InstanceDico[eventKey] = FMODUnity.RuntimeManager.CreateInstance(eventKey);
+
+		return InstanceDico[eventKey];
+	}
+
+	public void DestroyInstance(string eventKey, STOP_MODE targetStopMode)
+	{
+		InstanceDico[eventKey].stop(targetStopMode);
+		InstanceDico[eventKey].release();
+		InstanceDico.Remove(eventKey);
 	}
 }
 

@@ -360,7 +360,7 @@ public class ArenaManager : MonoBehaviour
 
 		Position = new Vector3(
 			transform.position.x - _currentMapConfig.MapSize.x * 0.5f * TileScale + 0.5f * TileScale,
-			transform.position.y + 100,
+			transform.position.y + 50,
 			transform.position.z - _currentMapConfig.MapSize.y * 0.5f * TileScale + 0.5f * TileScale
 		);
 
@@ -491,6 +491,7 @@ public class ArenaManager : MonoBehaviour
 			{
 				if(animate)
 				{
+					
 					StartCoroutine(DropObstacle(_obstacles[i].gameObject, 0.02f * index, index % 5 == 0));
 					++index;
 				}
@@ -515,6 +516,9 @@ public class ArenaManager : MonoBehaviour
 
 	private IEnumerator DropGround (GameObject element, float pos)
 	{
+		if(pos % 50 == 0)
+			SoundManager.Instance.PlayOS("Block Fall");
+
 		float timeForMapToSpawn = 1.5f;
 
 		float timer = -timeForMapToSpawn * pos / Map.Length;
@@ -527,6 +531,10 @@ public class ArenaManager : MonoBehaviour
 			element.transform.localPosition = new Vector3(element.transform.localPosition.x, y, element.transform.localPosition.z);
 			yield return null;
 		}
+
+		if (pos % 10 == 0)
+			SoundManager.Instance.PlayOS("Block Snap");
+
 		element.transform.localPosition = new Vector3(element.transform.localPosition.x, 0, element.transform.localPosition.z);
 		element.GetComponentInChildren<Tile>().Place(element.transform.localPosition);
 
@@ -540,6 +548,9 @@ public class ArenaManager : MonoBehaviour
 	{
 		yield return new WaitForSeconds(delay);
 
+		if (bIsSounded)
+			SoundManager.Instance.PlayOS("Block Fall");
+
 		float timer = 0;
 		float initialY = element.transform.localPosition.y;
 
@@ -552,10 +563,8 @@ public class ArenaManager : MonoBehaviour
 		}
 		element.transform.localPosition = new Vector3(element.transform.localPosition.x, TileScale, element.transform.localPosition.z);
 
-		//if (bIsSounded)
-		//{
-		//	GameManager.Instance.AudioSource.PlayOneShot(GameManager.Instance.OnObstacleDrop);
-		//}
+		if (bIsSounded)
+			SoundManager.Instance.PlayOS("Wall Snap");
 
 		element.GetComponent<Obstacle>().OnDropped();
 		CameraManager.Shake(ShakeStrength.Medium);

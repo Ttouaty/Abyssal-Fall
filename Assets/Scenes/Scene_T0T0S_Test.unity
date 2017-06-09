@@ -8313,9 +8313,9 @@ MonoBehaviour:
   - Key: Hit
     FmodEvent: event:/Sfx/Temp/Mediumpain1
   - Key: Explosion
-    FmodEvent: event:/Sfx/Temp/Explo_Medium_09
+    FmodEvent: event:/SFX/menu/wall_explosion
   - Key: Shotgun
-    FmodEvent: event:/Sfx/Temp/Mega shotgun 2
+    FmodEvent: event:/SFX/menu/wall_explosion
   - Key: Click
     FmodEvent: event:/Sfx/Temp/gun noise 1
   - Key: UI button Change 1
@@ -8327,7 +8327,11 @@ MonoBehaviour:
   - Key: UI button Cancel
     FmodEvent: event:/Sfx/Menu/Menu Cancel
   - Key: Special Repop
-    FmodEvent: event:/Sfx/Temp/Magic Chest Close
+    FmodEvent: event:/SFX/mage/mage_special_restored
+  - Key: Hammer Hit Character
+    FmodEvent: event:/SFX/viking/viking_special_hit_character
+  - Key: Hammer Hit Wall
+    FmodEvent: event:/SFX/viking/viking_special_hit_wall
 --- !u!1001 &244146414
 Prefab:
   m_ObjectHideFlags: 0

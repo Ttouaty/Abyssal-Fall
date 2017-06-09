@@ -28,6 +28,18 @@ public class Shuriken : ABaseProjectile
 		base.Stop();
 	}
 
+	public override void OnHitEnvironnement()
+	{
+		SoundManager.Instance.PlayOSAttached("Shuriken Hit Wall", gameObject);
+		base.OnHitEnvironnement();
+	}
+
+	public override void OnHitPlayer(IDamageable damagedEntity)
+	{
+		SoundManager.Instance.PlayOSAttached("Shuriken Hit Character", gameObject);
+		base.OnHitPlayer(damagedEntity);
+	}
+
 	protected override void OnLaunch(GameObject launcher)
 	{
 		base.OnLaunch(launcher);

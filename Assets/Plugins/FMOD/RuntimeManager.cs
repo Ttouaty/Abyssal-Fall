@@ -165,7 +165,11 @@ namespace FMODUnity
                 result = FMOD.Debug.Initialize(FMOD.DEBUG_FLAGS.LOG, FMOD.DEBUG_MODE.FILE, null, RuntimeUtils.LogFileName);
                 if (result == FMOD.RESULT.ERR_FILE_NOTFOUND)
                 {
-                    UnityEngine.Debug.LogWarningFormat("FMOD Studio: Cannot open FMOD debug log file '{0}', logs will be missing for this session.", System.IO.Path.Combine(Application.dataPath, RuntimeUtils.LogFileName));
+#if UNITY_5_X
+                    Debug.LogWarningFormat("FMOD Studio: Cannot open FMOD debug log file '{0}', logs will be missing for this session.", System.IO.Path.Combine(Application.dataPath, RuntimeUtils.LogFileName));
+#else
+                    Debug.LogWarning(string.Format("FMOD Studio: Cannot open FMOD debug log file '{0}', logs will be missing for this session.", System.IO.Path.Combine(Application.dataPath, RuntimeUtils.LogFileName)));
+#endif
                 }
                 else
                 {
@@ -190,7 +194,7 @@ namespace FMODUnity
             FMOD.ADVANCEDSETTINGS advancedsettings = new FMOD.ADVANCEDSETTINGS();
             #if UNITY_EDITOR || UNITY_STANDALONE
             advancedsettings.maxVorbisCodecs = realChannels;
-            #elif UNITY_IOS || UNITY_ANDROID || UNITY_WP8_1 || UNITY_PSP2 || UNITY_WII
+            #elif UNITY_IOS || UNITY_ANDROID || UNITY_WP8_1 || UNITY_PSP2 || UNITY_WII || UNITY_SWITCH
             advancedsettings.maxFADPCMCodecs = realChannels;
             #elif UNITY_XBOXONE
             advancedsettings.maxXMACodecs = realChannels;
@@ -216,8 +220,8 @@ namespace FMODUnity
             if (fmodSettings.IsLiveUpdateEnabled(fmodPlatform) && !forceNoNetwork)
             {
                 studioInitFlags |= FMOD.Studio.INITFLAGS.LIVEUPDATE;
-            }                       
-
+            }
+            
             FMOD.RESULT initResult = studioSystem.initialize(
                 fmodSettings.GetVirtualChannels(fmodPlatform),
                 studioInitFlags,
@@ -246,6 +250,8 @@ namespace FMODUnity
 				#else
                 foreach (var pluginName in fmodSettings.Plugins)
                 {
+                    if (string.IsNullOrEmpty(pluginName))
+                        continue;
                     string pluginPath = RuntimeUtils.GetPluginPath(pluginName);
                     uint handle;
                     result = lowlevelSystem.loadPlugin(pluginPath, out handle);
@@ -261,7 +267,7 @@ namespace FMODUnity
                     loadedPlugins.Add(pluginName, handle);
                 }
                 #endif
-
+                
                 if (fmodSettings.ImportType == ImportType.StreamingAssets)
                 {
                     // Always load strings bank
@@ -313,6 +319,7 @@ namespace FMODUnity
             public FMOD.Studio.EventInstance instance;
             public Transform transform;
             public Rigidbody rigidBody;
+            public Rigidbody2D rigidBody2D;
         }
 
         List<AttachedInstance> attachedInstances = new List<AttachedInstance>(128);
@@ -370,7 +377,15 @@ namespace FMODUnity
                         i--;
                         continue;
                     }
-                    attachedInstances[i].instance.set3DAttributes(RuntimeUtils.To3DAttributes(attachedInstances[i].transform, attachedInstances[i].rigidBody));
+
+                    if (attachedInstances[i].rigidBody)
+                    {
+                        attachedInstances[i].instance.set3DAttributes(RuntimeUtils.To3DAttributes(attachedInstances[i].transform, attachedInstances[i].rigidBody));
+                    }
+                    else
+                    {
+                        attachedInstances[i].instance.set3DAttributes(RuntimeUtils.To3DAttributes(attachedInstances[i].transform, attachedInstances[i].rigidBody2D));
+                    }
                 }
 
                 
@@ -401,7 +416,7 @@ namespace FMODUnity
                     desc.getInstanceCount(out instanceCount);
                     FMOD.Studio.EventInstance[] instances = new FMOD.Studio.EventInstance[instanceCount];
                     desc.getInstanceList(out instances);
-                    for (int i = 0; i < instanceCount; i++)
+                    for (int i = 0; i < instances.Length; i++)
                     {
                         if (warnedInvalidInstances.ContainsKey(instances[i].getRaw()))
                         {
@@ -415,7 +430,11 @@ namespace FMODUnity
                             attributes.position.z == 0)
                         {
                             warnedInvalidInstances.Add(instances[i].getRaw(), true);
+#if UNITY_5_X
                             Debug.LogWarningFormat("FMOD Studio: Instance of Event {0} found playing at the origin. EventInstance.set3DAttributes() should be called on all 3D events", path);
+#else
+                            Debug.LogWarning(string.Format("FMOD Studio: Instance of Event {0} found playing at the origin. EventInstance.set3DAttributes() should be called on all 3D events", path));
+#endif
                         }
                     }
                 }
@@ -429,6 +448,16 @@ namespace FMODUnity
             attachedInstance.transform = transform;
             attachedInstance.instance = instance;
             attachedInstance.rigidBody = rigidBody;
+            Instance.attachedInstances.Add(attachedInstance);
+        }
+        
+        public static void AttachInstanceToGameObject(FMOD.Studio.EventInstance instance, Transform transform, Rigidbody2D rigidBody2D)
+        {
+            var attachedInstance = new AttachedInstance();
+            attachedInstance.transform = transform;
+            attachedInstance.instance = instance;
+            attachedInstance.rigidBody2D = rigidBody2D;
+            attachedInstance.rigidBody = null;
             Instance.attachedInstances.Add(attachedInstance);
         }
 
@@ -471,7 +500,7 @@ namespace FMODUnity
 
                     FMOD.Studio.CPU_USAGE cpuUsage;
                     studioSystem.getCPUUsage(out cpuUsage);
-                    debug.AppendFormat("CPU: dsp = {0:F1}%, studio = {1:F1}%\n", cpuUsage.dspUsage, cpuUsage.studioUsage);
+                    debug.AppendFormat("CPU: dsp = {0:F1}%, studio = {1:F1}%\n", cpuUsage.dspusage, cpuUsage.studiousage);
 
                     int currentAlloc, maxAlloc;
                     FMOD.Memory.GetStats(out currentAlloc, out maxAlloc);
@@ -724,8 +753,10 @@ namespace FMODUnity
             }
             catch (EventNotFoundException)
             {
-                // Switch from exception with GUID to exception with path
-                throw new EventNotFoundException(path);
+				// Switch from exception with GUID to exception with path
+
+				Debug.LogError("Event not found => "+path);
+                //throw new EventNotFoundException(path);
             }
         }
 
@@ -746,7 +777,8 @@ namespace FMODUnity
             catch (EventNotFoundException)
             {
                 // Switch from exception with GUID to exception with path
-                throw new EventNotFoundException(path);
+				Debug.LogError("Event not found => "+path);
+				//throw new EventNotFoundException(path);
             }
         }
 
@@ -755,6 +787,7 @@ namespace FMODUnity
             var instance = CreateInstance(guid);
             AttachInstanceToGameObject(instance, gameObject.transform, gameObject.GetComponent<Rigidbody>());
             instance.start();
+            instance.release();
         }
 
         public static FMOD.Studio.EventDescription GetEventDescription(string path)
@@ -799,6 +832,11 @@ namespace FMODUnity
         {
             Instance.studioSystem.setListenerAttributes(0, RuntimeUtils.To3DAttributes(gameObject, rigidBody));
         }
+        
+        public static void SetListenerLocation(GameObject gameObject, Rigidbody2D rigidBody2D)
+        {
+            Instance.studioSystem.setListenerAttributes(0, RuntimeUtils.To3DAttributes(gameObject, rigidBody2D));
+        }
 
         public static void SetListenerLocation(Transform transform)
         {
@@ -808,6 +846,11 @@ namespace FMODUnity
         public static void SetListenerLocation(int listenerIndex, GameObject gameObject, Rigidbody rigidBody = null)
         {
             Instance.studioSystem.setListenerAttributes(listenerIndex, RuntimeUtils.To3DAttributes(gameObject, rigidBody));
+        }
+        
+        public static void SetListenerLocation(int listenerIndex, GameObject gameObject, Rigidbody2D rigidBody2D)
+        {
+            Instance.studioSystem.setListenerAttributes(listenerIndex, RuntimeUtils.To3DAttributes(gameObject, rigidBody2D));
         }
 
         public static void SetListenerLocation(int listenerIndex, Transform transform)
@@ -857,9 +900,9 @@ namespace FMODUnity
             }
         }
 
-	    #if (UNITY_IOS || UNITY_TVOS) && !UNITY_EDITOR
+        #if (UNITY_IOS || UNITY_TVOS) && !UNITY_EDITOR
 	    [DllImport("__Internal")]
 	    private static extern FMOD.RESULT FmodUnityNativePluginInit(IntPtr system);
-	    #endif
+        #endif
     }
 }

@@ -87,8 +87,14 @@ namespace FMODUnity
         ObjectDestroy,
         TriggerEnter,
         TriggerExit,
+        TriggerEnter2D,
+        TriggerExit2D,
         CollisionEnter,
         CollisionExit,
+        CollisionEnter2D,
+        CollisionExit2D,
+        ObjectEnable,
+        ObjectDisable
     }
 
     public enum LoaderGameEvent
@@ -98,6 +104,8 @@ namespace FMODUnity
         ObjectDestroy,
         TriggerEnter,
         TriggerExit,
+        TriggerEnter2D,
+        TriggerExit2D,
     }
     
     public static class RuntimeUtils
@@ -153,6 +161,38 @@ namespace FMODUnity
             if (rigidbody)
             {
                 attributes.velocity = rigidbody.velocity.ToFMODVector();
+            }
+
+            return attributes;
+        }
+
+        public static FMOD.ATTRIBUTES_3D To3DAttributes(Transform transform, Rigidbody2D rigidbody)
+        {
+            FMOD.ATTRIBUTES_3D attributes = transform.To3DAttributes();
+
+            if (rigidbody)
+            {
+                FMOD.VECTOR vel;
+                vel.x = rigidbody.velocity.x;
+                vel.y = rigidbody.velocity.y;
+                vel.z = 0;
+                attributes.velocity = vel;
+            }
+
+            return attributes;
+        }
+
+        public static FMOD.ATTRIBUTES_3D To3DAttributes(GameObject go, Rigidbody2D rigidbody)
+        {
+            FMOD.ATTRIBUTES_3D attributes = go.transform.To3DAttributes();
+
+            if (rigidbody)
+            {
+                FMOD.VECTOR vel;
+                vel.x = rigidbody.velocity.x;
+                vel.y = rigidbody.velocity.y;
+                vel.z = 0;
+                attributes.velocity = vel;
             }
 
             return attributes;
@@ -252,12 +292,14 @@ namespace FMODUnity
             return FMODPlatform.XboxOne;
             #elif UNITY_PSP2
             return FMODPlatform.PSVita;
-            #elif UNITY_WIIU
+            #elif (!UNITY_4_6 && !UNITY_4_7 && !UNITY_5_0 && !UNITY_5_1) && UNITY_WIIU
             return FMODPlatform.WiiU;
             #elif UNITY_WSA_10_0
             return FMODPlatform.UWP;
+            #elif UNITY_SWITCH
+            return FMODPlatform.Switch;
             #endif
-        }        
+        }
 
         const string BankExtension = ".bank";
         internal static string GetBankPath(string bankName)
@@ -285,6 +327,12 @@ namespace FMODUnity
             string bankFolder = Application.streamingAssetsPath;
             #endif
 
+            // Special case for Switch, remove / at start if needed.
+            #if UNITY_5 && UNITY_SWITCH
+            if (bankFolder[0] == '/')
+                bankFolder = bankFolder.Substring(1);
+            #endif
+
             if (System.IO.Path.GetExtension(bankName) != BankExtension)
             {
                 return String.Format("{0}/{1}.bank", bankFolder, bankName);
@@ -297,8 +345,8 @@ namespace FMODUnity
 
         internal static string GetPluginPath(string pluginName)
         {
-			#if (UNITY_IOS || UNITY_TVOS || UNITY_PSP2)
-				return "";
+            #if (UNITY_IOS || UNITY_TVOS || UNITY_PSP2 || UNITY_SWITCH)
+                return "";
 			#else
 	            #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN || UNITY_XBOXONE || UNITY_WINRT_8_1 || UNITY_WSA_10_0
 	                string pluginFileName = pluginName + ".dll";
@@ -325,6 +373,7 @@ namespace FMODUnity
 					string packageName = dirInfo.Parent.Name;
 	                string pluginFolder = "/data/data/" + packageName + "/lib/";
 	            #else
+                    string pluginFileName = "";
 	                string pluginFolder = "";
 	            #endif
 
@@ -342,16 +391,12 @@ namespace FMODUnity
             
             #endif
 
-			#if !UNITY_IPHONE || UNITY_EDITOR // iOS is statically linked
-
             // Call a function in fmod.dll to make sure it's loaded before fmodstudio.dll
             int temp1, temp2;
             FMOD.Memory.GetStats(out temp1, out temp2);
 
             Guid temp3;
-            FMOD.Studio.Util.ParseID("", out temp3);           
-
-            #endif
+            FMOD.Studio.Util.ParseID("", out temp3);
         }
 
         #if UNITY_EDITOR
@@ -384,6 +429,10 @@ namespace FMODUnity
                     return FMODPlatform.Windows;
                 case BuildTarget.XboxOne:
                     return FMODPlatform.XboxOne;
+                #if !UNITY_4_6 && !UNITY_4_7 && !UNITY_5_0 && !UNITY_5_1
+                case BuildTarget.WiiU:
+                    return FMODPlatform.WiiU;
+                #endif
 				#if UNITY_4_6 || UNITY_4_7
                 case BuildTarget.MetroPlayer:
                 #else
@@ -394,15 +443,20 @@ namespace FMODUnity
                     {
                         return FMODPlatform.UWP;
                     }
-                #endif
-                    if (EditorUserBuildSettings.wsaSDK == WSASDK.PhoneSDK81)
+                #else
+                    if (EditorUserBuildSettings.metroSDK == MetroSDK.PhoneSDK81)
                     { 
                         return FMODPlatform.WindowsPhone;
                     }
-                    return FMODPlatform.None;
+                #endif
+                return FMODPlatform.None;
                 #if !UNITY_4_6 && !UNITY_4_7 && !UNITY_5_0 && !UNITY_5_1 && !UNITY_5_2
 			    case BuildTarget.tvOS:
 					return FMODPlatform.AppleTV;
+                #endif
+                #if UNITY_SWITCH
+                case BuildTarget.Switch:
+                    return FMODPlatform.Switch;
                 #endif
                 default:
                     return FMODPlatform.None;

@@ -15,29 +15,73 @@ MonoBehaviour:
   - {fileID: 114000010971631458}
   - {fileID: 114000011044085714}
   EditorEvents:
-  - {fileID: 114000013063655528}
-  - {fileID: 114000011156654498}
-  - {fileID: 114000011566243776}
-  - {fileID: 114000011738760404}
-  - {fileID: 114000013296051070}
-  - {fileID: 114000013281780832}
-  - {fileID: 114000011023948390}
-  - {fileID: 114000013387001980}
-  - {fileID: 114000012551152914}
-  - {fileID: 114000011182252258}
-  - {fileID: 114000010757084448}
-  - {fileID: 114000011445128854}
-  - {fileID: 114000013766564078}
-  - {fileID: 114000012146062924}
-  - {fileID: 114000011091685656}
-  - {fileID: 114000011587303758}
-  - {fileID: 114000012256624394}
-  - {fileID: 114000012174154418}
-  - {fileID: 114000013288295068}
+  - {fileID: 114000013808080804}
+  - {fileID: 114000011308155938}
+  - {fileID: 114000013142791060}
+  - {fileID: 114000011606468154}
+  - {fileID: 114000014259422768}
+  - {fileID: 114000013216874156}
+  - {fileID: 114000011599686050}
+  - {fileID: 114000011519472300}
+  - {fileID: 114000013011643346}
+  - {fileID: 114000010004975398}
+  - {fileID: 114000013805042040}
+  - {fileID: 114000013964028494}
+  - {fileID: 114000014154404560}
+  - {fileID: 114000011463068904}
+  - {fileID: 114000013992435104}
+  - {fileID: 114000013327189908}
+  - {fileID: 114000013155070878}
+  - {fileID: 114000013290383834}
+  - {fileID: 114000014066091480}
+  - {fileID: 114000010110417506}
   MasterBankRef: {fileID: 114000011044085714}
   StringsBankRef: {fileID: 114000010971631458}
-  stringsBankWriteTime: 636310784037603491
+  stringsBankWriteTime: 636324415060084936
   cacheVersion: 2
+--- !u!114 &114000010004975398
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Path: event:/SFX/mage/mage_special_restored
+  guid: 739e245c9e6e6a48a93c02e54ba1a497
+  Banks:
+  - {fileID: 114000011044085714}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 0
+  MaxDistance: 0
+--- !u!114 &114000010110417506
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Path: event:/AMBIANCES/ambiance_aqua
+  guid: f33753412693ec46973a253edf996700
+  Banks:
+  - {fileID: 114000011044085714}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters:
+  - {fileID: 114000013741338460}
+  MinDistance: 0
+  MaxDistance: 0
 --- !u!114 &114000010291554924
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -132,8 +176,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Path: event:/Sfx/Temp/Magic Charge
   guid: 01f4191806fae4419808ed32dccda02f
-  Banks:
-  - {fileID: 114000011044085714}
+  Banks: []
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
@@ -192,11 +235,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Path: Assets\Sounds\Fmod\Desktop\Master Bank.strings.bank
-  lastModified: 636310784037603491
+  lastModified: 636324415060084936
   LoadResult: 0
   FileSizes:
   - Name: 
-    Value: 1618
+    Value: 1728
   Exists: 1
 --- !u!114 &114000011023948390
 MonoBehaviour:
@@ -211,8 +254,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Path: event:/Sfx/Menu/Menu Cancel
   guid: 10e1b8d576fb0446aa51d6c19d490b35
-  Banks:
-  - {fileID: 114000011044085714}
+  Banks: []
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
@@ -232,11 +274,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Path: C:\Users\T0T0S\Desktop\Isart 2016\Abyssal Fall\Assets\Sounds\Fmod\Desktop\Master
     Bank.bank
-  lastModified: 636310784037333476
+  lastModified: 636324415060064935
   LoadResult: 0
   FileSizes:
   - Name: 
-    Value: 263616
+    Value: 7206688
   Exists: 1
 --- !u!114 &114000011091685656
 MonoBehaviour:
@@ -251,8 +293,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Path: event:/Sfx/Temp/Mediumpain1
   guid: e6cc5671b5df0440b999a28154bf18dd
-  Banks:
-  - {fileID: 114000011044085714}
+  Banks: []
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
@@ -293,8 +334,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Path: event:/Sfx/viking/sfx_viking_dash_start
   guid: 73a75319ec98c64ea292e5c42854efc7
-  Banks:
-  - {fileID: 114000011044085714}
+  Banks: []
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
@@ -314,8 +354,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Path: event:/Sfx/Menu/Menu Small Validate
   guid: 85ef885fbed8c24dae756647ccb76cac
-  Banks:
-  - {fileID: 114000011044085714}
+  Banks: []
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
@@ -343,6 +382,27 @@ MonoBehaviour:
   Parameters: []
   MinDistance: 1
   MaxDistance: 20
+--- !u!114 &114000011308155938
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Path: event:/SFX/viking/viking_special_restored
+  guid: 26ecffd6ab7966428a68e10f06864e24
+  Banks:
+  - {fileID: 114000011044085714}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 0
+  MaxDistance: 0
 --- !u!114 &114000011445128854
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -356,6 +416,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Path: event:/Sfx/Temp/Mega shotgun 2
   guid: 2102ca96ef43bc4d8f58fac78c9942d2
+  Banks: []
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+--- !u!114 &114000011463068904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Path: event:/SFX/ninja/ninja_special_hit_character
+  guid: bff2fa5b76af1e478b1303dfd655f932
   Banks:
   - {fileID: 114000011044085714}
   IsStream: 0
@@ -383,6 +463,27 @@ MonoBehaviour:
   - Name: Desktop
     Value: 17312
   Exists: 1
+--- !u!114 &114000011519472300
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Path: event:/SFX/tank/tank_special_rush
+  guid: 4b5c075c60cacb41a45861359f2e5a5f
+  Banks:
+  - {fileID: 114000011044085714}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
 --- !u!114 &114000011566243776
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -396,8 +497,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Path: event:/Sfx/viking/sfx_viking_hammer_hit_wall
   guid: 8e2af2ef21e2f64489fd49514347ba30
-  Banks:
-  - {fileID: 114000011044085714}
+  Banks: []
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
@@ -437,14 +537,55 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Path: event:/Sfx/Temp/Magic Chest Close
   guid: 35b1bc5048c8f94db744deaac71952e3
-  Banks:
-  - {fileID: 114000011044085714}
+  Banks: []
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
   Parameters: []
   MinDistance: 5.4
   MaxDistance: 100
+--- !u!114 &114000011599686050
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Path: event:/SFX/viking/viking_special_throw
+  guid: 4ac8fb97cda04243be9def0dc740197e
+  Banks:
+  - {fileID: 114000011044085714}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+--- !u!114 &114000011606468154
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Path: event:/SFX/tank/tank_special_restored
+  guid: 2fd9407653b590499dc9aad1f30068a0
+  Banks:
+  - {fileID: 114000011044085714}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 0
+  MaxDistance: 0
 --- !u!114 &114000011680343516
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -466,6 +607,21 @@ MonoBehaviour:
   Parameters: []
   MinDistance: 1
   MaxDistance: 20
+--- !u!114 &114000011701111450
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: off
+  Min: 0
+  Max: 1
+  Default: 0
 --- !u!114 &114000011738760404
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -479,8 +635,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Path: event:/Sfx/viking/sfx_viking_hammer_hit_player
   guid: a85262cab88516448ac159fc7d76d2fa
-  Banks:
-  - {fileID: 114000011044085714}
+  Banks: []
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
@@ -508,6 +663,21 @@ MonoBehaviour:
   Parameters: []
   MinDistance: 1
   MaxDistance: 20
+--- !u!114 &114000011789736220
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: off
+  Min: 0
+  Max: 1
+  Default: 0
 --- !u!114 &114000012112732788
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -542,8 +712,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Path: event:/Sfx/Temp/gun noise 1
   guid: 75f29e89a7a0c14cb856aed2a134f004
-  Banks:
-  - {fileID: 114000011044085714}
+  Banks: []
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
@@ -582,8 +751,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Path: event:/Sfx/Tank/tank_startSpecial
   guid: 1575fb17bf3e59449abaeeed7879cc5e
-  Banks:
-  - {fileID: 114000011044085714}
+  Banks: []
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
@@ -621,8 +789,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Path: event:/Sfx/Temp/Sword whoosh3
   guid: ca949784adfb4f40bdbb3516d98cde77
-  Banks:
-  - {fileID: 114000011044085714}
+  Banks: []
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
@@ -684,8 +851,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Path: event:/Sfx/Menu/Typing
   guid: d212a7d1960fbc4590208b6cb5619c7e
-  Banks:
-  - {fileID: 114000011044085714}
+  Banks: []
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
@@ -732,6 +898,27 @@ MonoBehaviour:
   - Name: 
     Value: 119328
   Exists: 1
+--- !u!114 &114000013011643346
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Path: event:/SFX/tank/tank_special_rush_hit
+  guid: 5c50dc8309a71a4baf036a8b6d83920e
+  Banks:
+  - {fileID: 114000011044085714}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
 --- !u!114 &114000013044879866
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -766,14 +953,77 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Path: event:/Sfx/viking/sfx_viking_death
   guid: 64f810f98813c542857c598c05d705df
-  Banks:
-  - {fileID: 114000011044085714}
+  Banks: []
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
   Parameters: []
   MinDistance: 10
   MaxDistance: 150
+--- !u!114 &114000013142791060
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Path: event:/SFX/viking/viking_special_hit_wall
+  guid: 2a2577e6525f714097291722428fa855
+  Banks:
+  - {fileID: 114000011044085714}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+--- !u!114 &114000013155070878
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Path: event:/AMBIANCES/ambiance_sky
+  guid: 04e9748eed8e9b4c94ec86e80b30fadf
+  Banks:
+  - {fileID: 114000011044085714}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters:
+  - {fileID: 114000011789736220}
+  MinDistance: 0
+  MaxDistance: 0
+--- !u!114 &114000013216874156
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Path: event:/SFX/menu/wall_explosion
+  guid: 4972e4bebdb91a4789388778093fa905
+  Banks:
+  - {fileID: 114000011044085714}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
 --- !u!114 &114000013260212928
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -806,8 +1056,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Path: event:/Sfx/viking/sfx_viking_dash_end
   guid: fac266686ad72b408bcbef4eb321b320
-  Banks:
-  - {fileID: 114000011044085714}
+  Banks: []
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
@@ -827,14 +1076,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Path: event:/Sfx/Tank/tank_endSpecial
   guid: 661285273aa6a04c8b37562f61b20645
-  Banks:
-  - {fileID: 114000011044085714}
+  Banks: []
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
   Parameters: []
   MinDistance: 5.0499997
   MaxDistance: 70
+--- !u!114 &114000013290383834
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Path: event:/AMBIANCES/ambiance_forest
+  guid: 62be6e8df0d4984f80f6b86a91842aaa
+  Banks:
+  - {fileID: 114000011044085714}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters:
+  - {fileID: 114000013937389228}
+  MinDistance: 0
+  MaxDistance: 0
 --- !u!114 &114000013296051070
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -848,8 +1118,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Path: event:/Sfx/viking/sfx_viking_hammer_throw
   guid: e64aa6db5370374986daffaf932a051d
-  Banks:
-  - {fileID: 114000011044085714}
+  Banks: []
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
@@ -870,6 +1139,27 @@ MonoBehaviour:
   Path: event:/Sfx/Typing
   guid: d212a7d1960fbc4590208b6cb5619c7e
   Banks: []
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+--- !u!114 &114000013327189908
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Path: event:/SFX/viking/viking_special_hit_character
+  guid: d24e01fefd5ad64abbe2f2708ccbf685
+  Banks:
+  - {fileID: 114000011044085714}
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
@@ -931,8 +1221,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Path: event:/Sfx/Menu/Menu Validate
   guid: 49e029caf790cf45a3bd928d8acd545c
-  Banks:
-  - {fileID: 114000011044085714}
+  Banks: []
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
@@ -960,6 +1249,21 @@ MonoBehaviour:
   Parameters: []
   MinDistance: 5
   MaxDistance: 50
+--- !u!114 &114000013741338460
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: off
+  Min: 0
+  Max: 1
+  Default: 0
 --- !u!114 &114000013766564078
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -973,8 +1277,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Path: event:/Sfx/Temp/Explo_Medium_09
   guid: 6b7f56a9b51aa04598c486869bb8d314
-  Banks:
-  - {fileID: 114000011044085714}
+  Banks: []
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
@@ -1002,6 +1305,48 @@ MonoBehaviour:
   Parameters: []
   MinDistance: 5
   MaxDistance: 50
+--- !u!114 &114000013805042040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Path: event:/SFX/ninja/ninja_special_restored
+  guid: 85f68a1f623dcb47995a4517b4ca2cc2
+  Banks:
+  - {fileID: 114000011044085714}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 0
+  MaxDistance: 0
+--- !u!114 &114000013808080804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Path: event:/SFX/arena/block_fall
+  guid: 24e53cd127e33f4fa38cd241584b5798
+  Banks:
+  - {fileID: 114000011044085714}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 10
 --- !u!114 &114000013817335378
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1020,6 +1365,42 @@ MonoBehaviour:
   - Name: Desktop
     Value: 1038
   Exists: 1
+--- !u!114 &114000013937389228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: off
+  Min: 0
+  Max: 1
+  Default: 0
+--- !u!114 &114000013964028494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Path: event:/SFX/ninja/ninja_special_throw
+  guid: 99e9f2aa123c8c48a737238bbc6679ab
+  Banks:
+  - {fileID: 114000011044085714}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
 --- !u!114 &114000013965707768
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1053,6 +1434,91 @@ MonoBehaviour:
   guid: 49e029caf790cf45a3bd928d8acd545c
   Banks:
   - {fileID: 114000010823924730}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+--- !u!114 &114000013992435104
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Path: event:/SFX/arena/wall_snap
+  guid: ca17f5642268bf40b85f4f841c0fe81f
+  Banks:
+  - {fileID: 114000011044085714}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 15
+--- !u!114 &114000014066091480
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Path: event:/AMBIANCES/ambiance_tuto
+  guid: ce0ed69fe349cc458eca67bb4fd7b228
+  Banks:
+  - {fileID: 114000011044085714}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters:
+  - {fileID: 114000011701111450}
+  MinDistance: 0
+  MaxDistance: 0
+--- !u!114 &114000014154404560
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Path: event:/SFX/arena/block_snap
+  guid: 9e13c52a9d2d744da0dbdf4e57441b1a
+  Banks:
+  - {fileID: 114000011044085714}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 10
+--- !u!114 &114000014259422768
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Path: event:/SFX/ninja/ninja_special_hit_wall
+  guid: 4812aac0e060dd4a8624f8324439fc8d
+  Banks:
+  - {fileID: 114000011044085714}
   IsStream: 0
   Is3D: 1
   IsOneShot: 1

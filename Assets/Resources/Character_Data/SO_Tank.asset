@@ -54,9 +54,11 @@ MonoBehaviour:
     - Key: OnHit
       FmodEvent: event:/Sfx/viking/sfx_viking_hammer_hit_player
     - Key: OnSpecialActivate
-      FmodEvent: event:/Sfx/Tank/tank_startSpecial
+      FmodEvent: event:/SFX/tank/tank_special_rush
     - Key: OnSpecialRestored
-      FmodEvent: event:/Sfx/Temp/Magic Chest Close
+      FmodEvent: event:/SFX/tank/tank_special_restored
     - Key: OnSpecialEnd
       FmodEvent: event:/Sfx/Tank/tank_endSpecial
+    - Key: OnSpecialHit
+      FmodEvent: event:/SFX/tank/tank_special_rush_hit
   OtherAssetsToLoad: []

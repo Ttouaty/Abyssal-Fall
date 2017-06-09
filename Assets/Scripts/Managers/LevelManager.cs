@@ -277,6 +277,7 @@ public class LevelManager : GenericSingleton<LevelManager>
 		if (_oldArenaConfig != null)
 		{
 			UnloadScene(_oldArenaConfig.BackgroundLevel);
+			SoundManager.Instance.DestroyInstance(_oldArenaConfig.AmbianceSound, FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
 			_oldArenaConfig = null;
 		}
 
@@ -312,6 +313,8 @@ public class LevelManager : GenericSingleton<LevelManager>
 
 		// BUILD LEVEL
 		MainManager.Instance.LOADING_MANAGER.SetStateText("build_level");
+
+		SoundManager.Instance.CreateInstance(CurrentArenaConfig.AmbianceSound).start();
 
 		_defaultScenesToLoad.Clear();
 		_defaultScenesToLoad.Add(CurrentArenaConfig.BackgroundLevel, null);

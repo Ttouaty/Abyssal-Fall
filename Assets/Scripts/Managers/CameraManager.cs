@@ -22,7 +22,9 @@ public class CameraManager : GenericSingleton<CameraManager>
 	public static bool IsManual = false;
 
 	private float _shakeTimeLeft = 0;
-	private ShakeStrength _activeShakeStrength;
+	private float _shakeMaxTimeLeft = 0;
+	private float _activeShakeStrength;
+	private int _maxActiveShakeStrength;
 
 	private Camera _camera;
 	private Transform _focalPoint; //FocalPoint is the point the camera is looking at, it can move away from the center point.
@@ -77,6 +79,7 @@ public class CameraManager : GenericSingleton<CameraManager>
 		if (_instance != null) // replace instance
 		{
 			_shakeTimeLeft = 0;
+			_shakeMaxTimeLeft = 0;
 			_instance.gameObject.SetActive(false);
 			_instance = newInstance;
 			_instance.gameObject.SetActive(true);
@@ -141,11 +144,12 @@ public class CameraManager : GenericSingleton<CameraManager>
 		transform.localRotation = Quaternion.identity;
 		if (_shakeTimeLeft > 0)
 		{
-			Vector3 ShakeVector = UnityEngine.Random.insideUnitCircle * (int)_activeShakeStrength;
+			_activeShakeStrength = Mathf.Lerp(0, _maxActiveShakeStrength, _shakeTimeLeft / _shakeMaxTimeLeft);
+			Vector3 ShakeVector = UnityEngine.Random.insideUnitCircle *_activeShakeStrength;
 			ShakeVector = transform.rotation * ShakeVector;
 			ShakeVector *= 0.03f;
 			transform.localPosition += ShakeVector;
-			transform.localRotation = Quaternion.Euler(10 * ShakeVector.x, 10 * ShakeVector.y, 5 * ShakeVector.x); // small rotation for juiciness (may remove later :p )
+			transform.localRotation = Quaternion.Euler(10 * ShakeVector.x, 10 * ShakeVector.y, 10 * ShakeVector.x);
 
 
 			_shakeTimeLeft = Mathf.Clamp(_shakeTimeLeft - Time.deltaTime, 0, 10); // Screenshake Capped at 10 secs (stupid long)
@@ -309,12 +313,12 @@ public class CameraManager : GenericSingleton<CameraManager>
 
 	public static void Shake(ShakeStrength force)
 	{
-		Shake(force, 0.05f);
+		Shake(force, ((float)force) * 0.03f);
 	}
 
 	public static void Shake(int force)
 	{
-		Shake((ShakeStrength) ((ShakeStrength[])Enum.GetValues(typeof(ShakeStrength)))[force], 0.05f);
+		Shake((ShakeStrength) ((ShakeStrength[])Enum.GetValues(typeof(ShakeStrength)))[force], (int)((ShakeStrength)((ShakeStrength[])Enum.GetValues(typeof(ShakeStrength)))[force]) * 0.03f);
 	}
 
 	public static void Shake(ShakeStrength force, float customTime)
@@ -322,8 +326,11 @@ public class CameraManager : GenericSingleton<CameraManager>
 		if (force == 0)
 			return;
 		_instance._shakeTimeLeft = customTime;
-		_instance._activeShakeStrength = force;
+		_instance._shakeMaxTimeLeft = customTime;
+		_instance._activeShakeStrength = (int)force;
+		_instance._maxActiveShakeStrength = (int)force;
 	}
+	
 
 
 	public void Reset()

@@ -15,4 +15,5 @@ public class ArenaConfiguration_SO : ScriptableObject
 	[Space]
 	public VictoryPlatform VictoryPlatformGo;
 	public Texture AmbientRamp;
+	public string AmbianceSound;
 }

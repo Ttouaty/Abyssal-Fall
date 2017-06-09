@@ -24,6 +24,7 @@ public class Hammer : ABaseProjectile
 	public override void OnHitPlayer(IDamageable damagedEntity)
 	{
 		Destroy(Instantiate(ImpactParticle.gameObject, transform.position, Quaternion.identity) as GameObject, ImpactParticle.startLifetime + ImpactParticle.duration);
+		SoundManager.Instance.PlayOSAttached("Hammer Hit Character", gameObject);
 		base.OnHitPlayer(damagedEntity);
 	}
 
@@ -31,6 +32,7 @@ public class Hammer : ABaseProjectile
 	{
 		Destroy(Instantiate(ImpactWallParticle.gameObject, transform.position, Quaternion.identity) as GameObject, ImpactParticle.startLifetime + ImpactParticle.duration);
 		CameraManager.Shake(ShakeStrength.Low);
+		SoundManager.Instance.PlayOSAttached("Hammer Hit Wall", gameObject);
 		base.OnHitEnvironnement();
 	}
 

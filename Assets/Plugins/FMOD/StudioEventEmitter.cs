@@ -67,6 +67,16 @@ namespace FMODUnity
             }
         }
 
+        void OnEnable()
+        {
+            HandleGameEvent(EmitterGameEvent.ObjectEnable);
+        }
+
+        void OnDisable()
+        {
+            HandleGameEvent(EmitterGameEvent.ObjectDisable);
+        }
+
         void OnTriggerEnter(Collider other)
         {
             if (String.IsNullOrEmpty(CollisionTag) || other.CompareTag(CollisionTag))
@@ -83,6 +93,22 @@ namespace FMODUnity
             }
         }
 
+        void OnTriggerEnter2D(Collider2D other)
+        {
+            if (String.IsNullOrEmpty(CollisionTag) || other.CompareTag(CollisionTag))
+            {
+                HandleGameEvent(EmitterGameEvent.TriggerEnter2D);
+            }
+        }
+
+        void OnTriggerExit2D(Collider2D other)
+        {
+            if (String.IsNullOrEmpty(CollisionTag) || other.CompareTag(CollisionTag))
+            {
+                HandleGameEvent(EmitterGameEvent.TriggerExit2D);
+            }
+        }
+
         void OnCollisionEnter()
         {
             HandleGameEvent(EmitterGameEvent.CollisionEnter);
@@ -91,6 +117,16 @@ namespace FMODUnity
         void OnCollisionExit()
         {
             HandleGameEvent(EmitterGameEvent.CollisionExit);
+        }
+
+        void OnCollisionEnter2D()
+        {
+            HandleGameEvent(EmitterGameEvent.CollisionEnter2D);
+        }
+
+        void OnCollisionExit2D()
+        {
+            HandleGameEvent(EmitterGameEvent.CollisionExit2D);
         }
 
         void HandleGameEvent(EmitterGameEvent gameEvent)
@@ -155,9 +191,18 @@ namespace FMODUnity
                 if (is3D)
                 {
                     var rigidBody = GetComponent<Rigidbody>();
+                    var rigidBody2D = GetComponent<Rigidbody2D>();
                     var transform = GetComponent<Transform>();
-                    instance.set3DAttributes(RuntimeUtils.To3DAttributes(gameObject, rigidBody));
-                    RuntimeManager.AttachInstanceToGameObject(instance, transform, rigidBody);
+                    if (rigidBody)
+                    {
+                        instance.set3DAttributes(RuntimeUtils.To3DAttributes(gameObject, rigidBody));
+                        RuntimeManager.AttachInstanceToGameObject(instance, transform, rigidBody);
+                    }
+                    else
+                    {
+                        instance.set3DAttributes(RuntimeUtils.To3DAttributes(gameObject, rigidBody2D));
+                        RuntimeManager.AttachInstanceToGameObject(instance, transform, rigidBody2D);
+                    }
                 }
             }
 

@@ -49,8 +49,8 @@ namespace FMODUnity
             EditorGUILayout.PropertyField(begin, new GUIContent("Play Event"));
             EditorGUILayout.PropertyField(end, new GUIContent("Stop Event"));
 
-            if (begin.enumValueIndex == 3 || begin.enumValueIndex == 4 ||
-                end.enumValueIndex == 3 || end.enumValueIndex == 4)
+            if ((begin.enumValueIndex >= 3 && begin.enumValueIndex <= 6) ||
+            (end.enumValueIndex >= 3 && end.enumValueIndex <= 6))
             {
                 tag.stringValue = EditorGUILayout.TagField("Collision Tag", tag.stringValue);
             }
@@ -73,104 +73,107 @@ namespace FMODUnity
             }
 
             // Attenuation
+            if (editorEvent != null)
             {
-                EditorGUI.BeginDisabledGroup(editorEvent == null || !editorEvent.Is3D);
-                EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.PrefixLabel("Override Attenuation");
-                EditorGUI.BeginChangeCheck();
-                overrideAtt.boolValue = EditorGUILayout.Toggle(overrideAtt.boolValue, GUILayout.Width(20));
-                if (EditorGUI.EndChangeCheck() || 
-                    (minDistance.floatValue == -1 && maxDistance.floatValue == -1) // never been initialiased
-                    )
                 {
-                    minDistance.floatValue = editorEvent.MinDistance;
-                    maxDistance.floatValue = editorEvent.MaxDistance;
-                }
-                EditorGUI.BeginDisabledGroup(!overrideAtt.boolValue);
-                EditorGUIUtility.labelWidth = 30;
-                minDistance.floatValue = EditorGUILayout.FloatField("Min", minDistance.floatValue);
-                minDistance.floatValue = Mathf.Clamp(minDistance.floatValue, 0, maxDistance.floatValue);
-                maxDistance.floatValue = EditorGUILayout.FloatField("Max", maxDistance.floatValue);
-                maxDistance.floatValue = Mathf.Max(minDistance.floatValue, maxDistance.floatValue);
-                EditorGUIUtility.labelWidth = 0;
-                EditorGUI.EndDisabledGroup();
-                EditorGUILayout.EndHorizontal();
-                EditorGUI.EndDisabledGroup();
-            }
-
-            param.isExpanded = EditorGUILayout.Foldout(param.isExpanded, "Initial Parameter Values");
-            if (ev.hasMultipleDifferentValues)
-            {
-                if (param.isExpanded)
-                {
-                    GUILayout.Box("Cannot change parameters when different events are selected", GUILayout.ExpandWidth(true));
-                }
-            }
-            else
-            {
-                var eventRef = EventManager.EventFromPath(ev.stringValue);
-                if (param.isExpanded && eventRef != null)
-                {
-                    foreach (var paramRef in eventRef.Parameters)
+                    EditorGUI.BeginDisabledGroup(editorEvent == null || !editorEvent.Is3D);
+                    EditorGUILayout.BeginHorizontal();
+                    EditorGUILayout.PrefixLabel("Override Attenuation");
+                    EditorGUI.BeginChangeCheck();
+                    overrideAtt.boolValue = EditorGUILayout.Toggle(overrideAtt.boolValue, GUILayout.Width(20));
+                    if (EditorGUI.EndChangeCheck() ||
+                        (minDistance.floatValue == -1 && maxDistance.floatValue == -1) // never been initialiased
+                        )
                     {
-                        bool set;
-                        float value;
-                        bool matchingSet, matchingValue;
-                        CheckParameter(paramRef.Name, out set, out matchingSet, out value, out matchingValue);
+                        minDistance.floatValue = editorEvent.MinDistance;
+                        maxDistance.floatValue = editorEvent.MaxDistance;
+                    }
+                    EditorGUI.BeginDisabledGroup(!overrideAtt.boolValue);
+                    EditorGUIUtility.labelWidth = 30;
+                    minDistance.floatValue = EditorGUILayout.FloatField("Min", minDistance.floatValue);
+                    minDistance.floatValue = Mathf.Clamp(minDistance.floatValue, 0, maxDistance.floatValue);
+                    maxDistance.floatValue = EditorGUILayout.FloatField("Max", maxDistance.floatValue);
+                    maxDistance.floatValue = Mathf.Max(minDistance.floatValue, maxDistance.floatValue);
+                    EditorGUIUtility.labelWidth = 0;
+                    EditorGUI.EndDisabledGroup();
+                    EditorGUILayout.EndHorizontal();
+                    EditorGUI.EndDisabledGroup();
+                }
 
-                        EditorGUILayout.BeginHorizontal();
-                        EditorGUILayout.PrefixLabel(paramRef.Name);
-                        EditorGUI.showMixedValue = !matchingSet;
-                        EditorGUI.BeginChangeCheck();
-                        bool newSet = EditorGUILayout.Toggle(set, GUILayout.Width(20));
-                        EditorGUI.showMixedValue = false;
-
-                        if (EditorGUI.EndChangeCheck())
+                param.isExpanded = EditorGUILayout.Foldout(param.isExpanded, "Initial Parameter Values");
+                if (ev.hasMultipleDifferentValues)
+                {
+                    if (param.isExpanded)
+                    {
+                        GUILayout.Box("Cannot change parameters when different events are selected", GUILayout.ExpandWidth(true));
+                    }
+                }
+                else
+                {
+                    var eventRef = EventManager.EventFromPath(ev.stringValue);
+                    if (param.isExpanded && eventRef != null)
+                    {
+                        foreach (var paramRef in eventRef.Parameters)
                         {
-                            Undo.RecordObjects(serializedObject.isEditingMultipleObjects ? serializedObject.targetObjects : new UnityEngine.Object[] { serializedObject.targetObject }, "Inspector");
-                            if (newSet)
-                            {
-                                AddParameterValue(paramRef.Name, paramRef.Default);
-                            }
-                            else
-                            {
-                                DeleteParameterValue(paramRef.Name);
-                            }
-                            set = newSet;
-                        }
+                            bool set;
+                            float value;
+                            bool matchingSet, matchingValue;
+                            CheckParameter(paramRef.Name, out set, out matchingSet, out value, out matchingValue);
 
-                        EditorGUI.BeginDisabledGroup(!newSet);
-                        if (set)
-                        {
-                            EditorGUI.showMixedValue = !matchingValue;
+                            EditorGUILayout.BeginHorizontal();
+                            EditorGUILayout.PrefixLabel(paramRef.Name);
+                            EditorGUI.showMixedValue = !matchingSet;
                             EditorGUI.BeginChangeCheck();
-                            value = EditorGUILayout.Slider(value, paramRef.Min, paramRef.Max);
+                            bool newSet = EditorGUILayout.Toggle(set, GUILayout.Width(20));
+                            EditorGUI.showMixedValue = false;
+
                             if (EditorGUI.EndChangeCheck())
                             {
                                 Undo.RecordObjects(serializedObject.isEditingMultipleObjects ? serializedObject.targetObjects : new UnityEngine.Object[] { serializedObject.targetObject }, "Inspector");
-                                SetParameterValue(paramRef.Name, value);
+                                if (newSet)
+                                {
+                                    AddParameterValue(paramRef.Name, paramRef.Default);
+                                }
+                                else
+                                {
+                                    DeleteParameterValue(paramRef.Name);
+                                }
+                                set = newSet;
                             }
-                            EditorGUI.showMixedValue = false;
-                        }
-                        else
-                        {
-                            EditorGUI.showMixedValue = !matchingValue;
-                            EditorGUILayout.Slider(paramRef.Default, paramRef.Min, paramRef.Max);
-                            EditorGUI.showMixedValue = false;
-                        }
-                        EditorGUI.EndDisabledGroup();
-                        EditorGUILayout.EndHorizontal();
-                    }
-                    
-                }
-            }
 
-            fadeout.isExpanded = EditorGUILayout.Foldout(fadeout.isExpanded, "Advanced Controls");
-            if (fadeout.isExpanded)
-            {
-                EditorGUILayout.PropertyField(preload, new GUIContent("Preload Sample Data"));
-                EditorGUILayout.PropertyField(fadeout, new GUIContent("Allow Fadeout When Stopping"));
-                EditorGUILayout.PropertyField(once, new GUIContent("Trigger Once"));
+                            EditorGUI.BeginDisabledGroup(!newSet);
+                            if (set)
+                            {
+                                EditorGUI.showMixedValue = !matchingValue;
+                                EditorGUI.BeginChangeCheck();
+                                value = EditorGUILayout.Slider(value, paramRef.Min, paramRef.Max);
+                                if (EditorGUI.EndChangeCheck())
+                                {
+                                    Undo.RecordObjects(serializedObject.isEditingMultipleObjects ? serializedObject.targetObjects : new UnityEngine.Object[] { serializedObject.targetObject }, "Inspector");
+                                    SetParameterValue(paramRef.Name, value);
+                                }
+                                EditorGUI.showMixedValue = false;
+                            }
+                            else
+                            {
+                                EditorGUI.showMixedValue = !matchingValue;
+                                EditorGUILayout.Slider(paramRef.Default, paramRef.Min, paramRef.Max);
+                                EditorGUI.showMixedValue = false;
+                            }
+                            EditorGUI.EndDisabledGroup();
+                            EditorGUILayout.EndHorizontal();
+                        }
+
+                    }
+                }
+
+                fadeout.isExpanded = EditorGUILayout.Foldout(fadeout.isExpanded, "Advanced Controls");
+                if (fadeout.isExpanded)
+                {
+                    EditorGUILayout.PropertyField(preload, new GUIContent("Preload Sample Data"));
+                    EditorGUILayout.PropertyField(fadeout, new GUIContent("Allow Fadeout When Stopping"));
+                    EditorGUILayout.PropertyField(once, new GUIContent("Trigger Once"));
+                }
             }
 
             serializedObject.ApplyModifiedProperties();
