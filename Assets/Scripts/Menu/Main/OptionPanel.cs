@@ -34,9 +34,15 @@ public class OptionPanel : ButtonPanelNew
 			if (!tempOption.isActiveAndEnabled)
 				continue;
 
-
 			tempOption.Init(Convert.ToInt32(_optionsObj.GetType().GetField(tempOption.TargetOptionName).GetValue(_optionsObj)));
 		}
+
+		Slider[] sliderChildren = GetComponentsInChildren<Slider>();
+		for (int i = 0; i < sliderChildren.Length; i++)
+		{
+			sliderChildren[i].value = Convert.ToSingle(_optionsObj.GetType().GetField(sliderChildren[i].gameObject.name).GetValue(_optionsObj));
+		}
+
 	}
 
 	void OnDisable()
@@ -57,14 +63,18 @@ public class OptionPanel : ButtonPanelNew
 
 	public void AddValue()
 	{
-		if(ActiveElement.GetComponent<GlobalOptionButton>() != null)
+		if (ActiveElement.GetComponent<GlobalOptionButton>() != null)
 			ActiveElement.GetComponent<GlobalOptionButton>().ChangeValue(1);
+		else
+			ActiveElement.GetComponent<Slider>().value += 0.05f;
 	}
 
 	public void DecreaseValue()
 	{
 		if(ActiveElement.GetComponent<GlobalOptionButton>() != null)
 			ActiveElement.GetComponent<GlobalOptionButton>().ChangeValue(-1);
+		else
+			ActiveElement.GetComponent<Slider>().value -= 0.05f;
 	}
 
 	public void ChangeTextureQuality(int value)
@@ -109,22 +119,28 @@ public class OptionPanel : ButtonPanelNew
 		Localizator.LanguageManager.Instance.CurrentLanguage = (SystemLanguage) value;
 	}
 
-	public void ChangeMasterSoundVolume(float value)
+	public void ChangeMasterSoundVolume(Single value)
 	{
-		Debug.Log("Master sound volume set to => " + value);
-		_optionsObj.MasterSoundVolume = value;
+		_optionsObj.MasterVolume = value;
+		FMODUnity.RuntimeManager.GetVCA("vca:/Master").setVolume(value);
 	}
 
-	public void ChangeSFXVolume(float value)
+	public void ChangeSFXVolume(Single value)
 	{
-		Debug.Log("SFX volume set to => " + value);
 		_optionsObj.SFXVolume = value;
+		FMODUnity.RuntimeManager.GetVCA("vca:/SFX").setVolume(value);
 	}
 
-	public void ChangeMusicVolume(float value)
+	public void ChangeMusicVolume(Single value)
 	{
-		Debug.Log("Music volume set to => " + value);
 		_optionsObj.MusicVolume = value;
+		FMODUnity.RuntimeManager.GetVCA("vca:/Music").setVolume(value);
+	}
+
+	public void ChangeAmbianceVolume(Single value)
+	{
+		_optionsObj.AmbianceVolume = value;
+		FMODUnity.RuntimeManager.GetVCA("vca:/Ambiance").setVolume(value);
 	}
 }
 
@@ -135,10 +151,11 @@ public class AbyssalFallOptions
 	public int Vsync = 0;
 	public int AntiAliasing = 0;
 	public int Language = 10;
-	public float GammaValue = 0.5f;
-	public float MasterSoundVolume = 1f;
+	public float MasterVolume = 1f;
 	public float SFXVolume = 1f;
 	public float MusicVolume = 1f;
+	public float AmbianceVolume = 1f;
+	
 	//public bool FullScreen = true;
 	public int ScreenResolution = 0;
 }

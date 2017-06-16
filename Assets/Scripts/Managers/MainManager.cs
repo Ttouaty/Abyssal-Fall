@@ -7,7 +7,7 @@ using UnityEngine.Networking;
 public class MainManager : GenericSingleton<MainManager>
 {
 	[HideInInspector]
-	public GameObjectPool       GAME_OBJECT_POOL;
+	public GameObjectPool GAME_OBJECT_POOL;
 	[HideInInspector]
 	public DynamicConfig DYNAMIC_CONFIG;
 	[HideInInspector]
@@ -86,6 +86,10 @@ public class MainManager : GenericSingleton<MainManager>
 			QualitySettings.masterTextureLimit = _optionsObj.TextureQuality;
 			StartCoroutine(DelayLoadLanguage((SystemLanguage)_optionsObj.Language));
 			Screen.SetResolution((int)AvailableResolutions[_optionsObj.ScreenResolution].x, (int)AvailableResolutions[_optionsObj.ScreenResolution].y, true);
+			FMODUnity.RuntimeManager.GetVCA("vca:/SFX").setVolume(_optionsObj.SFXVolume);
+			FMODUnity.RuntimeManager.GetVCA("vca:/Music").setVolume(_optionsObj.MusicVolume);
+			FMODUnity.RuntimeManager.GetVCA("vca:/Master").setVolume(_optionsObj.MasterVolume);
+			FMODUnity.RuntimeManager.GetVCA("vca:/Ambiance").setVolume(_optionsObj.AmbianceVolume);
 		}
 		else
 			Debug.Log("No option file found.");
@@ -114,9 +118,7 @@ public class MainManager : GenericSingleton<MainManager>
 		if(Input.GetKeyDown(KeyCode.F7) && NetworkServer.active)
 		{
 			if (Player.LocalPlayer != null)
-			{
 				Player.LocalPlayer.RpcToggleNoClip();
-			}
 			else
 				MessageManager.Log("No Local Player can't toggle noclip");
 		}

@@ -42,6 +42,7 @@ public class MenuPauseManager : GenericSingleton<MenuPauseManager>
 
 	public void Toggle ()
 	{
+
 		if(IsOpen)
 		{
 			Close();
@@ -50,6 +51,9 @@ public class MenuPauseManager : GenericSingleton<MenuPauseManager>
 		{
 			Open();
 		}
+
+		SoundManager.Instance.GetInstance(LevelManager.Instance.CurrentArenaConfig.AmbianceSound).setPaused(IsOpen);
+		//Stop Music Here
 	}
 
 	public void Open ()

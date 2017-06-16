@@ -1,0 +1,326 @@
+fileFormatVersion: 2
+guid: 03e20012d5e7f504fa2404928a45037b
+timeCreated: 1490883065
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Head
+    100002: Head_End
+    100004: Hips
+    100006: Left_Foot
+    100008: Left_Foot_End
+    100010: Left_Leg1
+    100012: Left_Palm1
+    100014: Left_Palm2
+    100016: Left_Shoulder1
+    100018: Left_Thumb1
+    100020: Left_Thumb2
+    100022: Left_Thumb_end
+    100024: Left_Wrist
+    100026: LeftPalm_End
+    100028: //RootNode
+    100030: Mage_Mesh
+    100032: Pelvis
+    100034: Right_Foot
+    100036: Right_Foot_End
+    100038: Right_Leg
+    100040: Right_Palm1
+    100042: Right_Palm2
+    100044: Right_Palm_End
+    100046: Right_Shoulder
+    100048: Right_Thumb1
+    100050: Right_Thumb2
+    100052: Right_Thumb_end
+    100054: Right_Wrist
+    100056: Spine1
+    100058: Spine2
+    400000: Head
+    400002: Head_End
+    400004: Hips
+    400006: Left_Foot
+    400008: Left_Foot_End
+    400010: Left_Leg1
+    400012: Left_Palm1
+    400014: Left_Palm2
+    400016: Left_Shoulder1
+    400018: Left_Thumb1
+    400020: Left_Thumb2
+    400022: Left_Thumb_end
+    400024: Left_Wrist
+    400026: LeftPalm_End
+    400028: //RootNode
+    400030: Mage_Mesh
+    400032: Pelvis
+    400034: Right_Foot
+    400036: Right_Foot_End
+    400038: Right_Leg
+    400040: Right_Palm1
+    400042: Right_Palm2
+    400044: Right_Palm_End
+    400046: Right_Shoulder
+    400048: Right_Thumb1
+    400050: Right_Thumb2
+    400052: Right_Thumb_end
+    400054: Right_Wrist
+    400056: Spine1
+    400058: Spine2
+    4300000: Mage_Mesh
+    7400000: Spawn
+    7400002: WaitForEnter
+    9500000: //RootNode
+    13700000: Mage_Mesh
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Spawn
+      takeName: Spawn
+      firstFrame: 0
+      lastFrame: 44
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events:
+      - time: 0.3881579
+        functionName: ActivateParticle
+        data: Landing Impact
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.38066468
+        functionName: CameraShake
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 3
+        messageOptions: 0
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Mage_Mesh
+        weight: 1
+      - path: Pelvis
+        weight: 1
+      - path: Pelvis/Hips
+        weight: 1
+      - path: Pelvis/Hips/Spine1
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Head
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Head/Head_End
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Left_Shoulder1
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Left_Shoulder1/Left_Wrist
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Left_Shoulder1/Left_Wrist/Left_Palm1
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Left_Shoulder1/Left_Wrist/Left_Palm1/Left_Palm2
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Left_Shoulder1/Left_Wrist/Left_Palm1/Left_Palm2/LeftPalm_End
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Left_Shoulder1/Left_Wrist/Left_Thumb1
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Left_Shoulder1/Left_Wrist/Left_Thumb1/Left_Thumb2
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Left_Shoulder1/Left_Wrist/Left_Thumb1/Left_Thumb2/Left_Thumb_end
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Right_Shoulder
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Right_Shoulder/Right_Wrist
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Right_Shoulder/Right_Wrist/Right_Palm1
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Right_Shoulder/Right_Wrist/Right_Palm1/Right_Palm2
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Right_Shoulder/Right_Wrist/Right_Palm1/Right_Palm2/Right_Palm_End
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Right_Shoulder/Right_Wrist/Right_Thumb1
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Right_Shoulder/Right_Wrist/Right_Thumb1/Right_Thumb2
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Right_Shoulder/Right_Wrist/Right_Thumb1/Right_Thumb2/Right_Thumb_end
+        weight: 1
+      - path: Pelvis/Left_Leg1
+        weight: 1
+      - path: Pelvis/Left_Leg1/Left_Foot
+        weight: 1
+      - path: Pelvis/Left_Leg1/Left_Foot/Left_Foot_End
+        weight: 1
+      - path: Pelvis/Right_Leg
+        weight: 1
+      - path: Pelvis/Right_Leg/Right_Foot
+        weight: 1
+      - path: Pelvis/Right_Leg/Right_Foot/Right_Foot_End
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: WaitForEnter
+      takeName: Spawn
+      firstFrame: 0
+      lastFrame: 1
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Mage_Mesh
+        weight: 1
+      - path: Pelvis
+        weight: 1
+      - path: Pelvis/Hips
+        weight: 1
+      - path: Pelvis/Hips/Spine1
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Head
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Head/Head_End
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Left_Shoulder1
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Left_Shoulder1/Left_Wrist
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Left_Shoulder1/Left_Wrist/Left_Palm1
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Left_Shoulder1/Left_Wrist/Left_Palm1/Left_Palm2
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Left_Shoulder1/Left_Wrist/Left_Palm1/Left_Palm2/LeftPalm_End
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Left_Shoulder1/Left_Wrist/Left_Thumb1
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Left_Shoulder1/Left_Wrist/Left_Thumb1/Left_Thumb2
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Left_Shoulder1/Left_Wrist/Left_Thumb1/Left_Thumb2/Left_Thumb_end
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Right_Shoulder
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Right_Shoulder/Right_Wrist
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Right_Shoulder/Right_Wrist/Right_Palm1
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Right_Shoulder/Right_Wrist/Right_Palm1/Right_Palm2
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Right_Shoulder/Right_Wrist/Right_Palm1/Right_Palm2/Right_Palm_End
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Right_Shoulder/Right_Wrist/Right_Thumb1
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Right_Shoulder/Right_Wrist/Right_Thumb1/Right_Thumb2
+        weight: 1
+      - path: Pelvis/Hips/Spine1/Spine2/Right_Shoulder/Right_Wrist/Right_Thumb1/Right_Thumb2/Right_Thumb_end
+        weight: 1
+      - path: Pelvis/Left_Leg1
+        weight: 1
+      - path: Pelvis/Left_Leg1/Left_Foot
+        weight: 1
+      - path: Pelvis/Left_Leg1/Left_Foot/Left_Foot_End
+        weight: 1
+      - path: Pelvis/Right_Leg
+        weight: 1
+      - path: Pelvis/Right_Leg/Right_Foot
+        weight: 1
+      - path: Pelvis/Right_Leg/Right_Foot/Right_Foot_End
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 50
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

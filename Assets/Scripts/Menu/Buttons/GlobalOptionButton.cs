@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using System;
 
 public class GlobalOptionButton : Selectable
 {
@@ -21,7 +22,7 @@ public class GlobalOptionButton : Selectable
 
 	public void Init(int optionIndex)
 	{
-		activeValueIndex = optionIndex;
+		activeValueIndex = Array.IndexOf(Values, optionIndex);
 
 		UpdateText();
 	}

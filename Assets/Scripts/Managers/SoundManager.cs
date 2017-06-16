@@ -77,11 +77,23 @@ public class SoundManager : GenericSingleton<SoundManager>
 		return InstanceDico[eventKey];
 	}
 
+	public EventInstance GetInstance(string eventKey)
+	{
+		eventKey = eventKey.ToLower();
+		if (InstanceDico.ContainsKey(eventKey))
+			return InstanceDico[eventKey];
+
+		return null;
+	}
+
 	public void DestroyInstance(string eventKey, STOP_MODE targetStopMode)
 	{
-		InstanceDico[eventKey].stop(targetStopMode);
-		InstanceDico[eventKey].release();
-		InstanceDico.Remove(eventKey);
+		if(InstanceDico.ContainsKey(eventKey))
+		{
+			InstanceDico[eventKey].stop(targetStopMode);
+			InstanceDico[eventKey].release();
+			InstanceDico.Remove(eventKey);
+		}
 	}
 }
 
