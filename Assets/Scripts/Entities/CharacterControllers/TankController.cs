@@ -28,6 +28,14 @@ public class TankController : PlayerController
 		StartCoroutine("SpecialCoroutine");
 	}
 
+	protected override void CustomUpdate()
+	{
+		base.CustomUpdate();
+		if (_charging)
+			_activeSpeed = _activeSpeed.SetAxis(Axis.y, -1);
+		_rigidB.velocity = _activeSpeed;
+	}
+
 	IEnumerator SpecialCoroutine()
 	{
 		float eT = 0;

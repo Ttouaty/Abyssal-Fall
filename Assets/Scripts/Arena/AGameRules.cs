@@ -79,8 +79,8 @@ public abstract class AGameRules : MonoBehaviour
 		if (!CanFallenTilesRespawn)
 			yield break;
 		yield return new WaitForSeconds(TileRegerationTime);
-		if(Array.IndexOf(ArenaManager.Instance.Tiles, tile) != -1)
-			tile.ActivateRespawn();
+		//if(Array.IndexOf(ArenaManager.Instance.Tiles, tile) != -1)	
+		tile.ActivateRespawn();
 	}
 
 	protected virtual IEnumerator ArenaAutoDestruction_Implementation()

@@ -116,8 +116,8 @@ public class TutorialManager : GenericSingleton<TutorialManager>
 		yield return StartCoroutine(DialogBoxObject.LaunchDialog(_tutorialSequences[sequenceNumber]._messageKeys));
 
 		Debug.Log("Sequence over");
+		yield return null;
 		TutorialCharacterInstance.UnFreeze();
-		TutorialCharacterInstance.WaitForDashRelease = true;
 		DialogBoxObject.gameObject.SetActive(false);
 	}
 

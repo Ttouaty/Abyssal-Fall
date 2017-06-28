@@ -8,7 +8,6 @@ using System;
 public struct Dash
 {
 	public float endingLag;
-	public float rechargeTime;
 	public Vector2[] Forces;
 	public float Impact;
 }
@@ -77,7 +76,7 @@ public class FmodSoundEvent
 		if (position != null)
 			FMODUnity.RuntimeManager.PlayOneShotAttached(FmodEvent, position);
 		else
-			FMODUnity.RuntimeManager.PlayOneShotAttached(FmodEvent, Camera.main.gameObject);
+			FMODUnity.RuntimeManager.PlayOneShot(FmodEvent);
 	}
 }
 
@@ -220,8 +219,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	protected TimeCooldown _invulTimer; //Seconds of invulnerability
 	protected TimeCooldown _parryTimer; //Seconds of Parrying
 	protected TimeCooldown _damageTimer; //Seconds of DealingDamage
-	protected TimeCooldown _dashRechargeTimer; //Seconds of dash cooldown
-											   //protected TimeCooldown _airborneTimeout; //Time before being considered airborne
+	//protected TimeCooldown _airborneTimeout; //Time before being considered airborne
 	protected TimeCooldown _forcedAirborneTimeout;
 	protected TimeCooldown _relicTimer;
 
@@ -282,7 +280,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	{
 		get
 		{
-			return AllowDash && !_isDead && !_dashMaxed && (_dashing || _allowInput) && _dashRechargeTimer.TimeLeft == 0;
+			return AllowDash && !_isDead && !_dashMaxed && (_dashing || _allowInput);
 		}
 	}
 
@@ -370,9 +368,6 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 		_dashCopy = _characterData.Dash;
 		_dashActivationSteps = _dashCopy.Forces.Length;
-
-		_dashRechargeTimer = new TimeCooldown(this);
-
 
 		_specialCooldown = new TimeCooldown(this);
 		_specialCooldown.onFinish = OnSpecialReset;
@@ -836,7 +831,6 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_stunTimer.Set(0.5f);
 		_invulTimer.Set(1);
 
-		_dashRechargeTimer.Set(0);
 		_isDashing = false;
 		_allowInput = true;
 
@@ -939,7 +933,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 			return;
 
 		CameraManager.Shake(ShakeStrength.Medium);
-		SoundManager.Instance.PlayOSAttached("OnParry", gameObject);
+		SoundManager.Instance.PlayOSAttached("Parry", gameObject);
 		//_characterData.SoundList["OnParry"].Play(gameObject);
 		projectileParried.Parry(DmgDealerSelf);
 		CmdParry();
@@ -990,7 +984,6 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 			}
 		}
 
-		_dashRechargeTimer.Set(_dashCopy.rechargeTime);
 		_isDashing = false;
 		_allowInput = true;
 
@@ -1013,6 +1006,9 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 		// angle = speed * 12 ( == 120° with 10 speed) * (Time.deltaTime * 2f) (per 0.5f second) * 1 - dot() (base on anle )
 		float angleGiven = _characterData.CharacterStats.speed * 12 * (Time.deltaTime * 2f) * Vector3.Dot(directionHeld.normalized, Quaternion.AngleAxis(90, Vector3.up) * _activeSpeed.ZeroY().normalized);
+
+		angleGiven *= _isStunned ? 0.5f : 1;
+
 		_activeDirection = Quaternion.AngleAxis(angleGiven, Vector3.up) * _activeDirection;
 		_activeSpeed = Quaternion.AngleAxis(angleGiven, Vector3.up) * _activeSpeed;
 		//_activeSpeed += (directionHeld * (0.10f + 0.005f * _characterData.CharacterStats.speed)) * (1 - Mathf.Abs(Vector3.Dot(_activeSpeed.normalized, directionHeld.normalized)));

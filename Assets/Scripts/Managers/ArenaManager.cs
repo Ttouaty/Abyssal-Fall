@@ -53,7 +53,7 @@ public class ArenaManager : MonoBehaviour
 	public Transform VictoryPlateformParent;
 	public bool victoryAnimationIsFinished;
 	#endregion
-	#region getter/setter
+	#region getter/setter 
 	public Tile[]									Tiles				{ get { return _tiles;				} }
 	public List<Obstacle>							Obstacles			{ get { return _obstacles;			} }
 	public GameObject[]                             Players				{ get { return _players;			} }

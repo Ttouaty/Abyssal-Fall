@@ -10,7 +10,7 @@ public class Hammer : ABaseProjectile
 	public ParticleSystem ImpactWallParticle;
 	public override void Launch(Vector3 Position, Vector3 Direction, DamageData Shooter, NetworkInstanceId instanceId)
 	{
-		_maxLifeSpan = 2;
+		_maxLifeSpan = 1;
 		base.Launch(Position, Direction, Shooter, instanceId);
 	}
 

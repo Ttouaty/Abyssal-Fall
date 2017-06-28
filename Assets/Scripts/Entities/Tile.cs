@@ -12,6 +12,7 @@ public class Tile : MonoBehaviour, IPoolable
 	private bool            _isFalling		= false;
 	private Rigidbody       _rigidB;
 	private MeshRenderer    _renderer;
+	private ParticleSystem	_particles;
 	private Color			_defaultColor;
 	private Vector3			_initialPosition;
 	[HideInInspector]
@@ -22,9 +23,11 @@ public class Tile : MonoBehaviour, IPoolable
 	public bool				IsFalling		{ get { return _isFalling; } }
 	public bool             IsSpawn			{ get { return SpawnComponent == null; } }
 	public Rigidbody		RigidBRef		{ get { return _rigidB; } }
+	[HideInInspector]
 	public int				TileIndex = 0;
+	[HideInInspector]
 	public Vector2			TileCoordinates;
-	
+	public int				MaterialChangeIndex = 0;
 
 	public float TimeLeftSave { get { return _timeLeftSave; } }
 
@@ -32,9 +35,9 @@ public class Tile : MonoBehaviour, IPoolable
 	{
 		_rigidB         = GetComponent<Rigidbody>();
 		_renderer       = GetComponentInChildren<MeshRenderer>();
-		_defaultColor   = _renderer.material.color;
+		_defaultColor   = _renderer.materials[MaterialChangeIndex].color;
 		_timeLeftSave   = _timeLeft;
-
+		_particles		= GetComponentInChildren<ParticleSystem>();
 		if (_initialPosition.magnitude == 0)
 			Place(transform.localPosition);
 	}
@@ -54,7 +57,7 @@ public class Tile : MonoBehaviour, IPoolable
 	{
 		gameObject.layer = LayerMask.NameToLayer("Ground");
 		_rigidB.isKinematic = true;
-		_renderer.material.color = _defaultColor; // Debug to see falling ground feedback
+		_renderer.materials[MaterialChangeIndex].color = _defaultColor; // Debug to see falling ground feedback
 		_isTouched = false;
 		_isFalling = false;
 		StopAllCoroutines();
@@ -101,7 +104,7 @@ public class Tile : MonoBehaviour, IPoolable
 
 	public void ActivateRespawn()
 	{
-		GetComponentInChildren<MeshRenderer>().material.color = _defaultColor;
+		GetComponentInChildren<MeshRenderer>().materials[MaterialChangeIndex].color = _defaultColor;
 		gameObject.SetActive(true);
 		_rigidB.isKinematic = true;
 		StartCoroutine(ActivateRespawn_Implementation());
@@ -136,7 +139,10 @@ public class Tile : MonoBehaviour, IPoolable
 		transform.localPosition = _initialPosition;
 		gameObject.layer = LayerMask.NameToLayer("Ground");
 		StopAllCoroutines();
-		if(ArenaManager.Instance != null)
+
+		_particles.Emit(10);
+
+		if (ArenaManager.Instance != null)
 			ArenaManager.Instance.ResetTile(this);
 	}
 
@@ -179,11 +185,11 @@ public class Tile : MonoBehaviour, IPoolable
 		MeshRenderer meshRenderer = GetComponentInChildren<MeshRenderer>();
 
 		// Debug to see falling ground feedback
-		Color color = meshRenderer.material.color;
+		Color color = meshRenderer.materials[MaterialChangeIndex].color;
 		while(_timeLeft > 0)
 		{
 			// Add better feedback
-			meshRenderer.material.color = Color.Lerp(Color.red, color, _timeLeft / _timeLeftSave);
+			meshRenderer.materials[MaterialChangeIndex].color = Color.Lerp(Color.red, color, _timeLeft / _timeLeftSave);
 			_timeLeft -= TimeManager.DeltaTime;
 			yield return null;
 		}
@@ -197,8 +203,11 @@ public class Tile : MonoBehaviour, IPoolable
 		_rigidB.isKinematic = false;
 		gameObject.layer = LayerMask.NameToLayer("NoColli");
 
-		if(GameManager.Instance.GameRules != null)
-		GameManager.Instance.GameRules.RespawnFallenTiles(this);
+		if (_particles != null)
+			_particles.Play();
+
+		if (GameManager.Instance.GameRules != null)
+			GameManager.Instance.GameRules.RespawnFallenTiles(this);
 
 		// If the tile has an obstacle up, this obstacle will fall
 		if (Obstacle != null)

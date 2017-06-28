@@ -56,6 +56,7 @@ public class PlayerScore : MonoBehaviour
 		ScoreText.CrossFadeAlpha(0, 0, true);
 		yield return new WaitForSeconds(0.5f); // Wait 0.5f second before showing up
 
+		//StartCoroutine(PopupsCoroutine(CurrentPlayer.Score - startingScore));
 		ScoreText.text = "" + CurrentPlayer.Score;
 		ScoreText.CrossFadeAlpha(1, 0.5f, true);
 
@@ -70,4 +71,15 @@ public class PlayerScore : MonoBehaviour
 
 		startingScore = CurrentPlayer.Score;
 	}
+
+	//private IEnumerator PopupsCoroutine(float numberOfPoints)
+	//{
+	//	yield return new WaitForSeconds(0.5f); // Wait 0.5f second before showing up
+
+	//	for (int i = 0; i < numberOfPoints; i++)
+	//	{
+	//		Instantiate(GameManager.Instance.Popups["+1"], Camera.main.ScreenToWorldPoint(transform.position + Vector3.forward) + Camera.main.transform.forward * 10, Quaternion.LookRotation(Camera.main.transform.forward, Camera.main.transform.up), Camera.main.transform);
+	//		yield return new WaitForSeconds(0.333f);
+	//	}
+	//}
 }

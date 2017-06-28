@@ -25,8 +25,7 @@ MonoBehaviour:
     speed: 7
     resistance: 2
   Dash:
-    endingLag: 0.2
-    rechargeTime: 0.2
+    endingLag: 0.1
     Forces:
     - {x: 5, y: 4.905}
     - {x: 7, y: 7.3575}
@@ -46,13 +45,13 @@ MonoBehaviour:
   SoundList:
     SoundList:
     - Key: OnDashStart
-      FmodEvent: event:/Sfx/Temp/Sword whoosh3
+      FmodEvent: event:/SFX/ninja/ninja_dash_start
     - Key: OnDashEnd
-      FmodEvent: event:/Sfx/viking/sfx_viking_dash_end
+      FmodEvent: event:/SFX/ninja/ninja_dash_end
     - Key: OnDeath
-      FmodEvent: event:/Sfx/viking/sfx_viking_death
+      FmodEvent: event:/SFX/ninja/ninja_death
     - Key: OnHit
-      FmodEvent: event:/Sfx/Temp/Mediumpain1
+      FmodEvent: event:/SFX/ninja/ninja_hit
     - Key: OnSpecialActivate
       FmodEvent: event:/SFX/ninja/ninja_special_throw
     - Key: OnSpecialRestored

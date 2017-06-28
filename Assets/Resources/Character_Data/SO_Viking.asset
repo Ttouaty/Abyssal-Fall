@@ -25,8 +25,7 @@ MonoBehaviour:
     speed: 5
     resistance: 5
   Dash:
-    endingLag: 0.25
-    rechargeTime: 0.3
+    endingLag: 0.15
     Forces:
     - {x: 5, y: 4.905}
     - {x: 6, y: 7.3575}
@@ -38,7 +37,7 @@ MonoBehaviour:
     Projectile: {fileID: 0}
   SpecialDamageData:
     AttackTypeUsed: 1
-    StunInflicted: 1.6
+    StunInflicted: 1.2
     IsParryable: 1
     Projectile: {fileID: 0}
   SpecialCoolDown: 2
@@ -46,15 +45,15 @@ MonoBehaviour:
   SoundList:
     SoundList:
     - Key: OnDashStart
-      FmodEvent: event:/Sfx/viking/sfx_viking_dash_start
+      FmodEvent: event:/SFX/viking/viking_dash_start
     - Key: OnDashEnd
-      FmodEvent: event:/Sfx/viking/sfx_viking_dash_end
+      FmodEvent: event:/SFX/viking/viking_dash_end
     - Key: OnDeath
-      FmodEvent: event:/Sfx/viking/sfx_viking_death
+      FmodEvent: event:/SFX/viking/viking_death
     - Key: OnSpecialActivate
       FmodEvent: event:/SFX/viking/viking_special_throw
     - Key: OnHit
-      FmodEvent: event:/Sfx/viking/sfx_viking_hammer_hit_player
+      FmodEvent: event:/SFX/viking/viking_hit
     - Key: OnSpecialRestored
       FmodEvent: event:/SFX/viking/viking_special_restored
   OtherAssetsToLoad:

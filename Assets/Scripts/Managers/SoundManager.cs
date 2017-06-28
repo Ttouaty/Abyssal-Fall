@@ -13,6 +13,7 @@ public class SoundManager : GenericSingleton<SoundManager>
 	protected override void Awake()
 	{
 		base.Awake();
+
 		for (int i = 0; i < AvailableEvents.Length; i++)
 		{
 			if(AvailableEvents[i].Key.Length != 0 && AvailableEvents[i].FmodEvent.Length != 0)

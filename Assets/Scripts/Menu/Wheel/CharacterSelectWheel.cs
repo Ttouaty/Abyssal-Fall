@@ -190,6 +190,7 @@ public class CharacterSelectWheel : NetworkBehaviour
 
 	public void ChangeCharacterSkin(int skinIndex)
 	{
+		SoundManager.Instance.PlayOS("Skin Change");
 		_displayArray[_selectedElementIndex].GetComponent<CharacterModel>().Reskin(skinIndex);
 		_selectedSkinIndex = skinIndex;
 	}

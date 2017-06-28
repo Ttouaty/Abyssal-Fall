@@ -267,12 +267,12 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
-    m_Font: {fileID: 12800000, guid: fdc26d7b8bd994542bf14a91f2d241ac, type: 3}
-    m_FontSize: 14
+    m_Font: {fileID: 12800000, guid: 724b625461f316e46b8502634539ca59, type: 3}
+    m_FontSize: 15
     m_FontStyle: 0
     m_BestFit: 1
-    m_MinSize: 10
-    m_MaxSize: 30
+    m_MinSize: 0
+    m_MaxSize: 300
     m_Alignment: 0
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -1270,7 +1270,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Abyssal Fall Beta: v0.3'
+  m_Text: 'Abyssal Fall Beta: v0.7'
 --- !u!222 &1071578260
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1703,6 +1703,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 1511463442}
   - 114: {fileID: 1511463443}
+  - 114: {fileID: 1511463444}
   m_Layer: 0
   m_Name: Scene_Root
   m_TagString: Untagged
@@ -1734,6 +1735,7 @@ Transform:
   - {fileID: 2142853590}
   - {fileID: 2067828132}
   - {fileID: 1678218567}
+  - {fileID: 1897351440}
   m_Father: {fileID: 0}
   m_RootOrder: 0
 --- !u!114 &1511463443
@@ -1763,6 +1765,17 @@ MonoBehaviour:
   - {x: 1600, y: 900}
   - {x: 1280, y: 720}
   - {x: 800, y: 450}
+--- !u!114 &1511463444
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1511463441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b988e8627e3e9544a2b63844125b7f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1576437437
 Prefab:
   m_ObjectHideFlags: 0
@@ -1930,15 +1943,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AvailableEvents:
   - Key: MagicCharge
-    FmodEvent: 
+    FmodEvent: event:/SFX/mage/mage_special_charge
   - Key: Hit
-    FmodEvent: 
+    FmodEvent: event:/SFX/viking/viking_hit
   - Key: Explosion
     FmodEvent: event:/SFX/menu/wall_explosion
   - Key: Shotgun
     FmodEvent: event:/SFX/menu/wall_explosion
   - Key: Click
-    FmodEvent: 
+    FmodEvent: event:/SFX/menu/select
   - Key: UI button Change 1
     FmodEvent: 
   - Key: UI button Select 1
@@ -1946,7 +1959,7 @@ MonoBehaviour:
   - Key: UI button Select 2
     FmodEvent: 
   - Key: UI button Cancel
-    FmodEvent: 
+    FmodEvent: event:/SFX/menu/cancel
   - Key: Special Repop
     FmodEvent: event:/SFX/mage/mage_special_restored
   - Key: Hammer Hit Character
@@ -1967,6 +1980,20 @@ MonoBehaviour:
     FmodEvent: event:/SFX/arena/block_snap
   - Key: Wall Snap
     FmodEvent: event:/SFX/arena/wall_snap
+  - Key: Game Start
+    FmodEvent: event:/SFX/menu/game_started
+  - Key: Mage Selected
+    FmodEvent: event:/SFX/menu/mage_selected
+  - Key: Ninja Selected
+    FmodEvent: event:/SFX/menu/ninja_selected
+  - Key: Tank Selected
+    FmodEvent: event:/SFX/menu/tank_selected
+  - Key: Viking Selected
+    FmodEvent: event:/SFX/menu/viking_selected
+  - Key: Parry
+    FmodEvent: event:/SFX/ninja/ninja_gamble
+  - Key: Skin Change
+    FmodEvent: event:/SFX/menu/special
 --- !u!1 &1691368869
 GameObject:
   m_ObjectHideFlags: 0
@@ -2174,6 +2201,46 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1511463442}
   m_RootOrder: 6
+--- !u!1 &1897351439
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1897351440}
+  - 114: {fileID: 1897351441}
+  m_Layer: 0
+  m_Name: SteamManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1897351440
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1897351439}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 1511463442}
+  m_RootOrder: 13
+--- !u!114 &1897351441
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1897351439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 038403af9dbba0d49b9a62588939bfb6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1974801096
 GameObject:
   m_ObjectHideFlags: 0

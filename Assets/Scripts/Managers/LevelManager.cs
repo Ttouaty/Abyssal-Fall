@@ -122,6 +122,12 @@ public class LevelManager : GenericSingleton<LevelManager>
 			UnloadAllScenes();
 			yield return StartCoroutine(LoadScene(SceneMenu));
 
+			if (_oldArenaConfig != null)
+			{
+				SoundManager.Instance.DestroyInstance(_oldArenaConfig.AmbianceSound, FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+				_oldArenaConfig = null;
+			}
+
 			_bIsOnMenu = true;
 			MenuManager.Instance.FadeSplashscreens(showSplashScreens);
 

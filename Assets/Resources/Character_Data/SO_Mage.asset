@@ -25,8 +25,7 @@ MonoBehaviour:
     speed: 5
     resistance: 3
   Dash:
-    endingLag: 0.2
-    rechargeTime: 0.3
+    endingLag: 0.1
     Forces:
     - {x: 5, y: 4.905}
     - {x: 6, y: 7.3575}
@@ -46,17 +45,17 @@ MonoBehaviour:
   SoundList:
     SoundList:
     - Key: OnDashStart
-      FmodEvent: event:/Sfx/Temp/Sword whoosh3
+      FmodEvent: event:/SFX/mage/mage_dash_start
     - Key: OnDashEnd
-      FmodEvent: 
+      FmodEvent: event:/SFX/mage/mage_dash_end
     - Key: OnDeath
-      FmodEvent: 
+      FmodEvent: event:/SFX/mage/mage_death
     - Key: OnHit
-      FmodEvent: event:/Sfx/Temp/Mediumpain1
+      FmodEvent: event:/SFX/mage/mage_hit
     - Key: OnSpecialActivate
-      FmodEvent: event:/Sfx/Temp/Magic Charge
+      FmodEvent: event:/SFX/mage/mage_special_charge
     - Key: OnSpecialRestored
-      FmodEvent: event:/Sfx/Temp/Magic Chest Close
+      FmodEvent: event:/SFX/mage/mage_special_restored
   OtherAssetsToLoad:
   - Name: FireBall
     Prefab: {fileID: 1000013642960176, guid: b9726eb2174e1e84b86696efd453ac87, type: 2}

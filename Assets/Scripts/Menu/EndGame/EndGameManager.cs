@@ -16,7 +16,7 @@ public class EndGameManager : GenericSingleton<EndGameManager>
 		{
 			Destroy(GameManager.Instance.GameRules.gameObject);
 			MainManager.Instance.LEVEL_MANAGER.UnloadScene(LevelManager.Instance.CurrentArenaConfig.BackgroundLevel);
-			MainManager.Instance.LEVEL_MANAGER.CurrentArenaConfig = null;
+			//MainManager.Instance.LEVEL_MANAGER.CurrentArenaConfig = null;
 			CameraManager.Instance.Reset();
 			ServerManager.Instance.OnGameEnd();
 			ServerManager.Instance.ResetNetwork();

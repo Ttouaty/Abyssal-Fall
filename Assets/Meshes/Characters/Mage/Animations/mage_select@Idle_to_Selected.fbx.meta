@@ -119,16 +119,23 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.46231145
-        functionName: ActivateParticle
-        data: Hand fire explo
+      - time: 0
+        functionName: SetExpression
+        data: taunt
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
       - time: 0
-        functionName: SetExpression
-        data: taunt
+        functionName: PlaySound
+        data: Mage Selected
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.46231145
+        functionName: ActivateParticle
+        data: Hand fire explo
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0

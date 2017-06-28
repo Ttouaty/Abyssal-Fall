@@ -21,12 +21,11 @@ MonoBehaviour:
     type: 2}
   SpecialInfoKey: Charge through opponents
   CharacterStats:
-    strength: 7
+    strength: 9
     speed: 2
     resistance: 6
   Dash:
-    endingLag: 0.4
-    rechargeTime: 0.4
+    endingLag: 0.2
     Forces:
     - {x: 4, y: 4.905}
     - {x: 5, y: 7.3575}
@@ -42,23 +41,23 @@ MonoBehaviour:
     IsParryable: 0
     Projectile: {fileID: 0}
   SpecialCoolDown: 2.5
-  SpecialLag: 1.1
+  SpecialLag: 0.8
   SoundList:
     SoundList:
     - Key: OnDashStart
-      FmodEvent: event:/Sfx/viking/sfx_viking_dash_start
+      FmodEvent: event:/SFX/tank/tank_dash_start
     - Key: OnDashEnd
-      FmodEvent: event:/Sfx/viking/sfx_viking_dash_end
+      FmodEvent: event:/SFX/tank/tank_dash_end
     - Key: OnDeath
-      FmodEvent: event:/Sfx/viking/sfx_viking_death
+      FmodEvent: event:/SFX/tank/tank_death
     - Key: OnHit
-      FmodEvent: event:/Sfx/viking/sfx_viking_hammer_hit_player
+      FmodEvent: event:/SFX/tank/tank_hit
     - Key: OnSpecialActivate
       FmodEvent: event:/SFX/tank/tank_special_rush
     - Key: OnSpecialRestored
       FmodEvent: event:/SFX/tank/tank_special_restored
     - Key: OnSpecialEnd
-      FmodEvent: event:/Sfx/Tank/tank_endSpecial
+      FmodEvent: 
     - Key: OnSpecialHit
       FmodEvent: event:/SFX/tank/tank_special_rush_hit
   OtherAssetsToLoad: []

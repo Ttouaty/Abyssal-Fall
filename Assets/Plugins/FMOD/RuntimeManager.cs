@@ -755,7 +755,7 @@ namespace FMODUnity
             {
 				// Switch from exception with GUID to exception with path
 
-				Debug.LogError("Event not found => "+path);
+				Debug.LogWarning("Event not found => "+path);
                 //throw new EventNotFoundException(path);
             }
         }
@@ -777,7 +777,7 @@ namespace FMODUnity
             catch (EventNotFoundException)
             {
                 // Switch from exception with GUID to exception with path
-				Debug.LogError("Event not found => "+path);
+				Debug.LogWarning("Event not found => "+path);
 				//throw new EventNotFoundException(path);
             }
         }

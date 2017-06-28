@@ -579,8 +579,10 @@ public class ServerManager : NATTraversal.NetworkManager
 		yield return new WaitForSeconds(timeoutTime);
 		if (Player.LocalPlayer == null)
 		{
-			FindObjectOfType<ConnectionModule>().OnFailedConnection.Invoke("Connection attempt failed after " + timeoutTime + "s, aborting connection.");
 			ResetNetwork();
+			ConnectionModule tempCoModule = FindObjectOfType<ConnectionModule>();
+			if(tempCoModule != null)
+				tempCoModule.OnFailedConnection.Invoke("Connection attempt failed after " + timeoutTime + "s, aborting connection.");
 		}
 		else
 			Debug.Log("TimeOut not activated, ok");
