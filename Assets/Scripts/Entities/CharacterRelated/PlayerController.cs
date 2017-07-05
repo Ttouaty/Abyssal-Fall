@@ -933,8 +933,8 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 			return;
 
 		CameraManager.Shake(ShakeStrength.Medium);
-		SoundManager.Instance.PlayOSAttached("Parry", gameObject);
-		//_characterData.SoundList["OnParry"].Play(gameObject);
+		//SoundManager.Instance.PlayOSAttached("Parry", gameObject);
+		_characterData.SoundList["Parry"].Play(gameObject);
 		projectileParried.Parry(DmgDealerSelf);
 		CmdParry();
 	}

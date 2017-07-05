@@ -13702,16 +13702,30 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_GenerateMotionCurves: 0
   m_Events:
-  - time: 0.2733132
+  - time: 0
+    functionName: PlaySound
+    data: Block Fall
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 0.28333333
+    functionName: ActivateParticle
+    data: Landing Impact
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 0.28333333
     functionName: CameraShake
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 3
     messageOptions: 0
-  - time: 0.28464913
-    functionName: ActivateParticle
-    data: Landing Impact
+  - time: 0.28333333
+    functionName: PlaySound
+    data: Wall Snap
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
