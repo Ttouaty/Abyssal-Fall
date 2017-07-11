@@ -94,7 +94,10 @@ public class SoundManager : GenericSingleton<SoundManager>
 			InstanceDico[eventKey].stop(targetStopMode);
 			InstanceDico[eventKey].release();
 			InstanceDico.Remove(eventKey);
+			Debug.Log("Instance => "+eventKey+" succesfully destroyed.");
 		}
+		else
+			Debug.LogWarning("Instance => " + eventKey + " not found for destroying.");
 	}
 }
 

@@ -165,9 +165,9 @@ public class MenuManager : GenericSingleton<MenuManager>
 	{
 		InputManager.SetInputLockTime(100000);
 		int i = 0;
-		float timePerScreenFadeIn = 0.5f;
-		float timePerScreenWait = 1f;
-		float timePerScreenFadeOut = 0.5f;
+		float timePerScreenFadeIn = 0.3f;
+		float timePerScreenWait = 0.9f;
+		float timePerScreenFadeOut = 0.3f;
 		float TimeBetweenScreens = 0.5f;
 
 		for (i = 0; i < _splashscreens.Length; ++i)

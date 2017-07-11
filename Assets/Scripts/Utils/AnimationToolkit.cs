@@ -40,7 +40,8 @@ public class AnimationToolkit : MonoBehaviour
 
 	public void PlaySound(string targetSoundKey)
 	{
-		SoundManager.Instance.PlayOS(targetSoundKey);
+		if(SoundManager.Instance != null)
+			SoundManager.Instance.PlayOS(targetSoundKey);
 	}
 
 	public void CameraShakeEnum(ShakeStrength force)
@@ -69,7 +70,9 @@ public class AnimationToolkit : MonoBehaviour
 
 		if (_availableParticleSystems.ContainsKey(particleSystemName))
 		{
-			GameObject tempParticle = Instantiate(_availableParticleSystems[particleSystemName].gameObject, MainManager.Instance.transform, true) as GameObject;
+			GameObject tempParticle = Instantiate(_availableParticleSystems[particleSystemName].gameObject, _availableParticleSystems[particleSystemName].transform.position, _availableParticleSystems[particleSystemName].transform.rotation) as GameObject;
+
+			tempParticle.transform.parent = null;
 			tempParticle.GetComponent<ParticleSystem>().Play();
 			Destroy(tempParticle, tempParticle.GetComponent<ParticleSystem>().duration + tempParticle.GetComponent<ParticleSystem>().startLifetime);
 		}

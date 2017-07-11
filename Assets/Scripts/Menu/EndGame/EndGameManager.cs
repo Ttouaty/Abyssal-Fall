@@ -38,6 +38,7 @@ public class EndGameManager : GenericSingleton<EndGameManager>
 
 		Destroy(GameManager.Instance.GameRules.gameObject);
 		MainManager.Instance.LEVEL_MANAGER.UnloadScene(LevelManager.Instance.CurrentArenaConfig.BackgroundLevel);
+		SoundManager.Instance.DestroyInstance(LevelManager.Instance.CurrentArenaConfig.AmbianceSound, FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
 		CameraManager.Instance.Reset();
 		ServerManager.Instance.OnGameEnd();
 		if (NetworkServer.active)
