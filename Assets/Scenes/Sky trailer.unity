@@ -6556,6 +6556,7 @@ GameObject:
   - 124: {fileID: 1368502932}
   - 92: {fileID: 1368502931}
   - 81: {fileID: 1368502930}
+  - 45: {fileID: 1368502934}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -6631,6 +6632,14 @@ Camera:
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
   m_StereoMirrorMode: 0
+--- !u!45 &1368502934
+Skybox:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1368502928}
+  m_Enabled: 1
+  m_CustomSkybox: {fileID: 2100000, guid: 540ef9d5953cc684f9cd19ad674e219b, type: 2}
 --- !u!4 &1376234595 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4000013107456506, guid: b44e493910140f34593fd5d174400205,
@@ -8800,6 +8809,69 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 041b88397c416db44bb656af1440765a, type: 3}
   m_IsPrefabParent: 0
+--- !u!1 &1895195721
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1895195723}
+  - 108: {fileID: 1895195722}
+  m_Layer: 0
+  m_Name: Directional Light
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!108 &1895195722
+Light:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1895195721}
+  m_Enabled: 1
+  serializedVersion: 7
+  m_Type: 1
+  m_Color: {r: 0.9558824, g: 0.89965403, b: 0.81531143, a: 1}
+  m_Intensity: 1.1
+  m_Range: 10
+  m_SpotAngle: 30
+  m_CookieSize: 10
+  m_Shadows:
+    m_Type: 1
+    m_Resolution: -1
+    m_CustomResolution: -1
+    m_Strength: 0.6
+    m_Bias: 0.6
+    m_NormalBias: 2
+    m_NearPlane: 0.2
+  m_Cookie: {fileID: 0}
+  m_DrawHalo: 0
+  m_Flare: {fileID: 0}
+  m_RenderMode: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_Lightmapping: 4
+  m_AreaSize: {x: 1, y: 1}
+  m_BounceIntensity: 0
+  m_ShadowRadius: 0
+  m_ShadowAngle: 0
+--- !u!4 &1895195723
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1895195721}
+  m_LocalRotation: {x: 0.39996415, y: -0.2927456, z: 0.1365095, w: 0.857726}
+  m_LocalPosition: {x: -7.88, y: 19.99, z: -24.869999}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 50, y: -37.69, z: 0}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 14
 --- !u!1001 &1898262145
 Prefab:
   m_ObjectHideFlags: 0

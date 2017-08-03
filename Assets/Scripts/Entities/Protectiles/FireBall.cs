@@ -74,9 +74,11 @@ public class FireBall : ABaseProjectile
 		if(_movingParticlesRef != null)
 			_movingParticlesRef.Stop();
 		
+
 		ParticleSystem preExploParticles = (ParticleSystem)Instantiate(_launcherRef.ImplosionParticle, transform.position, _launcherRef.ImplosionParticle.transform.rotation);
 		preExploParticles.Play();
 		Destroy(preExploParticles.gameObject, _explosionDelay + preExploParticles.startLifetime);
+		SoundManager.Instance.PlayOSAttached("Implosion", preExploParticles.gameObject);
 
 		yield return new WaitForSeconds(_explosionDelay - preExploParticles.startLifetime * 0.5f);
 		preExploParticles.Stop();

@@ -128,6 +128,10 @@ public class LevelManager : GenericSingleton<LevelManager>
 				_oldArenaConfig = null;
 			}
 
+
+			SoundManager.Instance.CreateInstance("Menu Music").setParameterValue("Progression", showSplashScreens ? 0 : 1);
+			SoundManager.Instance.GetInstance("Menu Music").start();
+
 			_bIsOnMenu = true;
 			MenuManager.Instance.FadeSplashscreens(showSplashScreens);
 
@@ -164,6 +168,8 @@ public class LevelManager : GenericSingleton<LevelManager>
 			_bIsLoading = true;
 
 			_oldArenaConfig = CurrentArenaConfig;
+
+			SoundManager.Instance.DestroyInstance("Menu Music", FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
 
 			MainManager.Instance.DYNAMIC_CONFIG.GetConfig(config.ArenaConfiguration, out CurrentArenaConfig);
 			MainManager.Instance.DYNAMIC_CONFIG.GetConfig(config.ModeConfiguration, out CurrentModeConfig);

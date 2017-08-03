@@ -80,7 +80,7 @@ public class CharacterSelectWheel : NetworkBehaviour
 	protected void Update()
 	{
 		transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(0, _selectedElementIndex * _rotationBetweenElements, 0), _rotateSpeed);
-
+		transform.localPosition = Vector3.zero;
 		//######## apply alpha to Image elements #########
 		RotateElementsFacingCam();
 		ApplyAlpha();

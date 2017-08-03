@@ -271,6 +271,8 @@ public class ArenaManager : MonoBehaviour
 		if(NetworkServer.active)
 			PlaceCharacters(targetPlayers);
 
+		GameManager.Instance.GameRules.InitMusic(); //essaye de le mettre un tout petit peu plus tot (1 sec)
+		
 		MenuPauseManager.Instance.CanPause = false;
 		yield return StartCoroutine(CountdownManager.Instance.Countdown());
 		MenuPauseManager.Instance.CanPause = true;
@@ -346,7 +348,8 @@ public class ArenaManager : MonoBehaviour
 
 				selectedSpawn.SpawnPlayer(playerController);
 				ArenaMasterManager.Instance.RpcDisplayPlayerNumber(player.PlayerNumber, selectedSpawn.transform.position + Vector3.up * 6, 3);
-				selectedSpawn.Colorize(GameManager.Instance.PlayerColors[i]);
+
+				selectedSpawn.GetComponentInChildren<MeshRenderer>().materials[selectedSpawn.GetComponent<Tile>().MaterialChangeIndex].color = GameManager.Instance.PlayerColors[i];
 
 				NetworkServer.SpawnWithClientAuthority(_players[i], player.gameObject);
 				player.RpcInitController(_players[i]);
@@ -512,6 +515,8 @@ public class ArenaManager : MonoBehaviour
 		{
 			yield return null;
 		}
+
+		yield return new WaitForSeconds(0.5f);
 	}
 
 	private IEnumerator DropGround (GameObject element, float pos)
@@ -524,6 +529,9 @@ public class ArenaManager : MonoBehaviour
 		float timer = -timeForMapToSpawn * pos / Map.Length;
 		float initialY = element.transform.localPosition.y;
 
+		if (pos % 2 == 0)
+			element.GetComponentInChildren<ParticleSystem>().Play();
+
 		while (timer < 1 && !ArenaMasterManager.Instance.ForceIntroSkip)
 		{
 			timer += TimeManager.DeltaTime;
@@ -532,12 +540,14 @@ public class ArenaManager : MonoBehaviour
 			yield return null;
 		}
 
+		if(pos % 2 == 0)
+			element.GetComponentInChildren<ParticleSystem>().Emit(10);
+
 		if (pos % 10 == 0)
 			SoundManager.Instance.PlayOS("Block Snap");
 
 		element.transform.localPosition = new Vector3(element.transform.localPosition.x, 0, element.transform.localPosition.z);
 		element.GetComponentInChildren<Tile>().Place(element.transform.localPosition);
-
 
 		++_tilesDropped;
 
@@ -608,6 +618,7 @@ public class ArenaManager : MonoBehaviour
 		MenuPauseManager.Instance.CanPause = false;
 		MenuPauseManager.Instance.Close();
 		InputManager.SetInputLockTime(100);
+
 
 		AutoFade.StartFade(0.5f, 0.5f, 0.5f, Color.white);
 		yield return new WaitForSeconds(0.5f);

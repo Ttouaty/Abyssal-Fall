@@ -14,6 +14,7 @@ public class EndGameManager : GenericSingleton<EndGameManager>
 	{
 		if (!checkIfOpen || IsOpen)
 		{
+			SoundManager.Instance.DestroyInstance(LevelManager.Instance.CurrentArenaConfig.AmbianceSound, FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
 			Destroy(GameManager.Instance.GameRules.gameObject);
 			MainManager.Instance.LEVEL_MANAGER.UnloadScene(LevelManager.Instance.CurrentArenaConfig.BackgroundLevel);
 			//MainManager.Instance.LEVEL_MANAGER.CurrentArenaConfig = null;
@@ -32,13 +33,13 @@ public class EndGameManager : GenericSingleton<EndGameManager>
 	IEnumerator BackToCharacterSelectCO()
 	{
 		InputManager.AddInputLockTime(100);
+		SoundManager.Instance.DestroyInstance(LevelManager.Instance.CurrentArenaConfig.AmbianceSound, FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
 
 		StartCoroutine(AutoFade.StartFade(0.5f, WaitUntilCharacterScreenIsLoaded(), 0.5f, Color.black));
 		yield return new WaitForSeconds(0.55f);
 
 		Destroy(GameManager.Instance.GameRules.gameObject);
 		MainManager.Instance.LEVEL_MANAGER.UnloadScene(LevelManager.Instance.CurrentArenaConfig.BackgroundLevel);
-		SoundManager.Instance.DestroyInstance(LevelManager.Instance.CurrentArenaConfig.AmbianceSound, FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
 		CameraManager.Instance.Reset();
 		ServerManager.Instance.OnGameEnd();
 		if (NetworkServer.active)

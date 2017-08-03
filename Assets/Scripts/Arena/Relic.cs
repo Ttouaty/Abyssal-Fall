@@ -23,7 +23,7 @@ public class Relic : MonoBehaviour
 	void Update()
 	{
 		NoSpecialDiv.SetActive(Grabbed);
-		_rigidBRef.velocity = Vector3.ClampMagnitude(_rigidBRef.velocity + Physics.gravity * Time.deltaTime * 5, 75);
+		_rigidBRef.velocity = Vector3.ClampMagnitude(_rigidBRef.velocity + Physics.gravity * Time.deltaTime * 2, 75);
 	}
 
 	public void Grab(Transform grabberTransform)
@@ -48,7 +48,7 @@ public class Relic : MonoBehaviour
 	{
 		if(ArenaManager.Instance != null)
 		{
-			IEnumerable<Tile> tilesEnumerator = ArenaManager.Instance.Tiles.Where((Tile t) => t != null).Where((Tile t) => t.Obstacle == null && t.CanFall/* && !t.IsSpawn*/);
+			IEnumerable<Tile> tilesEnumerator = ArenaManager.Instance.Tiles.Where((Tile t) => t != null).Where((Tile t) => (t.Obstacle == null && t.CanFall && !t.IsTouched && !t.IsFalling));
 			List<Tile> tiles = new List<Tile>(tilesEnumerator);
 
 			if (tiles.Count == 0)

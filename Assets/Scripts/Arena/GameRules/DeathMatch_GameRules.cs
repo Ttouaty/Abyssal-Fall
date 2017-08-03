@@ -6,9 +6,20 @@ using System.Linq;
 
 public class DeathMatch_GameRules : AGameRules
 {
+
+	public override void InitMusic()
+	{
+		ActiveMusic = SoundManager.Instance.CreateInstance(LevelManager.Instance.CurrentArenaConfig.DMMusicKeys[MatchDuration._valueIndex]);
+		if (ActiveMusic == null)
+			Debug.LogError("No music found in LevelManager.Instance.CurrentArenaConfig.DMMusicKeys with index => " + MatchDuration._valueIndex);
+		else
+			ActiveMusic.start();
+	}
 	public override void InitGameRules ()
 	{
 		base.InitGameRules();
+
+		
 
 		if (!_isInSuddenDeath)
 		{
@@ -48,6 +59,7 @@ public class DeathMatch_GameRules : AGameRules
 	public override void OnPlayerWin_Listener (Player winner)
 	{
 		base.OnPlayerWin_Listener(winner);
+		//SoundManager.Instance.DestroyInstance(_music, FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
 
 		GUIManager.Instance.Timer.OnCompleteCallback.RemoveListener(OnTimeOut);
 	}

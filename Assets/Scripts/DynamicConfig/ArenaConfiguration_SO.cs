@@ -16,4 +16,7 @@ public class ArenaConfiguration_SO : ScriptableObject
 	public VictoryPlatform VictoryPlatformGo;
 	public Texture AmbientRamp;
 	public string AmbianceSound;
+	public string ClassicMusicKey;
+	public string[] DMMusicKeys;
+	public string[] RLMusicKeys;
 }

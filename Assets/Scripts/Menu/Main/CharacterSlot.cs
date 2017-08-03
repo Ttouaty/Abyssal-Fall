@@ -173,7 +173,7 @@ public class CharacterSlot : MonoBehaviour
 		KeyboardController.gameObject.SetActive(_playerRef.JoystickNumber == 0);
 		GamePadController.gameObject.SetActive(_playerRef.JoystickNumber > 0);
 
-		TargetPedestal.transform.rotation = Quaternion.LookRotation((Camera.main.transform.position - TargetPedestal.transform.position).normalized, transform.up);
+		TargetPedestal.transform.rotation = Camera.main.transform.rotation;
 
 		ArrowContainers.SetActive(_playerRef.isLocalPlayer && _availableCharacters.Length > 1);
 	}

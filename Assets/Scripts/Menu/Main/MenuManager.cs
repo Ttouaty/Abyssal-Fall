@@ -56,14 +56,8 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	void Update()
 	{
-		//if (Input.GetKeyDown(KeyCode.Alpha1))
-		//{
-		//	LoadPreview(EArenaConfiguration.Aerial);
-		//}
-		//else if (Input.GetKeyDown(KeyCode.Alpha2))
-		//{
-		//	LoadPreview(EArenaConfiguration.Hell);
-		//}
+		if (Input.GetKey(KeyCode.Keypad1) && Input.GetKey(KeyCode.Keypad2) && Input.GetKeyDown(KeyCode.Keypad3))
+			ForceRegisterNewPlayer();
 	}
 	
 	private void ResetPlayers()
@@ -93,7 +87,18 @@ public class MenuManager : GenericSingleton<MenuManager>
 			Debug.Log("trying to start host");
 			StartLocalHost(); //Server side or starting server
 		}
-		else if(NetworkServer.active)
+		else if (NetworkServer.active)
+			ServerManager.Instance.TryToAddPlayer();
+	}
+
+	public void ForceRegisterNewPlayer()
+	{
+		if (!NetworkServer.active && !NetworkClient.active)
+		{
+			Debug.Log("trying to start host");
+			StartLocalHost(); //Server side or starting server
+		}
+		else if (NetworkServer.active)
 			ServerManager.Instance.TryToAddPlayer();
 	}
 
@@ -263,5 +268,10 @@ public class MenuManager : GenericSingleton<MenuManager>
 		if (_needFTUE)
 			MenuPanelNew.PanelRefs["FTUE"].Open();
 		//Debug.LogWarning("Tuto has been disabled");
+	}
+
+	public void SetMenuMusicProgression(float progression)
+	{
+		SoundManager.Instance.GetInstance("Menu Music").setParameterValue("Progression", progression);
 	}
 }

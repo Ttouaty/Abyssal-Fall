@@ -1259,7 +1259,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 12800000, guid: e8928da75aa93ed4ea625a44a33997a9, type: 3}
-    m_FontSize: 10
+    m_FontSize: 8
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 1
@@ -1270,7 +1270,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Abyssal Fall Beta: v0.7'
+  m_Text: 'Abyssal Fall Beta: v0.8'
 --- !u!222 &1071578260
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1771,7 +1771,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1511463441}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0b988e8627e3e9544a2b63844125b7f2, type: 3}
   m_Name: 
@@ -1953,11 +1953,11 @@ MonoBehaviour:
   - Key: Click
     FmodEvent: event:/SFX/menu/select
   - Key: UI button Change 1
-    FmodEvent: 
-  - Key: UI button Select 1
-    FmodEvent: 
+    FmodEvent: event:/SFX/menu/select
+  - Key: Activate
+    FmodEvent: event:/SFX/menu/validate
   - Key: UI button Select 2
-    FmodEvent: 
+    FmodEvent: event:/SFX/menu/special
   - Key: UI button Cancel
     FmodEvent: event:/SFX/menu/cancel
   - Key: Special Repop
@@ -1994,6 +1994,38 @@ MonoBehaviour:
     FmodEvent: event:/SFX/ninja/ninja_gamble
   - Key: Skin Change
     FmodEvent: event:/SFX/menu/special
+  - Key: Implosion
+    FmodEvent: event:/SFX/mage/mage_special_placed
+  - Key: Forest Classic
+    FmodEvent: event:/MUSIC/forest/forest_classic
+  - Key: Forest DM 30s
+    FmodEvent: event:/MUSIC/forest/forest_deathmatch_30s
+  - Key: Forest DM 60s
+    FmodEvent: event:/MUSIC/forest/forest_deathmatch_1min
+  - Key: Forest DM 120s
+    FmodEvent: event:/MUSIC/forest/forest_deathmatch_2min
+  - Key: Forest DM 240s
+    FmodEvent: event:/MUSIC/forest/forest_deathmatch_4min
+  - Key: Menu Music
+    FmodEvent: event:/MUSIC/main_menu
+  - Key: Victory Music
+    FmodEvent: event:/MUSIC/victory
+  - Key: mage foot
+    FmodEvent: event:/SFX/utility/mage_foot
+  - Key: ninja foot
+    FmodEvent: event:/SFX/utility/ninja_foot
+  - Key: viking foot
+    FmodEvent: event:/SFX/utility/viking_foot
+  - Key: tank foot
+    FmodEvent: event:/SFX/utility/tank_foot
+  - Key: whoosh low
+    FmodEvent: event:/SFX/utility/whoosh_low
+  - Key: whoosh high
+    FmodEvent: event:/SFX/utility/whoosh_high
+  - Key: whoosh medium
+    FmodEvent: event:/SFX/utility/whoosh_medium
+  - Key: whoosh long
+    FmodEvent: event:/SFX/utility/whoosh_long
 --- !u!1 &1691368869
 GameObject:
   m_ObjectHideFlags: 0
@@ -2216,7 +2248,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1897351440
 Transform:
   m_ObjectHideFlags: 0

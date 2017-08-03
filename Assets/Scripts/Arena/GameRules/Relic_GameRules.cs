@@ -4,9 +4,20 @@ using UnityEngine.Networking;
 
 public class Relic_GameRules : AGameRules
 {
+	public override void InitMusic()
+	{
+		ActiveMusic = SoundManager.Instance.CreateInstance(LevelManager.Instance.CurrentArenaConfig.DMMusicKeys[MatchDuration._valueIndex]);
+		if (ActiveMusic == null)
+			Debug.LogError("No music found in LevelManager.Instance.CurrentArenaConfig.DMMusicKeys with index => " + MatchDuration._valueIndex);
+		else
+			ActiveMusic.start();
+	}
+
 	public override void InitGameRules()
 	{
 		base.InitGameRules();
+
+		
 		if (!_isInSuddenDeath)
 		{
 			GUIManager.Instance.RunTimer(MatchDuration);
@@ -53,6 +64,7 @@ public class Relic_GameRules : AGameRules
 		base.OnPlayerWin_Listener(winner);
 
 		// TODO : Gérer les égalités
+		//SoundManager.Instance.DestroyInstance(_music, FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
 
 		GUIManager.Instance.Timer.OnCompleteCallback.RemoveListener(OnTimeOut);
 	}

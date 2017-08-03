@@ -3,7 +3,7 @@ using UnityEngine.Events;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
+using UnityEngine.UI;
 
 public class GUITimer : MonoBehaviour
 {
@@ -14,15 +14,11 @@ public class GUITimer : MonoBehaviour
 	private float                           _currentTimer;
 	private Coroutine                       _coroutine;
 	//private bool                            _bIsWarning         = false;
-	private Localizator.LocalizedText       _timerDisplay;
+	public Text								TimerDisplay;
+	public GameObject						FinalTimer;
 
 	public OnCompleteEvent                  OnCompleteCallback;
 	public float                            LimitBeforeWarning;
-
-	void Awake ()
-	{
-		_timerDisplay = GetComponentInChildren<Localizator.LocalizedText>();
-	}
 
 	public void Stop ()
 	{
@@ -41,35 +37,26 @@ public class GUITimer : MonoBehaviour
 
 	IEnumerator Run_Implementation (float timer)
 	{
-		IEnumerator warning = Warning_Implementation();
-		//_baseTimer = timer;
+		bool warningActivated = false;
+		FinalTimer.GetComponentInChildren<Animator>().SetTrigger("Reset");
+		TimerDisplay.gameObject.SetActive(true);
 		_currentTimer = timer;
 
 		while (_currentTimer > 0)
 		{
 			_currentTimer -= TimeManager.DeltaTime;
-			int currentTimeInt = Mathf.RoundToInt(_currentTimer);
-			_timerDisplay.SetText(new KeyValuePair<string, string>("%NUMBER%", currentTimeInt.ToString()));
+			TimerDisplay.text = Mathf.Floor(_currentTimer / 60).ToString("00") + ":" + (_currentTimer % 60).ToString("00.00");
 
-			if (_currentTimer <= LimitBeforeWarning)
+			if (_currentTimer <= LimitBeforeWarning && !warningActivated)
 			{
-				warning.MoveNext();
+				TimerDisplay.gameObject.SetActive(false);
+				warningActivated = true;
+				FinalTimer.GetComponentInChildren<Animator>().SetTrigger("Warn");
 			}
 
 			yield return null;
 		}
 
 		OnCompleteCallback.Invoke();
-	}
-
-	IEnumerator Warning_Implementation ()
-	{
-		Color baseColor = _timerDisplay.Text.color;
-		while (true)
-		{
-			_timerDisplay.Text.color = Color.Lerp(baseColor, Color.red, 1 - (_currentTimer % 1));
-			_timerDisplay.transform.localScale = new Vector3(1 - (_currentTimer % 1), 1 - (_currentTimer % 1), 1 - (_currentTimer % 1));
-			yield return null;
-		}
 	}
 }

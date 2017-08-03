@@ -53,6 +53,7 @@ public class MenuPauseManager : GenericSingleton<MenuPauseManager>
 		}
 
 		SoundManager.Instance.GetInstance(LevelManager.Instance.CurrentArenaConfig.AmbianceSound).setPaused(IsOpen);
+		GameManager._instance.GameRules.ActiveMusic.setPaused(IsOpen);
 		//Stop Music Here
 	}
 

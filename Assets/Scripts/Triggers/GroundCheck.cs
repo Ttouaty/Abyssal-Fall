@@ -51,7 +51,10 @@ public class GroundCheck : MonoBehaviour
 
 	void LateUpdate()
 	{
-		_playerRef.IsGrounded = _colliderIds.Count > 0;
+		if (_playerRef._forceGroundedTimer == null)
+			return;
+
+		_playerRef.IsGrounded = _colliderIds.Count > 0 || _playerRef._forceGroundedTimer.TimeLeft != 0;
 		if(noclip)
 			_playerRef.IsGrounded = true;
 	}

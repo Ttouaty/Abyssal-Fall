@@ -82,6 +82,9 @@ public class MapSelectWheel : MenuWheel<EArenaConfiguration>
 	public override void ScrollToIndex(int newIndex)
 	{
 		if(NetworkServer.active)
+		{
+			SoundManager.Instance.PlayOS("UI button Change 1");
 			base.ScrollToIndex(newIndex);
+		}
 	}
 }

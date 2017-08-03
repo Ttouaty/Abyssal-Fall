@@ -220,6 +220,8 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	protected TimeCooldown _parryTimer; //Seconds of Parrying
 	protected TimeCooldown _damageTimer; //Seconds of DealingDamage
 	//protected TimeCooldown _airborneTimeout; //Time before being considered airborne
+	[HideInInspector]
+	public TimeCooldown _forceGroundedTimer;
 	protected TimeCooldown _forcedAirborneTimeout;
 	protected TimeCooldown _relicTimer;
 
@@ -232,7 +234,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		set
 		{
 			if (_isInDebugMode)
-				_lastDamageDealerTimeOut.Set(2);
+				_lastDamageDealerTimeOut.Set(5);
 			else
 				_lastDamageDealerTimeOut.Set(GameManager.Instance.GameRules.TimeBeforeSuicide);
 			_lastDamageDealer = value;
@@ -272,7 +274,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	{
 		get
 		{
-			return AllowSpecial && !_dashing && !_isDead && _specialCooldown.TimeLeft <= 0 && !_isHoldingRelic;
+			return AllowSpecial && !_dashing && !_isDead && _specialCooldown.TimeLeft <= 0;
 		}
 	}
 
@@ -379,6 +381,9 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_stunTimer.onFinish = () => { _isStunned = false; _allowInput = true; /*CmdSetExpression(_FEMref.DefaultExpression);*/ };
 		_stunTimer.onProgress = () =>
 		{
+			if (_stunTimer.TimeLeft <= Time.deltaTime && !IsGrounded)
+				_stunTimer.Add(Time.deltaTime);
+
 			_allowInput = false;
 			_isStunned = true;
 		};
@@ -393,6 +398,13 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 		_parryTimer = new TimeCooldown(this);
 		_damageTimer = new TimeCooldown(this);
+		_forceGroundedTimer = new TimeCooldown(this);
+
+
+		_forceGroundedTimer.onProgress = () =>
+		{
+			IsGrounded = true;
+		};
 
 		_forcedAirborneTimeout = new TimeCooldown(this);
 		_relicTimer = new TimeCooldown(this);
@@ -829,7 +841,8 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		}
 
 		_stunTimer.Set(0.5f);
-		_invulTimer.Set(1);
+		_invulTimer.Set(2);
+		_forceGroundedTimer.Set(2);
 
 		_isDashing = false;
 		_allowInput = true;
@@ -956,6 +969,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 	protected virtual IEnumerator ActivateDash()
 	{
+		_forceGroundedTimer.Set(0);
 		_isDashing = true;
 		_isInvul = true;
 		_invulTimer.Set(_dashDamagingTime);
@@ -966,7 +980,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_characterData.SoundList["OnDashStart"].Play(gameObject);
 
 		ForceAirborne(0.4f);
-
+		yield return new WaitForSeconds(0.1f);
 		while (!IsGrounded && !_isStunned && !IsDead)
 		{
 			yield return null;

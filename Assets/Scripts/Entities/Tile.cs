@@ -15,11 +15,13 @@ public class Tile : MonoBehaviour, IPoolable
 	private ParticleSystem	_particles;
 	private Color			_defaultColor;
 	private Vector3			_initialPosition;
+	private Quaternion		_initialRotation;
 	[HideInInspector]
 	public Obstacle			Obstacle;
 	[HideInInspector]
 	public Spawn SpawnComponent;
 	public bool				CanFall			{ get { return _canFall; } }
+	public bool				IsTouched		{ get { return _isTouched; } }
 	public bool				IsFalling		{ get { return _isFalling; } }
 	public bool             IsSpawn			{ get { return SpawnComponent == null; } }
 	public Rigidbody		RigidBRef		{ get { return _rigidB; } }
@@ -120,7 +122,7 @@ public class Tile : MonoBehaviour, IPoolable
 		while (timer > 0.0f)
 		{
 			transform.localPosition = Vector3.Lerp(initialPosition, _initialPosition, 1.0f - timer);
-			transform.rotation = Quaternion.Lerp(initialRotation, Quaternion.identity, 1.0f - timer);
+			transform.rotation = Quaternion.Lerp(initialRotation, _initialRotation, 1.0f - timer);
 			timer -= TimeManager.DeltaTime;
 
 			if(timer < 0.1f && gameObject.layer != LayerMask.NameToLayer("Ground"))
@@ -171,7 +173,8 @@ public class Tile : MonoBehaviour, IPoolable
 	{
 		gameObject.layer = LayerMask.NameToLayer("Ground");
 		transform.localPosition = newLocalPos;
-	   _initialPosition = transform.localPosition;
+		_initialPosition = transform.localPosition;
+		_initialRotation = transform.localRotation;
 	}
 
 	public void MakeFall()

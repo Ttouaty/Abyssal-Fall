@@ -7,6 +7,28 @@ public class FreeForAll_GameRules : AGameRules
 {
 	private Coroutine roundEndCoroutine;
 
+	public override void InitMusic()
+	{
+		if (ActiveMusic == null)
+		{
+			ActiveMusic = SoundManager.Instance.CreateInstance(LevelManager.Instance.CurrentArenaConfig.ClassicMusicKey);
+			ActiveMusic.start();
+		}
+
+		if (ActiveMusic == null)
+			Debug.LogError("No music found in LevelManager.Instance.CurrentArenaConfig.ClassicMusicKey");
+
+
+		for (int i = 0; i < Player.PlayerList.Length; i++)
+		{
+			if (Player.PlayerList[i].Score == ScoreToWin - 1)
+			{
+				ActiveMusic.setParameterValue("END", 1);
+				break;
+			}
+		}
+	}
+
 	public override void InitGameRules ()
 	{
 		base.InitGameRules();
@@ -74,9 +96,8 @@ public class FreeForAll_GameRules : AGameRules
 		base.OnPlayerWin_Listener(winner);
 		//Player winner = ServerManager.Instance.AlivePlayers[0];
 		winner.Controller.Freeze();
-		winner.Score++;
+		//winner.Score++;
 		InputManager.AddInputLockTime(1);
-
 		GUIManager.Instance.SetActiveRoundCount(false);
 	}
 }

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using FMOD.Studio;
+using System.Linq;
 
 public class SoundManager : GenericSingleton<SoundManager>
 {
@@ -34,6 +35,8 @@ public class SoundManager : GenericSingleton<SoundManager>
 		}
 		else if (EventDico.ContainsValue(eventKey))
 			FMODUnity.RuntimeManager.PlayOneShot(eventKey, Camera.main.transform.position + Camera.main.transform.forward);
+		else
+			Debug.LogError("No event found for key => "+eventKey);
 	}
 
 	public void PlayOSAttached(string eventKey, GameObject target)
@@ -89,15 +92,42 @@ public class SoundManager : GenericSingleton<SoundManager>
 
 	public void DestroyInstance(string eventKey, STOP_MODE targetStopMode)
 	{
-		if(InstanceDico.ContainsKey(eventKey))
+		eventKey = eventKey.ToLower();
+		if (InstanceDico.ContainsKey(eventKey))
 		{
 			InstanceDico[eventKey].stop(targetStopMode);
 			InstanceDico[eventKey].release();
 			InstanceDico.Remove(eventKey);
-			Debug.Log("Instance => "+eventKey+" succesfully destroyed.");
+			Debug.Log("Instance => " + eventKey + " succesfully destroyed.");
 		}
 		else
-			Debug.LogWarning("Instance => " + eventKey + " not found for destroying.");
+		{
+			Debug.LogWarning("No instance with key => \""+eventKey+"\" found to destroy");
+			foreach (KeyValuePair<string, EventInstance> entry in InstanceDico)
+			{
+				Debug.Log(entry.Key);
+			}
+		}
+	}
+
+	public void DestroyInstance(EventInstance Event, STOP_MODE targetStopMode)
+	{
+		if (InstanceDico.ContainsValue(Event))
+		{
+			string key = InstanceDico.FirstOrDefault(x => x.Value == Event).Key;
+
+			InstanceDico[key].stop(targetStopMode);
+			InstanceDico[key].release();
+			InstanceDico.Remove(key);
+			Debug.Log("Instance => " + key + " succesfully destroyed.");
+		}
+		else
+		{
+			foreach (KeyValuePair<string, EventInstance> entry in InstanceDico)
+			{
+				Debug.Log(entry.Key);
+			}
+		}
 	}
 }
 

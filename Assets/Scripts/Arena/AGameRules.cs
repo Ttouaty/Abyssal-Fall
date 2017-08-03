@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.Networking;
 using System.Linq;
 using System;
+using FMOD.Studio;
 
 public abstract class AGameRules : MonoBehaviour
 {
@@ -39,6 +40,10 @@ public abstract class AGameRules : MonoBehaviour
 	public List<PoolConfiguration> AdditionalPoolsToLoad = new List<PoolConfiguration>();
 
 	protected bool _isInSuddenDeath = false;
+	[HideInInspector]
+	public EventInstance ActiveMusic;
+
+	public virtual void InitMusic() { }
 
 	public virtual void InitGameRules()
 	{
@@ -140,10 +145,15 @@ public abstract class AGameRules : MonoBehaviour
 			if (killer != null)
 			{
 				if (player != null)
-					MessageManager.Log("Player " + killer.PlayerNumber+" killed => Player " + player.PlayerNumber);
+				{
+					GUIManager.Instance.DisplayKill(killer.PlayerNumber, player.PlayerNumber);
+					//MessageManager.Log("Player " + killer.PlayerNumber+" killed => Player " + player.PlayerNumber);
+				}
 			}
 			else
-				MessageManager.Log("Player " + player.PlayerNumber + " killed himself!");
+				GUIManager.Instance.DisplaySuicide(player.PlayerNumber);
+
+			//MessageManager.Log("Player " + player.PlayerNumber + " killed himself!");
 
 			if (NetworkServer.active)
 			{
@@ -172,7 +182,7 @@ public abstract class AGameRules : MonoBehaviour
 
 	private void RespawnPlayer(Player player)
 	{
-		IEnumerable<Tile> tilesEnumerator = ArenaManager.Instance.Tiles.Where((Tile t) => t != null).Where((Tile t) => t.Obstacle == null && t.CanFall/* && !t.IsSpawn*/);
+		IEnumerable<Tile> tilesEnumerator = ArenaManager.Instance.Tiles.Where((Tile t) => t != null).Where((Tile t) => t.Obstacle == null && t.CanFall && !t.IsTouched/* && !t.IsSpawn*/);
 		List<Tile> tiles = new List<Tile>(tilesEnumerator);
 		if (tiles.Count == 0)
 		{
@@ -298,6 +308,11 @@ public abstract class AGameRules : MonoBehaviour
 		AutoFade.StartFade(0.5f, 0.5f, 0.5f, Color.white);
 		yield return new WaitForSeconds(0.5f);
 
+		SoundManager.Instance.DestroyInstance(ActiveMusic, STOP_MODE.IMMEDIATE);
+		ActiveMusic = SoundManager.Instance.CreateInstance(LevelManager.Instance.CurrentArenaConfig.ClassicMusicKey);
+		ActiveMusic.start();
+		ActiveMusic.setParameterValue("END", 1);
+
 		ArenaManager.Instance._currentArenaConfig = MainManager.Instance.LEVEL_MANAGER.CurrentArenaConfig;
 		ArenaManager.Instance._currentModeConfig = MainManager.Instance.LEVEL_MANAGER.CurrentModeConfig;
 		ArenaManager.Instance._currentMapConfig = MainManager.Instance.LEVEL_MANAGER.CurrentMapConfig;
@@ -306,8 +321,6 @@ public abstract class AGameRules : MonoBehaviour
 		GameObject tempPopup = Instantiate(GameManager.Instance.Popups["SuddenDeath"], Camera.main.transform, false) as GameObject;
 		tempPopup.transform.localPosition = new Vector3(0,-2,10);
 		tempPopup.transform.localRotation = Quaternion.identity;
-		//Debug.LogError("SUDDEN DEATH");
-		// Display popup Sudden Death
 	}
 
 
@@ -315,7 +328,8 @@ public abstract class AGameRules : MonoBehaviour
 	{
 		StopAllCoroutines();
 		EndGameManager.Instance.WinnerId = winner.PlayerNumber;
-		
+		SoundManager.Instance.DestroyInstance(ActiveMusic, STOP_MODE.ALLOWFADEOUT);
+		SoundManager.Instance.PlayOS("Victory Music");
 		ArenaManager.Instance.DisplayWinner(winner.gameObject);
 	}
 

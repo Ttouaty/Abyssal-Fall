@@ -8,6 +8,7 @@ public class DialogBox : MonoBehaviour
 {
 	public Transform ControlDiv;
 	public Text TextDiv;
+	public float typeSoundPerSecond = 20;
 	private Message[] _activeMessageSequence;
 	private int _activeSequenceIndex = 0;
 	private Coroutine _activeDisplayCoroutine;
@@ -66,7 +67,7 @@ public class DialogBox : MonoBehaviour
 	private int _displayedTagIndex;
 	private int _displayedTextOffset;
 	private bool skipMessage;
-	private int _characterSoundjump;
+	private float _soundTimeStamp;
 
 	//dialogue.Substring(0, index) + "<color=#0000>"+dialogue.Substring(index)+"</color>"
 
@@ -83,10 +84,11 @@ public class DialogBox : MonoBehaviour
 		string textAddedSoFar = "";
 		int nextIndexToWrite = 0;
 		int nextTextOffset = 0;
+
 		_messageProgressionIndex = 0;
 		_displayedTagIndex = 0;
 		_displayedTextOffset = 0;
-		_characterSoundjump = 0;
+		_soundTimeStamp = Time.time;
 		_isDisplaying = true;
 		skipMessage = false;
 		tagMatches = Regex.Matches(message.TranslatedText, @"<(.*?)>");
@@ -111,10 +113,12 @@ public class DialogBox : MonoBehaviour
 
 			if (!skipMessage)
 			{
-				if (_characterSoundjump % 2 == 0)
+				if(Time.time > _soundTimeStamp + (1.0f / typeSoundPerSecond))
+				{
+					_soundTimeStamp = Time.time;
 					_typingSound.Play();
+				}
 
-				_characterSoundjump++;
 				yield return new WaitForSeconds(1 / message.TextSpeed);
 			}
 		}

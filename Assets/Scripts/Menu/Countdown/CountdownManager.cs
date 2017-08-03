@@ -36,6 +36,8 @@ public class CountdownManager : GenericSingleton<CountdownManager>
 		TimeManager.Resume();
 	}
 
+	//public Camera[] cams;
+
 	IEnumerator PlayerFocus(float TimeBeforeLaunch = 1)
 	{
 		PlayerController[] ActiveControllers = FindObjectsOfType<PlayerController>();
@@ -56,10 +58,18 @@ public class CountdownManager : GenericSingleton<CountdownManager>
 
 		for (int i = 0; i < ActiveControllers.Length; i++)
 		{
+			//Camera closestCam = cams[0];
+			//for (int j = 0; j < cams.Length; j++)
+			//{
+			//	if ((cams[j].transform.position - ActiveControllers[i].transform.position).magnitude < (closestCam.transform.position - ActiveControllers[i].transform.position).magnitude)
+			//		closestCam = cams[j];
+			//}
+			//closestCam.gameObject.SetActive(true);
 			CameraManager.Instance.AddTargetToTrack(ActiveControllers[i].transform);
 			if(ActiveControllers[i]._isLocalPlayer)
 				ActiveControllers[i]._networkAnimator.BroadCastTrigger("Enter");
 			yield return new WaitForSeconds((TotalTimeTaken - TimeBeforeLaunch) / Player.PlayerList.Length);
+			//closestCam.gameObject.SetActive(false);
 			CameraManager.Instance.RemoveTargetToTrack(ActiveControllers[i].transform);
 		}
 

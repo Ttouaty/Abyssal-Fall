@@ -311,6 +311,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &1000010761147624
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 4000012637247468}
+  - 119: {fileID: 119000013686062264}
+  m_Layer: 14
+  m_Name: BlobShadowProjector
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1000010794325198
 GameObject:
   m_ObjectHideFlags: 1
@@ -2534,8 +2550,22 @@ Transform:
   - {fileID: 4000012227083406}
   - {fileID: 4000013325296510}
   - {fileID: 4000010493384194}
+  - {fileID: 4000012637247468}
   m_Father: {fileID: 4000014016484890}
   m_RootOrder: 3
+--- !u!4 &4000012637247468
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000010761147624}
+  m_LocalRotation: {x: 0.49519467, y: 0.50475955, z: 0.50475955, w: 0.49519467}
+  m_LocalPosition: {x: -1.052, y: -0.01, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 4000012615039994}
+  m_RootOrder: 4
 --- !u!4 &4000012693227770
 Transform:
   m_ObjectHideFlags: 1
@@ -2652,7 +2682,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000010922275590}
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: 7.5, y: -1.02, z: 3.1200104}
+  m_LocalPosition: {x: 5.41, y: -1.02, z: 5.26}
   m_LocalScale: {x: 1, y: 1.1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
@@ -3172,6 +3202,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac856e0a4cee3c2488378de374e51936, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!119 &119000013686062264
+Projector:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000010761147624}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_NearClipPlane: 1.5
+  m_FarClipPlane: 3
+  m_FieldOfView: 30
+  m_AspectRatio: 1
+  m_Orthographic: 0
+  m_OrthographicSize: 2
+  m_Material: {fileID: 2100000, guid: e30ff3588e719f34bbf0c66f22d97487, type: 2}
+  m_IgnoreLayers:
+    serializedVersion: 2
+    m_Bits: 27648
 --- !u!124 &124000013335781070
 Behaviour:
   m_ObjectHideFlags: 1
@@ -3354,7 +3402,7 @@ SkinnedMeshRenderer:
   m_BlendShapeWeights: []
   m_RootBone: {fileID: 4000011893360284}
   m_AABB:
-    m_Center: {x: 0.30340004, y: 1.0867566, z: -0.43424988}
+    m_Center: {x: 0.30339813, y: 1.0867566, z: -0.43424988}
     m_Extent: {x: 0.22756332, y: 0.9942881, z: 0.1405487}
   m_DirtyAABB: 0
 --- !u!183 &183000011132943480
