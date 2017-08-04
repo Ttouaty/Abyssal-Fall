@@ -40,8 +40,14 @@ public class AnimationToolkit : MonoBehaviour
 
 	public void PlaySound(string targetSoundKey)
 	{
-		if(SoundManager.Instance != null)
+		if (SoundManager.Instance != null)
 			SoundManager.Instance.PlayOS(targetSoundKey);
+	}
+
+	public void PlaySoundAttached(string targetSoundKey)
+	{
+		if (SoundManager.Instance != null)
+			SoundManager.Instance.PlayOSAttached(targetSoundKey, gameObject);
 	}
 
 	public void CameraShakeEnum(ShakeStrength force)

@@ -114,9 +114,30 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.37828952
+      - time: 0
+        functionName: SetExpression
+        data: neutral
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.22581047
+        functionName: PlaySoundAttached
+        data: mage foot
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.3141565
         functionName: ActivateParticle
         data: step dust right
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.7254565
+        functionName: PlaySoundAttached
+        data: mage foot
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
@@ -124,13 +145,6 @@ ModelImporter:
       - time: 0.7894738
         functionName: ActivateParticle
         data: step dust left
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
-      - time: 0
-        functionName: SetExpression
-        data: neutral
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0

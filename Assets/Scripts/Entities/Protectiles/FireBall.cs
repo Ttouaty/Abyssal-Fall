@@ -87,7 +87,7 @@ public class FireBall : ABaseProjectile
 		ParticleSystem exploParticles = (ParticleSystem)Instantiate(_launcherRef.ExplosionParticle, transform.position, _launcherRef.ExplosionParticle.transform.rotation);
 		exploParticles.Play();
 		Destroy(exploParticles.gameObject, exploParticles.startLifetime + exploParticles.duration);
-		SoundManager.Instance.PlayOSAttached("Explosion", exploParticles.gameObject);
+		SoundManager.Instance.PlayOSAttached("Mage explosion", exploParticles.gameObject);
 
 		if(NetworkServer.active)
 		{

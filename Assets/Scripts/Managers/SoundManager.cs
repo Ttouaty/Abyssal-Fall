@@ -51,6 +51,8 @@ public class SoundManager : GenericSingleton<SoundManager>
 		}
 		else if (EventDico.ContainsValue(eventKey))
 			FMODUnity.RuntimeManager.PlayOneShotAttached(eventKey, target);
+		else
+			Debug.LogError("No event found for key => " + eventKey);
 	}
 
 	public EventInstance CreateInstance(string eventKey)
