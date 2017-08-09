@@ -202,11 +202,14 @@ public class ArenaManager : MonoBehaviour
 
 	public void ResetTile(Tile tile)
 	{
-		if(_tiles.Length < tile.TileIndex)
+		if(_tiles.Length > tile.TileIndex)
 		{
 			if (_tiles[tile.TileIndex] == null)
 				_tiles[tile.TileIndex] = tile;
 		}
+		else
+			Debug.LogError("Tile is outside of _tiles.length range!");
+
 	}
 	
 	//Don't use this one

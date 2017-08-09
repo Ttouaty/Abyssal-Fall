@@ -182,7 +182,7 @@ public abstract class AGameRules : MonoBehaviour
 
 	private void RespawnPlayer(Player player)
 	{
-		IEnumerable<Tile> tilesEnumerator = ArenaManager.Instance.Tiles.Where((Tile t) => t != null).Where((Tile t) => t.Obstacle == null && t.CanFall && !t.IsTouched/* && !t.IsSpawn*/);
+		IEnumerable<Tile> tilesEnumerator = ArenaManager.Instance.Tiles.Where((Tile t) => t != null).Where((Tile t) => (t.Obstacle == null && t.CanFall && !t.IsTouched));
 		List<Tile> tiles = new List<Tile>(tilesEnumerator);
 		if (tiles.Count == 0)
 		{

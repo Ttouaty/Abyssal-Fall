@@ -50,6 +50,13 @@ public class AnimationToolkit : MonoBehaviour
 			SoundManager.Instance.PlayOSAttached(targetSoundKey, gameObject);
 	}
 
+	public void PlayFootStep(string targetSoundKey)
+	{
+		if (!GetComponentInParent<PlayerController>().IsGrounded)
+			return;
+		PlaySoundAttached(targetSoundKey);
+	}
+
 	public void CameraShakeEnum(ShakeStrength force)
 	{
 		CameraManager.Shake(force);

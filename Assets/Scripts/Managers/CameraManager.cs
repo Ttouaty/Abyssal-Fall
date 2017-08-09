@@ -343,8 +343,11 @@ public class CameraManager : GenericSingleton<CameraManager>
 
 	void OnDestroy()
 	{
-		if (MainManager.Instance == null)
+		if (_isQuitting)
 			return; //gameClosed
 		ReplaceInstance(MainManager.Instance.OriginalCameraManager);
 	}
+
+	private bool _isQuitting = false;
+	void OnApplicationQuit() { _isQuitting = true; }
 }

@@ -121,7 +121,10 @@ public class GameManager : GenericSingleton<GameManager>
 				case 4: CurrentGameConfiguration.MapConfiguration = EMapConfiguration.TestArena_4; break;
 			}
 
-			MenuManager.Instance.GetComponentInChildren<MapSelectWheel>(true).SendSelectionToGameManager();
+			if(MenuManager.Instance.GetComponentInChildren<MapSelectWheel>(true) == null)
+				GameManager.Instance.CurrentGameConfiguration.ArenaConfiguration = EArenaConfiguration.Aerial;
+			else
+				MenuManager.Instance.GetComponentInChildren<MapSelectWheel>(true).SendSelectionToGameManager();
 			AGameRules tempRules;
 			MainManager.Instance.DYNAMIC_CONFIG.GetConfig(CurrentGameConfiguration.ModeConfiguration, out tempRules);
 

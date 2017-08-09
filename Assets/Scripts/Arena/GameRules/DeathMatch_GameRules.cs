@@ -19,8 +19,6 @@ public class DeathMatch_GameRules : AGameRules
 	{
 		base.InitGameRules();
 
-		
-
 		if (!_isInSuddenDeath)
 		{
 			GUIManager.Instance.RunTimer(MatchDuration);
