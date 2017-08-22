@@ -61,7 +61,10 @@ public class FacialExpresionModule : MonoBehaviour
 
 			Material[] tempMats = ExpressionTarget.materials;
 
-			//Debug.Log("switching to expression => "+expressionName +" with skin number => "+skinNumber);
+			if (skinNumber > _expressionDictionnary[expressionName].Length)
+				return;
+			if (TargetMaterialIndex > tempMats.Length)
+				return;
 			if (tempMats[TargetMaterialIndex].mainTexture == _expressionDictionnary[expressionName][skinNumber].mainTexture)
 				return;
 

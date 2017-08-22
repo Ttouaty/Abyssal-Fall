@@ -24,6 +24,8 @@ public class Confirm : MonoBehaviour
 
 	private ReturnButton[] _returnButtonChildren;
 
+	private EventSystem targetEventSystem;
+
 	void Awake()
 	{
 		Instance = this;
@@ -38,7 +40,6 @@ public class Confirm : MonoBehaviour
 			_returnButtonChildren[i].enabled = false;
 		}
 	}
-
 
 	public void SetYesText(string newText) { _yesText.text = newText; }
 	public void SetNoText(string newText) { _noText.text = newText; }
@@ -59,7 +60,8 @@ public class Confirm : MonoBehaviour
 		{
 			_returnButtonChildren[i].enabled = true;
 		}
-		EventSystem.current.enabled = false;
+		targetEventSystem = EventSystem.current;
+		targetEventSystem.enabled = false;
 
 		_animatorRef.SetTrigger("SendIn");
 	}
@@ -72,7 +74,8 @@ public class Confirm : MonoBehaviour
 		{
 			_returnButtonChildren[i].enabled = false;
 		}
-		EventSystem.current.enabled = true;
+
+		targetEventSystem.enabled = true;
 	}
 
 	public void OnYes()

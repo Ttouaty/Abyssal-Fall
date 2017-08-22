@@ -6,6 +6,7 @@ public class MapSelector : MenuPanelNew
 {
 	private MapSelectWheel wheelRef;
 	public Transform MapWheelTarget;
+
 	protected void OnEnable()
 	{
 		if (NetworkServer.active)
@@ -21,7 +22,7 @@ public class MapSelector : MenuPanelNew
 			if(MapWheelTarget != null)
 			{
 				if (MapWheelTarget.GetComponentInChildren<MapSelectWheel>(true))
-					Destroy(MapWheelTarget.GetComponentInChildren<MapSelectWheel>(true));
+					Destroy(MapWheelTarget.GetComponentInChildren<MapSelectWheel>(true).gameObject);
 			}
 		}
 	}

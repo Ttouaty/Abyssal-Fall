@@ -57,4 +57,11 @@ public class ArenaMasterManager : NetworkBehaviour
 		newImage.transform.position = position;
 		Destroy(newImage, destroyDelay);
 	}
+
+	[ClientRpc]
+	public void RpcColorSpawn(int spawnIndex, int playerIndex)
+	{
+		ArenaManager.Instance.Spawns[spawnIndex].ColorSpawn(GameManager.Instance.PlayerColors[playerIndex]);
+
+	}
 }

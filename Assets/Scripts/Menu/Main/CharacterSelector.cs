@@ -52,12 +52,29 @@ public class CharacterSelector : MonoBehaviour
 
 	public void CancelAllSelections(bool needClose = true)
 	{
+		if (SlotsAvailable == null)
+			SlotsAvailable = GetComponentsInChildren<CharacterSlot>(true);
+
 		for (int i = 0; i < SlotsAvailable.Length; ++i)
 		{
 			if (SlotsAvailable[i].Selected)
 				SlotsAvailable[i].CancelCharacterSelection();
 			if (SlotsAvailable[i].Open && needClose)
 				SlotsAvailable[i].CloseSlot();
+		}
+	}
+
+	public void ForceCloseAll()
+	{
+		if (SlotsAvailable == null)
+			SlotsAvailable = GetComponentsInChildren<CharacterSlot>(true);
+
+		for (int i = 0; i < SlotsAvailable.Length; ++i)
+		{
+			if (SlotsAvailable[i].Selected)
+				SlotsAvailable[i].CancelCharacterSelection();
+
+			SlotsAvailable[i].CloseSlot();
 		}
 	}
 }

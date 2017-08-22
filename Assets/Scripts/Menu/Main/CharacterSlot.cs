@@ -58,8 +58,8 @@ public class CharacterSlot : MonoBehaviour
 	int frameDelay = 1; // security for opening a slot. (prevents openning && selecting character in 1 frame) dirty As Fuck
 	void Update()
 	{
-		if (!NetworkServer.active && NetworkClient.active)
-			PressAContainer.SetActive(false);
+		//if (!NetworkServer.active && NetworkClient.active) //Commented for multiple online clients
+		//	PressAContainer.SetActive(false);
 
 		if (!Open)
 			return;
@@ -137,9 +137,10 @@ public class CharacterSlot : MonoBehaviour
 	public void CancelCharacterSelection()
 	{
 		Selected = false;
-		if(_playerRef != null)
+		if (_playerRef != null)
 			_playerRef.UnReady();
-
+		else
+			return;
 		ArrowContainers.SetActive(_playerRef.isLocalPlayer && _availableCharacters.Length > 1);
 	}
 

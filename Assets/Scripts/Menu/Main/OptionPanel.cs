@@ -115,7 +115,7 @@ public class OptionPanel : ButtonPanelNew
 
 	public void ChangeLanguage(int value)
 	{
-		_optionsObj.Language = value;
+		_optionsObj.Language = value; 
 		Localizator.LanguageManager.Instance.CurrentLanguage = (SystemLanguage) value;
 	}
 

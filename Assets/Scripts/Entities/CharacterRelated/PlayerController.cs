@@ -792,10 +792,10 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	public void Kill()
 	{
 		Debug.Log("Player n°" + _playerRef.PlayerNumber + " with character " + _characterData.IngameName + " is DED!");
+		_animator.ResetTrigger("WaitForEnter");
 
 		//CmdSetExpression("Fear");
 		_characterData.SoundList["OnDeath"].Play(gameObject);
-
 		//_animator.SetTrigger("Death");
 		if (_isLocalPlayer)
 			_networkAnimator.BroadCastTrigger("Death");
@@ -915,9 +915,6 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	{
 		if (_isInvul || _parryTimer.TimeLeft != 0)
 			return;
-
-		_animToolkit.ActivateParticle("hit");
-		//CmdSetExpression("Pain");
 
 		direction.x = direction.x * 0.5f + direction.x * ((1f - _characterData.CharacterStats.resistance.Percentage(0, Stats.maxValue)));
 		direction.z = direction.z * 0.5f + direction.z * ((1f - _characterData.CharacterStats.resistance.Percentage(0, Stats.maxValue)));

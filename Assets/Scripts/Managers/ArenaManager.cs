@@ -107,8 +107,10 @@ public class ArenaManager : MonoBehaviour
 			killPlane.transform.localPosition = new Vector3(0, 10, 0);
 			killPlane.layer = LayerMask.NameToLayer("KillPlane");
 
-
-			Player.LocalPlayer.CmdReadyToSpawnMap();
+			for (int i = 0; i < ServerManager.Instance.client.connection.playerControllers.Count; i++)
+			{
+				Player.LocalPlayer.CmdReadyToSpawnMap();
+			}
 		}
 		else
 		{
@@ -345,20 +347,22 @@ public class ArenaManager : MonoBehaviour
 			Player player = TargetPlayers[i];
 			if (player != null)
 			{
+				int spawnIndex = unUsedSpawnIndexes.ShiftRandomElement();
 				_players[i] = Instantiate(player.CharacterUsed.gameObject) as GameObject;
 				PlayerController playerController = _players[i].GetComponent<PlayerController>();
-				Spawn selectedSpawn = _spawns[unUsedSpawnIndexes.ShiftRandomElement()];
+				Spawn selectedSpawn = _spawns[spawnIndex];
 
 				selectedSpawn.SpawnPlayer(playerController);
 				ArenaMasterManager.Instance.RpcDisplayPlayerNumber(player.PlayerNumber, selectedSpawn.transform.position + Vector3.up * 6, 3);
-
-				selectedSpawn.GetComponentInChildren<MeshRenderer>().materials[selectedSpawn.GetComponent<Tile>().MaterialChangeIndex].color = GameManager.Instance.PlayerColors[i];
-
+				ArenaMasterManager.Instance.RpcColorSpawn(spawnIndex, i);
+				
 				NetworkServer.SpawnWithClientAuthority(_players[i], player.gameObject);
 				player.RpcInitController(_players[i]);
 			}
 		}
 	}
+
+	
 
 	public IEnumerator LoadArena (bool animate = true)
 	{

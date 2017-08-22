@@ -52,7 +52,8 @@ public abstract class ABaseProjectile : NetworkBehaviour, IPoolable
 
 		_rigidB.velocity = Direction.normalized * _speed;
 
-		StartCoroutine(DelayStop());
+		if (NetworkServer.active)
+			StartCoroutine(DelayStop());
 	}
 
 	public override void OnStartClient()
@@ -81,6 +82,7 @@ public abstract class ABaseProjectile : NetworkBehaviour, IPoolable
 	{
 		if (NetworkServer.active)
 			NetworkServer.UnSpawn(gameObject);
+		gameObject.SetActive(false);
 		GameObjectPool.AddObjectIntoPool(gameObject);
 	}
 
@@ -92,7 +94,8 @@ public abstract class ABaseProjectile : NetworkBehaviour, IPoolable
 
 	protected virtual void Stop()
 	{
-		RpcSendOnStop();
+		if(NetworkServer.active)
+			RpcSendOnStop();
 		_rigidB.velocity = Vector3.zero;
 		//_ownDamageData = null;
 		StopAllCoroutines();
@@ -130,7 +133,8 @@ public abstract class ABaseProjectile : NetworkBehaviour, IPoolable
 
 	public virtual void OnHitPlayer(IDamageable damagedEntity)
 	{
-		DamageEntity(damagedEntity);
+		if(NetworkServer.active)
+			DamageEntity(damagedEntity);
 	}
 
 	public virtual void DamageEntity(IDamageable damagedEntity)
@@ -142,7 +146,8 @@ public abstract class ABaseProjectile : NetworkBehaviour, IPoolable
 
 	public virtual void OnHitEnvironnement()
 	{
-		Stop();
+		if(NetworkServer.active)
+			Stop();
 	}
 
 	public virtual void Parry(DamageDealer characterParrying)

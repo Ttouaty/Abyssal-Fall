@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
+using UnityEngine.Events;
 
 public enum UIDirection
 {
@@ -18,6 +19,8 @@ public class ButtonPanelNew : MonoBehaviour
 
 	private Selectable _lastSelectedElement;
 	protected Selectable _internalActiveButton;
+
+
 	protected Selectable ActiveElement
 	{
 		get { return _internalActiveButton; }
@@ -96,7 +99,7 @@ public class ButtonPanelNew : MonoBehaviour
 		LaunchAnimation("FadeIn");
 	}
 
-	public void Return()
+	public virtual void Return()
 	{
 		if (ParentButtonPanel == null)
 			return;

@@ -4,6 +4,8 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using System;
 using System.Collections;
+using UnityEngine.Networking.Match;
+using System.Collections.Generic;
 
 public class ConnectionModule : MonoBehaviour
 {
@@ -21,6 +23,26 @@ public class ConnectionModule : MonoBehaviour
 		OnFailedConnection.AddListener(OnFailedConnectionCallBack);
 	}
 
+	public void TestListMatches()
+	{
+		NetworkMatch matchMaker = gameObject.AddComponent<NetworkMatch>();
+		matchMaker.ListMatches(0, 50, "AbyssalFall-", true, 0, 0, RandomMatchReturn);
+	}
+
+	void RandomMatchReturn(bool success, string extendedInfo, List<MatchInfoSnapshot> matchList)
+	{
+		if(success)
+		{
+			Debug.Log("info => "+extendedInfo);
+			Debug.Log("match founds => " + matchList.Count);
+
+			for (int i = 0; i < matchList.Count; i++)
+			{
+				Debug.Log("match adress => "+matchList[i].name);
+			}
+		}
+	}
+
 	public void Connect()
 	{
 		if(TargetIPField == null)
@@ -35,6 +57,8 @@ public class ConnectionModule : MonoBehaviour
 
 	public void Connect(string Code)
 	{
+		if (IsConnecting)
+			return;
 		Debug.Log("looking for games with gameType: AbyssalFall-" + Code.ToLower());
 		IsConnecting = true;
 		ServerManager.Instance.ConnectToMatch(Code.ToLower());
@@ -56,6 +80,7 @@ public class ConnectionModule : MonoBehaviour
 	void OnFailedConnectionCallBack(string Code)
 	{
 		IsConnecting = false;
+		Network.Disconnect();
 	}
 
 	void OnFailedToConnect(NetworkConnectionError error)

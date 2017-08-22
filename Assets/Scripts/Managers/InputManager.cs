@@ -3,6 +3,7 @@ using UnityEngine.EventSystems;
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
 public enum InputEnum
 {
@@ -75,6 +76,12 @@ public class InputManager : GenericSingleton<InputManager>
 		returnArray[0] = "Keyboard";
 
 		return returnArray;
+	}
+
+	public static int GetFirstActiveJoystick()
+	{
+		string[] tempJoyARray = Input.GetJoystickNames();
+		return Mathf.Max(Array.IndexOf(tempJoyARray, tempJoyARray.FirstOrDefault((string s) => (s.Length > 3))), 0);
 	}
 
 	public static string AnyKeyDown()

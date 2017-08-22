@@ -34,9 +34,8 @@ public class OnlineJoinPanel : ButtonPanelNew
 			MessageManager.Log("Pasted Clipboard");
 		}
 
-		if(InputManager.GetButtonDown(InputEnum.A))
+		if(InputManager.GetButtonDown(InputEnum.A) && !BgConnection.GetComponent<ConnectionModule>().IsConnecting)
 		{
-
 			string code = GetComponentInChildren<InputField>().text;
 			if (code == ServerManager.Instance.GameId)
 			{
@@ -71,5 +70,15 @@ public class OnlineJoinPanel : ButtonPanelNew
 			BgConnection.GetComponent<ConnectionModule>().Connect();
 			Close();
 		}
+	}
+
+	public override void Return()
+	{
+		if (BgConnection.GetComponent<ConnectionModule>().IsConnecting)
+		{
+			BgConnection.GetComponent<ConnectionModule>().OnFailedConnection.Invoke("Canceled connection");
+		}
+		else
+			base.Return();
 	}
 }

@@ -184,7 +184,10 @@ public class InputListener : MonoBehaviour
 		_JoystickRequestCallback = -1;
 
 		if(NeedConfirmation)
+		{
+			StartCoroutine(DeactivateAllSiblings(FindObjectsOfType<InputListener>()));
 			Confirm.Instance.Open(WaitForConfirm(joy, FindObjectsOfType<InputListener>()), ReactivateAllSiblings(FindObjectsOfType<InputListener>()));
+		}
 		else
 			Callback.Invoke(joy);
 	}
@@ -204,6 +207,17 @@ public class InputListener : MonoBehaviour
 		}
 		yield return null;
 	}
+
+	IEnumerator DeactivateAllSiblings(InputListener[] siblingsButtons)
+	{
+		for (int i = 0; i < siblingsButtons.Length; i++)
+		{
+			siblingsButtons[i].enabled = false;
+		}
+		yield return null;
+	}
+
+
 
 	void OnEnable()
 	{

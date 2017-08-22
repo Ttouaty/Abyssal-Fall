@@ -6,6 +6,7 @@ public class SoundTrigger : MonoBehaviour
 	public FmodOneShotSound SoundEvent;
 	public bool AutoActivate = false;
 	public bool Spatialized = false;
+	public bool NetworkSend = false;
 
 	void Start()
 	{
@@ -15,9 +16,18 @@ public class SoundTrigger : MonoBehaviour
 
 	public void Activate()
 	{
-		if(Spatialized)
-			SoundEvent.Play(gameObject);
+		if(NetworkSend)
+		{
+			Player.LocalPlayer.CmdPlaySound(SoundEvent.FmodEvent);
+			if(Spatialized)
+				Debug.LogWarning("SoundTriggers cannot yet be spatialized and NetworkSent.");
+		}
 		else
-			SoundEvent.Play();
+		{
+			if(Spatialized)
+				SoundEvent.Play(gameObject);
+			else
+				SoundEvent.Play();
+		}
 	}
 }

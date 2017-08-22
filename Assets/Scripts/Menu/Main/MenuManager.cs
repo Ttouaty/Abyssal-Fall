@@ -87,7 +87,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 			Debug.Log("trying to start host");
 			StartLocalHost(); //Server side or starting server
 		}
-		else if (NetworkServer.active)
+		else 
 			ServerManager.Instance.TryToAddPlayer();
 	}
 
@@ -98,7 +98,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 			Debug.Log("trying to start host");
 			StartLocalHost(); //Server side or starting server
 		}
-		else if (NetworkServer.active)
+		else
 			ServerManager.Instance.TryToAddPlayer();
 	}
 

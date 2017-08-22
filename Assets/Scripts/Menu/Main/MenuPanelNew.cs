@@ -133,23 +133,33 @@ public class MenuPanelNew : MonoBehaviour
 
 	public virtual void Return()
 	{
+		ReturnToPreviousPanel(true);
+	}
+
+	protected virtual void ReturnToPreviousPanel(bool send)
+	{
+		if(DefaultParentMenu == null)
+		{
+			Debug.LogWarning("Panel \""+PanelName+"\" doesn't have a parent");
+			return;
+		}
 		LaunchAnimation("SendOutRight");
 
 		ActiveMenupanel = DefaultParentMenu;
 		ActiveMenupanel.gameObject.SetActive(true);
-		if(ActiveMenupanel.ActiveButtonPanel != null)
+		if (ActiveMenupanel.ActiveButtonPanel != null)
 			ActiveMenupanel.ActiveButtonPanel.FadeIn();
 		else
 		{
 			ActiveMenupanel.ActiveButtonPanel = ActiveMenupanel.PreselectedButtonPanel;
-			if(ActiveMenupanel.ActiveButtonPanel != null)
+			if (ActiveMenupanel.ActiveButtonPanel != null)
 				ActiveMenupanel.ActiveButtonPanel.Open();
 		}
 
 		ActiveMenupanel.LaunchAnimation("Return");
 		ActiveMenupanel.SetInputDelay(0.5f);
 		InputEnabled = false;
-		if (NetworkServer.active)
+		if (NetworkServer.active && send)
 			Player.LocalPlayer.RpcMenuTransition(PanelName, false);
 	}
 

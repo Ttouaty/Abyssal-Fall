@@ -122,12 +122,7 @@ public class LevelManager : GenericSingleton<LevelManager>
 			UnloadAllScenes();
 			yield return StartCoroutine(LoadScene(SceneMenu));
 
-			if (_oldArenaConfig != null)
-			{
-				SoundManager.Instance.DestroyInstance(_oldArenaConfig.AmbianceSound, FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
-				_oldArenaConfig = null;
-			}
-
+			SoundManager.Instance.DestroyAllInstances();
 
 			SoundManager.Instance.CreateInstance("Menu Music").setParameterValue("Progression", showSplashScreens ? 0 : 1);
 			SoundManager.Instance.GetInstance("Menu Music").start();

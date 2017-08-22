@@ -17,7 +17,7 @@ public class Shuriken : ABaseProjectile
 		base.Launch(Position, Direction, data, newLauncherId);
 	}
 
-	protected override void Stop()
+	protected override void OnStop()
 	{
 		GameObject OldSmokeTrail = GetComponentInChildren<TrailRenderer>(false).gameObject;
 		_smokeTrails[activeSkinNumber] = Instantiate(_smokeTrails[activeSkinNumber], transform, false) as GameObject;
@@ -25,6 +25,11 @@ public class Shuriken : ABaseProjectile
 		OldSmokeTrail.transform.parent = null;
 		OldSmokeTrail.GetComponentInChildren<ParticleSystem>().Stop();
 		Destroy(OldSmokeTrail.gameObject, OldSmokeTrail.GetComponentInChildren<ParticleSystem>().startLifetime);
+		base.OnStop();
+	}
+
+	protected override void Stop()
+	{
 		base.Stop();
 	}
 

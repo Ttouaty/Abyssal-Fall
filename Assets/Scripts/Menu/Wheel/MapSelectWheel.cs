@@ -83,7 +83,7 @@ public class MapSelectWheel : MenuWheel<EArenaConfiguration>
 	{
 		if(NetworkServer.active)
 		{
-			SoundManager.Instance.PlayOS("UI button Change 1");
+			Player.LocalPlayer.RpcPlaySound(SoundManager.Instance.GetFmodKeyOfOS("UI button Change 1"));
 			base.ScrollToIndex(newIndex);
 		}
 	}

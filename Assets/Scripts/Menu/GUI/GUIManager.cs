@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.Networking;
 
 public class GUIManager : GenericSingleton<GUIManager>
 {
@@ -10,7 +11,7 @@ public class GUIManager : GenericSingleton<GUIManager>
 	public Canvas CanvasRef;
 
 	[Space]
-	public GameObject[] ScoreFields;
+	public ScoreField[] ScoreFields;
 
 	public GameObject KillFeedContainer;
 	public Transform KillPopup;
@@ -38,14 +39,16 @@ public class GUIManager : GenericSingleton<GUIManager>
 	{
 		for (int i = 0; i < Player.PlayerList.Length; i++)
 		{
-			if (!ScoreFields[Player.PlayerList[i].PlayerNumber - 1].activeInHierarchy)
+			if (!ScoreFields[Player.PlayerList[i].PlayerNumber - 1].gameObject.activeInHierarchy)
 				continue;
 
 			if (Player.PlayerList[i].Score != Mathf.Floor(Player.PlayerList[i].Score))
-				ScoreFields[Player.PlayerList[i].PlayerNumber - 1].GetComponentInChildren<Text>().text = Player.PlayerList[i].Score.ToString("0.00");
+				ScoreFields[Player.PlayerList[i].PlayerNumber - 1].Score.text = Player.PlayerList[i].Score.ToString("0.00");
 			else
-				ScoreFields[Player.PlayerList[i].PlayerNumber - 1].GetComponentInChildren<Text>().text = Player.PlayerList[i].Score.ToString("0");
+				ScoreFields[Player.PlayerList[i].PlayerNumber - 1].Score.text = Player.PlayerList[i].Score.ToString("0");
 
+			ScoreFields[Player.PlayerList[i].PlayerNumber - 1].PingDiv.SetActive(Player.PlayerList[i].Ping != 0);
+			ScoreFields[Player.PlayerList[i].PlayerNumber - 1].HomeDiv.SetActive(Player.PlayerList[i].Ping == 0);
 		}
 	}
 
@@ -84,13 +87,18 @@ public class GUIManager : GenericSingleton<GUIManager>
 
 	public void SetPlayerScoreActive(int playerNumber, bool active)
 	{
-		ScoreFields[playerNumber - 1].SetActive(active);
+		ScoreFields[playerNumber - 1].gameObject.SetActive(active);
 	}
 
 	public void SetPlayerScoreIcon(int playerNumber, Sprite newSprite)
 	{
 		ScoreFields[playerNumber - 1].transform.Find("BG portrait").GetChild(0).GetComponent<Image>().sprite = newSprite;
 		ScoreFields[playerNumber - 1].transform.Find("BG portrait").GetComponent<Image>().color = GameManager.Instance.PlayerColors[playerNumber - 1];
+	}
+
+	public void SetPlayerPingTo(int playerNumber)
+	{
+		ScoreFields[playerNumber - 1].PingDiv.GetComponentInChildren<PingDisplay>(true).Activate(Player.GetPlayerWithNumber(playerNumber));
 	}
 
 	public void DisplaySuicide(int playerNumber)

@@ -169,7 +169,9 @@ public class ServerManager : NATTraversal.NetworkManager
 	{
 		if (!NetworkServer.active)
 		{
-			Debug.Log("is not server, abording player creation");
+			Debug.Log("is not server, Asking the host to create a new player");
+			ClientScene.AddPlayer(client.connection, (short) client.connection.playerControllers.Count);
+			//Player.LocalPlayer.CmdTryToAddPlayerFromClient();
 			return;
 		}
 
@@ -198,7 +200,6 @@ public class ServerManager : NATTraversal.NetworkManager
 
 	public override void OnClientConnect(NetworkConnection conn)
 	{
-		
 		//base.OnClientConnect(conn);
 	}
 
@@ -370,46 +371,58 @@ public class ServerManager : NATTraversal.NetworkManager
 
 	public override void OnServerDisconnect(NetworkConnection conn)
 	{
-		Player targetPlayer = null;
+		List<Player> targetPlayers = new List<Player>();
 
-		for (int i = 0; i < RegisteredPlayers.Count; i++)
+		for (int i = 0; i < conn.playerControllers.Count; i++)
 		{
-			if (RegisteredPlayers[i].connectionToClient == conn)
-			{
-				targetPlayer = RegisteredPlayers[i];
-				break;
-			}
+			targetPlayers.Add(conn.playerControllers[i].gameObject.GetComponent<Player>());
 		}
+		//for (int i = 0; i < RegisteredPlayers.Count; i++)
+		//{
+		//	if (RegisteredPlayers[i].connectionToClient == conn)
+		//	{
+		//		targetPlayers.Add(RegisteredPlayers[i]);
+		//	}
+		//}
 
-		if(targetPlayer == null)
+		if (targetPlayers.Count == 0)
 		{
 			//Debug.LogWarning("Player disconnected but no player object was found with playercontrollers => "+ conn.playerControllers.Count);
 			return;
 		}
 
 
-		if (IsInLobby)
+		Debug.LogError("players disconnected => "+targetPlayers.Count);
+
+		if (!_isInGame)
 		{
-			for (int i = 0; i < RegisteredPlayers.Count; i++)
+			for (int i = 0; i < targetPlayers.Count; i++)
 			{
-				RegisteredPlayers[i].RpcCloseTargetSlot(targetPlayer.PlayerNumber - 1);
+				Player.LocalPlayer.RpcCloseTargetSlot(targetPlayers[i].PlayerNumber - 1);
 			}
 		}
 
-		NetworkServer.DestroyPlayersForConnection(targetPlayer.connectionToClient);
+		NetworkServer.DestroyPlayersForConnection(conn);
 
-		RegisteredPlayers.Remove(targetPlayer);
 		OpenSlots[] tempArray = Enum.GetValues(typeof(OpenSlots)) as OpenSlots[];
-		LobbySlotsOpen &= ~tempArray[targetPlayer.PlayerNumber];
-		Debug.Log("Removed player " + targetPlayer.PlayerNumber + " - Open slots are now => " + LobbySlotsOpen.ToString());
+		for (int i = 0; i < targetPlayers.Count; i++)
+		{
+			RegisteredPlayers.Remove(targetPlayers[i]);
+			LobbySlotsOpen &= ~tempArray[targetPlayers[i].PlayerNumber];
+			Debug.Log("Removed player " + targetPlayers[i].PlayerNumber + " - Open slots are now => " + LobbySlotsOpen.ToString());
+		}
+
 
 		if (conn.address != "localServer")//external Player decreasing external player count
-			ExternalPlayerNumber--;
+			ExternalPlayerNumber-= targetPlayers.Count;
 
 		
 		if(Player.LocalPlayer != null)
 		{
-			Player.LocalPlayer.RpcOnPlayerDisconnect(targetPlayer.PlayerNumber);
+			for (int i = 0; i < targetPlayers.Count; i++)
+			{
+				Player.LocalPlayer.RpcOnPlayerDisconnect(targetPlayers[i].PlayerNumber);
+			}
 		}
 
 		base.OnServerDisconnect(conn);
@@ -435,6 +448,17 @@ public class ServerManager : NATTraversal.NetworkManager
 
 	public override void replaceConnection(NetworkConnection oldConn, NetworkConnection newConn)
 	{
+		if(newConn == null || oldConn == null)
+		{
+			Debug.LogError("Error in replaceConnection() => newConn is "+newConn+" and old conn is "+oldConn);
+			if (FindObjectOfType<ConnectionModule>() != null)
+				FindObjectOfType<ConnectionModule>().OnFailedConnection.Invoke("A networking error occurred => a Nat replacement connection occured.");
+			else
+				MessageManager.Log("A networking error occurred => a Nat replacement connection occured.");
+			ResetNetwork();
+			return;
+		}
+
 		base.replaceConnection(oldConn, newConn);
 
 		if (NetworkServer.active)
@@ -444,7 +468,8 @@ public class ServerManager : NATTraversal.NetworkManager
 	public void OnConnReplaced(NetworkMessage netMsg)
 	{
 		FindObjectOfType<ConnectionModule>().OnSuccess.Invoke(TargetGameId);
-		ClientScene.AddPlayer(client.connection, 0);
+		//ClientScene.AddPlayer(client.connection, 0);
+		MenuManager.Instance.RegisterNewPlayer(InputManager.GetFirstActiveJoystick());
 	}
 
 	public override void OnClientError(NetworkConnection conn, int errorCode)
@@ -514,7 +539,28 @@ public class ServerManager : NATTraversal.NetworkManager
 			client.Shutdown();
 		}
 		else
+		{
 			StopClient();
+			//for (int i = 0; i < NetworkClient.allClients.Count; i++)
+			//{
+			//	if(NetworkClient.allClients[i].connection != null)
+			//	{
+			//		for (int j = 0; j < NetworkClient.allClients[i].connection.playerControllers.Count; j++)
+			//		{
+			//			Destroy(NetworkClient.allClients[i].connection.playerControllers[j].gameObject);
+			//		}
+			//	}
+			//}
+			NetworkClient.ShutdownAll();
+		}
+		//for (int i = 0; i < NetworkClient.allClients.Count; i++)
+		//{
+		//	NetworkServer.DestroyPlayersForConnection(NetworkClient.allClients[i].connection);
+		//	NetworkClient.allClients[i].Disconnect();
+
+		//	NetworkClient.allClients[i].Shutdown();
+		//}
+		//StopClient();
 
 		RegisterPrefabs();
 	}
@@ -559,13 +605,16 @@ public class ServerManager : NATTraversal.NetworkManager
 	{
 		if(success)
 		{
-			if(matchList.Count != 0)
+			if(FindObjectOfType<ConnectionModule>() != null)
 			{
-				StartCoroutine(MatchListTimeOut());
-				StartClientAll(matchList[0]);
+				if(matchList.Count != 0 && FindObjectOfType<ConnectionModule>().IsConnecting)
+				{
+					StartCoroutine("MatchListTimeOut");
+					StartClientAll(matchList[0]);
+				}
+				else
+					FindObjectOfType<ConnectionModule>().OnFailedConnection.Invoke("Failed to find target game. (No Match found)");
 			}
-			else
-				FindObjectOfType<ConnectionModule>().OnFailedConnection.Invoke("Failed to find target game. (No Match found)");
 		}
 		else
 		{
@@ -585,7 +634,7 @@ public class ServerManager : NATTraversal.NetworkManager
 				tempCoModule.OnFailedConnection.Invoke("Connection attempt failed after " + timeoutTime + "s, aborting connection.");
 		}
 		else
-			Debug.Log("TimeOut not activated, ok");
+			Debug.Log("TimeOut not activated, player is here => ok");
 	}
 
 	public override void OnDoneConnectingToFacilitator(ulong guid)

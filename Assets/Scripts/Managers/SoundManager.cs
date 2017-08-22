@@ -22,6 +22,12 @@ public class SoundManager : GenericSingleton<SoundManager>
 		}
 	}
 
+	public string GetFmodKeyOfOS(string eventKey)
+	{
+		eventKey = eventKey.ToLower();
+		return EventDico.ContainsKey(eventKey) ? EventDico[eventKey] : null;
+	}
+
 	public void PlayOS(string eventKey)
 	{
 		eventKey = eventKey.ToLower();
@@ -130,6 +136,18 @@ public class SoundManager : GenericSingleton<SoundManager>
 				Debug.Log(entry.Key);
 			}
 		}
+	}
+
+	public void DestroyAllInstances()
+	{
+		foreach (KeyValuePair<string, EventInstance> sound in InstanceDico)
+		{
+			sound.Value.stop(STOP_MODE.ALLOWFADEOUT);
+			sound.Value.release();
+
+		}
+
+		InstanceDico.Clear();
 	}
 }
 

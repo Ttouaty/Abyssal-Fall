@@ -2,6 +2,8 @@
 using UnityEngine.Networking;
 using System.Collections.Generic;
 using System;
+using System.Linq;
+using System.Collections;
 
 public class Player : NetworkBehaviour
 {
@@ -15,6 +17,11 @@ public class Player : NetworkBehaviour
 				DynamicConfig.Instance.GetConfigs(ref _availablePlayerControllers);
 			return _availablePlayerControllers;
 		}
+	}
+
+	public static Player GetPlayerWithNumber(int playerNumber)
+	{
+		return PlayerList.First((Player p) => p.PlayerNumber == playerNumber);
 	}
 
 	public static Player[] PlayerList = new Player[0];
@@ -67,6 +74,11 @@ public class Player : NetworkBehaviour
 		}
 	}
 
+	private Ping _pinger;
+	private float _targetPingPerSecond = 1.5f;
+	[SyncVar]
+	public int Ping = 0;
+
 	public void SelectCharacter(ref PlayerController newCharacter)
 	{
 		newCharacter._playerRef = this;
@@ -87,7 +99,7 @@ public class Player : NetworkBehaviour
 
 	public void OnScoreUpdate(float newScore)
 	{
-		if(newScore > Score && Controller != null)
+		if (newScore > Score && Controller != null)
 		{
 			if (newScore - Score == 1)
 				Instantiate(GameManager.Instance.Popups["+1"], Controller.transform.position + Vector3.up * 2, Camera.main.transform.rotation);
@@ -102,7 +114,7 @@ public class Player : NetworkBehaviour
 
 	public void ChangeWheelState(bool ready)
 	{
-		if(CharacterSelectWheel.WheelsRef.ContainsKey(PlayerNumber))
+		if (CharacterSelectWheel.WheelsRef.ContainsKey(PlayerNumber))
 		{
 			CharacterSelectWheel.WheelsRef[PlayerNumber].GetComponentInParent<CharacterSlot>().SelectPedestal(ready);
 			CharacterSelectWheel.WheelsRef[PlayerNumber].SetAnimBool("IsSelected", ready);
@@ -129,7 +141,7 @@ public class Player : NetworkBehaviour
 	public void UnReady()
 	{
 		_ready = false;
-		if(!NetworkServer.active)
+		if (!NetworkServer.active)
 			CmdUnReadyPlayer();
 	}
 
@@ -147,7 +159,7 @@ public class Player : NetworkBehaviour
 			if (Controller != null && isLocalPlayer)
 				Destroy(Controller.gameObject);
 
-			if(GameManager.Instance != null)
+			if (GameManager.Instance != null)
 			{
 				if (GameManager.Instance.GameRules != null)
 				{
@@ -179,31 +191,48 @@ public class Player : NetworkBehaviour
 					JoystickNumber = MenuManager.Instance.LocalJoystickBuffer[MenuManager.Instance.LocalJoystickBuffer.Count - 1];
 					MenuManager.Instance.LocalJoystickBuffer.RemoveAt(MenuManager.Instance.LocalJoystickBuffer.Count - 1);
 
-					Debug.Log("player N°"+PlayerNumber+" created with joystick number: " + JoystickNumber);
+					Debug.Log("player N°" + PlayerNumber + " created with joystick number: " + JoystickNumber);
 				}
 			}
 
-			if (!NetworkServer.active)
-			{
-				string[] tempJoystickNames = InputManager.GetJoystickNames();
-				if (tempJoystickNames.Length > 1)
-				{
-					Debug.Log("InputManager.GetJoystickNames().Length > 1 == true ! Replacing with last connected joystick");
+			//if (!NetworkServer.active)
+			//{
+			//	ServerManager.Instance.StopCoroutine("MatchListTimeOut");
+			//	string[] tempJoystickNames = InputManager.GetJoystickNames();
+			//	if (tempJoystickNames.Length > 1)
+			//	{
+			//		Debug.Log("InputManager.GetJoystickNames().Length > 1 == true ! Replacing with last connected joystick");
 
-					for (int i = tempJoystickNames.Length - 1; i >= 0; i--)
-					{
-						if(tempJoystickNames[i].Length != 0)
-						{
-							JoystickNumber = i;
-							break;
-						}
-					}
+			//		for (int i = tempJoystickNames.Length - 1; i >= 0; i--)
+			//		{
+			//			if (tempJoystickNames[i].Length != 0)
+			//			{
+			//				JoystickNumber = i;
+			//				break;
+			//			}
+			//		}
 
-					Debug.Log("new joystick number is => "+JoystickNumber +" / name => "+tempJoystickNames[JoystickNumber]);
-				}
-			}
+			//		Debug.Log("new joystick number is => " + JoystickNumber + " / name => " + tempJoystickNames[JoystickNumber]);
+			//	}
+			//}
 
 			CmdSetIsUsingGamePad(JoystickNumber != 0);
+		}
+		StartCoroutine(PingCoroutine());
+
+	}
+
+	IEnumerator PingCoroutine()
+	{
+		while (NetworkServer.active && !isServer)
+		{
+			float timePinged = Time.time;
+			
+			_pinger = new Ping(connectionToClient.address);
+			yield return new WaitUntil(() => _pinger.isDone);
+			yield return new WaitUntil(() => Time.time > timePinged + (1 / _targetPingPerSecond));
+
+			Ping = _pinger.time;
 		}
 	}
 
@@ -258,7 +287,7 @@ public class Player : NetworkBehaviour
 		if (isLocalPlayer)
 			return; // activate only if not caller
 
-		if(dir)
+		if (dir)
 			MenuPanelNew.PanelRefs[newMenuName].Open();
 		else
 			MenuPanelNew.PanelRefs[newMenuName].Return();
@@ -336,7 +365,7 @@ public class Player : NetworkBehaviour
 		ArenaManager.Instance.ResetMap(animate);
 		EndStageManager.Instance.Close();
 	}
-	
+
 	[ClientRpc]
 	public void RpcOpenMenu(bool showSplashScreens, string targetMenuName, bool openCharacterSelect)
 	{
@@ -351,11 +380,11 @@ public class Player : NetworkBehaviour
 	}
 
 	[ClientRpc]
-	public void	RpcToggleNoClip()
+	public void RpcToggleNoClip()
 	{
 		//Debug.LogError("NoClip toggled from server !");
 		GroundCheck.noclip = !GroundCheck.noclip;
-		MessageManager.Log("Toggled Noclip to => "+ GroundCheck.noclip);
+		MessageManager.Log("Toggled Noclip to => " + GroundCheck.noclip);
 	}
 
 	[ClientRpc]
@@ -377,6 +406,39 @@ public class Player : NetworkBehaviour
 
 
 		StartCoroutine(GameManager.Instance.GameRules.SuddenDeath(playersSuddenDeath));
-		GameManager.Instance.CurrentGameConfiguration= GameManager.Instance.PreviousGameConfig;
+		GameManager.Instance.CurrentGameConfiguration = GameManager.Instance.PreviousGameConfig;
 	}
+
+	[Command]
+	public void CmdPlaySound(string fmodKey)
+	{
+		RpcPlaySound(fmodKey);
+	}
+
+	[ClientRpc]
+	public void RpcPlaySound(string fmodKey)
+	{
+		FMODUnity.RuntimeManager.PlayOneShot(fmodKey);
+	}
+
+	//[Command]
+	//public void CmdTryToAddPlayerFromClient()
+	//{
+	//	if (ServerManager.Instance.RegisteredPlayers.Count >= 4)
+	//	{
+	//		Debug.LogError("Too much players abording creation");
+	//		return;
+	//	}
+
+	//	Debug.Log("Server received player request, adding new player for connectionToClient => "+ connectionToClient);
+	//	RpcCreateNewLocalPlayer();
+	//	//ClientScene.AddPlayer(connectionToClient, (short)ServerManager.Instance.RegisteredPlayers.Count);
+	//}
+
+	//[ClientRpc]
+	//public void RpcCreateNewLocalPlayer()
+	//{
+	//	if(isLocalPlayer)
+	//		ClientScene.AddPlayer(connectionToServer, (short)ServerManager.Instance.RegisteredPlayers.Count);
+	//}
 }

@@ -57,6 +57,8 @@ public abstract class AGameRules : MonoBehaviour
 
 			GUIManager.Instance.SetPlayerScoreActive(playerNumber, true);
 			GUIManager.Instance.SetPlayerScoreIcon(playerNumber, Player.PlayerList[i].CharacterUsed._characterData.Portrait);
+
+			GUIManager.Instance.SetPlayerPingTo(playerNumber);
 			//GUIManager.Instance.SetPlayerScore(playerNumber, 0);
 		}
 
@@ -95,7 +97,7 @@ public abstract class AGameRules : MonoBehaviour
 
 		while (true)
 		{
-			CameraManager.Shake(ShakeStrength.Low, 0.2f);
+			//CameraManager.Shake(ShakeStrength.Low, 0.2f);
 
 			yield return new WaitWhile(() => MenuPauseManager.Instance.IsOpen);
 			yield return new WaitForSeconds(0.5f);
