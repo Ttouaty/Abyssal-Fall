@@ -156,6 +156,8 @@ public class CharacterModel : MonoBehaviour
 
 		for (int i = 0; i < MaterialsInUse.Count; i++)
 		{
+			if (MaterialsInUse[i] == null)
+				continue;
 			MaterialsInUse[i].SetColor("_OutlineColor", newColor);
 			MaterialsInUse[i].SetFloat("_Outline", outlineWidth);
 		}

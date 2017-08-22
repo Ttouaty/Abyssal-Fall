@@ -80,6 +80,12 @@ public class MainManager : GenericSingleton<MainManager>
 		AbyssalFallOptions _optionsObj;
 		if (System.IO.File.Exists(Application.dataPath + OptionPanel.OptionFilePath))
 		{
+			if(!PlayerPrefs.HasKey("FTUEDone"))
+			{
+				System.IO.File.Delete(Application.dataPath + OptionPanel.OptionFilePath);
+				return;
+			}
+
 			_optionsObj = JsonUtility.FromJson<AbyssalFallOptions>(System.IO.File.ReadAllText(Application.dataPath + OptionPanel.OptionFilePath));
 			QualitySettings.antiAliasing = (int) Mathf.Pow(2, _optionsObj.AntiAliasing);
 			QualitySettings.vSyncCount = _optionsObj.Vsync;

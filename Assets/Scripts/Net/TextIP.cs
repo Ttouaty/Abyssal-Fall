@@ -4,18 +4,31 @@ using System.Collections;
 
 public class TextIP : MonoBehaviour {
 
+	private string _gameId;
+
 	public void ReGenerate()
 	{
-		GetComponent<InputField>().text = ServerManager.Instance.GameId.ToString();
+		_gameId = ServerManager.Instance.GameId.ToString();
+
+		if (OptionPanel.OptionObj.ShowGameId == 1)
+			GetComponent<InputField>().text = ServerManager.Instance.GameId.ToString();
+		else
+			GetComponent<InputField>().text = "Hidden";
 	}
 
 	public void SetText(string newText)
 	{
-		GetComponent<InputField>().text = newText;
+		_gameId = ServerManager.Instance.GameId.ToString();
+
+		if (OptionPanel.OptionObj.ShowGameId == 1)
+			GetComponent<InputField>().text = newText;
+		else
+			GetComponent<InputField>().text = "Hidden";
+
 	}
 
 	public void CopyToClipBoard()
 	{
-		GUIUtility.systemCopyBuffer = GetComponent<InputField>().text;
+		GUIUtility.systemCopyBuffer = _gameId;
 	}
 }

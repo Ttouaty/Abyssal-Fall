@@ -501,7 +501,7 @@ public class ServerManager : NATTraversal.NetworkManager
 		}
 
 		_playersReadyForMapSpawn++;
-		if(_playersReadyForMapSpawn > ExternalPlayerNumber) 
+		if(_playersReadyForMapSpawn >= RegisteredPlayers.Count) 
 		{
 			Debug.Log("launching game");
 
@@ -515,6 +515,7 @@ public class ServerManager : NATTraversal.NetworkManager
 		if(MenuManager.Instance != null)
 			MenuManager.Instance.ResetCharacterSelector();
 
+		CharacterSelectWheel.WheelsRef.Clear();
 		LobbySlotsOpen = OpenSlots.None;
 		_isInGame = false;
 		ExternalPlayerNumber = 0;
@@ -536,7 +537,8 @@ public class ServerManager : NATTraversal.NetworkManager
 		if (NetworkServer.active)
 		{
 			StopHost();
-			client.Shutdown();
+			if(client != null)
+				client.Shutdown();
 		}
 		else
 		{

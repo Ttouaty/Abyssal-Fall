@@ -82,8 +82,14 @@ public abstract class ABaseProjectile : NetworkBehaviour, IPoolable
 	{
 		if (NetworkServer.active)
 			NetworkServer.UnSpawn(gameObject);
-		gameObject.SetActive(false);
+		StartCoroutine(DelayDeactivate());
+	}
+
+	IEnumerator DelayDeactivate()
+	{
+		yield return null;
 		GameObjectPool.AddObjectIntoPool(gameObject);
+		gameObject.SetActive(false);
 	}
 
 	private IEnumerator DelayStop()

@@ -8,11 +8,19 @@ public class OptionPanel : ButtonPanelNew
 {
 	public static string OptionFilePath = @"\StreamingAssets\AbyssalFallOptions.txt";
 
+	public static AbyssalFallOptions OptionObj
+	{
+		get
+		{
+			if (System.IO.File.Exists(Application.dataPath + OptionFilePath))
+				return JsonUtility.FromJson<AbyssalFallOptions>(System.IO.File.ReadAllText(Application.dataPath + OptionFilePath));
 
-	//public Color AmbiantDarkest;
-	//public Color AmbiantLightest;
+			return new AbyssalFallOptions();
+		}
+	}
 
 	private AbyssalFallOptions _optionsObj;
+
 	public override void Open()
 	{
 		base.Open();
@@ -142,6 +150,11 @@ public class OptionPanel : ButtonPanelNew
 		_optionsObj.AmbianceVolume = value;
 		FMODUnity.RuntimeManager.GetVCA("vca:/Ambiance").setVolume(value);
 	}
+
+	public void ChangeShowGameId(int value)
+	{
+		_optionsObj.ShowGameId = value;
+	}
 }
 
 [Serializable]
@@ -155,6 +168,7 @@ public class AbyssalFallOptions
 	public float SFXVolume = 1f;
 	public float MusicVolume = 1f;
 	public float AmbianceVolume = 1f;
+	public int ShowGameId = 1;
 	
 	//public bool FullScreen = true;
 	public int ScreenResolution = 0;

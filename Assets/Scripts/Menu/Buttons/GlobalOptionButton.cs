@@ -5,8 +5,8 @@ using System;
 
 public class GlobalOptionButton : Selectable
 {
-	public string TargetOptionName;
 	[Space]
+	public string TargetOptionName;
 	public int[] Values;
 	public string[] DisplayedStrings;
 	public bool Looping = false;

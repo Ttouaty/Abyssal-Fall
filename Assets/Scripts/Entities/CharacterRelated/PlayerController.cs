@@ -748,7 +748,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		tempDamageData.Dealer = _dmgDealerSelf;
 
 		projectile.GetComponent<ABaseProjectile>().Launch(projPosition, projDirection, tempDamageData, netId);
-		NetworkServer.SpawnWithClientAuthority(projectile, _playerRef.gameObject);
+		NetworkServer.SpawnWithClientAuthority(projectile, Player.LocalPlayer.gameObject); // local player as authority to fix HandleTransform no gameobject
 		projectile.GetComponent<ABaseProjectile>().RpcSendOnLaunch(gameObject);
 		//NetworkServer.Spawn(projectile);
 

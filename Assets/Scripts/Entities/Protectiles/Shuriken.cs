@@ -28,11 +28,6 @@ public class Shuriken : ABaseProjectile
 		base.OnStop();
 	}
 
-	protected override void Stop()
-	{
-		base.Stop();
-	}
-
 	public override void OnHitEnvironnement()
 	{
 		SoundManager.Instance.PlayOSAttached("Shuriken Hit Wall", gameObject);

@@ -23,7 +23,7 @@ public class Relic : MonoBehaviour
 	void Update()
 	{
 		NoSpecialDiv.SetActive(Grabbed);
-		_rigidBRef.velocity = Vector3.ClampMagnitude(_rigidBRef.velocity + Physics.gravity * Time.deltaTime *5, 30);
+		_rigidBRef.velocity = Vector3.ClampMagnitude(_rigidBRef.velocity + Physics.gravity * Time.deltaTime *5, 20);
 	}
 
 	public void Grab(Transform grabberTransform)
