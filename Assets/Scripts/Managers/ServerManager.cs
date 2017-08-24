@@ -89,17 +89,23 @@ public class ServerManager : NATTraversal.NetworkManager
 		RegisterPrefabs();
 
 		Instance = FindObjectOfType<ServerManager>();
-		string tempId = "";
-		
-		for (int i = 0; i < 8; i++)
-		{
-			tempId = tempId + (UnityEngine.Random.Range((int)1, (int)9));
-		}
-		
 
-		Instance.GameId = tempId;
+		Instance.GenerateNewGameId();
+
 		_initialised = true;
 		return Instance;
+	}
+
+	public void GenerateNewGameId()
+	{
+		string tempId = "";
+
+		for (int i = 0; i < 6; i++)
+		{
+			tempId = tempId + (UnityEngine.Random.Range((int)1, (int)9)); //Pas de 0 pour ne pas confondre avec un O
+		}
+
+		GameId = tempId;
 	}
 
 	public static void RegisterPrefabs()
@@ -258,7 +264,7 @@ public class ServerManager : NATTraversal.NetworkManager
 		if(!IsDebug)
 		{
 			if (!IsInLobby || RegisteredPlayers.Count >= 4)
-			{
+			{ 
 				conn.Disconnect();
 				if(RegisteredPlayers.Count >= 4)
 					Debug.Log("Max players registered !");
@@ -391,8 +397,7 @@ public class ServerManager : NATTraversal.NetworkManager
 			return;
 		}
 
-
-		Debug.LogError("players disconnected => "+targetPlayers.Count);
+		Debug.Log("players disconnected => "+targetPlayers.Count);
 
 		if (!_isInGame)
 		{
@@ -523,11 +528,11 @@ public class ServerManager : NATTraversal.NetworkManager
 		ResetRegisteredPlayers();
 		IsDebug = false;
 
-		//if(matchMaker != null)
+
+		//if (matchMaker != null)
 		//{
 		//	if (NetworkServer.active)
 		//	{
-		//		MasterServer.UnregisterHost();
 		//		matchMaker.DestroyMatch(matchID, 0, OnMatchDropped);
 		//	}
 		//	else
@@ -565,6 +570,14 @@ public class ServerManager : NATTraversal.NetworkManager
 		//StopClient();
 
 		RegisterPrefabs();
+
+		NetworkServer.DisconnectAll();
+		Network.Disconnect();
+
+		if (matchMaker != null)
+		{
+			matchMaker = gameObject.AddComponent<NetworkMatch>();
+		}
 	}
 
 	public override void Update()
@@ -583,8 +596,11 @@ public class ServerManager : NATTraversal.NetworkManager
 	public void ConnectToMatch(string code)
 	{
 		if (matchMaker == null) matchMaker = gameObject.AddComponent<NetworkMatch>();
-		matchMaker.ListMatches(0, 1, "AbyssalFall-" + code, true, 0, 0, OnMatchList);
-		TargetGameId = code;
+
+		matchMaker.ListMatches(0, 1, code, true, 0, 0, OnMatchList);
+
+		string[] splitedCode = code.Split('-');
+		TargetGameId = splitedCode[splitedCode.Length -1];
 	}
 
 	public void FreezeAllPlayers()
@@ -627,16 +643,24 @@ public class ServerManager : NATTraversal.NetworkManager
 	IEnumerator MatchListTimeOut()
 	{
 		float timeoutTime = 20;
-		yield return new WaitForSeconds(timeoutTime);
+
+		for (float t = 0; t < timeoutTime; t+=Time.deltaTime)
+		{
+			if (Player.LocalPlayer != null)
+			{
+				Debug.Log("TimeOut not activated, player is here => ok");
+				yield break;
+			}
+			yield return null;
+		}
+
 		if (Player.LocalPlayer == null)
 		{
 			ResetNetwork();
 			ConnectionModule tempCoModule = FindObjectOfType<ConnectionModule>();
-			if(tempCoModule != null)
+			if (tempCoModule != null)
 				tempCoModule.OnFailedConnection.Invoke("Connection attempt failed after " + timeoutTime + "s, aborting connection.");
 		}
-		else
-			Debug.Log("TimeOut not activated, player is here => ok");
 	}
 
 	public override void OnDoneConnectingToFacilitator(ulong guid)

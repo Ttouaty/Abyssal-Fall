@@ -48,7 +48,7 @@ public class ButtonPanelNew : MonoBehaviour
 	private Animator _animator;
 	private string _lastTrigger = "";
 
-	void Awake()
+	public virtual void Awake()
 	{
 		_parentMenu = GetComponentInParent<MenuPanelNew>();
 		_animator = GetComponent<Animator>();

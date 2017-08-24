@@ -116,6 +116,9 @@ public class Player : NetworkBehaviour
 	{
 		if (CharacterSelectWheel.WheelsRef.ContainsKey(PlayerNumber))
 		{
+			if (CharacterSelectWheel.WheelsRef[PlayerNumber] == null)
+				return;
+
 			CharacterSelectWheel.WheelsRef[PlayerNumber].GetComponentInParent<CharacterSlot>().SelectPedestal(ready);
 			CharacterSelectWheel.WheelsRef[PlayerNumber].SetAnimBool("IsSelected", ready);
 		}
@@ -419,6 +422,12 @@ public class Player : NetworkBehaviour
 	public void RpcPlaySound(string fmodKey)
 	{
 		FMODUnity.RuntimeManager.PlayOneShot(fmodKey);
+	}
+
+	[ClientRpc]
+	public void RpcReturnToCharacterSelect()
+	{
+		EndGameManager.Instance.ReturnToCharacterSelectFromRpc();
 	}
 
 	//[Command]

@@ -122,6 +122,12 @@ public class LevelManager : GenericSingleton<LevelManager>
 			UnloadAllScenes();
 			yield return StartCoroutine(LoadScene(SceneMenu));
 
+			if (ArenaManager.Instance != null)
+			{
+				if (ArenaManager.Instance._currentModeConfig != null)
+					Destroy(ArenaManager.Instance._currentModeConfig.gameObject);// sécuritas au cas ou on reviens de manière prématurée au menu.
+			}
+
 			SoundManager.Instance.DestroyAllInstances();
 
 			SoundManager.Instance.CreateInstance("Menu Music").setParameterValue("Progression", showSplashScreens ? 0 : 1);
@@ -139,7 +145,7 @@ public class LevelManager : GenericSingleton<LevelManager>
 
 			if (openCharacterSlots)
 			{
-				InputManager.SetInputLockTime(1f); // Important for reseting locktime (previously set to 100)
+				InputManager.SetInputLockTime(2); // Important for reseting locktime (previously set to 100)
 				yield return new WaitForSeconds(0.8f);
 				MenuManager.Instance.OpenSlotsForPreselectedPlayers();
 			}

@@ -34,7 +34,7 @@ public class TutorialManager : GenericSingleton<TutorialManager>
 
 		ServerManager.ResetRegisteredPlayers();
 		ServerManager.Instance.IsDebug = true;
-		ServerManager.Instance.StartHostAll("AbyssalFall-Tutorial", 2);
+		ServerManager.Instance.StartHostAll("Tutorial-AbyssalFall-"+(new Guid().ToString()), 2);
 		CameraManager.Instance.Reset();
 		CameraManager.Instance.SetCenterPoint(_respawnPoint);
 		CameraManager.Instance.SetCamAngle(60, Vector3.right);

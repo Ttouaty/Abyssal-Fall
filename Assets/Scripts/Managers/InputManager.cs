@@ -77,11 +77,11 @@ public class InputManager : GenericSingleton<InputManager>
 
 		return returnArray;
 	}
-
+	
 	public static int GetFirstActiveJoystick()
 	{
 		string[] tempJoyARray = Input.GetJoystickNames();
-		return Mathf.Max(Array.IndexOf(tempJoyARray, tempJoyARray.FirstOrDefault((string s) => (s.Length > 3))), 0);
+		return Mathf.Max(Array.IndexOf(tempJoyARray, tempJoyARray.FirstOrDefault((string s) => (s.Length > 3))) +1, 0);
 	}
 
 	public static string AnyKeyDown()

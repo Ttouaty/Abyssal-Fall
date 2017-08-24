@@ -376,7 +376,6 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 		_stunTimer = new TimeCooldown(this);
 		_FEMref = playerMesh.GetComponent<CharacterModel>().FEMref;
-		CmdSetExpression(_FEMref.DefaultExpression);
 
 		_stunTimer.onFinish = () => { _isStunned = false; _allowInput = true; /*CmdSetExpression(_FEMref.DefaultExpression);*/ };
 		_stunTimer.onProgress = () =>

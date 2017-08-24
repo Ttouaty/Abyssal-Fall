@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using System;
 using UnityEngine.Networking;
 using System.Linq;
+using UnityEngine.Networking.Match;
 
 public class MenuManager : GenericSingleton<MenuManager>
 {
@@ -30,6 +31,9 @@ public class MenuManager : GenericSingleton<MenuManager>
 	public List<int> LocalJoystickBuffer = new List<int>();
 
 	public bool NeedFTUE { get { return _needFTUE; } }
+	[HideInInspector]
+	public bool GameIsPublic = false;	
+	public void SetGameIsPublic(bool value) { GameIsPublic = value; }
 
 	protected override void Awake()
 	{
@@ -56,8 +60,10 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	void Update()
 	{
+		#if UNITY_EDITOR
 		if (Input.GetKey(KeyCode.Keypad1) && Input.GetKey(KeyCode.Keypad2) && Input.GetKeyDown(KeyCode.Keypad3))
 			ForceRegisterNewPlayer();
+		#endif
 	}
 	
 	private void ResetPlayers()
@@ -115,13 +121,18 @@ public class MenuManager : GenericSingleton<MenuManager>
 		{
 			ServerManager.Instance.RegisteredPlayers[i].UnReady();
 
-			if (ServerManager.Instance.RegisteredPlayers[i].isLocalPlayer)
-				_controllerAlreadyInUse[ServerManager.Instance.RegisteredPlayers[i].JoystickNumber] = true;
+			//if (ServerManager.Instance.RegisteredPlayers[i].isLocalPlayer)
+			//	_controllerAlreadyInUse[ServerManager.Instance.RegisteredPlayers[i].JoystickNumber] = true;
 		}
 		StartCoroutine(SpawnWheelOvertime());
 
 		GetComponentInChildren<TextIP>(true).ReGenerate();
 		ServerManager.Instance.ForceUnready = false;
+	}
+
+	public void SetControllerInUse(int controllerIndex, bool isInUse)
+	{
+		_controllerAlreadyInUse[controllerIndex] = isInUse;
 	}
 
 	IEnumerator SpawnWheelOvertime()
@@ -245,8 +256,48 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	public void StartLocalHost()
 	{
-		ServerManager.Instance.StartHostAll("AbyssalFall-"+ServerManager.Instance.GameId, 4, true);
+		if (GameIsPublic)
+			ServerManager.Instance.StartHostAll(ServerManager.Instance.GameId + "-AbyssalFall-Public", 8, true); //Max players == 8 to try and fix (can't connect to game)
+		else
+			ServerManager.Instance.StartHostAll(ServerManager.Instance.GameId + "-AbyssalFall-Private", 8, true);
+
+		//##### Security for multiple gameId ###
+		//##### safety but slows down game creation so fuck it.
+		//if (ServerManager.Instance.matchMaker == null) ServerManager.Instance.matchMaker = ServerManager.Instance.gameObject.AddComponent<NetworkMatch>();
+
+		//MessageManager.Log("Checking if GameId is unique...", 2);
+
+		//if (GameIsPublic)
+		//	ServerManager.Instance.matchMaker.ListMatches(0, 1, "-AbyssalFall-Public", true, 0, 0, CheckIfGameIdIsAvailable);
+		//else
+		//	ServerManager.Instance.matchMaker.ListMatches(0, 1, "-AbyssalFall-Private", true, 0, 0, CheckIfGameIdIsAvailable);
 	}
+
+	//void CheckIfGameIdIsAvailable(bool success, string extendedInfo, List<MatchInfoSnapshot> matchList)
+	//{
+	//	if (success)
+	//	{
+	//		if (matchList.Count != 0)
+	//		{
+	//			ServerManager.Instance.GenerateNewGameId();
+	//			if (GameIsPublic)
+	//				ServerManager.Instance.matchMaker.ListMatches(0, 1, ServerManager.Instance.GameId + "-AbyssalFall-Public", true, 0, 0, CheckIfGameIdIsAvailable);
+	//			else
+	//				ServerManager.Instance.matchMaker.ListMatches(0, 1, ServerManager.Instance.GameId + "-AbyssalFall-Private", true, 0, 0, CheckIfGameIdIsAvailable);
+	//		}
+	//		else
+	//		{
+	//			MessageManager.Log("GameId is ok", 2);
+
+	//			if (GameIsPublic)
+	//				ServerManager.Instance.StartHostAll(ServerManager.Instance.GameId + "-AbyssalFall-Public", 4, true);
+	//			else
+	//				ServerManager.Instance.StartHostAll(ServerManager.Instance.GameId + "-AbyssalFall-Private", 4, true);
+	//		}
+	//	}
+	//	else
+	//		MessageManager.Log("Error Creating game: could not generate unique GameId");
+	//}
 
 	public void DisconnectFromServer()
 	{

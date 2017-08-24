@@ -17,58 +17,121 @@ public class ConnectionModule : MonoBehaviour
 	[HideInInspector]
 	public bool IsConnecting = false;
 
+	private OnlineJoinPanel __internalOnlineJoinPanelRef;
+	public OnlineJoinPanel OnlinePanel
+	{
+		get
+		{
+			if(__internalOnlineJoinPanelRef == null)
+				__internalOnlineJoinPanelRef = transform.parent.GetComponentInChildren<OnlineJoinPanel>(true);
+			return __internalOnlineJoinPanelRef;
+		}
+	}
+
+
 	void Start()
 	{
 		OnSuccess.AddListener(OnSuccessCallBack);
 		OnFailedConnection.AddListener(OnFailedConnectionCallBack);
 	}
 
-	public void TestListMatches()
+	public void ConnectToRandomMatch()
 	{
-		NetworkMatch matchMaker = gameObject.AddComponent<NetworkMatch>();
-		matchMaker.ListMatches(0, 50, "AbyssalFall-", true, 0, 0, RandomMatchReturn);
-	}
-
-	void RandomMatchReturn(bool success, string extendedInfo, List<MatchInfoSnapshot> matchList)
-	{
-		if(success)
+		if (Application.internetReachability == NetworkReachability.NotReachable)
 		{
-			Debug.Log("info => "+extendedInfo);
-			Debug.Log("match founds => " + matchList.Count);
-
-			for (int i = 0; i < matchList.Count; i++)
-			{
-				Debug.Log("match adress => "+matchList[i].name);
-			}
-		}
-	}
-
-	public void Connect()
-	{
-		if(TargetIPField == null)
-		{
-			Debug.LogWarning("No TargetIPField found, Use Connect(string IPandPort); if you want to connect to a specified game.");
-			OnFailedConnection.Invoke("No TargetIPField found, Use Connect(string IPandPort); if you want to connect to a specified game.");
+			Debug.LogWarning("No internet connection found");
+			MessageManager.Log("Error: No Internet connection found.");
 			return;
 		}
 
-		Connect(TargetIPField.text);
+		if (ServerManager.Instance.matchMaker == null) ServerManager.Instance.matchMaker = ServerManager.Instance.gameObject.AddComponent<NetworkMatch>();
+
+		ServerManager.Instance.matchMaker.ListMatches(0, 50, "-AbyssalFall-Public", true, 0, 0, RandomMatchReturn);
+		MessageManager.Log("Retreiving random matches list...",5);
+
+
+		OnlinePanel.SetBGConnectionActive(true);
+		OnlinePanel.Close();
 	}
 
-	public void Connect(string Code)
+	private void RandomMatchReturn(bool success, string extendedInfo, List<MatchInfoSnapshot> matchList)
+	{
+		if (success)
+		{
+			if(matchList.Count != 0)
+			{
+				Debug.Log("Received match list! " + matchList.Count + " games found. (max 50)");
+				MessageManager.Log("Received match list! "+ matchList.Count+" games found. (max 50)", 5);
+				Connect(matchList.ShiftRandomElement().name);
+			}
+			else
+				OnFailedConnection.Invoke("Failed to find any public matches... sorry :(");
+		}
+		else
+			OnFailedConnection.Invoke("Failed to find any public matches... sorry :(");//ouai doublon et je te merde
+	}
+
+	public void ConnectToPrivateGame()
+	{
+		if (TargetIPField == null)
+		{
+			Debug.LogWarning("No TargetIPField found, Use Connect(string fullCode); if you want to connect to a specified game.");
+			OnFailedConnection.Invoke("Error No TargetIPField found");
+			return;
+		}
+
+		string code = TargetIPField.text;
+
+		//if (code == ServerManager.Instance.GameId)
+		//{
+		//	Debug.LogWarning("Detected Auto connect, aborting");
+		//	MessageManager.Log("Could not connect to Host: Can't connect to your own game :/");
+		//	return;
+		//}
+
+		if (code.Length != 6)
+		{
+			if (code.Length == 0)
+			{
+				Debug.LogWarning("Game Id is empty");
+				MessageManager.Log("Error: No Game Id found.");
+			}
+			else
+			{
+				Debug.LogWarning("Game Id should be 6 characters long.");
+				MessageManager.Log("Error: Game Id should be 6 characters long.");
+			}
+			return;
+		}
+
+		OnlinePanel.SetBGConnectionActive(true);
+		OnlinePanel.Close();
+		Connect(TargetIPField.text+"-AbyssalFall");
+	}
+
+	public void Connect(string FullString)
 	{
 		if (IsConnecting)
 			return;
-		Debug.Log("looking for games with gameType: AbyssalFall-" + Code.ToLower());
+
+		if (Application.internetReachability == NetworkReachability.NotReachable)
+		{
+			Debug.LogWarning("No internet connection found");
+			MessageManager.Log("Error: No Internet connection found.");
+			return;
+		}
+
+		Debug.Log("looking for games with gameType: " + FullString);
 		IsConnecting = true;
-		ServerManager.Instance.ConnectToMatch(Code.ToLower());
+		ServerManager.Instance.ConnectToMatch(FullString);
 	}
 
 	void OnSuccessCallBack(string Code)
 	{
 		IsConnecting = false;
-		MenuManager.Instance.GetComponentInChildren<TextIP>(true).SetText(Code.ToLower());
+		MenuManager.Instance.GetComponentInChildren<TextIP>(true).SetText(Code);
 		MainManager.Instance.GetComponent<MonoBehaviour>().StartCoroutine(ShowCharacterSelectCoroutine());
+		OnlinePanel.SetBGConnectionActive(false);
 	}
 
 	IEnumerator ShowCharacterSelectCoroutine()
@@ -80,7 +143,8 @@ public class ConnectionModule : MonoBehaviour
 	void OnFailedConnectionCallBack(string Code)
 	{
 		IsConnecting = false;
-		Network.Disconnect();
+		ServerManager.Instance.ResetNetwork();
+		OnlinePanel.SetBGConnectionActive(false);
 	}
 
 	void OnFailedToConnect(NetworkConnectionError error)

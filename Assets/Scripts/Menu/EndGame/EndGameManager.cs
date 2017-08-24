@@ -27,7 +27,12 @@ public class EndGameManager : GenericSingleton<EndGameManager>
 
 	public void BackToCharacterSelect()
 	{
-		StartCoroutine(BackToCharacterSelectCO());	
+		Player.LocalPlayer.RpcReturnToCharacterSelect();
+	}
+
+	public void ReturnToCharacterSelectFromRpc()
+	{
+		StartCoroutine(BackToCharacterSelectCO());
 	}
 
 	IEnumerator BackToCharacterSelectCO()
@@ -55,8 +60,8 @@ public class EndGameManager : GenericSingleton<EndGameManager>
 			ServerManager.Instance.ForceUnready = true;
 			Player.LocalPlayer.RpcOpenMenu(false, "CharacterSelect", true);
 		}
-		else
-			Player.LocalPlayer.RpcOpenMenu(false, "CharacterSelect", false);
+		//else
+			//Player.LocalPlayer.RpcOpenMenu(false, "CharacterSelect", false);
 
 		MenuPanelNew.GlobalInputDelay = 4;
 	}

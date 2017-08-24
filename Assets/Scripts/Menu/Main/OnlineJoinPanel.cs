@@ -18,6 +18,7 @@ public class OnlineJoinPanel : ButtonPanelNew
 		if (_parentMenu.ActiveButtonPanel != this || !MenuPanelNew.InputEnabled)
 			return;
 
+
 		if (ServerManager.Instance.FacilitatorStatus == FacilitatorConnectionStatus.Failed)
 		{
 			_parentMenu.ActiveButtonPanel = null;
@@ -36,40 +37,13 @@ public class OnlineJoinPanel : ButtonPanelNew
 
 		if(InputManager.GetButtonDown(InputEnum.A) && !BgConnection.GetComponent<ConnectionModule>().IsConnecting)
 		{
-			string code = GetComponentInChildren<InputField>().text;
-			if (code == ServerManager.Instance.GameId)
-			{
-				Debug.LogWarning("Detected Auto connect, aborting");
-				MessageManager.Log("Could not connect to Host: Can't connect to your own game :/");
-				return;
-			}
-
-			if (code.Length != 8)
-			{
-				if (code.Length == 0)
-				{
-					Debug.LogWarning("Game Id is empty");
-					MessageManager.Log("Could not connect to Host: No Game Id found.");
-				}
-				else
-				{
-					Debug.LogWarning("Game Id should be 8 characters long.");
-					MessageManager.Log("Could not connect to Host: Game Id should be 8 characters long.");
-				}
-				return;
-			}
-
-			if (Application.internetReachability == NetworkReachability.NotReachable)
-			{
-				Debug.LogWarning("No internet connection found");
-				MessageManager.Log("Could not connect to Host: No Internet connection found.");
-				return;
-			}
-
-			BgConnection.SetActive(true);
-			BgConnection.GetComponent<ConnectionModule>().Connect();
-			Close();
+			BgConnection.GetComponent<ConnectionModule>().ConnectToPrivateGame();
 		}
+	}
+
+	public void SetBGConnectionActive(bool isActive)
+	{
+		BgConnection.SetActive(isActive);
 	}
 
 	public override void Return()
@@ -79,6 +53,9 @@ public class OnlineJoinPanel : ButtonPanelNew
 			BgConnection.GetComponent<ConnectionModule>().OnFailedConnection.Invoke("Canceled connection");
 		}
 		else
+		{
+			SetBGConnectionActive(false);
 			base.Return();
+		}
 	}
 }

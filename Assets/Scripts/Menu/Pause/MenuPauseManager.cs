@@ -52,8 +52,7 @@ public class MenuPauseManager : GenericSingleton<MenuPauseManager>
 			Open();
 		}
 
-		SoundManager.Instance.GetInstance(LevelManager.Instance.CurrentArenaConfig.AmbianceSound).setPaused(IsOpen);
-		GameManager._instance.GameRules.ActiveMusic.setPaused(IsOpen);
+
 		//Stop Music Here
 	}
 
@@ -88,6 +87,9 @@ public class MenuPauseManager : GenericSingleton<MenuPauseManager>
 						alives[i].Controller.Freeze();
 					}
 				}
+				SoundManager.Instance.GetInstance(LevelManager.Instance.CurrentArenaConfig.AmbianceSound).setPaused(true);
+				if (GameManager.Instance.GameRules.ActiveMusic != null)
+					GameManager._instance.GameRules.ActiveMusic.setPaused(true);
 			}
 		}
 
@@ -124,6 +126,11 @@ public class MenuPauseManager : GenericSingleton<MenuPauseManager>
 					alives[i].Controller.UnFreeze();
 				}
 			}
+
+			SoundManager.Instance.GetInstance(LevelManager.Instance.CurrentArenaConfig.AmbianceSound).setPaused(false);
+
+			if (GameManager.Instance.GameRules.ActiveMusic != null)
+				GameManager.Instance.GameRules.ActiveMusic.setPaused(false);
 		}
 	}
 }
