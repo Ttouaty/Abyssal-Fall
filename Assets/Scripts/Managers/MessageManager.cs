@@ -86,13 +86,14 @@ public class MessageManager : GenericSingleton<MessageManager>
 
 		messageRef.MoveTo(-Vector3.up * Instance.AppendHeight, 0.5f, true);
 
-		Instance.AddAppendHeight(TextMessageGO.GetComponent<RectTransform>().sizeDelta.y);
 
 		if (translated)
 			message = Localizator.LanguageManager.Instance.GetText(message);
 
 		Instance._numberMessagesDisplayed++;
 		messageRef.Activate(message, timeout);
+		yield return null;
+		Instance.AddAppendHeight(TextMessageGO.GetComponent<RectTransform>().sizeDelta.y);
 
 	}
 
@@ -140,7 +141,6 @@ public class MessageManager : GenericSingleton<MessageManager>
 
 		TargetHeight = 0;
 		AppendHeight = 0;
-
 
 		_messageContainer.localPosition = Vector3.zero;
 	}

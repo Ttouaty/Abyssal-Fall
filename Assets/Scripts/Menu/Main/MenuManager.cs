@@ -256,10 +256,16 @@ public class MenuManager : GenericSingleton<MenuManager>
 
 	public void StartLocalHost()
 	{
+		string[] fragMatchName = ServerManager.Instance.matchName.Split('|');
+
 		if (GameIsPublic)
-			ServerManager.Instance.StartHostAll(ServerManager.Instance.GameId + "-AbyssalFall-Public", 8, true); //Max players == 8 to try and fix (can't connect to game)
+			fragMatchName[0] = ServerManager.Instance.GameId + "-AbyssalFall-Public";
 		else
-			ServerManager.Instance.StartHostAll(ServerManager.Instance.GameId + "-AbyssalFall-Private", 8, true);
+			fragMatchName[0] = ServerManager.Instance.GameId + "-AbyssalFall-Private";
+
+		ServerManager.Instance.matchName = String.Join("|", fragMatchName);
+		ServerManager.Instance.StartHostAll(ServerManager.Instance.matchName, 8, true); //Max players == 8 to try and fix (can't connect to game)
+
 
 		//##### Security for multiple gameId ###
 		//##### safety but slows down game creation so fuck it.

@@ -47,35 +47,37 @@ public class TankController : PlayerController
 		_allowInput = false;
 		_activeSpeed = _activeDirection.normalized * _specialStartSpeed;
 		_groundCheck.Deactivate();
+		_rigidB.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
 
 		while (eT < _specialTime)
 		{
-			_activeSpeed = _activeDirection.normalized * _specialStartSpeed;
-			eT += Time.deltaTime;
-			yield return null;
+			yield return new WaitForFixedUpdate();
+			_activeSpeed = _activeSpeed.Apply(_activeDirection.normalized * _specialStartSpeed, _specialStartSpeed);
+			_rigidB.velocity = _activeSpeed;
+			eT += Time.fixedDeltaTime;
 		}
 
 		StopCharge();
+		_rigidB.constraints = RigidbodyConstraints.FreezeRotation;
 
-		yield return new WaitUntil(() => _groundCheck.HasCheckedForColli);
-		
-		if (IsGrounded)
-		{
-			_activeSpeed = Vector3.zero;
-			_rigidB.velocity = _activeSpeed;
-		}
+		yield return new WaitForFixedUpdate();
 
-		if (Physics.CheckSphere(ChargeHitbox.transform.position, ChargeHitbox.radius * ChargeHitbox.transform.lossyScale.x, 1 << LayerMask.NameToLayer("Wall")))
-		{ //impact wall
+		//if (IsGrounded)
+		//{
+		//	_activeSpeed = Vector3.zero;
+		//	_rigidB.velocity = _activeSpeed;
+		//}
 
-			_activeSpeed = Vector3.zero;
-			_rigidB.velocity = _activeSpeed;
-		}
+		//if (Physics.CheckSphere(ChargeHitbox.transform.position, ChargeHitbox.radius * ChargeHitbox.transform.lossyScale.x, 1 << LayerMask.NameToLayer("Wall")))
+		//{ //impact wall
 
+		//	_activeSpeed = Vector3.zero;
+		//	_rigidB.velocity = _activeSpeed;
+		//}
 		eT = 0;
-		while (eT < _characterData.SpecialLag * 0.3f)
+		while (eT < _characterData.SpecialLag * 0.2f)
 		{
-			_activeSpeed.y = 0;
+			_activeSpeed.y *= 0.5f;
 			eT += Time.deltaTime;
 			yield return null;
 		}

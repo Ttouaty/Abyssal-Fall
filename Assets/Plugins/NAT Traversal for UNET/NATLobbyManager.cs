@@ -1,3 +1,4 @@
+#if !DISABLE_NAT_TRAVERSAL
 #if UNITY_5_4 || UNITY_5_5 || UNITY_5_6 || UNITY_5_7 || UNITY_5_8 || UNITY_5_9 || UNITY_6 || UNITY_2017 || UNITY_2018 || UNITY_2019 || UNITY_2020
 using System;
 using System.Collections.Generic;
@@ -2345,4 +2346,5 @@ namespace NATTraversal
         }
     }
 }
+#endif
 #endif

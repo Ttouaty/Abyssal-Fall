@@ -164,10 +164,10 @@ public class AbyssalFallOptions
 	public int Vsync = 0;
 	public int AntiAliasing = 0;
 	public int Language = 10;
-	public float MasterVolume = 1f;
+	public float MasterVolume = 0.8f;
 	public float SFXVolume = 1f;
-	public float MusicVolume = 1f;
-	public float AmbianceVolume = 1f;
+	public float MusicVolume = 0.8f;
+	public float AmbianceVolume = 0.8f;
 	public int ShowGameId = 1;
 	
 	//public bool FullScreen = true;

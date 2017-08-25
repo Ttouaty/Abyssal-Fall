@@ -15,6 +15,7 @@ GameObject:
   - 114: {fileID: 114000010196127960}
   - 95: {fileID: 95000012039775530}
   - 114: {fileID: 114000013035095066}
+  - 114: {fileID: 114000012843861094}
   m_Layer: 14
   m_Name: Character_Viking
   m_TagString: Player
@@ -30,7 +31,6 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 454396}
-  - 114: {fileID: 11489744}
   - 135: {fileID: 135000011626548612}
   m_Layer: 14
   m_Name: GroundCheck
@@ -75,7 +75,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 159510}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1, z: 0}
+  m_LocalPosition: {x: 0, y: -0.834, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
@@ -136,18 +136,6 @@ MonoBehaviour:
   IsInitiated: 0
   AllowDash: 1
   AllowSpecial: 1
---- !u!114 &11489744
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 159510}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d2ae97db3f2bfb498d69a02d0afb60a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  HasCheckedForColli: 0
 --- !u!136 &13641748
 CapsuleCollider:
   m_ObjectHideFlags: 1
@@ -160,7 +148,7 @@ CapsuleCollider:
   m_Radius: 0.74
   m_Height: 3
   m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 0.1, z: 0}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -1727,6 +1715,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b818b3b56770234c9a9725398ebdde8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114000012843861094
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 140124}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d2ae97db3f2bfb498d69a02d0afb60a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxSlopeAngle: 45
+  GroundCheckCollider: {fileID: 135000011626548612}
+  IsGrounded: 0
+  ContactNormal: {x: 0, y: 1, z: 0}
 --- !u!114 &114000013014493954
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1883,11 +1886,11 @@ SphereCollider:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 159510}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_Material: {fileID: 13400000, guid: 2b3b3d1ffbc874c46a6fc5b229b936ac, type: 2}
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.6
+  m_Radius: 0.65
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!136 &136000011396462864
 CapsuleCollider:

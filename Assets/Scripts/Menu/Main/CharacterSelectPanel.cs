@@ -15,6 +15,8 @@ public class CharacterSelectPanel : MenuPanelNew {
 		{
 			if(ServerManager.Instance.RegisteredPlayers.Count >= 4 && matchIsListed)
 			{
+				if (ServerManager.Instance.matchMaker == null)
+					return;
 				ServerManager.Instance.matchMaker.SetMatchAttributes(ServerManager.Instance.matchID, false, 0, OnMatchIslistedCallback);
 				Debug.Log("Unlisting match 4 players connected !");
 				matchIsListed = false;
@@ -41,8 +43,8 @@ public class CharacterSelectPanel : MenuPanelNew {
 
 	public override void Return()
 	{
-		ServerManager.Instance.IsInLobby = true;
 		base.ReturnToPreviousPanel(false);
+		ServerManager.Instance.IsInLobby = false;
 	}
 
 	public override void Close()

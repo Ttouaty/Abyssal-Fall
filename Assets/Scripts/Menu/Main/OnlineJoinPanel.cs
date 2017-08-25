@@ -19,10 +19,10 @@ public class OnlineJoinPanel : ButtonPanelNew
 			return;
 
 
-		if (ServerManager.Instance.FacilitatorStatus == FacilitatorConnectionStatus.Failed)
+		if (ServerManager.Instance.FacilitatorStatus != FacilitatorConnectionStatus.Connected)
 		{
 			_parentMenu.ActiveButtonPanel = null;
-			MessageManager.Log("Could not connect to our facilitator server.\nPlease check your internet connection,\nbut it is probably a problem on our end.", 10);
+			MessageManager.Log("Could not connect to our facilitator server.\n(You can still play locally)", 7);
 			Return();
 		}
 

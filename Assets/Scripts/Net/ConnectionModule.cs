@@ -62,7 +62,7 @@ public class ConnectionModule : MonoBehaviour
 			{
 				Debug.Log("Received match list! " + matchList.Count + " games found. (max 50)");
 				MessageManager.Log("Received match list! "+ matchList.Count+" games found. (max 50)", 5);
-				Connect(matchList.ShiftRandomElement().name);
+				Connect(matchList.ShiftRandomElement());
 			}
 			else
 				OnFailedConnection.Invoke("Failed to find any public matches... sorry :(");
@@ -124,6 +124,22 @@ public class ConnectionModule : MonoBehaviour
 		Debug.Log("looking for games with gameType: " + FullString);
 		IsConnecting = true;
 		ServerManager.Instance.ConnectToMatch(FullString);
+	}
+
+	public void Connect(MatchInfoSnapshot match)
+	{
+		if (IsConnecting)
+			return;
+
+		if (Application.internetReachability == NetworkReachability.NotReachable)
+		{
+			Debug.LogWarning("No internet connection found");
+			MessageManager.Log("Error: No Internet connection found.");
+			return;
+		}
+
+		IsConnecting = true;
+		ServerManager.Instance.ConnectToTargetMatch(match);
 	}
 
 	void OnSuccessCallBack(string Code)

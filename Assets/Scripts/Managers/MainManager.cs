@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.Networking;
+using System;
+using UnityEngine.Networking.Match;
 
 public class MainManager : GenericSingleton<MainManager>
 {
@@ -50,7 +52,7 @@ public class MainManager : GenericSingleton<MainManager>
 		SERVER_MANAGER      = ServerManager.Init();
 		OriginalCameraManager = CameraManager.Instance;
 
-		Dictionary<string, Object> dic = new Dictionary<string, Object>()
+		Dictionary<string, System.Object> dic = new Dictionary<string, System.Object>()
 		{
 			{ "GAME_OBJECT_POOL", GAME_OBJECT_POOL },
 			{ "DYNAMIC_CONFIG", DYNAMIC_CONFIG },
@@ -61,7 +63,7 @@ public class MainManager : GenericSingleton<MainManager>
 			{ "TIME_MANAGER", TIME_MANAGER }
 		};
 
-		foreach(KeyValuePair<string, Object> value in dic)
+		foreach(KeyValuePair<string, System.Object> value in dic)
 		{
 			if(value.Value == null)
 			{
@@ -83,10 +85,12 @@ public class MainManager : GenericSingleton<MainManager>
 			if(!PlayerPrefs.HasKey("FTUEDone"))
 			{
 				System.IO.File.Delete(Application.dataPath + OptionPanel.OptionFilePath);
-				return;
+				_optionsObj = new AbyssalFallOptions();
+				System.IO.File.WriteAllText(Application.dataPath + OptionPanel.OptionFilePath, JsonUtility.ToJson(_optionsObj));
+				//return;
 			}
-
-			_optionsObj = JsonUtility.FromJson<AbyssalFallOptions>(System.IO.File.ReadAllText(Application.dataPath + OptionPanel.OptionFilePath));
+			else
+				_optionsObj = JsonUtility.FromJson<AbyssalFallOptions>(System.IO.File.ReadAllText(Application.dataPath + OptionPanel.OptionFilePath));
 			QualitySettings.antiAliasing = (int) Mathf.Pow(2, _optionsObj.AntiAliasing);
 			QualitySettings.vSyncCount = _optionsObj.Vsync;
 			QualitySettings.masterTextureLimit = _optionsObj.TextureQuality;
@@ -107,27 +111,54 @@ public class MainManager : GenericSingleton<MainManager>
 		Localizator.LanguageManager.Instance.CurrentLanguage = targetLang;
 	}
 
+	private void pouet(bool success, string extendedInfo, List<MatchInfoSnapshot> responseData)
+	{
+
+		Debug.Log("response => ");
+		for (int i = 0; i < responseData.Count; i++)
+		{
+			Debug.Log(responseData[i].name);
+		}
+	}
+
 	void Update()
 	{
-		if(Input.GetKey(KeyCode.LeftShift))
+
+		if (Input.GetKeyDown(KeyCode.I))
+		{
+			ServerManager.Instance.matchMaker.ListMatches(0, 10, "-AbyssalFall-Public", true, 0, 0, pouet);
+		}
+
+		if (Input.GetKeyDown(KeyCode.P))
+		{
+			ServerManager.Instance.matchMaker.ListMatches(0, 10, "-AbyssalFall-Private", true, 0, 0, pouet);
+		}
+		if (Input.GetKeyDown(KeyCode.O))
+		{
+			ServerManager.Instance.matchMaker.ListMatches(0, 10, "AbyssalFall", true, 0, 0, pouet);
+		}
+
+		if (Input.GetKey(KeyCode.LeftShift))
 		{
 			if (Input.GetKeyDown(KeyCode.F1))
 				Screen.SetResolution(1920, 1080, true);
-			if (Input.GetKeyDown(KeyCode.F2))
-				Screen.SetResolution(1600, 900, true);
-			if (Input.GetKeyDown(KeyCode.F3))
-				Screen.SetResolution(1280, 720, true);
+			//if (Input.GetKeyDown(KeyCode.F2))
+				//Screen.SetResolution(1600, 900, true);
+			//if (Input.GetKeyDown(KeyCode.F3))
+				//Screen.SetResolution(1280, 720, true);
 			if (Input.GetKeyDown(KeyCode.F4))
 				Screen.SetResolution(800, 450, false);
 		}
+#if UNITY_EDITOR
 
-		if(Input.GetKeyDown(KeyCode.F7) && NetworkServer.active)
+		if (Input.GetKeyDown(KeyCode.F7) && NetworkServer.active)
 		{
 			if (Player.LocalPlayer != null)
 				Player.LocalPlayer.RpcToggleNoClip();
 			else
 				MessageManager.Log("No Local Player can't toggle noclip");
 		}
+	#endif
 
 		//if (Input.GetKeyDown(KeyCode.Keypad1))
 		//	CameraManager.Shake(ShakeStrength.Low);
@@ -144,4 +175,6 @@ public class MainManager : GenericSingleton<MainManager>
 		if (Input.GetKeyDown(KeyCode.F8))
 			Cursor.visible = !Cursor.visible;
 	}
+
+	
 }

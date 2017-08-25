@@ -30,6 +30,7 @@ GameObject:
   - 114: {fileID: 114000012406011986}
   - 95: {fileID: 95000014052047234}
   - 114: {fileID: 114000010866000392}
+  - 114: {fileID: 114000010944547970}
   m_Layer: 14
   m_Name: Character_Ninja
   m_TagString: Player
@@ -44,7 +45,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 113056}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4.59, y: -25.45, z: -20.37}
+  m_LocalPosition: {x: 30.84, y: 1.36, z: -171.24}
   m_LocalScale: {x: 0.75, y: 0.75, z: 0.75}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
@@ -120,7 +121,7 @@ CapsuleCollider:
   m_Radius: 0.74
   m_Height: 3
   m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 0.1, z: 0}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -306,7 +307,6 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 4000014095277356}
-  - 114: {fileID: 114000013411831670}
   - 135: {fileID: 135000010775515428}
   m_Layer: 14
   m_Name: GroundCheck
@@ -3119,8 +3119,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000010186829064}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -1, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.834, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
@@ -3268,6 +3268,21 @@ MonoBehaviour:
   param3: 
   param4: 
   param5: 
+--- !u!114 &114000010944547970
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 113056}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d2ae97db3f2bfb498d69a02d0afb60a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxSlopeAngle: 45
+  GroundCheckCollider: {fileID: 135000010775515428}
+  IsGrounded: 0
+  ContactNormal: {x: 0, y: 1, z: 0}
 --- !u!114 &114000011823912528
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3447,18 +3462,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac856e0a4cee3c2488378de374e51936, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &114000013411831670
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000010186829064}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d2ae97db3f2bfb498d69a02d0afb60a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  HasCheckedForColli: 0
 --- !u!119 &119000012737456292
 Projector:
   m_ObjectHideFlags: 1
@@ -3495,11 +3498,11 @@ SphereCollider:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000010186829064}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_Material: {fileID: 13400000, guid: 2b3b3d1ffbc874c46a6fc5b229b936ac, type: 2}
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.6
+  m_Radius: 0.65
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!135 &135000010901633120
 SphereCollider:
@@ -3564,8 +3567,8 @@ SkinnedMeshRenderer:
   m_BlendShapeWeights: []
   m_RootBone: {fileID: 4000012531766798}
   m_AABB:
-    m_Center: {x: 0.10064793, y: 1.0865402, z: -0.43424416}
-    m_Extent: {x: 0.22548018, y: 0.99448305, z: 0.14054269}
+    m_Center: {x: 0.10065079, y: 1.0865402, z: -0.43423462}
+    m_Extent: {x: 0.22548077, y: 0.99448246, z: 0.1405473}
   m_DirtyAABB: 0
 --- !u!137 &137000012300882492
 SkinnedMeshRenderer:
@@ -3605,8 +3608,8 @@ SkinnedMeshRenderer:
   m_BlendShapeWeights: []
   m_RootBone: {fileID: 4000011170386874}
   m_AABB:
-    m_Center: {x: 0.30365086, y: 1.0865402, z: -0.43424416}
-    m_Extent: {x: 0.22548077, y: 0.99448305, z: 0.14054269}
+    m_Center: {x: 0.30365372, y: 1.0865399, z: -0.43423462}
+    m_Extent: {x: 0.22548077, y: 0.9944826, z: 0.1405473}
   m_DirtyAABB: 0
 --- !u!137 &137000013527380394
 SkinnedMeshRenderer:

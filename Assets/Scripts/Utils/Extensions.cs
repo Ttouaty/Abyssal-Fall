@@ -107,6 +107,15 @@ public static class Vector3Extensions
 		return vect;
 	}
 
+	public static Vector3 Apply(this Vector3 originalVector, Vector3 targetSpeed, float maxMagnitudeToApply = -1)
+	{
+		float oldMagnitude = maxMagnitudeToApply > originalVector.magnitude ? maxMagnitudeToApply : Mathf.Sqrt(Mathf.Max(originalVector.sqrMagnitude, targetSpeed.sqrMagnitude));
+
+		originalVector += targetSpeed;
+
+		originalVector = Vector3.ClampMagnitude(originalVector, oldMagnitude);
+		return originalVector;
+	}
 
 }
 

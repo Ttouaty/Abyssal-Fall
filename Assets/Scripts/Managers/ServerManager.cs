@@ -206,6 +206,7 @@ public class ServerManager : NATTraversal.NetworkManager
 
 	public override void OnClientConnect(NetworkConnection conn)
 	{
+		conn.RegisterHandler(CustomMsgTypes.OnConnReplaced, Instance.OnConnReplaced);
 		//base.OnClientConnect(conn);
 	}
 
@@ -229,16 +230,32 @@ public class ServerManager : NATTraversal.NetworkManager
 		base.OnClientDisconnect(conn);
 	}
 
+
+
 	public override void OnServerConnect(NetworkConnection conn)
 	{
 		Debug.Log("server side detected connection from: "+conn.address);
-		if(conn.address == "localServer")
+		if (!IsInLobby)
+		{
+			Debug.LogError("Is Not inlobby");
+			//ResetNetwork();
+			return;
+		}
+
+		if (conn.address.Contains("127.0.0.1")) // if is local
+		{
+			Debug.Log("Is local");
+			conn.Send(CustomMsgTypes.OnConnReplaced, new EmptyMessage());
+		}
+
+		if (conn.address == "localServer")
 		{
 			TryToAddPlayer();
 		}
 		else
 			Debug.Log("external ip waiting for connection replace");
-
+		
+		
 		base.OnServerConnect(conn);
 	}
 
@@ -436,7 +453,8 @@ public class ServerManager : NATTraversal.NetworkManager
 	public override void OnConnectionReplacedClient(NetworkConnection oldConnection, NetworkConnection newConnection)
 	{
 		base.OnConnectionReplacedClient(oldConnection, newConnection);
-		newConnection.RegisterHandler(CustomMsgTypes.OnConnReplaced, Instance.OnConnReplaced);	
+
+		Debug.Log("Connection has been replaced");
 	}
 
 	public override NetworkConnection checkForAnotherConnectionFromTheSameClient(NetworkConnection con, ConnectionType otherConnectionType = ConnectionType.ANY)
@@ -528,7 +546,6 @@ public class ServerManager : NATTraversal.NetworkManager
 		ResetRegisteredPlayers();
 		IsDebug = false;
 
-
 		//if (matchMaker != null)
 		//{
 		//	if (NetworkServer.active)
@@ -574,7 +591,7 @@ public class ServerManager : NATTraversal.NetworkManager
 		NetworkServer.DisconnectAll();
 		Network.Disconnect();
 
-		if (matchMaker != null)
+		if (matchMaker == null)
 		{
 			matchMaker = gameObject.AddComponent<NetworkMatch>();
 		}
@@ -600,7 +617,15 @@ public class ServerManager : NATTraversal.NetworkManager
 		matchMaker.ListMatches(0, 1, code, true, 0, 0, OnMatchList);
 
 		string[] splitedCode = code.Split('-');
-		TargetGameId = splitedCode[splitedCode.Length -1];
+		TargetGameId = splitedCode[0];
+	}
+
+	public void ConnectToTargetMatch(MatchInfoSnapshot match)
+	{
+		StartCoroutine("MatchListTimeOut");
+
+		Debug.Log("Connecting to match with name => " + match.name);
+		StartClientAll(match, OnConnect);
 	}
 
 	public void FreezeAllPlayers()
@@ -625,13 +650,16 @@ public class ServerManager : NATTraversal.NetworkManager
 		{
 			if(FindObjectOfType<ConnectionModule>() != null)
 			{
-				if(matchList.Count != 0 && FindObjectOfType<ConnectionModule>().IsConnecting)
+				if(matchList.Count != 0)
 				{
-					StartCoroutine("MatchListTimeOut");
-					StartClientAll(matchList[0]);
+					if(FindObjectOfType<ConnectionModule>().IsConnecting)
+						Debug.LogError("Is not connecting");
+					ConnectToTargetMatch(matchList[0]);
 				}
 				else
+				{
 					FindObjectOfType<ConnectionModule>().OnFailedConnection.Invoke("Failed to find target game. (No Match found)");
+				}
 			}
 		}
 		else
@@ -640,12 +668,33 @@ public class ServerManager : NATTraversal.NetworkManager
 		}
 	}
 
+	private void OnConnect(bool success, string extendedInfo, MatchInfo responseData)
+	{
+		if (success)
+		{
+			
+			//FindObjectOfType<ConnectionModule>().OnSuccess.Invoke(TargetGameId);
+			////ClientScene.AddPlayer(client.connection, 0);
+			//MenuManager.Instance.RegisterNewPlayer(InputManager.GetFirstActiveJoystick());
+
+		}
+		else
+			FindObjectOfType<ConnectionModule>().OnFailedConnection.Invoke("Failed to find target game. (Connection error)");
+
+		Debug.Log("ASSHOLE !!!");
+	}
+
 	IEnumerator MatchListTimeOut()
 	{
 		float timeoutTime = 20;
-
+		ConnectionModule targetCoModule = FindObjectOfType<ConnectionModule>();
 		for (float t = 0; t < timeoutTime; t+=Time.deltaTime)
 		{
+			if(!targetCoModule.IsConnecting)
+			{
+				Debug.Log("Stopped connecting MatchlistTimeout cancelled");
+				yield break;
+			}
 			if (Player.LocalPlayer != null)
 			{
 				Debug.Log("TimeOut not activated, player is here => ok");
@@ -666,12 +715,18 @@ public class ServerManager : NATTraversal.NetworkManager
 	public override void OnDoneConnectingToFacilitator(ulong guid)
 	{
 		base.OnDoneConnectingToFacilitator(guid);
-		if(guid == 0)
+		if (guid == 0)
 		{
 			FacilitatorStatus = FacilitatorConnectionStatus.Failed;
-			MessageManager.Log("Could not connect to our facilitator server.\n(you can still play locally)", 10);
+			MessageManager.Log("Could not connect to our facilitator server.\n(You can still play locally)", 7);
+			Debug.Log("Can't connect to facilitator");
+			//ResetNetwork();
 		}
 		else
+		{
+			
+			Debug.Log("Connected to facilitator GUID => "+guid);
 			FacilitatorStatus = FacilitatorConnectionStatus.Connected;
+		}
 	}
 }

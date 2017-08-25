@@ -16,6 +16,7 @@ GameObject:
   - 95: {fileID: 95000013594266992}
   - 114: {fileID: 114000011515848528}
   - 135: {fileID: 135000011039924426}
+  - 114: {fileID: 114000013297109988}
   m_Layer: 14
   m_Name: Character_Tank
   m_TagString: Player
@@ -89,7 +90,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 144624}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4.59, y: -25.45, z: -25.43}
+  m_LocalPosition: {x: 23.9, y: 0.84, z: -178.07}
   m_LocalScale: {x: 0.75, y: 0.75, z: 0.75}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
@@ -160,7 +161,7 @@ CapsuleCollider:
   m_Radius: 0.74
   m_Height: 3
   m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 0.1, z: 0}
 --- !u!198 &19877340
 ParticleSystem:
   m_ObjectHideFlags: 1
@@ -211,7 +212,7 @@ ParticleSystem:
   moveWithTransform: 0
   autoRandomSeed: 1
   scalingMode: 2
-  randomSeed: 1109253817
+  randomSeed: -1564599028
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -3384,7 +3385,6 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 4000011092432470}
-  - 114: {fileID: 114000014037650384}
   - 135: {fileID: 135000011568156930}
   m_Layer: 14
   m_Name: GroundCheck
@@ -3911,8 +3911,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000013806696706}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -1, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.834, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
@@ -5142,6 +5142,21 @@ MonoBehaviour:
     i15: 185
   m_ServerOnly: 0
   m_LocalPlayerAuthority: 1
+--- !u!114 &114000013297109988
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 144624}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d2ae97db3f2bfb498d69a02d0afb60a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxSlopeAngle: 45
+  GroundCheckCollider: {fileID: 135000011568156930}
+  IsGrounded: 0
+  ContactNormal: {x: 0, y: 1, z: 0}
 --- !u!114 &114000013766807020
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5208,18 +5223,6 @@ MonoBehaviour:
   MaterialsInUse: []
   AmbientRampInUse: {fileID: 0}
   SkinEffectObjects: []
---- !u!114 &114000014037650384
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000013806696706}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d2ae97db3f2bfb498d69a02d0afb60a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  HasCheckedForColli: 0
 --- !u!114 &114000014162069242
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5276,11 +5279,11 @@ SphereCollider:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000013806696706}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_Material: {fileID: 13400000, guid: 2b3b3d1ffbc874c46a6fc5b229b936ac, type: 2}
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.6
+  m_Radius: 0.65
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!136 &136000011784505746
 CapsuleCollider:

@@ -1,3 +1,4 @@
+#if !DISABLE_NAT_TRAVERSAL
 #if !UNITY_5_2
 using UnityEngine;
 using System.Collections;
@@ -8,4 +9,5 @@ using System.IO;
 public class AdvancedMigrationManager : NATTraversal.MigrationManager
 {
 }
+#endif
 #endif

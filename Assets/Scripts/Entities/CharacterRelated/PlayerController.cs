@@ -157,6 +157,10 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 	[HideInInspector]
 	public bool IsGrounded = false;
+	protected bool _checkIsGrounded { get { return _groundCheck.IsGrounded; } }
+	protected float _delayBeforeNotGrounded = 0.05f;
+	protected float _activeDelayBeforeNotGrounded = 0;
+
 	[HideInInspector]
 	public bool _isInDebugMode = false;
 	[HideInInspector]
@@ -176,13 +180,13 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 	protected Vector3 _activeDirection = Vector3.forward;
 
-
 	protected Vector2 _originalMaxSpeed;
 	protected Vector2 _maxSpeed = new Vector2(7f, 20f);
-	protected Vector2 _acceleration = new Vector2(0.1f, -2f); // X => time needed to reach max speed, Y => Gravity multiplier
+	protected Vector2 _acceleration = new Vector2(300, -2f); // X => time needed to reach max speed, Y => Gravity multiplier
 	protected float _friction = 140; //friction applied to the player when it slides (pushed or end dash) (units/s)
 	protected float _parryTime = 0.08f; //time at the beginning of a Dash when the player is in countering attacks
 	protected float _relicInterval = 0.2f;
+	protected bool _isStickNeutral = false;
 	//protected float _airborneDelay = 0.02f;
 
 	protected float _fullDashActivationTime = 0.1f;
@@ -234,7 +238,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		set
 		{
 			if (_isInDebugMode)
-				_lastDamageDealerTimeOut.Set(5);
+				_lastDamageDealerTimeOut.Set(3);
 			else
 				_lastDamageDealerTimeOut.Set(GameManager.Instance.GameRules.TimeBeforeSuicide);
 			_lastDamageDealer = value;
@@ -419,23 +423,21 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 			}
 		};
 		_lastDamageDealerTimeOut = new TimeCooldown(this);
+		_lastDamageDealerTimeOut.onProgress =() => 
+		{
+			if (!IsGrounded)
+				_lastDamageDealerTimeOut.Add(Time.deltaTime);
+		};
 		_lastDamageDealerTimeOut.onFinish = OnLastDamageDealerTimeOut;
+
 		GameManager.Instance.OnPlayerWin.AddListener(OnPlayerWin);
 
 		_maxSpeed.x = _maxSpeed.x * 0.6f + _maxSpeed.x * _characterData.CharacterStats.speed.Percentage(0, Stats.maxValue, 0.8f);
-
 		_originalMaxSpeed = _maxSpeed;
-		_groundCheck = GetComponentInChildren<GroundCheck>(true);
 
-		if (_groundCheck == null)
-		{
-			Debug.LogWarning("no GroundCheck found in player: " + gameObject.name + "\nCreating one.");
-			GameObject tempGo = new GameObject();
-			Instantiate(tempGo);
-			tempGo.transform.parent = transform;
-			_groundCheck = tempGo.AddComponent<GroundCheck>();
-			_groundCheck.transform.position = _transf.position - Vector3.up;
-		}
+		_groundCheck = GetComponent<GroundCheck>();
+		_groundCheck.OnTileContact += OnTileTouch;
+		_groundCheck.Activate();
 
 		_dmgDealerSelf = new DamageDealer();
 		_dmgDealerSelf.PlayerRef = _playerRef;
@@ -466,18 +468,34 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		if (!_isLocalPlayer)
 			return;
 
+		if (!_checkIsGrounded)
+		{
+			if (_activeDelayBeforeNotGrounded < 0)
+				IsGrounded = false;
+			else
+				_activeDelayBeforeNotGrounded -= Time.deltaTime;
+		}
+		else
+		{
+			if (!IsGrounded)
+				ContactGround();
+			IsGrounded = true;
+			_activeDelayBeforeNotGrounded = _delayBeforeNotGrounded;
+		}
+
 		//had to do that :p
 		if (_forcedAirborneTimeout.TimeLeft > 0)
 			IsGrounded = false;
 
 		ProcessCoolDowns();
 
+		_activeSpeed = _rigidB.velocity;
+		ProcessOrientation();
 		ProcessActiveSpeed();
 		//if (_allowInput)
-		ProcessOrientation();
 
 		ProcessInputs();
-		ApplyCharacterFinalVelocity();
+		//ApplyCharacterFinalVelocity();
 
 		_animator.SetBool("IsGrounded", IsGrounded);
 
@@ -487,6 +505,29 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		//	_rigidB.constraints = RigidbodyConstraints.FreezeRotation;
 
 		CustomUpdate();
+	}
+
+	protected void FixedUpdate()
+	{
+		if (_isDead || TimeManager.IsPaused || _playerRef == null)
+			return;
+
+		if (!_isLocalPlayer)
+			return;
+
+		if (IsGrounded)
+		{
+			_rigidB.drag = 20;
+			if(!_isStickNeutral && AllowInput)
+				_rigidB.drag = 0;
+		}
+		else
+			_rigidB.drag = 0;
+
+		if (!_isAffectedByFriction)
+			_rigidB.drag = 0;
+
+		ApplyCharacterFinalVelocity();
 	}
 
 	protected virtual void CustomStart() { }
@@ -543,12 +584,13 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		//_animator.SetTrigger("Reset");
 	}
 
-	[Command]
-	public void CmdSetExpression(string expressionName) { _FEMref.SetExpressionPrecise(expressionName, _playerRef.SkinNumber); RpcSetExpression(expressionName); }
-	[ClientRpc]
-	public void RpcSetExpression(string expressionName)
+	protected virtual void OnTileTouch(Tile t)
 	{
-		_FEMref.SetExpressionPrecise(expressionName, _playerRef.SkinNumber);
+		if (t == null)
+			return;
+
+		if (_isLocalPlayer && !_isDead)
+			t.ActivateFall();
 	}
 	#endregion
 
@@ -660,41 +702,67 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 	private void ProcessActiveSpeed()
 	{
+		_isStickNeutral = InputManager.StickIsNeutral(_playerRef.JoystickNumber, 0.4f);
+
 		if (IsGrounded)
 		{
-			bool secureAllowInput = _allowInput; // just security
-			if (secureAllowInput)
-				_activeSpeed = Quaternion.Inverse(Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized)) * _activeSpeed;
+			//_rigidB.drag = 20;
 
-			if (_isAffectedByFriction)
-			{
-				if (secureAllowInput)
-				{
-					if (InputManager.StickIsNeutral(_playerRef.JoystickNumber, 0.4f))
-						ApplyFriction();
-				}
-				else
-					ApplyFriction();
-			}
+			if (!AllowInput)
+				return;
 
-			if (secureAllowInput)
-			{
-				Vector3 tempStickPosition = InputManager.GetStickDirection(_playerRef.JoystickNumber);
-				tempStickPosition.z = tempStickPosition.y;
-				tempStickPosition.y = 0;
+			Vector3 directionHeld = InputManager.GetStickDirection(_playerRef.JoystickNumber);
+			directionHeld.z = directionHeld.y;
+			directionHeld.y = 0;
+			//_activeSpeed = _activeSpeed.Apply(transform.rotation * directionHeld * _targetController.Acceleration.y * Time.deltaTime, _targetController.AirSpeed); // Add movement possibility
 
-				_activeSpeed = tempStickPosition * (_activeSpeed.magnitude + ((_maxSpeed.x / _acceleration.x) * TimeManager.DeltaTime));
+			_activeSpeed = _activeSpeed.Apply(
+				Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized)
+				//* transform.rotation
+				* directionHeld.normalized
+				* _acceleration.x
+				* Time.deltaTime,
+				_maxSpeed.x);
 
-				_activeSpeed = Vector3.ClampMagnitude(_activeSpeed.ZeroY(), _maxSpeed.x);
+			//if (!_isStickNeutral)
+			//	_rigidB.drag = 0;
+			_activeSpeed = Vector3.ClampMagnitude(_activeSpeed.ZeroY(), _maxSpeed.x);
 
-				_activeSpeed = Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized) * _activeSpeed;
-			}
+
+			//_rigidB.drag = 20 * Mathf.Clamp((_activeSpeed.ZeroY().magnitude / _maxSpeed.x), 1, 100);
+			//bool secureAllowInput = _allowInput; // just security
+			//if (secureAllowInput)
+			//	_activeSpeed = Quaternion.Inverse(Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized)) * _activeSpeed;
+
+			//if (_isAffectedByFriction)
+			//{
+			//	if (secureAllowInput)
+			//	{
+			//		if (InputManager.StickIsNeutral(_playerRef.JoystickNumber, 0.4f))
+			//			ApplyFriction();
+			//	}
+			//	else
+			//		ApplyFriction();
+			//}
+
+			//if (secureAllowInput)
+			//{
+			//	Vector3 tempStickPosition = InputManager.GetStickDirection(_playerRef.JoystickNumber);
+			//	tempStickPosition.z = tempStickPosition.y;
+			//	tempStickPosition.y = 0;
+
+			//	_activeSpeed = tempStickPosition * (_activeSpeed.magnitude + ((_maxSpeed.x / _acceleration.x) * TimeManager.DeltaTime));
+
+			//	_activeSpeed = Vector3.ClampMagnitude(_activeSpeed.ZeroY(), _maxSpeed.x);
+
+			//	_activeSpeed = Quaternion.FromToRotation(Vector3.forward, Camera.main.transform.up.ZeroY().normalized) * _activeSpeed;
+			//}
 		}
 		else
 		{
-			_activeSpeed.y += _acceleration.y * TimeManager.DeltaTime * Physics.gravity.magnitude;
-			_activeSpeed.y = Mathf.Clamp(_activeSpeed.y, -_maxSpeed.y, _maxSpeed.y * 10f);
-
+			_activeSpeed += Physics.gravity * Time.deltaTime * -_acceleration.y;
+			_activeSpeed.y = Mathf.Clamp(_activeSpeed.y, -_maxSpeed.y * 5, _maxSpeed.y * 10f);
+			//_rigidB.drag = 0f;
 			AirControl();
 		}
 	}
@@ -727,7 +795,11 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 	private void ApplyCharacterFinalVelocity()
 	{
+		_activeSpeed.y = Mathf.Clamp(_activeSpeed.y, -_maxSpeed.y * 5, _maxSpeed.y * 10f);
+
+		//Debug.Log("Applied speed => "+ _activeSpeed.magnitude);
 		_rigidB.velocity = _activeSpeed;
+
 		_animator.SetFloat("SpeedCoef", _activeSpeed.ZeroY().magnitude / ((Vector3)_maxSpeed).ZeroY().magnitude);
 	}
 
