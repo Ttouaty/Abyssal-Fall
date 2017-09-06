@@ -17,7 +17,7 @@ using UnityEngine.Events;
 [DisallowMultipleComponent]
 public class SteamManager : MonoBehaviour {
 	private static SteamManager s_instance;
-	private static SteamManager Instance {
+	public static SteamManager Instance {
 		get {
 			if (s_instance == null) {
 				return new GameObject("SteamManager").AddComponent<SteamManager>();
@@ -44,6 +44,12 @@ public class SteamManager : MonoBehaviour {
 	}
 
 	private void Awake() {
+
+#if UNITY_EDITOR
+		Debug.LogWarning("Steam is deactivated in editor !");
+		if(Application.isEditor)
+			return; //No steam in editor !
+#endif
 		// Only one instance of SteamManager at a time!
 		if (s_instance != null) {
 			Destroy(gameObject);
@@ -89,6 +95,7 @@ public class SteamManager : MonoBehaviour {
 			return;
 		}
 
+		
 		// Initialize the SteamAPI, if Init() returns false this can happen for many reasons.
 		// Some examples include:
 		// Steam Client is not running.
@@ -111,6 +118,9 @@ public class SteamManager : MonoBehaviour {
 		}
 
 		s_EverInialized = true;
+
+		if (!PlayerPrefs.HasKey("FTUEDone"))
+			MainManager.Instance.ReloadLanguage(Steamworks.SteamUtils.GetSteamUILanguage());
 	}
 
 	// This should only ever get called on first load and after an Assembly reload, You should never Disable the Steamworks Manager yourself.
@@ -129,6 +139,10 @@ public class SteamManager : MonoBehaviour {
 			m_SteamAPIWarningMessageHook = new SteamAPIWarningMessageHook_t(SteamAPIDebugTextHook);
 			SteamClient.SetWarningMessageHook(m_SteamAPIWarningMessageHook);
 		}
+
+
+
+
 	}
 
 

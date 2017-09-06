@@ -108,7 +108,7 @@ MonoBehaviour:
   AllowDash: 1
   AllowSpecial: 1
   _explosionDelay: 0.3
-  _explosionRadius: 5
+  _explosionRadius: 4.5
   MoveParticles:
   - {fileID: 198000011409314594}
   - {fileID: 198000012782836210}
@@ -1700,7 +1700,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 4000014152402882}
   - 135: {fileID: 135000011192528994}
-  m_Layer: 14
+  m_Layer: 16
   m_Name: GroundCheck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2331,7 +2331,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000013652200576}
-  m_LocalRotation: {x: 0.8468829, y: 0.5317528, z: 0.00074930745, w: 0.005260991}
+  m_LocalRotation: {x: 0.846883, y: 0.5317529, z: 0.00074930757, w: 0.0052609914}
   m_LocalPosition: {x: -0.060770106, y: -0.005071159, z: 1.3877788e-17}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0.4649026, y: 179.60669, z: 115.74945}
@@ -3928,8 +3928,8 @@ CapsuleCollider:
   m_Material: {fileID: 13400000, guid: 18353c955f39cab4b9e998a4f5515050, type: 2}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 0.74
-  m_Height: 3
+  m_Radius: 0.7
+  m_Height: 2.9
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!137 &137000011427631790
@@ -11021,7 +11021,7 @@ ParticleSystem:
   moveWithTransform: 0
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: 890906285
+  randomSeed: -2102415322
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -11384,9 +11384,9 @@ ParticleSystem:
   EmissionModule:
     enabled: 1
     serializedVersion: 2
-    m_Type: 0
+    m_Type: 1
     rate:
-      scalar: 15
+      scalar: 5
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -50995,7 +50995,7 @@ ParticleSystem:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000010416509542}
   serializedVersion: 4
-  lengthInSec: 2.5
+  lengthInSec: 1
   startDelay:
     scalar: 0
     maxCurve:
@@ -51026,14 +51026,14 @@ ParticleSystem:
   prewarm: 0
   playOnAwake: 0
   moveWithTransform: 0
-  autoRandomSeed: 1
+  autoRandomSeed: 0
   scalingMode: 1
-  randomSeed: -529240987
+  randomSeed: -705708352
   InitialModule:
     serializedVersion: 2
     enabled: 1
     startLifetime:
-      scalar: 2
+      scalar: 0.7
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -51049,7 +51049,7 @@ ParticleSystem:
         serializedVersion: 2
         m_Curve:
         - time: 0
-          value: 0.5
+          value: 0.42857146
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -51364,7 +51364,7 @@ ParticleSystem:
         m_RotationOrder: 0
       minMaxState: 3
     randomizeRotationDirection: 0
-    gravityModifier: -0.08
+    gravityModifier: -0.3
     maxNumParticles: 1000
     size3D: 0
     rotation3D: 0
@@ -51636,16 +51636,16 @@ ParticleSystem:
           rgba: 16777215
         key1:
           serializedVersion: 2
-          rgba: 2969567231
+          rgba: 4294967295
         key2:
           serializedVersion: 2
-          rgba: 4278190080
+          rgba: 0
         key3:
           serializedVersion: 2
-          rgba: 4278190080
+          rgba: 0
         key4:
           serializedVersion: 2
-          rgba: 3523215360
+          rgba: 0
         key5:
           serializedVersion: 2
           rgba: 0
@@ -51664,15 +51664,15 @@ ParticleSystem:
         ctime6: 0
         ctime7: 0
         atime0: 0
-        atime1: 5397
-        atime2: 9830
-        atime3: 42791
-        atime4: 54934
+        atime1: 10409
+        atime2: 65535
+        atime3: 65535
+        atime4: 65535
         atime5: 65535
         atime6: 0
         atime7: 0
         m_NumColorKeys: 2
-        m_NumAlphaKeys: 6
+        m_NumAlphaKeys: 3
       minGradient:
         key0:
           serializedVersion: 2
@@ -63161,7 +63161,7 @@ ParticleSystem:
   moveWithTransform: 0
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: 52700746
+  randomSeed: 1225242689
   InitialModule:
     serializedVersion: 2
     enabled: 1

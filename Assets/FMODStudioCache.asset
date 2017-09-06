@@ -46,7 +46,6 @@ MonoBehaviour:
   - {fileID: 114000011371787438}
   - {fileID: 114000013042298570}
   - {fileID: 114000010033751054}
-  - {fileID: 114000011099962340}
   - {fileID: 114000013532515954}
   - {fileID: 114000013578985884}
   - {fileID: 114000011407397912}
@@ -95,9 +94,10 @@ MonoBehaviour:
   - {fileID: 114000012041237918}
   - {fileID: 114000011250458742}
   - {fileID: 114000010548809074}
+  - {fileID: 114000010429184744}
   MasterBankRef: {fileID: 114000011044085714}
   StringsBankRef: {fileID: 114000010971631458}
-  stringsBankWriteTime: 636391967862009299
+  stringsBankWriteTime: 636401341604181192
   cacheVersion: 2
 --- !u!114 &114000010004975398
 MonoBehaviour:
@@ -247,7 +247,7 @@ MonoBehaviour:
   Is3D: 0
   IsOneShot: 0
   Parameters:
-  - {fileID: 114000012605414068}
+  - {fileID: 114000010436847674}
   MinDistance: 0
   MaxDistance: 0
 --- !u!114 &114000010112079580
@@ -596,6 +596,43 @@ MonoBehaviour:
   Min: 0
   Max: 1
   Default: 0
+--- !u!114 &114000010429184744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Path: event:/MUSIC/music_forest_classic
+  guid: 6429521d28364144a9c3f1e1b321b4cb
+  Banks:
+  - {fileID: 114000011044085714}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters:
+  - {fileID: 114000012563323240}
+  MinDistance: 0
+  MaxDistance: 0
+--- !u!114 &114000010436847674
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: off
+  Min: 0
+  Max: 1
+  Default: 0
 --- !u!114 &114000010460356104
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -755,6 +792,21 @@ MonoBehaviour:
   Min: 0
   Max: 1
   Default: 0
+--- !u!114 &114000010612415306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: off
+  Min: 0
+  Max: 1
+  Default: 0
 --- !u!114 &114000010618491002
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -869,6 +921,21 @@ MonoBehaviour:
   - Name: 
     Value: 1038
   Exists: 1
+--- !u!114 &114000010746667646
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: END
+  Min: 0
+  Max: 2
+  Default: 0
 --- !u!114 &114000010748068392
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1237,7 +1304,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Path: Assets\Sounds\Fmod\Desktop\Master Bank.strings.bank
-  lastModified: 636391967862009299
+  lastModified: 636401341604181192
   LoadResult: 0
   FileSizes:
   - Name: 
@@ -1333,7 +1400,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Path: C:\Users\T0T0S\Desktop\Isart 2016\Abyssal Fall\Assets\Sounds\Fmod\Desktop\Master
     Bank.bank
-  lastModified: 636391967861989298
+  lastModified: 636401341603941178
   LoadResult: 0
   FileSizes:
   - Name: 
@@ -1429,8 +1496,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Path: event:/MUSIC/music_forest_classic
   guid: 6429521d28364144a9c3f1e1b321b4cb
-  Banks:
-  - {fileID: 114000011044085714}
+  Banks: []
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
@@ -1567,6 +1633,21 @@ MonoBehaviour:
   Name: Progression
   Min: 0
   Max: 3.99
+  Default: 0
+--- !u!114 &114000011248598694
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: END
+  Min: 0
+  Max: 2
   Default: 0
 --- !u!114 &114000011250458742
 MonoBehaviour:
@@ -3328,7 +3409,7 @@ MonoBehaviour:
   Is3D: 0
   IsOneShot: 0
   Parameters:
-  - {fileID: 114000010774457932}
+  - {fileID: 114000011248598694}
   MinDistance: 0
   MaxDistance: 0
 --- !u!114 &114000012502507014
@@ -3438,6 +3519,21 @@ MonoBehaviour:
   Parameters: []
   MinDistance: 0
   MaxDistance: 0
+--- !u!114 &114000012563323240
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: 10s
+  Min: 0
+  Max: 1
+  Default: 0
 --- !u!114 &114000012564205574
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3564,6 +3660,21 @@ MonoBehaviour:
   Min: 0
   Max: 3.99
   Default: 0
+--- !u!114 &114000012837484072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: off
+  Min: 0
+  Max: 1
+  Default: 0
 --- !u!114 &114000012847427672
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3598,6 +3709,21 @@ MonoBehaviour:
   Name: wait
   Min: 0
   Max: 1
+  Default: 0
+--- !u!114 &114000012869900412
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Progression
+  Min: 0
+  Max: 5
   Default: 0
 --- !u!114 &114000012915262280
 MonoBehaviour:
@@ -3923,6 +4049,21 @@ MonoBehaviour:
   Min: 0
   Max: 1
   Default: 0
+--- !u!114 &114000013112415088
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: off
+  Min: 0
+  Max: 1
+  Default: 0
 --- !u!114 &114000013128834280
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3978,7 +4119,7 @@ MonoBehaviour:
   Is3D: 0
   IsOneShot: 0
   Parameters:
-  - {fileID: 114000011136704350}
+  - {fileID: 114000012837484072}
   MinDistance: 0
   MaxDistance: 0
 --- !u!114 &114000013162176202
@@ -4037,6 +4178,21 @@ MonoBehaviour:
   - {fileID: 114000010026336822}
   MinDistance: 0
   MaxDistance: 0
+--- !u!114 &114000013196550540
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: off
+  Min: 0
+  Max: 1
+  Default: 0
 --- !u!114 &114000013213335302
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4056,7 +4212,7 @@ MonoBehaviour:
   Is3D: 0
   IsOneShot: 0
   Parameters:
-  - {fileID: 114000014247737916}
+  - {fileID: 114000013638607906}
   MinDistance: 0
   MaxDistance: 0
 --- !u!114 &114000013216874156
@@ -4144,6 +4300,21 @@ MonoBehaviour:
   - Name: Desktop
     Value: 109792
   Exists: 1
+--- !u!114 &114000013265632010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: off
+  Min: 0
+  Max: 1
+  Default: 0
 --- !u!114 &114000013271415740
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4218,7 +4389,7 @@ MonoBehaviour:
   Is3D: 0
   IsOneShot: 0
   Parameters:
-  - {fileID: 114000011157133932}
+  - {fileID: 114000013745944182}
   MinDistance: 0
   MaxDistance: 0
 --- !u!114 &114000013294203820
@@ -4547,6 +4718,21 @@ MonoBehaviour:
   Min: 0
   Max: 1
   Default: 0
+--- !u!114 &114000013467949242
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: off
+  Min: 0
+  Max: 1
+  Default: 0
 --- !u!114 &114000013511554060
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4757,6 +4943,21 @@ MonoBehaviour:
   Min: 0
   Max: 1
   Default: 0
+--- !u!114 &114000013638607906
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Progression
+  Min: 0
+  Max: 5
+  Default: 0
 --- !u!114 &114000013658358202
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4831,6 +5032,21 @@ MonoBehaviour:
   Max: 1
   Default: 0
 --- !u!114 &114000013741338460
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: off
+  Min: 0
+  Max: 1
+  Default: 0
+--- !u!114 &114000013745944182
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -5370,7 +5586,7 @@ MonoBehaviour:
   Is3D: 0
   IsOneShot: 0
   Parameters:
-  - {fileID: 114000013166637566}
+  - {fileID: 114000013196550540}
   MinDistance: 0
   MaxDistance: 0
 --- !u!114 &114000014077488298

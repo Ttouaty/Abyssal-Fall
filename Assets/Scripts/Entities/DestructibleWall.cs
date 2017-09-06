@@ -37,4 +37,9 @@ public class DestructibleWall : MonoBehaviour, IDamageable
 			DestroyWall(impactPoint, direction.magnitude * 50);
 		}
 	}
+
+	public int GetTeamIndex()
+	{
+		return -1;
+	}
 }

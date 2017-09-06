@@ -113,8 +113,7 @@ public abstract class AGameRules : MonoBehaviour
 
 			if (_autoDestroyedTileIndex > ArenaManager.Instance.CurrentMapConfig.MapSize.x * 0.5f)
 			{
-
-				Debug.Log("_autoDestroyedTileIndex is > ArenaManager.Instance.CurrentMapConfig.MapSize.x *0.5f => "+ (ArenaManager.Instance.CurrentMapConfig.MapSize.x * 0.5f)+" reseting to 0");
+				Debug.Log("_autoDestroyedTileIndex is =>"+_autoDestroyedTileIndex+" ArenaManager.Instance.CurrentMapConfig.MapSize.x *0.5f => "+ (ArenaManager.Instance.CurrentMapConfig.MapSize.x * 0.5f)+" reseting to 0");
 				_autoDestroyedTileIndex = 0;
 			}
 			yield return new WaitWhile(() => MenuPauseManager.Instance.IsOpen);
@@ -169,11 +168,11 @@ public abstract class AGameRules : MonoBehaviour
 						return;
 					}
 				}
-				else
-				{
+				//else
+				//{
 					if(player != null)
 						player.Score += PointsLoosePerSuicide; // (added because IntRule is negative for display)
-				}
+				//}
 
 				if (CanPlayerRespawn && player != null)
 					StartCoroutine(RespawnPlayer_Retry(player, 2));

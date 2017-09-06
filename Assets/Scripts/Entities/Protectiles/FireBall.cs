@@ -14,6 +14,9 @@ public class FireBall : ABaseProjectile
 
 	private MageController _launcherRef;
 
+	public override bool DoContactDamage { get { return false; } }
+
+
 	public void Launch(Vector3 Position, Vector3 Direction, float explosionDelay, float explosionRadius, Vector3 ejection, DamageData newDamageData, NetworkInstanceId instanceId)
 	{
 		GetComponent<Collider>().enabled = true;
@@ -89,20 +92,48 @@ public class FireBall : ABaseProjectile
 
 		if(NetworkServer.active)
 		{
-			Collider[] foundElements = Physics.OverlapSphere(transform.position, _explosionRadius);
+			Collider[] foundElementsColliders = Physics.OverlapSphere(transform.position, _explosionRadius, 1 << LayerMask.NameToLayer("PlayerDefault") | 1 << LayerMask.NameToLayer("EnemyHurt"), QueryTriggerInteraction.Collide);
 
-			for (int i = 0; i < foundElements.Length; i++)
+			Debug.Log("Hit "+foundElementsColliders.Length+" elements");
+
+			for (int i = 0; i < foundElementsColliders.Length; i++)
 			{
-				if (foundElements[i].gameObject.GetComponent<NetworkIdentity>() == null)
-					continue;
-				if (foundElements[i].gameObject.GetComponent<NetworkIdentity>().netId == LauncherNetId)
-					continue;
-				if (foundElements[i].GetComponent<IDamageable>() != null)
-					foundElements[i].GetComponent<IDamageable>().Damage(
-						Quaternion.FromToRotation(Vector3.right, (foundElements[i].transform.position - transform.position).ZeroY().normalized) * _ejection,
-						transform.position,
-						_explosionDamageData.SetProjectile(this));
+				Debug.Log("Hit element => "+foundElementsColliders[i].name);
 			}
+
+			for (int i = 0; i < foundElementsColliders.Length; i++)
+			{
+				if (foundElementsColliders[i].gameObject.GetComponentInParent<NetworkIdentity>() == null)
+					continue;
+
+				if (foundElementsColliders[i].GetComponentInParent<IDamageable>() != null)
+				{
+					if(foundElementsColliders[i].GetComponentInParent<IDamageable>().GetTeamIndex() != _launcherRef.GetTeamIndex())
+						foundElementsColliders[i].GetComponentInParent<IDamageable>().Damage(
+							Quaternion.FromToRotation(Vector3.right, (foundElementsColliders[i].transform.position - transform.position).ZeroY().normalized) * _ejection,
+							transform.position,
+							_explosionDamageData.SetProjectile(this));
+				}
+			}
+
+
+			//Player[] foundElements = Player.PlayerList;
+			//for (int i = 0; i < foundElements.Length; i++)
+			//{
+			//	if (foundElements[i].Controller.GetComponent<NetworkIdentity>() == null)
+			//		continue;
+			//	if (foundElements[i].Controller.GetComponent<NetworkIdentity>().netId == LauncherNetId)
+			//		continue;
+
+			//	if ((foundElements[i].Controller.transform.position - transform.position).magnitude > _explosionRadius)
+			//		continue;
+
+			//	if (foundElements[i].Controller.GetComponent<IDamageable>() != null)
+			//		foundElements[i].Controller.GetComponent<IDamageable>().Damage(
+			//			Quaternion.FromToRotation(Vector3.right, (foundElements[i].Controller.transform.position - transform.position).ZeroY().normalized) * _ejection,
+			//			transform.position,
+			//			_explosionDamageData.SetProjectile(this));
+			//}
 		}
 	}
 

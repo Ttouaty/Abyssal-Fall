@@ -15,7 +15,7 @@ public class CharacterPlayerLock : MonoBehaviour
 		yield return new WaitUntil(() => ServerManager.Instance.externalIP != null);
 
 		ServerManager.Instance.IsDebug = true;
-		ServerManager.Instance.StartHostAll("Debug AF", 4, true);
+		ServerManager.Instance.StartHostAll("Debug AF", 8, true);
 		//NetworkClient tempClient = ServerManager.Instance.StartHost();
 
 		Player tempPlayer;

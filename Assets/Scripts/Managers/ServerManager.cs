@@ -206,8 +206,9 @@ public class ServerManager : NATTraversal.NetworkManager
 
 	public override void OnClientConnect(NetworkConnection conn)
 	{
-		conn.RegisterHandler(CustomMsgTypes.OnConnReplaced, Instance.OnConnReplaced);
+		//conn.RegisterHandler(CustomMsgTypes.OnConnReplaced, Instance.OnConnReplaced);
 		//base.OnClientConnect(conn);
+		OnConnReplaced(new NetworkMessage());
 	}
 
 	public override void OnClientDisconnect(NetworkConnection conn)
@@ -235,7 +236,7 @@ public class ServerManager : NATTraversal.NetworkManager
 	public override void OnServerConnect(NetworkConnection conn)
 	{
 		Debug.Log("server side detected connection from: "+conn.address);
-		if (!IsInLobby)
+		if (!IsInLobby && TutorialManager.Instance == null && !IsDebug)
 		{
 			Debug.LogError("Is Not inlobby");
 			//ResetNetwork();
@@ -245,7 +246,7 @@ public class ServerManager : NATTraversal.NetworkManager
 		if (conn.address.Contains("127.0.0.1")) // if is local
 		{
 			Debug.Log("Is local");
-			conn.Send(CustomMsgTypes.OnConnReplaced, new EmptyMessage());
+			StartCoroutine(DelaySendConnReplacedMessage(conn));
 		}
 
 		if (conn.address == "localServer")
@@ -257,6 +258,12 @@ public class ServerManager : NATTraversal.NetworkManager
 		
 		
 		base.OnServerConnect(conn);
+	}
+
+	IEnumerator DelaySendConnReplacedMessage(NetworkConnection conn)
+	{
+		yield return new WaitForSeconds(1);
+		conn.Send(CustomMsgTypes.OnConnReplaced, new EmptyMessage());
 	}
 
 	public static void ResetRegisteredPlayers()
@@ -274,6 +281,12 @@ public class ServerManager : NATTraversal.NetworkManager
 		}
 	}
 
+	public Player ForceAddPlayer()
+	{
+		GameObject playerGo = (GameObject)Instantiate(playerPrefab);
+		NetworkServer.Spawn(playerGo);
+		return playerGo.GetComponent<Player>();
+	}
 
 	public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
 	{
@@ -322,7 +335,10 @@ public class ServerManager : NATTraversal.NetworkManager
 		Debug.LogWarning("new Player created, N°=> "+i);
 
 		if (HostingClient == null) // if that is the first client
+		{
 			HostingClient = player;
+			HostingClient.StartCheckingForPing();
+		}
 
 		if (MenuManager.Instance == null)
 			player.JoystickNumber = 0;
@@ -485,12 +501,25 @@ public class ServerManager : NATTraversal.NetworkManager
 		base.replaceConnection(oldConn, newConn);
 
 		if (NetworkServer.active)
-			newConn.Send(CustomMsgTypes.OnConnReplaced, new EmptyMessage());
+			newConn.Send(CustomMsgTypes.OnConnReplaced, new StringMessage("Pouet"));
 	}
 
 	public void OnConnReplaced(NetworkMessage netMsg)
 	{
-		FindObjectOfType<ConnectionModule>().OnSuccess.Invoke(TargetGameId);
+		if(netMsg.ReadMessage<EmptyMessage>() == null)
+		{
+			//MessageManager.Log("Empty message received");
+			Debug.Log("Received an empty message");
+		}
+		if (FindObjectOfType<ConnectionModule>() == null)
+			return;
+		if (FindObjectOfType<ConnectionModule>().IsConnecting)
+			FindObjectOfType<ConnectionModule>().OnSuccess.Invoke(TargetGameId);
+		else
+		{
+			Debug.Log("Got 2 co replace messages abording");
+			return;
+		}
 		//ClientScene.AddPlayer(client.connection, 0);
 		MenuManager.Instance.RegisterNewPlayer(InputManager.GetFirstActiveJoystick());
 	}
@@ -625,7 +654,7 @@ public class ServerManager : NATTraversal.NetworkManager
 		StartCoroutine("MatchListTimeOut");
 
 		Debug.Log("Connecting to match with name => " + match.name);
-		StartClientAll(match, OnConnect);
+		StartClientAll(match);
 	}
 
 	public void FreezeAllPlayers()
@@ -650,10 +679,8 @@ public class ServerManager : NATTraversal.NetworkManager
 		{
 			if(FindObjectOfType<ConnectionModule>() != null)
 			{
-				if(matchList.Count != 0)
+				if(matchList.Count != 0 && FindObjectOfType<ConnectionModule>().IsConnecting)
 				{
-					if(FindObjectOfType<ConnectionModule>().IsConnecting)
-						Debug.LogError("Is not connecting");
 					ConnectToTargetMatch(matchList[0]);
 				}
 				else

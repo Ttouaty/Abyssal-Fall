@@ -4,7 +4,7 @@ using System;
 using UnityEngine.Networking;
 
 [RequireComponent(typeof(Rigidbody), typeof(SphereCollider), typeof(Poolable))]
-public abstract class ABaseProjectile : NetworkBehaviour, IPoolable
+public abstract class ABaseProjectile : NetworkBehaviour, IDamaging, IPoolable
 {
 	protected DamageDealer _shooter;
 	protected Rigidbody _rigidB;
@@ -17,6 +17,15 @@ public abstract class ABaseProjectile : NetworkBehaviour, IPoolable
 	[SerializeField]
 	protected int _speed = 20;
 
+	public DamageDealer DmgDealerSelf
+	{
+		get
+		{
+			return _shooter;
+		}
+	}
+
+	public virtual bool DoContactDamage { get { return true; } }
 
 	protected virtual void Awake()
 	{
@@ -118,29 +127,45 @@ public abstract class ABaseProjectile : NetworkBehaviour, IPoolable
 
 	private void OnTriggerEnter(Collider colli)
 	{
+		if (!NetworkServer.active)
+			return;
+
 		if (colli.GetComponent<IDamageable>() != null)
 		{
-			if(colli.gameObject.GetComponentInParent<NetworkIdentity>() == null) //hit environnement
+			if (colli.gameObject.GetComponentInParent<NetworkIdentity>() == null) //hit destructible environnement
 			{
 				OnHitPlayer(colli.GetComponent<IDamageable>());
 			}
-			else if(colli.gameObject.GetComponentInParent<NetworkIdentity>().netId != LauncherNetId)
+			else if (colli.GetComponent<IDamageable>().GetTeamIndex() != _ownDamageData.Dealer.ObjectRef.GetComponent<IDamaging>().GetTeamIndex())
 			{
-				OnHitPlayer(colli.GetComponent<IDamageable>());
-				//RpcOnHitPlayer(colli.GetComponentInParent<PlayerController>().gameObject);
+				//OnHitPlayer(colli.GetComponent<IDamageable>());
+				RpcOnHitPlayer(colli.gameObject);
 			}
 		}
 		else if (colli.gameObject.layer == LayerMask.NameToLayer("Wall"))
 		{
 			//_audioSource.PlayOneShot(OnHitObstacle);
-			OnHitEnvironnement();
+			RpcOnHitEnvironnement();
 		}
+	}
+	[ClientRpc]
+	public void RpcOnHitPlayer(GameObject damagedObject)
+	{
+		OnHitPlayer(damagedObject.GetComponent<IDamageable>());
+	}
+
+	[ClientRpc]
+	void RpcOnHitEnvironnement()
+	{
+		OnHitEnvironnement();
 	}
 
 	public virtual void OnHitPlayer(IDamageable damagedEntity)
 	{
 		if(NetworkServer.active)
+		{
 			DamageEntity(damagedEntity);
+		}
 	}
 
 	public virtual void DamageEntity(IDamageable damagedEntity)
@@ -162,5 +187,16 @@ public abstract class ABaseProjectile : NetworkBehaviour, IPoolable
 		_ownDamageData.Dealer = characterParrying;
 		
 		Launch(transform.position, (_shooter.ObjectRef.transform.position - transform.position).ZeroY(), _ownDamageData, characterParrying.ObjectRef.GetComponent<NetworkIdentity>().netId);
+	}
+
+	public int GetTeamIndex()
+	{
+		if (NetworkServer.active)
+			return _shooter.ObjectRef.GetComponent<IDamaging>().GetTeamIndex();
+		else
+		{
+			Debug.LogError("GetTeamIndex requested from client");
+			return -1;
+		}
 	}
 }

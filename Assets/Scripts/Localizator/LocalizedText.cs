@@ -57,6 +57,9 @@ namespace Localizator
 			{
 				frag = frag.Replace(replace[i].Key, replace[i].Value);
 			}
+
+
+			frag = frag.Replace("<br/>", "\n");
 			_text.text = frag;
 		}
 
@@ -64,7 +67,10 @@ namespace Localizator
 		{
 			_fragmentTextRef = LanguageManager.Instance.GetText(Fragment);
 			if (_fragmentTextRef != null)
+			{
+				_fragmentTextRef = _fragmentTextRef.Replace("<br/>", "\n");
 				_text.text = _fragmentTextRef;
+			}
 		}
 	}
 

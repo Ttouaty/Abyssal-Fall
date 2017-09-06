@@ -53,6 +53,9 @@ public class Obstacle : MonoBehaviour, IPoolable
 
 	public void OnDropped ()
 	{
+		_rigidB.isKinematic = true;
+		_isTouched = false;
+		_isFalling = false;
 		_particleSystem.SetActive(true);
 		GetComponentInChildren<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
 	}
@@ -75,13 +78,13 @@ public class Obstacle : MonoBehaviour, IPoolable
 	{
 		_isFalling = true;
 		_rigidB.isKinematic = false;
-		Ground groundComponent = GetComponent<Ground>();
-		if (groundComponent != null)
-		{
-			if (groundComponent.Obstacle != null)
-			{
-				groundComponent.Obstacle.ActivateFall();
-			}
-		}
+		//Ground groundComponent = GetComponent<Ground>();
+		//if (groundComponent != null)
+		//{
+		//	if (groundComponent.Obstacle != null)
+		//	{
+		//		groundComponent.Obstacle.ActivateFall();
+		//	}
+		//}
 	}
 }

@@ -76,7 +76,8 @@ public class MainManager : GenericSingleton<MainManager>
 		LEVEL_MANAGER.OpenMenu(true,"Title");
 		MenuPanelNew.GlobalInputDelay = 4;
 	}
-	
+
+	Coroutine _languageLoadingCoroutine;
 	void LoadOptions()
 	{
 		AbyssalFallOptions _optionsObj;
@@ -87,14 +88,16 @@ public class MainManager : GenericSingleton<MainManager>
 				System.IO.File.Delete(Application.dataPath + OptionPanel.OptionFilePath);
 				_optionsObj = new AbyssalFallOptions();
 				System.IO.File.WriteAllText(Application.dataPath + OptionPanel.OptionFilePath, JsonUtility.ToJson(_optionsObj));
-				//return;
 			}
 			else
 				_optionsObj = JsonUtility.FromJson<AbyssalFallOptions>(System.IO.File.ReadAllText(Application.dataPath + OptionPanel.OptionFilePath));
 			QualitySettings.antiAliasing = (int) Mathf.Pow(2, _optionsObj.AntiAliasing);
 			QualitySettings.vSyncCount = _optionsObj.Vsync;
 			QualitySettings.masterTextureLimit = _optionsObj.TextureQuality;
-			StartCoroutine(DelayLoadLanguage((SystemLanguage)_optionsObj.Language));
+
+			if (_optionsObj.Language != -1)
+				_languageLoadingCoroutine = StartCoroutine(DelayLoadLanguage((SystemLanguage)_optionsObj.Language));
+
 			Screen.SetResolution((int)AvailableResolutions[_optionsObj.ScreenResolution].x, (int)AvailableResolutions[_optionsObj.ScreenResolution].y, true);
 			FMODUnity.RuntimeManager.GetVCA("vca:/SFX").setVolume(_optionsObj.SFXVolume);
 			FMODUnity.RuntimeManager.GetVCA("vca:/Music").setVolume(_optionsObj.MusicVolume);
@@ -103,6 +106,21 @@ public class MainManager : GenericSingleton<MainManager>
 		}
 		else
 			Debug.Log("No option file found.");
+	}
+
+	public void ReloadLanguage(string targetLanguage)
+	{
+		Debug.Log("Reloading language => "+targetLanguage);
+		char[] a = targetLanguage.ToCharArray(); //Upper case first letter
+		a[0] = char.ToUpper(a[0]);
+		targetLanguage = new string(a);
+
+		string[] tempLanguages = Enum.GetNames(typeof(SystemLanguage));
+		OptionPanel.OptionObj.Language = Array.IndexOf(tempLanguages, targetLanguage);
+		OptionPanel.SaveOptions();
+		if (_languageLoadingCoroutine != null)
+			StopCoroutine(_languageLoadingCoroutine);
+		_languageLoadingCoroutine = StartCoroutine(DelayLoadLanguage((SystemLanguage)OptionPanel.OptionObj.Language));
 	}
 
 	IEnumerator DelayLoadLanguage(SystemLanguage targetLang)

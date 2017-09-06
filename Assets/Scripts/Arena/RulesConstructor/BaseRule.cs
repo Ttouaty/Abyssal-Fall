@@ -26,6 +26,11 @@ public class BaseRule : ScriptableObject
 
 	public RuleValuePair[] ParentRules;
 
+	public void SetToDefault()
+	{
+		_valueIndex = _defaultValue;
+	}
+
 	public bool CanBeDisplayed
 	{
 		get

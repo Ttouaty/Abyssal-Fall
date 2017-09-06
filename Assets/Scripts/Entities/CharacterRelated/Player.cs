@@ -74,7 +74,6 @@ public class Player : NetworkBehaviour
 		}
 	}
 
-	private Ping _pinger;
 	private float _targetPingPerSecond = 1.5f;
 	[SyncVar]
 	public int Ping = 0;
@@ -221,21 +220,41 @@ public class Player : NetworkBehaviour
 
 			CmdSetIsUsingGamePad(JoystickNumber != 0);
 		}
-		StartCoroutine(PingCoroutine());
+	}
 
+	public void StartCheckingForPing()
+	{
+		StartCoroutine(PingCoroutine());
 	}
 
 	IEnumerator PingCoroutine()
 	{
-		while (NetworkServer.active && !isServer)
+		while (NetworkServer.active)
 		{
+			for (int j = 0; j < PlayerList.Length; j++)
+			{
+				if(PlayerList[j].isLocalPlayer)
+				{
+					Ping = 0;
+					continue;
+				}
+				byte error;
+				if(PlayerList[j].connectionToClient != null)
+					PlayerList[j].Ping = NetworkTransport.GetCurrentRtt(PlayerList[j].connectionToClient.hostId, PlayerList[j].connectionToClient.connectionId, out error);
+
+				Debug.Log("NetworkTransport ping => " + PlayerList[j].Ping);	
+			}
+
 			float timePinged = Time.time;
-			
-			_pinger = new Ping(connectionToClient.address);
-			yield return new WaitUntil(() => _pinger.isDone);
+
 			yield return new WaitUntil(() => Time.time > timePinged + (1 / _targetPingPerSecond));
 
-			Ping = _pinger.time;
+			//if(isLocalPlayer)
+			//	Ping = 0;
+			//else
+			//	Ping = Network.GetAveragePing(Network.player);
+
+			//Debug.Log("GOT PING => "+ Ping +" for player n° => "+PlayerNumber +" & is server => "+isServer);
 		}
 	}
 

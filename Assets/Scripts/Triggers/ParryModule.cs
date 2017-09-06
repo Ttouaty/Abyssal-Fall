@@ -35,4 +35,9 @@ public class ParryModule : MonoBehaviour, IDamageable
 			_playerRef.Parry(Sender.Projectile);
 		}
 	}
+
+	public int GetTeamIndex()
+	{
+		return _playerRef.GetTeamIndex();
+	}
 }

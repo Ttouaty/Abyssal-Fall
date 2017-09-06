@@ -44,6 +44,8 @@ public class TankController : PlayerController
 
 		_isAffectedByFriction = false;
 		_invulTimer.Set(_invulTime);
+		_damageTimer.Set(_specialTime);
+
 		_allowInput = false;
 		_activeSpeed = _activeDirection.normalized * _specialStartSpeed;
 		_groundCheck.Deactivate();
@@ -75,9 +77,9 @@ public class TankController : PlayerController
 		//	_rigidB.velocity = _activeSpeed;
 		//}
 		eT = 0;
-		while (eT < _characterData.SpecialLag * 0.2f)
+		while (eT < 0.2f)
 		{
-			_activeSpeed.y *= 0.5f;
+			_activeSpeed.y *= 0.8f;
 			eT += Time.deltaTime;
 			yield return null;
 		}
@@ -90,7 +92,6 @@ public class TankController : PlayerController
 	[ClientRpc]
 	public void RpcActiveCharge(bool active)
 	{
-
 		_charging = active;
 		ChargeHitbox.enabled = active;
 

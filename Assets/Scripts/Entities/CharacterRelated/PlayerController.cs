@@ -114,11 +114,14 @@ public class Stats
 
 public interface IDamageable
 {
-	void Damage(Vector3 direction, Vector3 impactPoint, DamageData Sender);
+	int GetTeamIndex();
+	void Damage(Vector3 ejection, Vector3 impactPoint, DamageData Sender);
 }
 
 public interface IDamaging
 {
+	int GetTeamIndex();
+	bool DoContactDamage { get; }
 	DamageDealer DmgDealerSelf { get; }
 }
 
@@ -231,6 +234,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 
 	protected DamageDealer _dmgDealerSelf;
 	public DamageDealer DmgDealerSelf { get { return _dmgDealerSelf; } }
+	public bool DoContactDamage { get { return _isDealingDamage; } }
 	private DamageDealer _lastDamageDealer;
 	public DamageDealer LastDamageDealer
 	{
@@ -244,6 +248,9 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 			_lastDamageDealer = value;
 		}
 	}
+	[HideInInspector]
+	public int TeamIndex = 0;
+
 	private TimeCooldown _lastDamageDealerTimeOut;
 
 	protected bool _isHoldingRelic = false;
@@ -326,6 +333,9 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_playerRef = player.GetComponent<Player>();
 		_playerRef.Controller = this;
 		_playerLayer = LayerMask.NameToLayer("PlayerDefault");
+
+		if (TeamIndex == 0)
+			TeamIndex = _playerRef.PlayerNumber;
 
 		if (_characterData == null)
 		{
@@ -712,6 +722,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 				return;
 
 			Vector3 directionHeld = InputManager.GetStickDirection(_playerRef.JoystickNumber);
+
 			directionHeld.z = directionHeld.y;
 			directionHeld.y = 0;
 			//_activeSpeed = _activeSpeed.Apply(transform.rotation * directionHeld * _targetController.Acceleration.y * Time.deltaTime, _targetController.AirSpeed); // Add movement possibility
@@ -980,6 +991,11 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	{
 		//Debug.LogError("Airshot");
 		Instantiate(GameManager.Instance.Popups["AirShot"], transform.position + Vector3.up, Camera.main.transform.rotation);
+	}
+
+	public int GetTeamIndex()
+	{
+		return TeamIndex;
 	}
 
 	public void Damage(Vector3 direction, Vector3 impactPoint, DamageData data)

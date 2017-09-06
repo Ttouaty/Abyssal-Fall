@@ -63,8 +63,14 @@ public class MenuPanelNew : MonoBehaviour
 
 		if (InputEnabled && GlobalInputDelay == 0)
 			ProcessInput();
+
+		ActiveUpdate();
 	}
 
+	public virtual void ActiveUpdate()
+	{
+
+	}
 
 	public virtual void Open() { Open(true); }
 	public virtual void Open(bool send)

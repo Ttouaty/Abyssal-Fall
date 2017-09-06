@@ -12,14 +12,21 @@ public class OptionPanel : ButtonPanelNew
 	{
 		get
 		{
-			if (System.IO.File.Exists(Application.dataPath + OptionFilePath))
-				return JsonUtility.FromJson<AbyssalFallOptions>(System.IO.File.ReadAllText(Application.dataPath + OptionFilePath));
+			if (_optionsObj != null)
+				return _optionsObj;
+			else if (System.IO.File.Exists(Application.dataPath + OptionFilePath))
+			{
+				_optionsObj = JsonUtility.FromJson<AbyssalFallOptions>(System.IO.File.ReadAllText(Application.dataPath + OptionFilePath));
+				if (_optionsObj != null)
+					return _optionsObj;
+			}
 
-			return new AbyssalFallOptions();
+			_optionsObj = new AbyssalFallOptions();
+			return _optionsObj;
 		}
 	}
 
-	private AbyssalFallOptions _optionsObj;
+	private static AbyssalFallOptions _optionsObj;
 
 	public override void Open()
 	{
@@ -54,6 +61,11 @@ public class OptionPanel : ButtonPanelNew
 	}
 
 	void OnDisable()
+	{
+		SaveOptions();
+	}
+
+	public static void SaveOptions()
 	{
 		Debug.Log("Written options in => "+Application.dataPath + OptionFilePath);
 		System.IO.File.WriteAllText(Application.dataPath + OptionFilePath, JsonUtility.ToJson(_optionsObj));

@@ -171,8 +171,8 @@ public class CharacterSlot : MonoBehaviour
 		_playerRef = _wheelRef._playerRef.GetComponent<Player>();
 		_wheelRef.transform.localRotation = Quaternion.identity;
 
-		KeyboardController.gameObject.SetActive(_playerRef.JoystickNumber == 0);
-		GamePadController.gameObject.SetActive(_playerRef.JoystickNumber > 0);
+		KeyboardController.gameObject.SetActive(!_playerRef.IsUsingGamePad);
+		GamePadController.gameObject.SetActive(_playerRef.IsUsingGamePad);
 
 		TargetPedestal.transform.rotation = Camera.main.transform.rotation;
 

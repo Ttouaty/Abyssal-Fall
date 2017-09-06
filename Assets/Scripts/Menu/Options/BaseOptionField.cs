@@ -33,7 +33,13 @@ public class BaseOptionField : MonoBehaviour
 		Description.text = GetTargetRule().Label;
 		Description.GetComponent<Localizator.LocalizedText>().Fragment = GetTargetRule().Label;
 		CheckButtonsMatching();
+	}
 
+	public virtual void ResetToDefault()
+	{
+		Description.text = GetTargetRule().Label;
+		Description.GetComponent<Localizator.LocalizedText>().Fragment = GetTargetRule().Label;
+		CheckButtonsMatching();
 	}
 
 	public void CheckButtonsMatching()

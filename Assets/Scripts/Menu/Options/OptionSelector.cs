@@ -43,6 +43,16 @@ public class OptionSelector : MonoBehaviour
 		GenerateOptionFields();
 	}
 
+	public void ResetToDefault()
+	{
+		for (int i = 0; i < _allFields.Count; i++)
+		{
+			_allFields[i].GetTargetRule().SetToDefault();
+			_allFields[i].ResetToDefault();
+			UpdateRuleCanBeDisplayed();
+		}
+	}
+
 	void GenerateOptionFields()
 	{
 		ButtonContainer.DestroyAllChildren();

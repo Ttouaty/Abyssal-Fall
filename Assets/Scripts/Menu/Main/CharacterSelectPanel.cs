@@ -25,10 +25,14 @@ public class CharacterSelectPanel : MenuPanelNew {
 	}
 
 
+	public override void ActiveUpdate()
+	{
+		base.ActiveUpdate();
+		ServerManager.Instance.IsInLobby = true;
+	}
+
 	public override void Open()
 	{
-		ServerManager.Instance.IsInLobby = true;
-
 		for (int i = 0; i < Player.PlayerList.Length; i++)
 		{
 			if (Player.PlayerList[i] == null)

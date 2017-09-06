@@ -14,6 +14,11 @@ public class OptionFieldBool : BaseOptionField
 		ToggleValue();
 	}
 
+	public override void ResetToDefault()
+	{
+		ToggleValue();
+	}
+
 	public override void OnDecrease()
 	{
 		base.OnDecrease();

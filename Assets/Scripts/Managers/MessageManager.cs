@@ -80,21 +80,18 @@ public class MessageManager : GenericSingleton<MessageManager>
 		//TextMessageGO.GetComponent<RectTransform>().sizeDelta = new Vector2(250, TEXT_HEIGHT);
 		TextMessageGO.transform.localScale = Vector3.one;
 
-		yield return null;
-
-		TextMessageGO.GetComponent<RectTransform>().localPosition = -Vector3.right * Instance._messageContainer.sizeDelta.x - Vector3.up * Instance.AppendHeight;
-
-		messageRef.MoveTo(-Vector3.up * Instance.AppendHeight, 0.5f, true);
-
 
 		if (translated)
 			message = Localizator.LanguageManager.Instance.GetText(message);
 
 		Instance._numberMessagesDisplayed++;
 		messageRef.Activate(message, timeout);
-		yield return null;
-		Instance.AddAppendHeight(TextMessageGO.GetComponent<RectTransform>().sizeDelta.y);
 
+		yield return null;
+
+		Instance.AddAppendHeight(TextMessageGO.GetComponent<RectTransform>().sizeDelta.y);
+		TextMessageGO.GetComponent<RectTransform>().localPosition = -Vector3.right * Instance._messageContainer.sizeDelta.x - Vector3.up * Instance.AppendHeight;
+		messageRef.MoveTo(-Vector3.up * Instance.AppendHeight, 0.5f, true);
 	}
 
 	public static void Log(string message, bool translated){ Log(message, 5, translated); }
