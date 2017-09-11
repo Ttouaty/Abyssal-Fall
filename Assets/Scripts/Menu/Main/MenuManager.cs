@@ -246,6 +246,7 @@ public class MenuManager : GenericSingleton<MenuManager>
 	public void SetMode(string modeName)
 	{
 		GameManager.Instance.CurrentGameConfiguration.ModeConfiguration = (EModeConfiguration)Enum.Parse(typeof(EModeConfiguration), modeName);
+		GameManager.Instance.TempGameRules = null;
 	}
 
 	public void SkipFTUE()

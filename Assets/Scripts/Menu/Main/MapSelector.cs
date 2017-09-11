@@ -15,6 +15,12 @@ public class MapSelector : MenuPanelNew
 		}
 	}
 
+	public override void Open()
+	{
+		base.Open();
+		SoundManager.Instance.GetInstance("Menu Music").setParameterValue("Progression", 2);
+	}
+
 	protected void OnDisable()
 	{
 		if (NetworkServer.active)

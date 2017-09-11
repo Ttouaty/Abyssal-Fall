@@ -64,7 +64,9 @@ public class ServerManager : NATTraversal.NetworkManager
 		{
 			if (ForceUnready)
 				return false;
-			if (_activePlayers.Count < 2)
+			if (GameManager.Instance.TempGameRules == null)
+				return false;
+			if (_activePlayers.Count < GameManager.Instance.TempGameRules.NumberOfCharactersRequired)
 				return false;
 
 			for (int i = 0; i < _activePlayers.Count; ++i)
@@ -190,7 +192,7 @@ public class ServerManager : NATTraversal.NetworkManager
 		if (NetworkClient.allClients.Count != 0)
 		{
 			Debug.Log("add player");
-			ClientScene.AddPlayer(NetworkClient.allClients[0].connection, (short)ServerManager.Instance.RegisteredPlayers.Count);
+			ClientScene.AddPlayer(NetworkClient.allClients[0].connection, (short)NetworkClient.allClients[0].connection.playerControllers.Count);
 		}
 		else
 		{
@@ -283,8 +285,17 @@ public class ServerManager : NATTraversal.NetworkManager
 
 	public Player ForceAddPlayer()
 	{
+		if(Player.LocalPlayer == null)
+		{
+			Debug.LogWarning("cannot force add player if there is not a hosting player first.");
+			return null;
+		}
+
 		GameObject playerGo = (GameObject)Instantiate(playerPrefab);
-		NetworkServer.Spawn(playerGo);
+		NetworkServer.SpawnWithClientAuthority(playerGo, Player.LocalPlayer.gameObject);
+
+		//NetworkServer.AddPlayerForConnection(client.connection, playerGo, (short) client.connection.playerControllers.Count);
+
 		return playerGo.GetComponent<Player>();
 	}
 
@@ -520,7 +531,6 @@ public class ServerManager : NATTraversal.NetworkManager
 			Debug.Log("Got 2 co replace messages abording");
 			return;
 		}
-		//ClientScene.AddPlayer(client.connection, 0);
 		MenuManager.Instance.RegisterNewPlayer(InputManager.GetFirstActiveJoystick());
 	}
 
@@ -700,10 +710,6 @@ public class ServerManager : NATTraversal.NetworkManager
 		if (success)
 		{
 			
-			//FindObjectOfType<ConnectionModule>().OnSuccess.Invoke(TargetGameId);
-			////ClientScene.AddPlayer(client.connection, 0);
-			//MenuManager.Instance.RegisterNewPlayer(InputManager.GetFirstActiveJoystick());
-
 		}
 		else
 			FindObjectOfType<ConnectionModule>().OnFailedConnection.Invoke("Failed to find target game. (Connection error)");

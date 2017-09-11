@@ -101,8 +101,7 @@ protected override bool SpecialActivation()
 	public void CmdLaunchFireProjectile(Vector3 pos, Vector3 dir)
 	{
 		_fireBallObject = GameObjectPool.GetAvailableObject("FireBall");
-		DamageData tempDamageData = _characterData.SpecialDamageData.Copy();
-		tempDamageData.Dealer = _dmgDealerSelf;
+		DamageData tempDamageData = _characterData.SpecialDamageData.Copy(_dmgDealerSelf);
 
 		_fireBallObject.GetComponent<FireBall>().Launch(
 			pos,

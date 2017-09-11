@@ -39,7 +39,7 @@ public abstract class ABaseProjectile : NetworkBehaviour, IDamaging, IPoolable
 	{
 		gameObject.SetActive(true);
 		_shooter = data.Dealer;
-		 
+
 		if (_shooter.PlayerRef != null) 
 		{
 			_ejectionForce = SO_Character.SpecialEjection.Multiply(Axis.x, _shooter.PlayerRef.Controller._characterData.CharacterStats.strength);
@@ -49,7 +49,7 @@ public abstract class ABaseProjectile : NetworkBehaviour, IDamaging, IPoolable
 			_ejectionForce = SO_Character.SpecialEjection.Multiply(Axis.x, 5);
 		}
 
-		_ownDamageData = data.SetProjectile(this).Copy();
+		_ownDamageData = data.SetProjectile(this).Copy(data.Dealer);
 		LauncherNetId = newLauncherId; 
 
 		//Only activate collision is launcher is local

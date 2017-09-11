@@ -52,6 +52,24 @@ public class GameManager : GenericSingleton<GameManager>
 {
 	public static bool InProgress = false;
 
+	private AGameRules _tempGameRules;
+	public AGameRules TempGameRules
+	{
+		get
+		{
+			if(_tempGameRules == null)
+			{
+				MainManager.Instance.DYNAMIC_CONFIG.GetConfig(CurrentGameConfiguration.ModeConfiguration, out _tempGameRules);
+			}
+			return _tempGameRules;
+		}
+
+		set
+		{
+			_tempGameRules = value;
+		}
+	}
+
 	private AGameRules _gameRules;
 	public AGameRules GameRules
 	{
@@ -109,7 +127,6 @@ public class GameManager : GenericSingleton<GameManager>
 	{
 		ServerManager.Instance.ResetAlivePlayers();
 		// DEBUG en attendant que la sélection de la map soit dispo
-		
 
 		if (NetworkServer.active)
 		{
@@ -153,6 +170,9 @@ public class GameManager : GenericSingleton<GameManager>
 	{
 		CurrentGameConfiguration = newConfig;
 		CurrentStage = 1;
+
+		SoundManager.Instance.GetInstance("Menu Music").setParameterValue("Progression", 5);
+
 		StartCoroutine(StartLevelCoroutine(customConfig));
 	}
 

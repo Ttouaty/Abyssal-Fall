@@ -28,6 +28,7 @@ public class CharacterSelectPanel : MenuPanelNew {
 	public override void ActiveUpdate()
 	{
 		base.ActiveUpdate();
+		SoundManager.Instance.GetInstance("Menu Music").setParameterValue("Progression", 1);
 		ServerManager.Instance.IsInLobby = true;
 	}
 

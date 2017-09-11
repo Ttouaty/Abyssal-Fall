@@ -17,7 +17,5 @@ public class GhostSpawner : MonoBehaviour
 		GameObject newGhost = (GameObject)Instantiate(GhostPrefab, transform.position + transform.forward, transform.rotation);
 
 		newGhost.GetComponent<GhostBehavior>().Init(FindObjectsOfType<PlayerController>());
-		NetworkServer.Spawn(newGhost);
-
 	}
 }

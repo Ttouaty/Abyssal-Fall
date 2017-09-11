@@ -42,7 +42,8 @@ public class GetNumberOfPublicGames : MonoBehaviour
 		if (Time.time > _lastCallTimeStamp + _callInterval)
 		{
 			_lastCallTimeStamp = Time.time;
-			ServerManager.Instance.matchMaker.ListMatches(0, _maxListSize + 1, "-AbyssalFall-Public", true, 0, 0, RandomMatchReturn);
+			if(ServerManager.Instance.matchMaker != null)
+				ServerManager.Instance.matchMaker.ListMatches(0, _maxListSize + 1, "-AbyssalFall-Public", true, 0, 0, RandomMatchReturn);
 		}
 	}
 	

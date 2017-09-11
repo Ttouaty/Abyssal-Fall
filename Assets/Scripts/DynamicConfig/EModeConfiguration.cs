@@ -1,4 +1,4 @@
 public enum EModeConfiguration
 {
-   FreeForAll,DeathMatch,Relic
+   FreeForAll,DeathMatch,Relic,Horde
 }

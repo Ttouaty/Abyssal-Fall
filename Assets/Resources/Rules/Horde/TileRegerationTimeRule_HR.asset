@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 254f158f9cbcb3a4188036378265ee3c, type: 3}
+  m_Name: TileRegerationTimeRule_HR
+  m_EditorClassIdentifier: 
+  Values:
+  - 3
+  - 5
+  - 10
+  _valueIndex: 1
+  _defaultValue: 1
+  Label: rule_tile_regeneration_time
+  UserCanModify: 1
+  StringFormat: 0
+  ParentRules:
+  - Rule: {fileID: 11400000, guid: 0671d32f6cb3e3c478628dbab1aaed23, type: 2}
+    TargetValue: 0

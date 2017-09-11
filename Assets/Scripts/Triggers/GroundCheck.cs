@@ -122,6 +122,13 @@ public class GroundCheck : MonoBehaviour
 
 
 	private bool _isTouching;
+	public bool IsTouching
+	{
+		get
+		{
+			return _isTouching;
+		}
+	}
 
 	void Awake()
 	{

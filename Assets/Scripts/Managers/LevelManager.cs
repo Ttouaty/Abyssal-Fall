@@ -169,8 +169,7 @@ public class LevelManager : GenericSingleton<LevelManager>
 			_bIsLoading = true;
 
 			_oldArenaConfig = CurrentArenaConfig;
-
-			SoundManager.Instance.DestroyInstance("Menu Music", FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+			//SoundManager.Instance.DestroyInstance("Menu Music", FMOD.Studio.STOP_MODE.ALLOWFADEOUT); //Progression set to 5 should stop the music by itself ?
 
 			MainManager.Instance.DYNAMIC_CONFIG.GetConfig(config.ArenaConfiguration, out CurrentArenaConfig);
 			MainManager.Instance.DYNAMIC_CONFIG.GetConfig(config.ModeConfiguration, out CurrentModeConfig);
@@ -182,7 +181,7 @@ public class LevelManager : GenericSingleton<LevelManager>
 			rules.transform.parent			= GameManager.Instance.transform;
 			rules.name						= "Game Rules";
 			rules.Parse(customRules);
-			GameManager.Instance.GameRules	= rules;
+			GameManager.Instance.GameRules = rules;
 
 			MainManager.Instance.GAME_OBJECT_POOL.DropAll();
 

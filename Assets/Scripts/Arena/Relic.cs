@@ -28,6 +28,7 @@ public class Relic : MonoBehaviour
 
 	public void Grab(Transform grabberTransform)
 	{
+		Player.LocalPlayer.PlaySoundForAll(SoundManager.Instance.GetFmodKeyOfOS("Relic Grab"));
 		transform.parent = grabberTransform;
 		transform.localPosition = Vector3.up * 3;
 		_rigidBRef.isKinematic = true;
@@ -36,6 +37,7 @@ public class Relic : MonoBehaviour
 
 	public void Eject(Vector3 targetVelocity)
 	{
+		Player.LocalPlayer.PlaySoundForAll(SoundManager.Instance.GetFmodKeyOfOS("Relic Drop"));
 		transform.parent = null;
 
 		_rigidBRef.isKinematic = false;

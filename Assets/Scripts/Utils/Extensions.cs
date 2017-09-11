@@ -494,6 +494,13 @@ public static class AnimatorExtensions
 		if (NetworkServer.active)
 			targetAnimator.animator.ResetTrigger(triggerName);
 	}
+
+	public static void BroadCastTrigger(this Animator targetAnimator, string triggerName)
+	{
+		targetAnimator.SetTrigger(triggerName);
+		if (NetworkServer.active)
+			targetAnimator.ResetTrigger(triggerName);
+	}
 }
 
 public static class ColorExtensions

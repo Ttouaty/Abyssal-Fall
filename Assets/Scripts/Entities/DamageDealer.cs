@@ -36,10 +36,15 @@ public struct DamageData
 		return this;
 	}
 
-	public DamageData Copy()
+	public DamageData Copy(DamageDealer newDealer)
 	{
 		DamageData newDamageData = new DamageData();
-		newDamageData.Dealer = Dealer;
+		newDamageData.Dealer = newDealer;
+		newDamageData.Dealer.ObjectRef = newDealer.ObjectRef;
+		newDamageData.Dealer.PlayerRef = newDealer.PlayerRef;
+		newDamageData.Dealer.InstanceId = newDealer.InstanceId;
+		newDamageData.Dealer.DamageData = newDamageData;
+		newDamageData.Dealer.Icon = newDealer.Icon;
 		newDamageData.AttackTypeUsed = AttackTypeUsed;
 		newDamageData.StunInflicted = StunInflicted;
 		newDamageData.IsParryable = IsParryable;

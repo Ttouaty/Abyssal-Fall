@@ -34,7 +34,7 @@ public class CharacterPlayerLock : MonoBehaviour
 				yield return new WaitUntil(() => Player.PlayerList.Length > tempPlayerListLength);
 			}
 
-			tempPlayer = Player.PlayerList[0];
+			tempPlayer = ServerManager.Instance.RegisteredPlayers[ServerManager.Instance.RegisteredPlayers.Count - 1];
 
 			tempPlayer.JoystickNumber = JoystickListening[i];
 

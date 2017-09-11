@@ -114,11 +114,27 @@ public class GUIManager : GenericSingleton<GUIManager>
 	public void DisplayKill(int killerPlayerNumber, int victimPlayerNumber)
 	{
 		Transform newPopup = Instantiate(KillPopup, KillFeedContainer.transform, false) as Transform;
+		
+		if(killerPlayerNumber >= 1 && killerPlayerNumber <= 4)
+		{
+			newPopup.Find("Killer").GetComponent<Image>().color = GameManager.Instance.PlayerColors[killerPlayerNumber - 1];
+			newPopup.Find("Killer").GetChild(0).GetComponent<Image>().sprite = Player.PlayerList[killerPlayerNumber - 1].CharacterUsed._characterData.Portrait;
 
-		newPopup.Find("Killer").GetComponent<Image>().color = GameManager.Instance.PlayerColors[killerPlayerNumber - 1];
-		newPopup.Find("Killer").GetChild(0).GetComponent<Image>().sprite = Player.PlayerList[killerPlayerNumber - 1].CharacterUsed._characterData.Portrait;
+			newPopup.Find("Method").GetChild(0).GetComponent<Image>().sprite = Player.PlayerList[killerPlayerNumber - 1].CharacterUsed._characterData.LightIcon;
+		}
 
-		newPopup.Find("Method").GetChild(0).GetComponent<Image>().sprite = Player.PlayerList[killerPlayerNumber - 1].CharacterUsed._characterData.LightIcon;
+		newPopup.Find("Victim").GetComponent<Image>().color = GameManager.Instance.PlayerColors[victimPlayerNumber - 1];
+		newPopup.Find("Victim").GetChild(0).GetComponent<Image>().sprite = Player.PlayerList[victimPlayerNumber - 1].CharacterUsed._characterData.Portrait;
+
+		StartCoroutine(MovePopupInView(newPopup));
+	}
+
+	public void DisplayEnvironnementKill(Player Killer, int victimPlayerNumber)
+	{
+		Transform newPopup = Instantiate(KillPopup, KillFeedContainer.transform, false) as Transform;
+
+		newPopup.Find("Killer").GetComponent<Image>().color = Color.white;
+		newPopup.Find("Killer").GetChild(0).GetComponent<Image>().sprite = Killer.Icon;
 
 		newPopup.Find("Victim").GetComponent<Image>().color = GameManager.Instance.PlayerColors[victimPlayerNumber - 1];
 		newPopup.Find("Victim").GetChild(0).GetComponent<Image>().sprite = Player.PlayerList[victimPlayerNumber - 1].CharacterUsed._characterData.Portrait;

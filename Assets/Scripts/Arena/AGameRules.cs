@@ -124,11 +124,12 @@ public abstract class AGameRules : MonoBehaviour
 
 	public virtual void OnPlayerDeath_Listener(Player player, Player killer)
 	{
-		CameraManager.Instance.RemoveTargetToTrack(player.Controller.transform);
+		if(player.Controller != null)
+			CameraManager.Instance.RemoveTargetToTrack(player.Controller.transform);
 
-		if(_isInSuddenDeath)
+		if (NetworkServer.active)
 		{
-			if (NetworkServer.active)
+			if (_isInSuddenDeath)
 			{
 				if (ServerManager.Instance.AlivePlayers.IndexOf(player) >= 0)
 				{
@@ -140,24 +141,31 @@ public abstract class AGameRules : MonoBehaviour
 					}
 				}
 			}
-		}
-		else
-		{
-			if (killer != null)
-			{
-				if (player != null)
-				{
-					GUIManager.Instance.DisplayKill(killer.PlayerNumber, player.PlayerNumber);
-					//MessageManager.Log("Player " + killer.PlayerNumber+" killed => Player " + player.PlayerNumber);
-				}
-			}
 			else
-				GUIManager.Instance.DisplaySuicide(player.PlayerNumber);
-
-			//MessageManager.Log("Player " + player.PlayerNumber + " killed himself!");
-
-			if (NetworkServer.active)
 			{
+				if (killer != null)
+				{
+					if (player != null)
+					{
+						if(player.PlayerNumber > 0) //Is not environnement
+						{
+							if (killer.PlayerNumber > 0) //PVP
+								Player.LocalPlayer.RpcDisplayKill(killer.PlayerNumber, player.PlayerNumber);
+								//GUIManager.Instance.DisplayKill(killer.PlayerNumber, player.PlayerNumber);
+							else //PVE
+								Player.LocalPlayer.RpcDisplayEnvironnementKill(killer.gameObject, player.PlayerNumber);
+							//GUIManager.Instance.DisplayEnvironnementKill(killer, player.PlayerNumber);
+						}
+					
+						//MessageManager.Log("Player " + killer.PlayerNumber+" killed => Player " + player.PlayerNumber);
+					}
+				}
+				else
+					Player.LocalPlayer.RpcDisplaySuicide(player.PlayerNumber);
+				//GUIManager.Instance.DisplaySuicide(player.PlayerNumber);
+
+				//MessageManager.Log("Player " + player.PlayerNumber + " killed himself!");
+
 				if (killer != null)
 				{
 					killer.Score += PointsGainPerKill;
@@ -178,6 +186,7 @@ public abstract class AGameRules : MonoBehaviour
 					StartCoroutine(RespawnPlayer_Retry(player, 2));
 			}
 		}
+
 
 	}
 

@@ -394,8 +394,8 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_stunTimer.onFinish = () => { _isStunned = false; _allowInput = true; /*CmdSetExpression(_FEMref.DefaultExpression);*/ };
 		_stunTimer.onProgress = () =>
 		{
-			if (_stunTimer.TimeLeft <= Time.deltaTime && !IsGrounded)
-				_stunTimer.Add(Time.deltaTime);
+			//if (_stunTimer.TimeLeft <= Time.deltaTime && !_groundCheck.IsTouching)
+				//_stunTimer.Add(Time.deltaTime);
 
 			_allowInput = false;
 			_isStunned = true;
@@ -826,8 +826,7 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	public virtual void CmdLaunchProjectile(string poolName, Vector3 projPosition, Vector3 projDirection)
 	{
 		GameObject projectile = GameObjectPool.GetAvailableObject(poolName);
-		DamageData tempDamageData = _characterData.SpecialDamageData.Copy();
-		tempDamageData.Dealer = _dmgDealerSelf;
+		DamageData tempDamageData = _characterData.SpecialDamageData.Copy(_dmgDealerSelf);
 
 		projectile.GetComponent<ABaseProjectile>().Launch(projPosition, projDirection, tempDamageData, netId);
 		NetworkServer.SpawnWithClientAuthority(projectile, Player.LocalPlayer.gameObject); // local player as authority to fix HandleTransform no gameobject
@@ -906,14 +905,6 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 		_isDead = false;
 		CameraManager.Instance.AddTargetToTrack(transform);
 
-		if(ArenaManager.Instance.Tiles[respawnTileIndex] != null)
-		{
-			ArenaManager.Instance.Tiles[respawnTileIndex].Restore();
-			ArenaManager.Instance.Tiles[respawnTileIndex].SetTimeLeft(ArenaManager.Instance.Tiles[respawnTileIndex].TimeLeftSave * 2, false);
-		}
-
-		if (_isLocalPlayer)
-			transform.position = newPos;
 
 		TrailRenderer[] tempTrails = GetComponentsInChildren<TrailRenderer>(true);
 
@@ -922,23 +913,31 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 			tempTrails[i].Clear();
 		}
 
-		_stunTimer.Set(0.5f);
-		_invulTimer.Set(2);
-		_forceGroundedTimer.Set(2);
+		if (ArenaManager.Instance.Tiles[respawnTileIndex] != null)
+		{
+			ArenaManager.Instance.Tiles[respawnTileIndex].Restore();
+			ArenaManager.Instance.Tiles[respawnTileIndex].SetTimeLeft(ArenaManager.Instance.Tiles[respawnTileIndex].TimeLeftSave * 2, false);
+		}
 
-		_isDashing = false;
-		_allowInput = true;
-
-		_timeHeldDash = 0;
-		_dashStepActivated = 1;
-		_dashMaxed = false;
-		WaitForDashRelease = false;
-
-		Freeze();
-		Invoke("UnFreeze", 0.5f);
 
 		if(_isLocalPlayer)
 		{
+			transform.position = newPos;
+			_stunTimer.Set(0.5f);
+			_invulTimer.Set(2);
+			_forceGroundedTimer.Set(2);
+
+			_isDashing = false;
+			_allowInput = true;
+
+			_timeHeldDash = 0;
+			_dashStepActivated = 1;
+			_dashMaxed = false;
+			WaitForDashRelease = false;
+
+			Freeze();
+			Invoke("UnFreeze", 0.5f);
+
 			_networkAnimator.BroadCastTrigger("WaitForEnter");
 			_networkAnimator.BroadCastTrigger("Enter");
 		}
@@ -1156,21 +1155,19 @@ public class PlayerController : NetworkBehaviour, IDamageable, IDamaging
 	{
 		if (colli.gameObject.GetComponent<IDamageable>() != null && _dashing && _isDealingDamage)
 		{
-			DamageData tempDamageData = _characterData.DashDamageData.Copy();
-			tempDamageData.Dealer = _dmgDealerSelf;
+			DamageData tempDamageData = _characterData.DashDamageData.Copy(_dmgDealerSelf);
+
 			colli.gameObject.GetComponent<IDamageable>()
 				.Damage(Quaternion.FromToRotation(Vector3.right,
 				(colli.transform.position - transform.position).ZeroY().normalized + _rigidB.velocity.ZeroY().normalized) * (SO_Character.SpecialEjection.Multiply(Axis.x, _dashCopy.Impact)),
 				colli.contacts[0].point,
 				tempDamageData);
 		}
-
-		
 	}
 
 	protected void OnTriggerEnter(Collider colli)
 	{
-		if (colli.gameObject.tag == "Relic")
+		if (colli.gameObject.tag == "Relic" && NetworkServer.active)
 		{
 			if (!_isHoldingRelic && _relicTimer.TimeLeft == 0 && !colli.GetComponent<Relic>().Grabbed)
 				OnGrabRelic(colli.gameObject);

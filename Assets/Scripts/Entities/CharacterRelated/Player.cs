@@ -77,6 +77,8 @@ public class Player : NetworkBehaviour
 	private float _targetPingPerSecond = 1.5f;
 	[SyncVar]
 	public int Ping = 0;
+	[HideInInspector]
+	public Sprite Icon; //Used by bots 
 
 	public void SelectCharacter(ref PlayerController newCharacter)
 	{
@@ -100,6 +102,7 @@ public class Player : NetworkBehaviour
 	{
 		if (newScore > Score && Controller != null)
 		{
+			SoundManager.Instance.PlayOS("Score");
 			if (newScore - Score == 1)
 				Instantiate(GameManager.Instance.Popups["+1"], Controller.transform.position + Vector3.up * 2, Camera.main.transform.rotation);
 			if (newScore - Score == 2)
@@ -293,9 +296,9 @@ public class Player : NetworkBehaviour
 	}
 
 	[Command]
-	private void CmdUpdatePlayerList() { PlayerList = FindObjectsOfType<Player>(); RpcUpdatePlayerList(); }
+	private void CmdUpdatePlayerList() { RpcUpdatePlayerList(); }
 	[ClientRpc]
-	private void RpcUpdatePlayerList() { PlayerList = FindObjectsOfType<Player>(); }
+	private void RpcUpdatePlayerList() { PlayerList = FindObjectsOfType<Player>().Where((Player p) => { return p.PlayerNumber > 0; }).OrderBy((Player p) => { return PlayerNumber; }).ToArray(); }
 
 	[ClientRpc]
 	public void RpcCloseTargetSlot(int slotNumber)
@@ -431,42 +434,25 @@ public class Player : NetworkBehaviour
 		GameManager.Instance.CurrentGameConfiguration = GameManager.Instance.PreviousGameConfig;
 	}
 
+	public void PlaySoundForAll(string fmodKey)
+	{
+		if (NetworkServer.active)
+			RpcPlaySound(fmodKey);
+		else
+			CmdPlaySound(fmodKey);
+	}
+
 	[Command]
-	public void CmdPlaySound(string fmodKey)
-	{
-		RpcPlaySound(fmodKey);
-	}
-
+	public void CmdPlaySound(string fmodKey) { RpcPlaySound(fmodKey); }
 	[ClientRpc]
-	public void RpcPlaySound(string fmodKey)
-	{
-		FMODUnity.RuntimeManager.PlayOneShot(fmodKey);
-	}
-
+	public void RpcPlaySound(string fmodKey) { FMODUnity.RuntimeManager.PlayOneShot(fmodKey); }
 	[ClientRpc]
-	public void RpcReturnToCharacterSelect()
-	{
-		EndGameManager.Instance.ReturnToCharacterSelectFromRpc();
-	}
-
-	//[Command]
-	//public void CmdTryToAddPlayerFromClient()
-	//{
-	//	if (ServerManager.Instance.RegisteredPlayers.Count >= 4)
-	//	{
-	//		Debug.LogError("Too much players abording creation");
-	//		return;
-	//	}
-
-	//	Debug.Log("Server received player request, adding new player for connectionToClient => "+ connectionToClient);
-	//	RpcCreateNewLocalPlayer();
-	//	//ClientScene.AddPlayer(connectionToClient, (short)ServerManager.Instance.RegisteredPlayers.Count);
-	//}
-
-	//[ClientRpc]
-	//public void RpcCreateNewLocalPlayer()
-	//{
-	//	if(isLocalPlayer)
-	//		ClientScene.AddPlayer(connectionToServer, (short)ServerManager.Instance.RegisteredPlayers.Count);
-	//}
+	public void RpcReturnToCharacterSelect() { EndGameManager.Instance.ReturnToCharacterSelectFromRpc(); }
+	[ClientRpc]
+	public void RpcDisplayKill(int killerPlayerNumber, int victimPlayerNumber) { GUIManager.Instance.DisplayKill(killerPlayerNumber, victimPlayerNumber); }
+	[ClientRpc]
+	public void RpcDisplaySuicide(int victimPlayerNumber) { GUIManager.Instance.DisplaySuicide(victimPlayerNumber); }
+	[ClientRpc]
+	public void RpcDisplayEnvironnementKill(GameObject killer, int victimPlayerNumber) { GUIManager.Instance.DisplayEnvironnementKill(killer.GetComponent<Player>(), victimPlayerNumber); }
+	
 }

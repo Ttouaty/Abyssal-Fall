@@ -166,8 +166,7 @@ public class TankController : PlayerController
 		_characterData.SoundList["OnSpecialHit"].Play(gameObject);
 		Destroy(Instantiate(HitParticles[_playerRef.SkinNumber].gameObject, (colli.transform.position + transform.position) * 0.5f, Quaternion.identity) as GameObject, HitParticles[0].duration + HitParticles[0].startLifetime);
 
-		DamageData tempDamageData = _characterData.SpecialDamageData.Copy();
-		tempDamageData.Dealer = _dmgDealerSelf;
+		DamageData tempDamageData = _characterData.SpecialDamageData.Copy(_dmgDealerSelf);
 
 		colli.transform.GetComponent<IDamageable>()
 			.Damage(Quaternion.FromToRotation(Vector3.right,
